@@ -1,0 +1,566 @@
+[
+    {
+        "ErrorCode": "M100",
+        "Message": "Coolant Supply Temperature Over Range (High) Warning (T1)"
+    },
+    {
+        "ErrorCode": "M101",
+        "Message": "Coolant Supply Temperature Spare Over Range (High) Warning (T1sp)"
+    },
+    {
+        "ErrorCode": "M102",
+        "Message": "Coolant Return Temperature Over Range (High) Warning (T2)"
+    },
+    {
+        "ErrorCode": "M103",
+        "Message": "Coolant Return Temperature Over Range Spare (High) Warning (T2sp)"
+    },
+    {
+        "ErrorCode": "M104",
+        "Message": "Coolant Supply Pressure Over Range (High) Warning (P1)"
+    },
+    {
+        "ErrorCode": "M105",
+        "Message": "Coolant Supply Pressure Spare Over Range (High) Warning (P1sp)"
+    },
+    {
+        "ErrorCode": "M106",
+        "Message": "Coolant Return Pressure Over Range (High) Warning (P2)"
+    },
+    {
+        "ErrorCode": "M107",
+        "Message": "Coolant Return Pressure Spare Over Range (High) Warning (P2sp)"
+    },
+    {
+        "ErrorCode": "M108",
+        "Message": "Filter Inlet Pressure Over Range (Low) Warning (P3)"
+    },
+    {
+        "ErrorCode": "M109",
+        "Message": "Filter Inlet Pressure Over Range (High) Warning (P3)"
+    },
+    {
+        "ErrorCode": "M110",
+        "Message": "Filter Outlet Pressure Over Range (High) Warning (P4)"
+    },
+    {
+        "ErrorCode": "M111",
+        "Message": "Coolant Flow Rate (Low) Warning (F1)"
+    },
+    {
+        "ErrorCode": "M112",
+        "Message": "Ambient Temperature Over Range (Low) Warning (T a)"
+    },
+    {
+        "ErrorCode": "M113",
+        "Message": "Ambient Temperature Over Range (High) Warning (T a)"
+    },
+    {
+        "ErrorCode": "M114",
+        "Message": "Relative Humidity Over Range (Low) Warning (RH)"
+    },
+    {
+        "ErrorCode": "M115",
+        "Message": "Relative Humidity Over Range (High) Warning (RH)"
+    },
+    {
+        "ErrorCode": "M116",
+        "Message": "Condensation Warning (T Dp)"
+    },
+    {
+        "ErrorCode": "M117",
+        "Message": "pH Over Range (Low) Warning (PH)"
+    },
+    {
+        "ErrorCode": "M118",
+        "Message": "pH Over Range (High) Warning (PH)"
+    },
+    {
+        "ErrorCode": "M119",
+        "Message": "Conductivity Over Range (Low) Warning (CON)"
+    },
+    {
+        "ErrorCode": "M120",
+        "Message": "Conductivity Over Range (High) Warning (CON)"
+    },
+    {
+        "ErrorCode": "M121",
+        "Message": "Turbidity Over Range (Low) Warning (Tur)"
+    },
+    {
+        "ErrorCode": "M122",
+        "Message": "Turbidity Over Range (High) Warning (Tur)"
+    },
+    {
+        "ErrorCode": "M123",
+        "Message": "Average Current Over Range (High) Warning"
+    },
+    {
+        "ErrorCode": "M200",
+        "Message": "Coolant Supply Temperature Over Range (High) Alert (T1)"
+    },
+    {
+        "ErrorCode": "M201",
+        "Message": "Coolant Supply Temperature Spare Over Range (High) Alert (T1sp)"
+    },
+    {
+        "ErrorCode": "M202",
+        "Message": "Coolant Return Temperature Over Range (High) Alert (T2)"
+    },
+    {
+        "ErrorCode": "M203",
+        "Message": "Coolant Return Temperature Over Range Spare (High) Alert (T2sp)"
+    },
+    {
+        "ErrorCode": "M204",
+        "Message": "Coolant Supply Pressure Over Range (High) Alert (P1)"
+    },
+    {
+        "ErrorCode": "M205",
+        "Message": "Coolant Supply Pressure Spare Over Range (High) Alert (P1sp)"
+    },
+    {
+        "ErrorCode": "M206",
+        "Message": "Coolant Return Pressure Over Range (High) Alert (P2)"
+    },
+    {
+        "ErrorCode": "M207",
+        "Message": "Coolant Return Pressure Spare Over Range (High) Alert (P2sp)"
+    },
+    {
+        "ErrorCode": "M208",
+        "Message": "Filter Inlet Pressure Over Range (Low) Alert (P3)"
+    },
+    {
+        "ErrorCode": "M209",
+        "Message": "Filter Inlet Pressure Over Range (High) Alert (P3)"
+    },
+    {
+        "ErrorCode": "M210",
+        "Message": "Filter Outlet Pressure Over Range (High) Alert (P4)"
+    },
+    {
+        "ErrorCode": "M211",
+        "Message": "Coolant Flow Rate (Low) Alert (F1)"
+    },
+    {
+        "ErrorCode": "M212",
+        "Message": "Ambient Temperature Over Range (Low) Alert (T a)"
+    },
+    {
+        "ErrorCode": "M213",
+        "Message": "Ambient Temperature Over Range (High) Alert (T a)"
+    },
+    {
+        "ErrorCode": "M214",
+        "Message": "Relative Humidity Over Range (Low) Alert (RH)"
+    },
+    {
+        "ErrorCode": "M215",
+        "Message": "Relative Humidity Over Range (High) Alert (RH)"
+    },
+    {
+        "ErrorCode": "M216",
+        "Message": "Condensation Alert (T Dp)"
+    },
+    {
+        "ErrorCode": "M217",
+        "Message": "pH Over Range (Low) Alert (PH)"
+    },
+    {
+        "ErrorCode": "M218",
+        "Message": "pH Over Range (High) Alert (PH)"
+    },
+    {
+        "ErrorCode": "M219",
+        "Message": "Conductivity Over Range (Low) Alert (CON)"
+    },
+    {
+        "ErrorCode": "M220",
+        "Message": "Conductivity Over Range (High) Alert (CON)"
+    },
+    {
+        "ErrorCode": "M221",
+        "Message": "Turbidity Over Range (Low) Alert (Tur)"
+    },
+    {
+        "ErrorCode": "M222",
+        "Message": "Turbidity Over Range (High) Alert (Tur)"
+    },
+    {
+        "ErrorCode": "M223",
+        "Message": "Average Current Over Range (High) Alert"
+    },
+    {
+        "ErrorCode": "M300",
+        "Message": "Coolant Pump1 Inverter Overload"
+    },
+    {
+        "ErrorCode": "M301",
+        "Message": "Coolant Pump2 Inverter Overload"
+    },
+    {
+        "ErrorCode": "M302",
+        "Message": "Coolant Pump3 Inverter Overload"
+    },
+    {
+        "ErrorCode": "M303",
+        "Message": "Fan1 Inverter Overload"
+    },
+    {
+        "ErrorCode": "M304",
+        "Message": "Fan2 Inverter Overload"
+    },
+    {
+        "ErrorCode": "M305",
+        "Message": "Coolant Pump1 Inverter Error"
+    },
+    {
+        "ErrorCode": "M306",
+        "Message": "Coolant Pump2 Inverter Error"
+    },
+    {
+        "ErrorCode": "M307",
+        "Message": "Coolant Pump3 Inverter Error"
+    },
+    {
+        "ErrorCode": "M308",
+        "Message": "Factory Power Status"
+    },
+    {
+        "ErrorCode": "M309",
+        "Message": "Inverter1 Communication Error"
+    },
+    {
+        "ErrorCode": "M310",
+        "Message": "Inverter2 Communication Error"
+    },
+    {
+        "ErrorCode": "M311",
+        "Message": "Inverter3 Communication Error"
+    },
+    {
+        "ErrorCode": "M312",
+        "Message": "Coolant Flow (F1) Meter Communication Error"
+    },
+    {
+        "ErrorCode": "M313",
+        "Message": "Ambient Sensor (Ta) Communication Error"
+    },
+    {
+        "ErrorCode": "M314",
+        "Message": "Relative Humidity (RH) Communication Error"
+    },
+    {
+        "ErrorCode": "M315",
+        "Message": "Dew Point Temperature (TDp) Communication Error"
+    },
+    {
+        "ErrorCode": "M316",
+        "Message": "pH (PH) Sensor Communication Error"
+    },
+    {
+        "ErrorCode": "M317",
+        "Message": "Conductivity (CON) Sensor Communication Error"
+    },
+    {
+        "ErrorCode": "M318",
+        "Message": "Turbidity (Tur) Sensor Communication Error"
+    },
+    {
+        "ErrorCode": "M319",
+        "Message": "ATS 1 Communication Error"
+    },
+    {
+        "ErrorCode": "M320",
+        "Message": "ATS 2 Communication Error"
+    },
+    {
+        "ErrorCode": "M321",
+        "Message": "Power Meter Communication Error"
+    },
+    {
+        "ErrorCode": "M322",
+        "Message": "Average Current Communication Error"
+    },
+    {
+        "ErrorCode": "M323",
+        "Message": "FAN 1 Communication Error"
+    },
+    {
+        "ErrorCode": "M324",
+        "Message": "FAN 2 Communication Error"
+    },
+    {
+        "ErrorCode": "M325",
+        "Message": "FAN 3 Communication Error"
+    },
+    {
+        "ErrorCode": "M326",
+        "Message": "FAN 4 Communication Error"
+    },
+    {
+        "ErrorCode": "M327",
+        "Message": "FAN 5 Communication Error"
+    },
+    {
+        "ErrorCode": "M328",
+        "Message": "FAN 6 Communication Error"
+    },
+    {
+        "ErrorCode": "M329",
+        "Message": "FAN 7 Communication Error"
+    },
+    {
+        "ErrorCode": "M330",
+        "Message": "FAN 8 Communication Error"
+    },
+    {
+        "ErrorCode": "M331",
+        "Message": "Coolant Supply Temperature (T1) Broken Error"
+    },
+    {
+        "ErrorCode": "M332",
+        "Message": "Coolant Supply Temperature Spare (T1sp) Broken Error"
+    },
+    {
+        "ErrorCode": "M333",
+        "Message": "Coolant Return Temperature (T2) Broken Error"
+    },
+    {
+        "ErrorCode": "M334",
+        "Message": "Coolant Return Temperature Spare (T2sp) Broken Error"
+    },
+    {
+        "ErrorCode": "M335",
+        "Message": "Coolant Supply Pressure (P1) Broken Error"
+    },
+    {
+        "ErrorCode": "M336",
+        "Message": "Coolant Supply Pressure Spare (P1sp) Broken Error"
+    },
+    {
+        "ErrorCode": "M337",
+        "Message": "Coolant Return Pressure (P2) Broken Error"
+    },
+    {
+        "ErrorCode": "M338",
+        "Message": "Coolant Return Pressure Spare (P2sp) Broken Error"
+    },
+    {
+        "ErrorCode": "M339",
+        "Message": "Filter Inlet Pressure (P3) Broken Error"
+    },
+    {
+        "ErrorCode": "M340",
+        "Message": "Filter Outlet Pressure (P4) Broken Error"
+    },
+    {
+        "ErrorCode": "M341",
+        "Message": "Coolant Flow Rate (F1) Broken Error"
+    },
+    {
+        "ErrorCode": "M342",
+        "Message": "PC1 Error"
+    },
+    {
+        "ErrorCode": "M343",
+        "Message": "PC2 Error"
+    },
+    {
+        "ErrorCode": "M344",
+        "Message": "Leakage 1 Leak Error"
+    },
+    {
+        "ErrorCode": "M345",
+        "Message": "Leakage 1 Broken Error"
+    },
+    {
+        "ErrorCode": "M346",
+        "Message": "Coolant Level 1 Error"
+    },
+    {
+        "ErrorCode": "M347",
+        "Message": "Coolant Level 2 Error"
+    },
+    {
+        "ErrorCode": "M348",
+        "Message": "Coolant Level 3 Error"
+    },
+    {
+        "ErrorCode": "M349",
+        "Message": "24V Power Supply 1 Error"
+    },
+    {
+        "ErrorCode": "M350",
+        "Message": "24V Power Supply 2 Error"
+    },
+    {
+        "ErrorCode": "M351",
+        "Message": "12V Power Supply 1 Error"
+    },
+    {
+        "ErrorCode": "M352",
+        "Message": "12V Power Supply 2 Error"
+    },
+    {
+        "ErrorCode": "M353",
+        "Message": "Main MC Status Error"
+    },
+    {
+        "ErrorCode": "M354",
+        "Message": "FAN 1 Alarm Status Error"
+    },
+    {
+        "ErrorCode": "M355",
+        "Message": "FAN 2 Alarm Status Error"
+    },
+    {
+        "ErrorCode": "M356",
+        "Message": "FAN 3 Alarm Status Error"
+    },
+    {
+        "ErrorCode": "M357",
+        "Message": "FAN 4 Alarm Status Error"
+    },
+    {
+        "ErrorCode": "M358",
+        "Message": "FAN 5 Alarm Status Error"
+    },
+    {
+        "ErrorCode": "M359",
+        "Message": "FAN 6 Alarm Status Error"
+    },
+    {
+        "ErrorCode": "M360",
+        "Message": "FAN 7 Alarm Status Error"
+    },
+    {
+        "ErrorCode": "M361",
+        "Message": "FAN 8 Alarm Status Error"
+    },
+    {
+        "ErrorCode": "M362",
+        "Message": "Stop Due to Low Coolant Level"
+    },
+    {
+        "ErrorCode": "M400",
+        "Message": "Rack1 broken"
+    },
+    {
+        "ErrorCode": "M401",
+        "Message": "Rack2 broken"
+    },
+    {
+        "ErrorCode": "M402",
+        "Message": "Rack3 broken"
+    },
+    {
+        "ErrorCode": "M403",
+        "Message": "Rack4 broken"
+    },
+    {
+        "ErrorCode": "M404",
+        "Message": "Rack5 broken"
+    },
+    {
+        "ErrorCode": "M405",
+        "Message": "Rack6 broken"
+    },
+    {
+        "ErrorCode": "M406",
+        "Message": "Rack7 broken"
+    },
+    {
+        "ErrorCode": "M407",
+        "Message": "Rack8 broken"
+    },
+    {
+        "ErrorCode": "M408",
+        "Message": "Rack9 broken"
+    },
+    {
+        "ErrorCode": "M409",
+        "Message": "Rack10 broken"
+    },
+    {
+        "ErrorCode": "M410",
+        "Message": "Rack1 leakage"
+    },
+    {
+        "ErrorCode": "M411",
+        "Message": "Rack2 leakage"
+    },
+    {
+        "ErrorCode": "M412",
+        "Message": "Rack3 leakage"
+    },
+    {
+        "ErrorCode": "M413",
+        "Message": "Rack4 leakage"
+    },
+    {
+        "ErrorCode": "M414",
+        "Message": "Rack5 leakage"
+    },
+    {
+        "ErrorCode": "M415",
+        "Message": "Rack6 leakage"
+    },
+    {
+        "ErrorCode": "M416",
+        "Message": "Rack7 leakage"
+    },
+    {
+        "ErrorCode": "M417",
+        "Message": "Rack8 leakage"
+    },
+    {
+        "ErrorCode": "M418",
+        "Message": "Rack9 leakage"
+    },
+    {
+        "ErrorCode": "M419",
+        "Message": "Rack10 leakage"
+    },
+    {
+        "ErrorCode": "M420",
+        "Message": "Rack1 error"
+    },
+    {
+        "ErrorCode": "M421",
+        "Message": "Rack2 error"
+    },
+    {
+        "ErrorCode": "M422",
+        "Message": "Rack3 error"
+    },
+    {
+        "ErrorCode": "M423",
+        "Message": "Rack4 error"
+    },
+    {
+        "ErrorCode": "M424",
+        "Message": "Rack5 error"
+    },
+    {
+        "ErrorCode": "M425",
+        "Message": "Rack6 error"
+    },
+    {
+        "ErrorCode": "M426",
+        "Message": "Rack7 error"
+    },
+    {
+        "ErrorCode": "M427",
+        "Message": "Rack8 error"
+    },
+    {
+        "ErrorCode": "M428",
+        "Message": "Rack9 error"
+    },
+    {
+        "ErrorCode": "M429",
+        "Message": "Rack10 error"
+    }
+]

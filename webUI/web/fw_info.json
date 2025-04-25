@@ -1,0 +1,12 @@
+{
+    "SN": "130001",
+    "Model": "CDU 150kW",
+    "Version": "1",
+    "WebUI": "0101",
+    "SCC_API": "0101",
+    "SNMP": "0100",
+    "Redfish": "0100",
+    "Modbus_Server": "0100",
+    "PLC": "104",
+    "PartNumber": "N/A"
+}

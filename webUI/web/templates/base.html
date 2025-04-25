@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>{% block title %}{% endblock %}</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+    <link rel="stylesheet" href="/static/bootstrap4-3-1.min.css" />
+    <link rel="stylesheet" href="/static/bootstrap.min.css" />
+    <script src="/static/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/js/jquery-3.6.4.min.js"></script>
+    <link rel="stylesheet" href="/static/css/all.min.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/sweetalert2.min.css') }}" />
+    <script src="{{ url_for('static', filename='js/sweetalert2.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/datatables.min.css') }}" />
+    <script src="{{ url_for('static', filename='js/datatables.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/kioskboard-2.3.0.min.css') }}" />
+    <script src="{{ url_for('static', filename='js/kioskboard-2.3.0.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.marquee.min.js') }}"></script>
+    <style type="text/css">
+        html,
+        body {
+            overscroll-behavior: none;
+            user-select: none;
+        }
+
+        .navbar .navbar-nav .nav-link:hover .nav-link:active {
+            background-color: #778899;
+            color: #fff;
+        }
+
+        .nav-item {
+            margin-top: 20px;
+            font-size: 20px;
+        }
+
+        .navbar-brand img {
+            width: 120px; 
+            height: auto;
+        }
+
+        @media(max-width: 1400px){
+            .nav-link{
+                font-size: 16px;    
+            }
+            .navbar-brand img {
+                width: 100px;
+            }
+        }
+
+        @media(max-width: 1000px){
+            .nav-link{
+                font-size: 14px;    
+            }
+            .navbar-brand img {
+                width: 80px;
+            }
+        }
+
+        .log-dropdown {
+            margin-top: 20px;
+            font-size: 20px;
+            text-decoration: none;
+            color: #fff;
+        }
+
+        #loader_container_post {
+            display: none;
+        }
+
+        #loader_container_post {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            text-align: center;
+        }
+
+        #loader {
+            border: 16px solid rgba(0, 0, 0, 0.01);
+            border-radius: 50%;
+            border-top: 16px solid #3498db;
+            width: 120px;
+            height: 120px;
+            animation: spin 2s linear infinite;
+            margin: 0 auto;
+        }
+
+        #loading_text {
+            margin-top: 20px;
+
+            font-size: 18px;
+            color: #fff;
+
+            font-family: Arial, sans-serif;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        #overlay_post {
+            position: fixed;
+
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+
+            z-index: 9998;
+        }
+
+        #overlay_post {
+            display: none;
+        }
+
+        .color_light {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background-color: red;
+            border-radius: 50%;
+            top: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: none;
+        }
+
+        .block {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .data-unlock {
+            height: 70px;
+            width: 70px;
+        }
+
+        .marquee-container {
+            width: 100%;
+            overflow: hidden;
+            background-color: yellow;
+            padding: 5px;
+            position: fixed;
+            bottom: 0;
+            /* outline: 1px solid black; */
+        }
+
+        .marquee {
+            display: inline-block;
+            white-space: nowrap;
+            font-size: 16px;
+            font-weight: bold;
+            color: black;
+            /* outline: 1px solid black; */
+            width: 100%;
+        }
+
+        .plc_disconnect {
+            border-radius: 5px;
+            color: red;
+            font-size: 26px;
+            background-color: white;
+            position: fixed;
+            top: 90px;
+            margin: 0 auto;
+            z-index: 999;
+            display: none;
+        }
+    </style>
+    {% block styles %} {% endblock %}
+</head>
+
+<div id="overlay_post"></div>
+
+<div id="loader_container_post">
+    <div id="loader"></div>
+    <div id="loading_text">LOADING...</div>
+</div>
+
+<nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light block">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#"><img src="/static/logo.png" alt="Logo"/></a>
+        {% if user == 'kiosk' %}
+        <div class="data-unlock"></div>
+        {% endif %}
+        <div class="collapse navbar-collapse" id="main_nav" style="font-size: 16px">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item nav-status">
+                    <a class="nav-link" href="/status"> Status </a>
+                </li>
+                <li class="nav-item nav-network">
+                    <a class="nav-link" href="/network"> Network Setting</a>
+                </li>
+                <li class="nav-item nav-systemset">
+                    <a class="nav-link" href="/systemset">
+                        System Setting
+                    </a>
+                </li>
+                <li class="nav-item nav-control">
+                    <a class="nav-link" href="/control"> Control </a>
+                </li>
+                <li class="nav-item nav-error_logs_table">
+                    <a class="nav-link" href="/error_logs_table">
+                        Error Table
+                    </a>
+                </li>
+                {% if user == 'superuser' or user == 'admin' %}
+                <li class="nav-item nav-inspection">
+                    <a class="nav-link" href="/inspection"> Inspection </a>
+                </li>
+                {% endif %}
+                <li class="nav-item nav-fwstatus">
+                    <a class="nav-link" href="/fwStatus"> FW Status </a>
+                </li>
+                {% if user != 'kiosk' %}
+                <li class="log-dropdown dropdown nav-logs">
+                    <a class="nav-link" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+                        aria-expanded="true">
+                        Logs
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li>
+                            <a class="dropdown-item" href="/sensor_logs">Sensor Logs</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="/error_logs">Error Logs</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="/operation_logs">Operation Logs</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="/operation_logs_restapi">Redfish Operation Logs</a>
+                        </li>
+                    </ul>
+                </li>
+                {% endif %} {% if user == 'superuser' or user == 'admin' %}
+                <li class="nav-item nav-engineermode">
+                    <a class="nav-link" href="/engineerMode">Engineer Mode</a>
+                </li>
+                {% endif %} {% if user != 'kiosk' %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="marquee-container">
+        <div class="marquee"></div>
+    </div>
+
+    <div class="color_light" id="color_light"></div>
+</nav>
+<div style="display: flex; justify-content: center">
+    <div class="plc_disconnect">PLC Connection Error</div>
+</div>
+{% block content %} {% endblock %}
+<script>
+    jQuery(document).ready(function () {
+        let timeoutLight;
+        let timeoutLightSeconds = 60;
+        let userType = "{{user}}";
+
+        const timeoutDuration = 20;
+        let ajaxCounter = 0;
+        let timeoutID = null;
+        let unlock = 0;
+        let currentUrl = window.location.href;
+        let idleTimer = null;
+        let isActive = false;
+        let animationFrame = null;
+
+        //只在本機端顯示虛擬檢盤
+        if(window.location.hostname === "127.0.0.1"){
+            var aKeyboard = [
+                {
+                    0: "-",
+                    1: ".",
+                },
+            ];
+            var ipv4Keyboard = [
+                {
+                    0: ".",
+                },
+            ];
+            var ipv6Keyboard = [
+                {
+                    0: ":",
+                    1: ".",
+                },
+            ];
+            var onlyNumberKeyboard = [
+                {
+                    0: "1",
+                    1: "2",
+                    2: "3",
+                    3: "4",
+                    4: "5",
+                    5: "6",
+                    6: "7",
+                    7: "8",
+                    8: "9",
+                    9: "0",
+                },
+            ];
+            var enKeyboard = [
+                {
+                    0: "Q",
+                    1: "W",
+                    2: "E",
+                    3: "R",
+                    4: "T",
+                    5: "Y",
+                    6: "U",
+                    7: "I",
+                    8: "O",
+                    9: "P",
+                },
+                {
+                    0: "A",
+                    1: "S",
+                    2: "D",
+                    3: "F",
+                    4: "G",
+                    5: "H",
+                    6: "J",
+                    7: "K",
+                    8: "L",
+                },
+                {
+                    0: "Z",
+                    1: "X",
+                    2: "C",
+                    3: "V",
+                    4: "B",
+                    5: "N",
+                    6: "M",
+                    7: ".",
+                },
+            ];
+            var ipv4Keyboard = [
+                {
+                    0: ".",
+                },
+            ];
+            var ipv6Keyboard = [
+                {
+                    0: ":",
+                    1: ".",
+                },
+            ];
+            if (document.querySelector('.keyboard_ipv4')) {
+                KioskBoard.run(".keyboard_ipv4", {
+                    keysArrayOfObjects: ipv4Keyboard,
+                    keysNumpadArrayOfNumbers: [],
+
+                    language: "en",
+                    keysFontFamily: "Barlow",
+                    keysFontWeight: "500",
+
+                    allowRealKeyboard: true,
+                    allowMobileKeyboard: true,
+
+                    autoScroll: false,
+                });
+            }
+            if (document.querySelector('.keyboard_ipv6')) {
+                KioskBoard.run(".keyboard_ipv6", {
+                    keysArrayOfObjects: ipv6Keyboard,
+                    keysNumpadArrayOfNumbers: [],
+
+                    language: "en",
+                    keysFontFamily: "Barlow",
+                    keysFontWeight: "500",
+
+                    allowRealKeyboard: true,
+                    allowMobileKeyboard: true,
+
+                    autoScroll: false,
+                });
+            }
+            if (document.querySelector('.keyboard_number')) {
+                KioskBoard.run(".keyboard_number", {
+                    keysArrayOfObjects: aKeyboard,
+                    keysNumpadArrayOfNumbers: [],
+
+                    language: "en",
+                    keysFontFamily: "Barlow",
+                    keysFontWeight: "500",
+
+                    allowRealKeyboard: true,
+                    allowMobileKeyboard: true,
+
+                    autoScroll: false,
+                });
+            }
+            $(".keyboard_onlyNumber").attr("data-kioskboard-type", "keyboard");
+            if (document.querySelector('.keyboard_onlyNumber')) {
+
+                KioskBoard.run(".keyboard_onlyNumber", {
+                    keysArrayOfObjects: onlyNumberKeyboard,
+                    keysNumpadArrayOfNumbers: [],
+
+                    language: "en",
+                    keysFontFamily: "Barlow",
+                    keysFontWeight: "500",
+
+                    allowRealKeyboard: true,
+                    allowMobileKeyboard: true,
+
+                    autoScroll: false,
+                });
+            }
+            if (document.querySelector('.keyboard_text')) {
+                KioskBoard.run(".keyboard_text", {
+                    keysArrayOfObjects: enKeyboard,
+                    language: "en",
+                    keysFontFamily: "Barlow",
+                    keysFontWeight: "500",
+                    cssAnimationsStyle: "fade",
+                    keysFontSize: "20px",
+                    allowRealKeyboard: true,
+                    allowMobileKeyboard: true,
+                    keysAllowSpacebar: true,
+                    capsLockActive: false,
+                    autoScroll: false,
+                    cssAnimations: false,
+                });
+            }
+            if (document.querySelector('.keyboard_password')) {
+                KioskBoard.run(".keyboard_password", {
+                    keysArrayOfObjects: enKeyboard,
+                    language: "en",
+                    keysFontFamily: "Barlow",
+                    keysFontWeight: "500",
+                    cssAnimationsStyle: "fade",
+                    keysFontSize: "20px",
+                    allowRealKeyboard: true,
+                    allowMobileKeyboard: true,
+                    keysAllowSpacebar: false,
+                    capsLockActive: false,
+                    autoScroll: false,
+                });
+            }
+        }
+
+        
+        $(".nav-item").on("click", function () {
+            $(".nav-item").removeClass("active");
+            $(this).addClass("active");
+        });
+
+        function sleep(ms) {
+            return new Promise((resolve) => setTimeout(resolve, ms));
+        }
+
+        function showLoaderPost() {
+            $("#overlay_post").show();
+            $("#loader_container_post").show();
+            timeoutID = setTimeout(function () {
+                Swal.fire({
+                    title: "Timeout",
+                    text: "The connection request timed out, please try again later.",
+                    icon: "warning",
+                    timer: 5000,
+                    showConfirmButton: true,
+                    timerProgressBar: true,
+                });
+                hideLoaderPost();
+                ajaxCounter = 0;
+            }, timeoutDuration * 1000);
+        }
+
+        function hideLoaderPost() {
+            $("#overlay_post").hide();
+            $("#loader_container_post").hide();
+
+            if (timeoutID) {
+                clearTimeout(timeoutID);
+                timeoutID = null;
+            }
+        }
+
+        $(document).ajaxSend(function (event, jqxhr, settings) {
+            if (
+                settings.loader !== false &&
+                (settings.type === "POST" || settings.type === "GET")
+            ) {
+                ajaxCounter++;
+
+                if (ajaxCounter === 1) {
+                    showLoaderPost();
+                }
+            }
+        });
+
+        $(document).ajaxComplete(function (event, jqxhr, settings) {
+            if (
+                settings.loader !== false &&
+                (settings.type === "POST" || settings.type === "GET")
+            ) {
+                ajaxCounter--;
+
+                if (ajaxCounter === 0) {
+                    hideLoaderPost();
+                }
+            }
+        });
+
+        function change_light(data, version) {
+            let v2 = !version['function_switch']
+            $(".color_light").css("background-color", "green");
+
+            for (key in data["warning_notice"]) {
+                let w_value = data["warning_notice"][key];
+
+                if (
+                    !data["collapse"]["temp_spare"] &&
+                    key === "temp_clntSplySpr"
+                ) {
+                    continue;
+                }
+
+                if (
+                    !data["collapse"]["p2_spare"] &&
+                    key === "prsr_clntRtnSpr"
+                ) {
+                    continue;
+                }
+
+                if (
+                    !data["collapse"]["prsr_spare"] &&
+                    key === "prsr_clntSplySpr"
+                ) {
+                    continue;
+                }
+
+                if (!v2) {
+                    if (key == "prsr_clntRtnSpr") {
+                        continue
+                    }
+                }
+
+                if (w_value) {
+                    $(".color_light").css("background-color", "orange");
+                }
+            }
+
+            for (key in data["alert_notice"]) {
+                let a_value = data["alert_notice"][key];
+
+                if (
+                    !data["collapse"]["temp_spare"] &&
+                    key === "temp_clntSplySpr"
+                ) {
+                    continue;
+                }
+
+                if (
+                    !data["collapse"]["prsr_spare"] &&
+                    key === "prsr_clntSplySpr"
+                ) {
+                    continue;
+                }
+
+                if (!v2) {
+                    if (key == "prsr_clntRtnSpr") {
+                        continue
+                    }
+                }
+
+                if (a_value) {
+                    $(".color_light").css("background-color", "red");
+                }
+            }
+
+            for (key in data["error"]) {
+                let e_value = data["error"][key];
+
+                if (
+                    !data["collapse"]["temp_spare"] &&
+                    key === "TempClntSplySpr_broken"
+                ) {
+                    continue;
+                }
+
+                if (
+                    !data["collapse"]["prsr_spare"] &&
+                    key === "PrsrClntSplySpr_broken"
+                ) {
+                    continue;
+                }
+
+                if (!v2) {
+                    if (["PrsrClntRtnSpr_broken", "level1_error", "level2_error", "power1_error", "power2_error"].includes(key)) {
+                        continue;
+                    }
+                }
+
+                if (key != "ATS1") {
+                    if (e_value) {
+                        $(".color_light").css("background-color", "red");
+                    }
+                }
+            }
+        }
+
+        async function get_change_light_data() {
+            while (true) {
+                try {
+                    const data = await $.ajax({
+                        url: "/get_data",
+                        method: "GET",
+                        dataType: "json",
+                        loader: false,
+                    });
+                    const version = await $.ajax({
+                        url: "/get_data_version",
+                        method: "GET",
+                        loader: false,
+                        timeout: 10000,
+                        dataType: "json",
+                    });
+
+                    change_light(data, version);
+
+                    if (data["error"]["PLC"]) {
+                        $(".plc_disconnect").show();
+                    } else {
+                        $(".plc_disconnect").hide();
+                    }
+
+                } catch (error) {
+                    console.error("AJAX request failed:", error);
+                }
+
+                await new Promise((resolve) => setTimeout(resolve, 5000));
+            }
+        }
+
+        get_change_light_data();
+
+        function startBouncing() {
+            let x = window.innerWidth / 2;
+            let y = window.innerHeight - 600;
+            let dx = 3;
+            let dy = -3;
+            const radiusX = 300;
+            const radiusY = 0;
+
+            function bounce() {
+                x += dx;
+                y += dy;
+
+                if (x - radiusX < 0 || x + radiusX > window.innerWidth) {
+                    dx = -dx;
+                    x =
+                        x - radiusX < 0
+                            ? radiusX
+                            : window.innerWidth - radiusX;
+                }
+                if (
+                    y - radiusY < 0 ||
+                    y + radiusY > window.innerHeight - 600
+                ) {
+                    dy = -dy;
+                    y =
+                        y - radiusY < 0
+                            ? radiusY
+                            : window.innerHeight - 600 - radiusY;
+                }
+                $(".color_light").css("top", `${y}px`);
+                $(".color_light").css("left", `${x}px`);
+
+                if (isActive) {
+                    animationFrame = requestAnimationFrame(bounce);
+                }
+            }
+            bounce();
+        }
+
+        function screensaver() {
+            isActive = true;
+            $(".color_light").show();
+
+            let dropY = -600;
+            let dropX = window.innerWidth / 2;
+
+            function dropFall() {
+                if (dropY < window.innerHeight - 600) {
+                    dropY += 5;
+                    $(".color_light").css("top", `${dropY}px`);
+                    animationFrame = requestAnimationFrame(dropFall);
+                } else {
+                    cancelAnimationFrame(animationFrame);
+                    startBouncing();
+                }
+            }
+            $(".color_light").css("left", `${dropX}px`);
+            dropFall();
+        }
+
+        function resetTimerLight() {
+            clearTimeout(timeoutLight);
+            isActive = false;
+
+            $("#color_light").hide();
+            cancelAnimationFrame(animationFrame);
+            timeoutLight = setTimeout(() => {
+                screensaver();
+            }, timeoutLightSeconds * 1000);
+        }
+
+        $(document).on(
+            "mousemove touchstart click keydown keyup",
+            resetTimerLight
+        );
+
+        resetTimerLight();
+
+        $(".data-unlock").click(function () {
+            unlock += 1;
+            if (unlock >= 5) {
+                unlock = 0;
+                window.location.href = "/";
+            }
+        });
+
+        $.ajax({
+            url: "/get_timeout",
+            method: "GET",
+            dataType: "json",
+            loader: false,
+            success: function (data) {
+                timeoutLightSeconds = data.timeoutLight || 60;
+                resetTimerLight();
+            },
+            error: function (xhr, status, error) {
+                console.error("Failed to fetch timeout:", error);
+            },
+        });
+        if (userType == "superuser" || userType == "admin") {
+            let timeoutLogoutSeconds = 600;
+            let timeoutLogout;
+
+            $(document).on(
+                "mousemove touchstart click keydown keyup",
+                resetTimerLogout
+            );
+
+            function resetTimerLogout() {
+                clearTimeout(timeoutLogout);
+
+                timeoutLogout = setTimeout(() => {
+                    logout();
+                }, timeoutLogoutSeconds * 1000);
+            }
+
+            function logout() {
+                window.location.href = "/?username=kiosk";
+            }
+            resetTimerLogout();
+        }
+
+        async function marquee_data() {
+            while (true) {
+                const data = await $.ajax({
+                    url: "/get_error_data",
+                    method: "GET",
+                    dataType: "json",
+                    loader: false,
+                });
+
+                marqueeText = data.join(" | ").trim()
+
+                $(".marquee").text(marqueeText).marquee({
+                    delayBeforeStart: 0,
+                    speed: 90,
+                    direction: "left",
+                });
+
+                const textLength = marqueeText.length;
+                const contentWidth = $(".marquee")[0].scrollWidth;
+                const animationTime = Math.max(textLength * 0.175, 30);
+                // console.log({ animationTime, contentWidth, textLength });
+                // console.log({ marqueeText });
+                await new Promise((resolve) =>
+                    setTimeout(resolve, animationTime * 1000)
+                );
+            }
+        }
+
+        marquee_data();
+
+        async function show_marquee() {
+            while (true) {
+
+
+                const data = await $.ajax({
+                    url: "/get_error_data",
+                    method: "GET",
+                    dataType: "json",
+                    loader: false,
+                });
+
+                if (data.length == 0) {
+                    $(".marquee-container").hide();
+                } else {
+                    $(".marquee-container").show();
+                }
+
+                await new Promise((resolve) =>
+                    setTimeout(resolve, 5 * 1000)
+                );
+            }
+        }
+
+        show_marquee()
+
+        $(".marquee").on("mouseenter", function () {
+            $(this).marquee("pause");
+        });
+
+        $(".marquee").on("mouseleave", function () {
+            $(this).marquee("resume");
+        });
+    });
+</script>
+{% block scripts %} {% endblock %}
+
+</html>

@@ -1,0 +1,18 @@
+{
+    "pid_setting": {
+        "pressure": {
+            "kd_pressure": 0,
+            "kd_time_pressure": 0,
+            "ki_time_pressure": 10,
+            "kp_pressure": 800,
+            "sample_time_pressure": 20
+        },
+        "temperature": {
+            "kd_temp": 0,
+            "kd_time_temp": 0,
+            "ki_time_temp": 10,
+            "kp_temp": 50,
+            "sample_time_temp": 100
+        }
+    }
+}

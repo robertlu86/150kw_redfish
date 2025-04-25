@@ -1,0 +1,169 @@
+### Flask ###
+instance/*
+!instance/.gitignore
+.webassets-cache
+.env
+.DS_Store
+
+### Flask.Python Stack ###
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C 扩展
+*.so
+
+# 分发/打包
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# 安装程序日志
+pip-log.txt
+pip-delete-this-directory.txt
+
+# 单元测试/覆盖率报告
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# 翻译文件
+*.mo
+*.pot
+
+# Django 文件
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Flask 文件
+instance/
+
+# Scrapy 文件
+.scrapy
+
+# Sphinx 文档
+docs/_build/
+
+# PyBuilder
+.pybuilder/
+target/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+.pdm.toml
+
+# PEP 582
+__pypackages__/
+
+# Celery 文件
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath 解析文件
+*.sage.py
+
+# 环境
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+webvenv
+snmpvenv
+apienv
+plcenv
+
+# Spyder 项目设置
+.spyderproject
+.spyproject
+
+# Rope 项目设置
+.ropeproject
+
+# mkdocs 文档
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre 类型检查器
+.pyre/
+
+# pytype 静态类型分析器
+.pytype/
+
+# Cython 调试符号
+cython_debug/
+
+poetry.toml
+
+# ruff
+.ruff_cache/
+
+# LSP 配置文件
+pyrightconfig.json
+
+### venv ###
+[Bb]in
+[Ii]nclude
+[Ll]ib
+[Ll]ib64
+[Ll]ocal
+[Ss]cripts
+pyvenv.cfg
+pip-selfcheck.json
+
+# 忽略环境变量文件
+.env
+
+# 忽略所有日志文件和日志目录
+logs/
+webUI/logs/
+
+# 忽略上传的文件和其他 JSON 文件
+webUI/web/upload_file.json
+webUI/web/network.json
+webUI/web/users.json
+webUI/web/static/images/machine.png
+webUI/web/thrshd.json
+webUI/web/upload_file.json
+

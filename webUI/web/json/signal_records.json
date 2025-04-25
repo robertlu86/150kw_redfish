@@ -1,0 +1,3392 @@
+[
+    {
+        "signal_name": "M308",
+        "on_time": "2025-04-02 14:25:27",
+        "off_time": null,
+        "signal_value": "M211 Coolant Flow Rate (Low) Alert (F1)"
+    },
+    {
+        "signal_name": "M208",
+        "on_time": "2025-04-02 10:47:15",
+        "off_time": null,
+        "signal_value": "M208 Filter Inlet Pressure Over Range (Low) Alert (P3)"
+    },
+    {
+        "signal_name": "M200",
+        "on_time": "2025-04-02 09:25:13",
+        "off_time": null,
+        "signal_value": "M200 Coolant Supply Temperature Over Range (High) Alert (T1)"
+    },
+    {
+        "signal_name": "M212",
+        "on_time": "2025-04-02 09:25:02",
+        "off_time": null,
+        "signal_value": "M212 Ambient Temperature Over Range (Low) Alert (T a)"
+    },
+    {
+        "signal_name": "M213",
+        "on_time": "2025-04-02 09:25:02",
+        "off_time": null,
+        "signal_value": "M213 Ambient Temperature Over Range (High) Alert (T a)"
+    },
+    {
+        "signal_name": "M214",
+        "on_time": "2025-04-02 09:25:02",
+        "off_time": null,
+        "signal_value": "M214 Relative Humidity Over Range (Low) Alert (RH)"
+    },
+    {
+        "signal_name": "M215",
+        "on_time": "2025-04-02 09:25:02",
+        "off_time": null,
+        "signal_value": "M215 Relative Humidity Over Range (High) Alert (RH)"
+    },
+    {
+        "signal_name": "M216",
+        "on_time": "2025-04-02 09:25:02",
+        "off_time": "2025-04-02 09:25:14",
+        "signal_value": "M216 Condensation Alert (T Dp)"
+    },
+    {
+        "signal_name": "M217",
+        "on_time": "2025-04-02 09:25:02",
+        "off_time": null,
+        "signal_value": "M217 pH Over Range (Low) Alert (PH)"
+    },
+    {
+        "signal_name": "M218",
+        "on_time": "2025-04-02 09:25:02",
+        "off_time": null,
+        "signal_value": "M218 pH Over Range (High) Alert (PH)"
+    },
+    {
+        "signal_name": "M219",
+        "on_time": "2025-04-02 09:25:02",
+        "off_time": null,
+        "signal_value": "M219 Conductivity Over Range (Low) Alert (CON)"
+    },
+    {
+        "signal_name": "M220",
+        "on_time": "2025-04-02 09:25:02",
+        "off_time": null,
+        "signal_value": "M220 Conductivity Over Range (High) Alert (CON)"
+    },
+    {
+        "signal_name": "M211",
+        "on_time": "2025-04-01 16:45:22",
+        "off_time": "2025-04-02 09:22:48",
+        "signal_value": "M211 Coolant Flow Rate (Low) Alert (F1)"
+    },
+    {
+        "signal_name": "M208",
+        "on_time": "2025-04-01 16:44:38",
+        "off_time": "2025-04-02 09:22:48",
+        "signal_value": "M208 Filter Inlet Pressure Over Range (Low) Alert (P3)"
+    },
+    {
+        "signal_name": "M211",
+        "on_time": "2025-04-01 15:31:51",
+        "off_time": "2025-04-01 15:32:15",
+        "signal_value": "M211 Coolant Flow Rate (Low) Alert (F1)"
+    },
+    {
+        "signal_name": "M208",
+        "on_time": "2025-04-01 15:31:15",
+        "off_time": "2025-04-01 15:32:15",
+        "signal_value": "M208 Filter Inlet Pressure Over Range (Low) Alert (P3)"
+    },
+    {
+        "signal_name": "M200",
+        "on_time": "2025-04-01 15:29:28",
+        "off_time": "2025-04-02 09:22:48",
+        "signal_value": "M200 Coolant Supply Temperature Over Range (High) Alert (T1)"
+    },
+    {
+        "signal_name": "M212",
+        "on_time": "2025-04-01 15:29:28",
+        "off_time": "2025-04-02 09:22:48",
+        "signal_value": "M212 Ambient Temperature Over Range (Low) Alert (T a)"
+    },
+    {
+        "signal_name": "M214",
+        "on_time": "2025-04-01 15:29:28",
+        "off_time": "2025-04-02 09:22:48",
+        "signal_value": "M214 Relative Humidity Over Range (Low) Alert (RH)"
+    },
+    {
+        "signal_name": "M217",
+        "on_time": "2025-04-01 15:29:28",
+        "off_time": "2025-04-02 09:22:48",
+        "signal_value": "M217 pH Over Range (Low) Alert (PH)"
+    },
+    {
+        "signal_name": "M219",
+        "on_time": "2025-04-01 15:29:28",
+        "off_time": "2025-04-02 09:22:48",
+        "signal_value": "M219 Conductivity Over Range (Low) Alert (CON)"
+    },
+    {
+        "signal_name": "M200",
+        "on_time": "2025-04-01 15:23:34",
+        "off_time": "2025-04-01 15:29:16",
+        "signal_value": "M200 Coolant Supply Temperature Over Range (High) Alert (T1)"
+    },
+    {
+        "signal_name": "M212",
+        "on_time": "2025-04-01 15:23:22",
+        "off_time": "2025-04-01 15:29:16",
+        "signal_value": "M212 Ambient Temperature Over Range (Low) Alert (T a)"
+    },
+    {
+        "signal_name": "M213",
+        "on_time": "2025-04-01 15:23:22",
+        "off_time": "2025-04-01 15:25:42",
+        "signal_value": "M213 Ambient Temperature Over Range (High) Alert (T a)"
+    },
+    {
+        "signal_name": "M214",
+        "on_time": "2025-04-01 15:23:22",
+        "off_time": "2025-04-01 15:29:16",
+        "signal_value": "M214 Relative Humidity Over Range (Low) Alert (RH)"
+    },
+    {
+        "signal_name": "M215",
+        "on_time": "2025-04-01 15:23:22",
+        "off_time": "2025-04-01 15:25:42",
+        "signal_value": "M215 Relative Humidity Over Range (High) Alert (RH)"
+    },
+    {
+        "signal_name": "M216",
+        "on_time": "2025-04-01 15:23:22",
+        "off_time": "2025-04-01 15:23:34",
+        "signal_value": "M216 Condensation Alert (T Dp)"
+    },
+    {
+        "signal_name": "M217",
+        "on_time": "2025-04-01 15:23:22",
+        "off_time": "2025-04-01 15:29:17",
+        "signal_value": "M217 pH Over Range (Low) Alert (PH)"
+    },
+    {
+        "signal_name": "M218",
+        "on_time": "2025-04-01 15:23:22",
+        "off_time": "2025-04-01 15:25:42",
+        "signal_value": "M218 pH Over Range (High) Alert (PH)"
+    },
+    {
+        "signal_name": "M219",
+        "on_time": "2025-04-01 15:23:22",
+        "off_time": "2025-04-01 15:29:17",
+        "signal_value": "M219 Conductivity Over Range (Low) Alert (CON)"
+    },
+    {
+        "signal_name": "M220",
+        "on_time": "2025-04-01 15:23:22",
+        "off_time": "2025-04-01 15:25:42",
+        "signal_value": "M220 Conductivity Over Range (High) Alert (CON)"
+    },
+    {
+        "signal_name": "M343",
+        "on_time": "2025-04-01 15:22:25",
+        "off_time": "2025-04-01 15:25:42",
+        "signal_value": "M343 PC2 Error"
+    },
+    {
+        "signal_name": "M343",
+        "on_time": "2025-04-01 15:11:41",
+        "off_time": "2025-04-01 15:22:14",
+        "signal_value": "M343 PC2 Error"
+    },
+    {
+        "signal_name": "M343",
+        "on_time": "2025-04-01 14:50:21",
+        "off_time": "2025-04-01 15:11:30",
+        "signal_value": "M343 PC2 Error"
+    },
+    {
+        "signal_name": "M343",
+        "on_time": "2025-04-01 14:44:58",
+        "off_time": "2025-04-01 14:50:09",
+        "signal_value": "M343 PC2 Error"
+    },
+    {
+        "signal_name": "M355",
+        "on_time": "2025-04-01 14:23:38",
+        "off_time": "2025-04-01 15:25:42",
+        "signal_value": "M355 FAN 2 Alarm Status Error"
+    },
+    {
+        "signal_name": "M356",
+        "on_time": "2025-04-01 14:23:38",
+        "off_time": "2025-04-01 15:25:42",
+        "signal_value": "M356 FAN 3 Alarm Status Error"
+    },
+    {
+        "signal_name": "M357",
+        "on_time": "2025-04-01 14:23:38",
+        "off_time": "2025-04-01 15:25:42",
+        "signal_value": "M357 FAN 4 Alarm Status Error"
+    },
+    {
+        "signal_name": "M358",
+        "on_time": "2025-04-01 14:23:38",
+        "off_time": "2025-04-01 15:25:43",
+        "signal_value": "M358 FAN 5 Alarm Status Error"
+    },
+    {
+        "signal_name": "M359",
+        "on_time": "2025-04-01 14:23:38",
+        "off_time": "2025-04-01 15:25:43",
+        "signal_value": "M359 FAN 6 Alarm Status Error"
+    },
+    {
+        "signal_name": "M360",
+        "on_time": "2025-04-01 14:23:38",
+        "off_time": "2025-04-01 15:25:43",
+        "signal_value": "M360 FAN 7 Alarm Status Error"
+    },
+    {
+        "signal_name": "M361",
+        "on_time": "2025-04-01 14:23:38",
+        "off_time": "2025-04-01 15:25:43",
+        "signal_value": "M361 FAN 8 Alarm Status Error"
+    },
+    {
+        "signal_name": "M308",
+        "on_time": "2025-04-01 14:23:37",
+        "off_time": "2025-04-01 15:25:42",
+        "signal_value": "M308 Factory Power Status"
+    },
+    {
+        "signal_name": "M309",
+        "on_time": "2025-04-01 14:23:37",
+        "off_time": "2025-04-01 15:25:42",
+        "signal_value": "M309 Inverter1 Communication Error"
+    },
+    {
+        "signal_name": "M310",
+        "on_time": "2025-04-01 14:23:37",
+        "off_time": "2025-04-01 15:25:42",
+        "signal_value": "M310 Inverter2 Communication Error"
+    },
+    {
+        "signal_name": "M311",
+        "on_time": "2025-04-01 14:23:37",
+        "off_time": "2025-04-01 15:25:42",
+        "signal_value": "M311 Inverter3 Communication Error"
+    },
+    {
+        "signal_name": "M335",
+        "on_time": "2025-04-02 14:24:46",
+        "off_time": null,
+        "signal_value": "M335 Coolant Supply Pressure (P1) Broken Error"
+    },
+    {
+        "signal_name": "M336",
+        "on_time": "2025-04-02 14:24:46",
+        "off_time": null,
+        "signal_value": "M336 Coolant Supply Pressure Spare (P1sp) Broken Error"
+    },
+    {
+        "signal_name": "M337",
+        "on_time": "2025-04-02 14:24:46",
+        "off_time": null,
+        "signal_value": "M337 Coolant Return Pressure (P2) Broken Error"
+    },
+    {
+        "signal_name": "M338",
+        "on_time": "2025-04-02 14:24:46",
+        "off_time": null,
+        "signal_value": "M338 Coolant Return Pressure Spare (P2sp) Broken Error"
+    },
+    {
+        "signal_name": "M339",
+        "on_time": "2025-04-02 14:24:46",
+        "off_time": null,
+        "signal_value": "M339 Filter Inlet Pressure (P3) Broken Error"
+    },
+    {
+        "signal_name": "M340",
+        "on_time": "2025-04-02 14:24:46",
+        "off_time": null,
+        "signal_value": "M340 Filter Outlet Pressure (P4) Broken Error"
+    },
+    {
+        "signal_name": "M341",
+        "on_time": "2025-04-02 14:24:46",
+        "off_time": null,
+        "signal_value": "M341 Coolant Flow Rate (F1) Broken Error"
+    },
+    {
+        "signal_name": "M213",
+        "on_time": "2025-04-02 14:24:30",
+        "off_time": null,
+        "signal_value": "M213 Ambient Temperature Over Range (High) Alert (T a)"
+    },
+    {
+        "signal_name": "M215",
+        "on_time": "2025-04-02 14:24:30",
+        "off_time": null,
+        "signal_value": "M215 Relative Humidity Over Range (High) Alert (RH)"
+    },
+    {
+        "signal_name": "M216",
+        "on_time": "2025-04-02 14:24:30",
+        "off_time": null,
+        "signal_value": "M216 Condensation Alert (T Dp)"
+    },
+    {
+        "signal_name": "M218",
+        "on_time": "2025-04-02 14:24:30",
+        "off_time": null,
+        "signal_value": "M218 pH Over Range (High) Alert (PH)"
+    },
+    {
+        "signal_name": "M220",
+        "on_time": "2025-04-02 14:24:30",
+        "off_time": null,
+        "signal_value": "M220 Conductivity Over Range (High) Alert (CON)"
+    },
+    {
+        "signal_name": "M222",
+        "on_time": "2025-04-02 14:24:30",
+        "off_time": null,
+        "signal_value": "M222 Turbidity Over Range (High) Alert (Tur)"
+    },
+    {
+        "signal_name": "M306",
+        "on_time": "2025-04-02 14:24:30",
+        "off_time": null,
+        "signal_value": "M306 Coolant Pump2 Inverter Error"
+    },
+    {
+        "signal_name": "M310",
+        "on_time": "2025-04-02 14:24:30",
+        "off_time": null,
+        "signal_value": "M310 Inverter2 Communication Error"
+    },
+    {
+        "signal_name": "M343",
+        "on_time": "2025-04-02 14:24:30",
+        "off_time": null,
+        "signal_value": "M343 PC2 Error"
+    },
+    {
+        "signal_name": "M349",
+        "on_time": "2025-04-02 14:24:30",
+        "off_time": null,
+        "signal_value": "M349 24V Power Supply 1 Error"
+    },
+    {
+        "signal_name": "M350",
+        "on_time": "2025-04-02 14:24:30",
+        "off_time": null,
+        "signal_value": "M350 24V Power Supply 2 Error"
+    },
+    {
+        "signal_name": "M351",
+        "on_time": "2025-04-02 14:24:30",
+        "off_time": null,
+        "signal_value": "M351 12V Power Supply 1 Error"
+    },
+    {
+        "signal_name": "M352",
+        "on_time": "2025-04-02 14:24:30",
+        "off_time": null,
+        "signal_value": "M352 12V Power Supply 2 Error"
+    },
+    {
+        "signal_name": "M353",
+        "on_time": "2025-04-02 14:24:30",
+        "off_time": null,
+        "signal_value": "M353 Main MC Status Error"
+    },
+    {
+        "signal_name": "M354",
+        "on_time": "2025-04-02 14:24:30",
+        "off_time": null,
+        "signal_value": "M354 FAN 1 Alarm Status Error"
+    },
+    {
+        "signal_name": "M355",
+        "on_time": "2025-04-02 14:24:30",
+        "off_time": null,
+        "signal_value": "M355 FAN 2 Alarm Status Error"
+    },
+    {
+        "signal_name": "M356",
+        "on_time": "2025-04-02 14:24:30",
+        "off_time": null,
+        "signal_value": "M356 FAN 3 Alarm Status Error"
+    },
+    {
+        "signal_name": "M357",
+        "on_time": "2025-04-02 14:24:30",
+        "off_time": null,
+        "signal_value": "M357 FAN 4 Alarm Status Error"
+    },
+    {
+        "signal_name": "M358",
+        "on_time": "2025-04-02 14:24:30",
+        "off_time": null,
+        "signal_value": "M358 FAN 5 Alarm Status Error"
+    },
+    {
+        "signal_name": "M359",
+        "on_time": "2025-04-02 14:24:30",
+        "off_time": null,
+        "signal_value": "M359 FAN 6 Alarm Status Error"
+    },
+    {
+        "signal_name": "M360",
+        "on_time": "2025-04-02 14:24:30",
+        "off_time": null,
+        "signal_value": "M360 FAN 7 Alarm Status Error"
+    },
+    {
+        "signal_name": "M361",
+        "on_time": "2025-04-02 14:24:30",
+        "off_time": null,
+        "signal_value": "M361 FAN 8 Alarm Status Error"
+    },
+    {
+        "signal_name": "M354",
+        "on_time": "2025-04-02 13:53:49",
+        "off_time": "2025-04-02 14:24:15",
+        "signal_value": "M354 FAN 1 Alarm Status Error"
+    },
+    {
+        "signal_name": "M355",
+        "on_time": "2025-04-02 13:53:49",
+        "off_time": "2025-04-02 14:24:15",
+        "signal_value": "M355 FAN 2 Alarm Status Error"
+    },
+    {
+        "signal_name": "M356",
+        "on_time": "2025-04-02 13:53:49",
+        "off_time": "2025-04-02 14:24:15",
+        "signal_value": "M356 FAN 3 Alarm Status Error"
+    },
+    {
+        "signal_name": "M357",
+        "on_time": "2025-04-02 13:53:49",
+        "off_time": "2025-04-02 14:24:15",
+        "signal_value": "M357 FAN 4 Alarm Status Error"
+    },
+    {
+        "signal_name": "M358",
+        "on_time": "2025-04-02 13:53:49",
+        "off_time": "2025-04-02 14:24:15",
+        "signal_value": "M358 FAN 5 Alarm Status Error"
+    },
+    {
+        "signal_name": "M359",
+        "on_time": "2025-04-02 13:53:49",
+        "off_time": "2025-04-02 14:24:15",
+        "signal_value": "M359 FAN 6 Alarm Status Error"
+    },
+    {
+        "signal_name": "M360",
+        "on_time": "2025-04-02 13:53:49",
+        "off_time": "2025-04-02 14:24:15",
+        "signal_value": "M360 FAN 7 Alarm Status Error"
+    },
+    {
+        "signal_name": "M361",
+        "on_time": "2025-04-02 13:53:49",
+        "off_time": "2025-04-02 14:24:15",
+        "signal_value": "M361 FAN 8 Alarm Status Error"
+    },
+    {
+        "signal_name": "M213",
+        "on_time": "2025-04-02 13:53:48",
+        "off_time": "2025-04-02 14:24:15",
+        "signal_value": "M213 Ambient Temperature Over Range (High) Alert (T a)"
+    },
+    {
+        "signal_name": "M215",
+        "on_time": "2025-04-02 13:53:48",
+        "off_time": "2025-04-02 14:24:15",
+        "signal_value": "M215 Relative Humidity Over Range (High) Alert (RH)"
+    },
+    {
+        "signal_name": "M216",
+        "on_time": "2025-04-02 13:53:48",
+        "off_time": "2025-04-02 14:24:15",
+        "signal_value": "M216 Condensation Alert (T Dp)"
+    },
+    {
+        "signal_name": "M218",
+        "on_time": "2025-04-02 13:53:48",
+        "off_time": "2025-04-02 14:24:15",
+        "signal_value": "M218 pH Over Range (High) Alert (PH)"
+    },
+    {
+        "signal_name": "M220",
+        "on_time": "2025-04-02 13:53:48",
+        "off_time": "2025-04-02 14:24:15",
+        "signal_value": "M220 Conductivity Over Range (High) Alert (CON)"
+    },
+    {
+        "signal_name": "M222",
+        "on_time": "2025-04-02 13:53:48",
+        "off_time": "2025-04-02 14:24:15",
+        "signal_value": "M222 Turbidity Over Range (High) Alert (Tur)"
+    },
+    {
+        "signal_name": "M306",
+        "on_time": "2025-04-02 13:53:48",
+        "off_time": "2025-04-02 14:24:15",
+        "signal_value": "M306 Coolant Pump2 Inverter Error"
+    },
+    {
+        "signal_name": "M349",
+        "on_time": "2025-04-02 13:53:48",
+        "off_time": "2025-04-02 14:24:15",
+        "signal_value": "M349 24V Power Supply 1 Error"
+    },
+    {
+        "signal_name": "M350",
+        "on_time": "2025-04-02 13:53:48",
+        "off_time": "2025-04-02 14:24:15",
+        "signal_value": "M350 24V Power Supply 2 Error"
+    },
+    {
+        "signal_name": "M351",
+        "on_time": "2025-04-02 13:53:48",
+        "off_time": "2025-04-02 14:24:15",
+        "signal_value": "M351 12V Power Supply 1 Error"
+    },
+    {
+        "signal_name": "M352",
+        "on_time": "2025-04-02 13:53:48",
+        "off_time": "2025-04-02 14:24:15",
+        "signal_value": "M352 12V Power Supply 2 Error"
+    },
+    {
+        "signal_name": "M353",
+        "on_time": "2025-04-02 13:53:48",
+        "off_time": "2025-04-02 14:24:15",
+        "signal_value": "M353 Main MC Status Error"
+    },
+    {
+        "signal_name": "M308",
+        "on_time": "2025-04-02 13:47:57",
+        "off_time": "2025-04-02 13:53:31",
+        "signal_value": "M308 Factory Power Status"
+    },
+    {
+        "signal_name": "M335",
+        "on_time": "2025-04-02 13:47:08",
+        "off_time": "2025-04-02 13:53:31",
+        "signal_value": "M335 Coolant Supply Pressure (P1) Broken Error"
+    },
+    {
+        "signal_name": "M336",
+        "on_time": "2025-04-02 13:47:08",
+        "off_time": "2025-04-02 13:53:31",
+        "signal_value": "M336 Coolant Supply Pressure Spare (P1sp) Broken Error"
+    },
+    {
+        "signal_name": "M337",
+        "on_time": "2025-04-02 13:47:08",
+        "off_time": "2025-04-02 13:53:31",
+        "signal_value": "M337 Coolant Return Pressure (P2) Broken Error"
+    },
+    {
+        "signal_name": "M338",
+        "on_time": "2025-04-02 13:47:08",
+        "off_time": "2025-04-02 13:53:31",
+        "signal_value": "M338 Coolant Return Pressure Spare (P2sp) Broken Error"
+    },
+    {
+        "signal_name": "M339",
+        "on_time": "2025-04-02 13:47:08",
+        "off_time": "2025-04-02 13:53:31",
+        "signal_value": "M339 Filter Inlet Pressure (P3) Broken Error"
+    },
+    {
+        "signal_name": "M340",
+        "on_time": "2025-04-02 13:47:08",
+        "off_time": "2025-04-02 13:53:31",
+        "signal_value": "M340 Filter Outlet Pressure (P4) Broken Error"
+    },
+    {
+        "signal_name": "M341",
+        "on_time": "2025-04-02 13:47:08",
+        "off_time": "2025-04-02 13:53:31",
+        "signal_value": "M341 Coolant Flow Rate (F1) Broken Error"
+    },
+    {
+        "signal_name": "M213",
+        "on_time": "2025-04-02 13:46:50",
+        "off_time": "2025-04-02 13:53:31",
+        "signal_value": "M213 Ambient Temperature Over Range (High) Alert (T a)"
+    },
+    {
+        "signal_name": "M215",
+        "on_time": "2025-04-02 13:46:50",
+        "off_time": "2025-04-02 13:53:31",
+        "signal_value": "M215 Relative Humidity Over Range (High) Alert (RH)"
+    },
+    {
+        "signal_name": "M218",
+        "on_time": "2025-04-02 13:46:50",
+        "off_time": "2025-04-02 13:53:31",
+        "signal_value": "M218 pH Over Range (High) Alert (PH)"
+    },
+    {
+        "signal_name": "M220",
+        "on_time": "2025-04-02 13:46:50",
+        "off_time": "2025-04-02 13:53:31",
+        "signal_value": "M220 Conductivity Over Range (High) Alert (CON)"
+    },
+    {
+        "signal_name": "M222",
+        "on_time": "2025-04-02 13:46:50",
+        "off_time": "2025-04-02 13:53:31",
+        "signal_value": "M222 Turbidity Over Range (High) Alert (Tur)"
+    },
+    {
+        "signal_name": "M358",
+        "on_time": "2025-04-02 13:46:30",
+        "off_time": "2025-04-02 13:53:31",
+        "signal_value": "M358 FAN 5 Alarm Status Error"
+    },
+    {
+        "signal_name": "M359",
+        "on_time": "2025-04-02 13:46:30",
+        "off_time": "2025-04-02 13:53:31",
+        "signal_value": "M359 FAN 6 Alarm Status Error"
+    },
+    {
+        "signal_name": "M360",
+        "on_time": "2025-04-02 13:46:30",
+        "off_time": "2025-04-02 13:53:31",
+        "signal_value": "M360 FAN 7 Alarm Status Error"
+    },
+    {
+        "signal_name": "M361",
+        "on_time": "2025-04-02 13:46:30",
+        "off_time": "2025-04-02 13:53:31",
+        "signal_value": "M361 FAN 8 Alarm Status Error"
+    },
+    {
+        "signal_name": "M221",
+        "on_time": "2025-04-02 13:46:29",
+        "off_time": "2025-04-02 13:46:50",
+        "signal_value": "M221 Turbidity Over Range (Low) Alert (Tur)"
+    },
+    {
+        "signal_name": "M306",
+        "on_time": "2025-04-02 13:46:29",
+        "off_time": "2025-04-02 13:53:31",
+        "signal_value": "M306 Coolant Pump2 Inverter Error"
+    },
+    {
+        "signal_name": "M309",
+        "on_time": "2025-04-02 13:46:29",
+        "off_time": "2025-04-02 14:24:15",
+        "signal_value": "M309 Inverter1 Communication Error"
+    },
+    {
+        "signal_name": "M311",
+        "on_time": "2025-04-02 13:46:29",
+        "off_time": "2025-04-02 14:24:15",
+        "signal_value": "M311 Inverter3 Communication Error"
+    },
+    {
+        "signal_name": "M313",
+        "on_time": "2025-04-02 13:46:29",
+        "off_time": "2025-04-02 13:46:50",
+        "signal_value": "M313 Ambient Sensor (Ta) Communication Error"
+    },
+    {
+        "signal_name": "M314",
+        "on_time": "2025-04-02 13:46:29",
+        "off_time": "2025-04-02 13:46:50",
+        "signal_value": "M314 Relative Humidity (RH) Communication Error"
+    },
+    {
+        "signal_name": "M315",
+        "on_time": "2025-04-02 13:46:29",
+        "off_time": "2025-04-02 13:46:50",
+        "signal_value": "M315 Dew Point Temperature (TDp) Communication Error"
+    },
+    {
+        "signal_name": "M316",
+        "on_time": "2025-04-02 13:46:29",
+        "off_time": "2025-04-02 13:46:50",
+        "signal_value": "M316 pH (PH) Sensor Communication Error"
+    },
+    {
+        "signal_name": "M346",
+        "on_time": "2025-03-31 16:23:15",
+        "off_time": "2025-03-31 17:52:46",
+        "signal_value": "M346 Coolant Level 1 Error"
+    },
+    {
+        "signal_name": "M317",
+        "on_time": "2025-04-02 13:46:29",
+        "off_time": "2025-04-02 13:46:50",
+        "signal_value": "M317 Conductivity (CON) Sensor Communication Error"
+    },
+    {
+        "signal_name": "M318",
+        "on_time": "2025-04-02 13:46:29",
+        "off_time": "2025-04-02 13:46:50",
+        "signal_value": "M318 Turbidity (Tur) Sensor Communication Error"
+    },
+    {
+        "signal_name": "M319",
+        "on_time": "2025-04-02 13:46:29",
+        "off_time": "2025-04-02 13:46:50",
+        "signal_value": "M319 ATS 1 Communication Error"
+    },
+    {
+        "signal_name": "M320",
+        "on_time": "2025-04-02 13:46:29",
+        "off_time": "2025-04-02 13:46:50",
+        "signal_value": "M320 ATS 2 Communication Error"
+    },
+    {
+        "signal_name": "M321",
+        "on_time": "2025-04-02 13:46:29",
+        "off_time": "2025-04-02 13:46:50",
+        "signal_value": "M321 Power Meter Communication Error"
+    },
+    {
+        "signal_name": "M322",
+        "on_time": "2025-04-02 13:46:29",
+        "off_time": "2025-04-02 13:46:50",
+        "signal_value": "M322 Average Current Communication Error"
+    },
+    {
+        "signal_name": "M323",
+        "on_time": "2025-04-02 13:46:29",
+        "off_time": "2025-04-02 13:46:50",
+        "signal_value": "M323 Fan 1 Communication Error"
+    },
+    {
+        "signal_name": "M324",
+        "on_time": "2025-04-02 13:46:29",
+        "off_time": "2025-04-02 13:46:50",
+        "signal_value": "M324 Fan 2 Communication Error"
+    },
+    {
+        "signal_name": "M325",
+        "on_time": "2025-04-02 13:46:29",
+        "off_time": "2025-04-02 13:46:50",
+        "signal_value": "M325 Fan 3 Communication Error"
+    },
+    {
+        "signal_name": "M326",
+        "on_time": "2025-04-02 13:46:29",
+        "off_time": "2025-04-02 13:46:50",
+        "signal_value": "M326 Fan 4 Communication Error"
+    },
+    {
+        "signal_name": "M327",
+        "on_time": "2025-04-02 13:46:29",
+        "off_time": "2025-04-02 13:46:50",
+        "signal_value": "M327 Fan 5 Communication Error"
+    },
+    {
+        "signal_name": "M328",
+        "on_time": "2025-04-02 13:46:29",
+        "off_time": "2025-04-02 13:46:50",
+        "signal_value": "M328 Fan 6 Communication Error"
+    },
+    {
+        "signal_name": "M329",
+        "on_time": "2025-04-02 13:46:29",
+        "off_time": "2025-04-02 13:46:50",
+        "signal_value": "M329 Fan 7 Communication Error"
+    },
+    {
+        "signal_name": "M330",
+        "on_time": "2025-04-02 13:46:29",
+        "off_time": "2025-04-02 13:46:50",
+        "signal_value": "M330 Fan 8 Communication Error"
+    },
+    {
+        "signal_name": "M335",
+        "on_time": "2025-04-02 13:46:29",
+        "off_time": "2025-04-02 13:46:50",
+        "signal_value": "M335 Coolant Supply Pressure (P1) Broken Error"
+    },
+    {
+        "signal_name": "M336",
+        "on_time": "2025-04-02 13:46:29",
+        "off_time": "2025-04-02 13:46:50",
+        "signal_value": "M336 Coolant Supply Pressure Spare (P1sp) Broken Error"
+    },
+    {
+        "signal_name": "M337",
+        "on_time": "2025-04-02 13:46:29",
+        "off_time": "2025-04-02 13:46:50",
+        "signal_value": "M337 Coolant Return Pressure (P2) Broken Error"
+    },
+    {
+        "signal_name": "M338",
+        "on_time": "2025-04-02 13:46:29",
+        "off_time": "2025-04-02 13:46:50",
+        "signal_value": "M338 Coolant Return Pressure Spare (P2sp) Broken Error"
+    },
+    {
+        "signal_name": "M339",
+        "on_time": "2025-04-02 13:46:29",
+        "off_time": "2025-04-02 13:46:50",
+        "signal_value": "M339 Filter Inlet Pressure (P3) Broken Error"
+    },
+    {
+        "signal_name": "M340",
+        "on_time": "2025-04-02 13:46:29",
+        "off_time": "2025-04-02 13:46:50",
+        "signal_value": "M340 Filter Outlet Pressure (P4) Broken Error"
+    },
+    {
+        "signal_name": "M341",
+        "on_time": "2025-04-02 13:46:29",
+        "off_time": "2025-04-02 13:46:50",
+        "signal_value": "M341 Coolant Flow Rate (F1) Broken Error"
+    },
+    {
+        "signal_name": "M343",
+        "on_time": "2025-04-02 13:46:29",
+        "off_time": "2025-04-02 13:53:31",
+        "signal_value": "M343 PC2 Error"
+    },
+    {
+        "signal_name": "M349",
+        "on_time": "2025-04-02 13:46:29",
+        "off_time": "2025-04-02 13:53:31",
+        "signal_value": "M349 24V Power Supply 1 Error"
+    },
+    {
+        "signal_name": "M350",
+        "on_time": "2025-04-02 13:46:29",
+        "off_time": "2025-04-02 13:53:31",
+        "signal_value": "M350 24V Power Supply 2 Error"
+    },
+    {
+        "signal_name": "M351",
+        "on_time": "2025-04-02 13:46:29",
+        "off_time": "2025-04-02 13:53:31",
+        "signal_value": "M351 12V Power Supply 1 Error"
+    },
+    {
+        "signal_name": "M352",
+        "on_time": "2025-04-02 13:46:29",
+        "off_time": "2025-04-02 14:24:15",
+        "signal_value": "M352 12V Power Supply 2 Error"
+    },
+    {
+        "signal_name": "M353",
+        "on_time": "2025-04-02 13:46:29",
+        "off_time": "2025-04-02 14:24:15",
+        "signal_value": "M353 Main MC Status Error"
+    },
+    {
+        "signal_name": "M354",
+        "on_time": "2025-04-02 13:46:29",
+        "off_time": "2025-04-02 14:24:15",
+        "signal_value": "M354 FAN 1 Alarm Status Error"
+    },
+    {
+        "signal_name": "M355",
+        "on_time": "2025-04-02 13:46:29",
+        "off_time": "2025-04-02 14:24:15",
+        "signal_value": "M355 FAN 2 Alarm Status Error"
+    },
+    {
+        "signal_name": "M356",
+        "on_time": "2025-04-02 13:46:29",
+        "off_time": "2025-04-02 14:24:15",
+        "signal_value": "M356 FAN 3 Alarm Status Error"
+    },
+    {
+        "signal_name": "M357",
+        "on_time": "2025-04-02 13:46:29",
+        "off_time": "2025-04-02 14:24:15",
+        "signal_value": "M357 FAN 4 Alarm Status Error"
+    },
+    {
+        "signal_name": "M212",
+        "on_time": "2025-04-02 13:46:28",
+        "off_time": "2025-04-02 13:46:50",
+        "signal_value": "M212 Ambient Temperature Over Range (Low) Alert (T a)"
+    },
+    {
+        "signal_name": "M214",
+        "on_time": "2025-04-02 13:46:28",
+        "off_time": "2025-04-02 13:46:50",
+        "signal_value": "M214 Relative Humidity Over Range (Low) Alert (RH)"
+    },
+    {
+        "signal_name": "M216",
+        "on_time": "2025-04-02 13:46:28",
+        "off_time": "2025-04-02 14:24:15",
+        "signal_value": "M216 Condensation Alert (T Dp)"
+    },
+    {
+        "signal_name": "M217",
+        "on_time": "2025-04-02 13:46:28",
+        "off_time": "2025-04-02 13:46:50",
+        "signal_value": "M217 pH Over Range (Low) Alert (PH)"
+    },
+    {
+        "signal_name": "M219",
+        "on_time": "2025-04-02 13:46:28",
+        "off_time": "2025-04-02 14:24:15",
+        "signal_value": "M219 Conductivity Over Range (Low) Alert (CON)"
+    },
+    {
+        "signal_name": "M308",
+        "on_time": "2025-04-02 13:45:20",
+        "off_time": "2025-04-02 13:46:13",
+        "signal_value": "M308 Factory Power Status"
+    },
+    {
+        "signal_name": "M213",
+        "on_time": "2025-04-02 13:44:32",
+        "off_time": "2025-04-02 13:46:13",
+        "signal_value": "M213 Ambient Temperature Over Range (High) Alert (T a)"
+    },
+    {
+        "signal_name": "M215",
+        "on_time": "2025-04-02 13:44:32",
+        "off_time": "2025-04-02 13:46:13",
+        "signal_value": "M215 Relative Humidity Over Range (High) Alert (RH)"
+    },
+    {
+        "signal_name": "M216",
+        "on_time": "2025-04-02 13:44:32",
+        "off_time": "2025-04-02 13:46:13",
+        "signal_value": "M216 Condensation Alert (T Dp)"
+    },
+    {
+        "signal_name": "M218",
+        "on_time": "2025-04-02 13:44:32",
+        "off_time": "2025-04-02 13:46:13",
+        "signal_value": "M218 pH Over Range (High) Alert (PH)"
+    },
+    {
+        "signal_name": "M220",
+        "on_time": "2025-04-02 13:44:32",
+        "off_time": "2025-04-02 13:46:13",
+        "signal_value": "M220 Conductivity Over Range (High) Alert (CON)"
+    },
+    {
+        "signal_name": "M222",
+        "on_time": "2025-04-02 13:44:32",
+        "off_time": "2025-04-02 13:46:13",
+        "signal_value": "M222 Turbidity Over Range (High) Alert (Tur)"
+    },
+    {
+        "signal_name": "M306",
+        "on_time": "2025-04-02 13:44:32",
+        "off_time": "2025-04-02 13:46:13",
+        "signal_value": "M306 Coolant Pump2 Inverter Error"
+    },
+    {
+        "signal_name": "M309",
+        "on_time": "2025-04-02 13:44:32",
+        "off_time": "2025-04-02 13:46:13",
+        "signal_value": "M309 Inverter1 Communication Error"
+    },
+    {
+        "signal_name": "M311",
+        "on_time": "2025-04-02 13:44:32",
+        "off_time": "2025-04-02 13:46:13",
+        "signal_value": "M311 Inverter3 Communication Error"
+    },
+    {
+        "signal_name": "M335",
+        "on_time": "2025-04-02 13:44:32",
+        "off_time": "2025-04-02 13:46:13",
+        "signal_value": "M335 Coolant Supply Pressure (P1) Broken Error"
+    },
+    {
+        "signal_name": "M336",
+        "on_time": "2025-04-02 13:44:32",
+        "off_time": "2025-04-02 13:46:13",
+        "signal_value": "M336 Coolant Supply Pressure Spare (P1sp) Broken Error"
+    },
+    {
+        "signal_name": "M337",
+        "on_time": "2025-04-02 13:44:32",
+        "off_time": "2025-04-02 13:46:13",
+        "signal_value": "M337 Coolant Return Pressure (P2) Broken Error"
+    },
+    {
+        "signal_name": "M338",
+        "on_time": "2025-04-02 13:44:32",
+        "off_time": "2025-04-02 13:46:13",
+        "signal_value": "M338 Coolant Return Pressure Spare (P2sp) Broken Error"
+    },
+    {
+        "signal_name": "M339",
+        "on_time": "2025-04-02 13:44:32",
+        "off_time": "2025-04-02 13:46:13",
+        "signal_value": "M339 Filter Inlet Pressure (P3) Broken Error"
+    },
+    {
+        "signal_name": "M340",
+        "on_time": "2025-04-02 13:44:32",
+        "off_time": "2025-04-02 13:46:13",
+        "signal_value": "M340 Filter Outlet Pressure (P4) Broken Error"
+    },
+    {
+        "signal_name": "M341",
+        "on_time": "2025-04-02 13:44:32",
+        "off_time": "2025-04-02 13:46:13",
+        "signal_value": "M341 Coolant Flow Rate (F1) Broken Error"
+    },
+    {
+        "signal_name": "M343",
+        "on_time": "2025-04-02 13:44:32",
+        "off_time": "2025-04-02 13:46:13",
+        "signal_value": "M343 PC2 Error"
+    },
+    {
+        "signal_name": "M349",
+        "on_time": "2025-04-02 13:44:32",
+        "off_time": "2025-04-02 13:46:13",
+        "signal_value": "M349 24V Power Supply 1 Error"
+    },
+    {
+        "signal_name": "M350",
+        "on_time": "2025-04-02 13:44:32",
+        "off_time": "2025-04-02 13:46:13",
+        "signal_value": "M350 24V Power Supply 2 Error"
+    },
+    {
+        "signal_name": "M351",
+        "on_time": "2025-04-02 13:44:32",
+        "off_time": "2025-04-02 13:46:13",
+        "signal_value": "M351 12V Power Supply 1 Error"
+    },
+    {
+        "signal_name": "M352",
+        "on_time": "2025-04-02 13:44:32",
+        "off_time": "2025-04-02 13:46:13",
+        "signal_value": "M352 12V Power Supply 2 Error"
+    },
+    {
+        "signal_name": "M353",
+        "on_time": "2025-04-02 13:44:32",
+        "off_time": "2025-04-02 13:46:13",
+        "signal_value": "M353 Main MC Status Error"
+    },
+    {
+        "signal_name": "M354",
+        "on_time": "2025-04-02 13:44:32",
+        "off_time": "2025-04-02 13:46:13",
+        "signal_value": "M354 FAN 1 Alarm Status Error"
+    },
+    {
+        "signal_name": "M355",
+        "on_time": "2025-04-02 13:44:32",
+        "off_time": "2025-04-02 13:46:13",
+        "signal_value": "M355 FAN 2 Alarm Status Error"
+    },
+    {
+        "signal_name": "M356",
+        "on_time": "2025-04-02 13:44:32",
+        "off_time": "2025-04-02 13:46:13",
+        "signal_value": "M356 FAN 3 Alarm Status Error"
+    },
+    {
+        "signal_name": "M357",
+        "on_time": "2025-04-02 13:44:32",
+        "off_time": "2025-04-02 13:46:13",
+        "signal_value": "M357 FAN 4 Alarm Status Error"
+    },
+    {
+        "signal_name": "M358",
+        "on_time": "2025-04-02 13:44:32",
+        "off_time": "2025-04-02 13:46:13",
+        "signal_value": "M358 FAN 5 Alarm Status Error"
+    },
+    {
+        "signal_name": "M359",
+        "on_time": "2025-04-02 13:44:32",
+        "off_time": "2025-04-02 13:46:13",
+        "signal_value": "M359 FAN 6 Alarm Status Error"
+    },
+    {
+        "signal_name": "M360",
+        "on_time": "2025-04-02 13:44:32",
+        "off_time": "2025-04-02 13:46:13",
+        "signal_value": "M360 FAN 7 Alarm Status Error"
+    },
+    {
+        "signal_name": "M361",
+        "on_time": "2025-04-02 13:44:32",
+        "off_time": "2025-04-02 13:46:13",
+        "signal_value": "M361 FAN 8 Alarm Status Error"
+    },
+    {
+        "signal_name": "M353",
+        "on_time": "2025-04-01 20:10:23",
+        "off_time": "2025-04-02 13:44:17",
+        "signal_value": "M353 Main MC Status Error"
+    },
+    {
+        "signal_name": "M354",
+        "on_time": "2025-04-01 20:10:23",
+        "off_time": "2025-04-02 13:44:17",
+        "signal_value": "M354 FAN 1 Alarm Status Error"
+    },
+    {
+        "signal_name": "M355",
+        "on_time": "2025-04-01 20:10:23",
+        "off_time": "2025-04-02 13:44:17",
+        "signal_value": "M355 FAN 2 Alarm Status Error"
+    },
+    {
+        "signal_name": "M356",
+        "on_time": "2025-04-01 20:10:23",
+        "off_time": "2025-04-02 13:44:17",
+        "signal_value": "M356 FAN 3 Alarm Status Error"
+    },
+    {
+        "signal_name": "M357",
+        "on_time": "2025-04-01 20:10:23",
+        "off_time": "2025-04-02 13:44:17",
+        "signal_value": "M357 FAN 4 Alarm Status Error"
+    },
+    {
+        "signal_name": "M358",
+        "on_time": "2025-04-01 20:10:23",
+        "off_time": "2025-04-02 13:44:17",
+        "signal_value": "M358 FAN 5 Alarm Status Error"
+    },
+    {
+        "signal_name": "M359",
+        "on_time": "2025-04-01 20:10:23",
+        "off_time": "2025-04-02 13:44:17",
+        "signal_value": "M359 FAN 6 Alarm Status Error"
+    },
+    {
+        "signal_name": "M360",
+        "on_time": "2025-04-01 20:10:23",
+        "off_time": "2025-04-02 13:44:17",
+        "signal_value": "M360 FAN 7 Alarm Status Error"
+    },
+    {
+        "signal_name": "M361",
+        "on_time": "2025-04-01 20:10:23",
+        "off_time": "2025-04-02 13:44:17",
+        "signal_value": "M361 FAN 8 Alarm Status Error"
+    },
+    {
+        "signal_name": "M212",
+        "on_time": "2025-04-01 20:10:22",
+        "off_time": "2025-04-02 13:44:17",
+        "signal_value": "M212 Ambient Temperature Over Range (Low) Alert (T a)"
+    },
+    {
+        "signal_name": "M214",
+        "on_time": "2025-04-01 20:10:22",
+        "off_time": "2025-04-02 13:44:17",
+        "signal_value": "M214 Relative Humidity Over Range (Low) Alert (RH)"
+    },
+    {
+        "signal_name": "M216",
+        "on_time": "2025-04-01 20:10:22",
+        "off_time": "2025-04-02 13:44:17",
+        "signal_value": "M216 Condensation Alert (T Dp)"
+    },
+    {
+        "signal_name": "M217",
+        "on_time": "2025-04-01 20:10:22",
+        "off_time": "2025-04-02 13:44:17",
+        "signal_value": "M217 pH Over Range (Low) Alert (PH)"
+    },
+    {
+        "signal_name": "M219",
+        "on_time": "2025-04-01 20:10:22",
+        "off_time": "2025-04-02 13:44:17",
+        "signal_value": "M219 Conductivity Over Range (Low) Alert (CON)"
+    },
+    {
+        "signal_name": "M221",
+        "on_time": "2025-04-01 20:10:22",
+        "off_time": "2025-04-02 13:44:17",
+        "signal_value": "M221 Turbidity Over Range (Low) Alert (Tur)"
+    },
+    {
+        "signal_name": "M308",
+        "on_time": "2025-04-01 20:10:22",
+        "off_time": "2025-04-02 13:44:17",
+        "signal_value": "M308 Factory Power Status"
+    },
+    {
+        "signal_name": "M313",
+        "on_time": "2025-04-01 20:10:22",
+        "off_time": "2025-04-02 13:44:17",
+        "signal_value": "M313 Ambient Sensor (Ta) Communication Error"
+    },
+    {
+        "signal_name": "M314",
+        "on_time": "2025-04-01 20:10:22",
+        "off_time": "2025-04-02 13:44:17",
+        "signal_value": "M314 Relative Humidity (RH) Communication Error"
+    },
+    {
+        "signal_name": "M315",
+        "on_time": "2025-04-01 20:10:22",
+        "off_time": "2025-04-02 13:44:17",
+        "signal_value": "M315 Dew Point Temperature (TDp) Communication Error"
+    },
+    {
+        "signal_name": "M316",
+        "on_time": "2025-04-01 20:10:22",
+        "off_time": "2025-04-02 13:44:17",
+        "signal_value": "M316 pH (PH) Sensor Communication Error"
+    },
+    {
+        "signal_name": "M317",
+        "on_time": "2025-04-01 20:10:22",
+        "off_time": "2025-04-02 13:44:17",
+        "signal_value": "M317 Conductivity (CON) Sensor Communication Error"
+    },
+    {
+        "signal_name": "M318",
+        "on_time": "2025-04-01 20:10:22",
+        "off_time": "2025-04-02 13:44:17",
+        "signal_value": "M318 Turbidity (Tur) Sensor Communication Error"
+    },
+    {
+        "signal_name": "M319",
+        "on_time": "2025-04-01 20:10:22",
+        "off_time": "2025-04-02 13:44:17",
+        "signal_value": "M319 ATS 1 Communication Error"
+    },
+    {
+        "signal_name": "M320",
+        "on_time": "2025-04-01 20:10:22",
+        "off_time": "2025-04-02 13:44:17",
+        "signal_value": "M320 ATS 2 Communication Error"
+    },
+    {
+        "signal_name": "M321",
+        "on_time": "2025-04-01 20:10:22",
+        "off_time": "2025-04-02 13:44:17",
+        "signal_value": "M321 Power Meter Communication Error"
+    },
+    {
+        "signal_name": "M322",
+        "on_time": "2025-04-01 20:10:22",
+        "off_time": "2025-04-02 13:44:17",
+        "signal_value": "M322 Average Current Communication Error"
+    },
+    {
+        "signal_name": "M323",
+        "on_time": "2025-04-01 20:10:22",
+        "off_time": "2025-04-02 13:44:17",
+        "signal_value": "M323 Fan 1 Communication Error"
+    },
+    {
+        "signal_name": "M324",
+        "on_time": "2025-04-01 20:10:22",
+        "off_time": "2025-04-02 13:44:17",
+        "signal_value": "M324 Fan 2 Communication Error"
+    },
+    {
+        "signal_name": "M325",
+        "on_time": "2025-04-01 20:10:22",
+        "off_time": "2025-04-02 13:44:17",
+        "signal_value": "M325 Fan 3 Communication Error"
+    },
+    {
+        "signal_name": "M326",
+        "on_time": "2025-04-01 20:10:22",
+        "off_time": "2025-04-02 13:44:17",
+        "signal_value": "M326 Fan 4 Communication Error"
+    },
+    {
+        "signal_name": "M327",
+        "on_time": "2025-04-01 20:10:22",
+        "off_time": "2025-04-02 13:44:17",
+        "signal_value": "M327 Fan 5 Communication Error"
+    },
+    {
+        "signal_name": "M328",
+        "on_time": "2025-04-01 20:10:22",
+        "off_time": "2025-04-02 13:44:17",
+        "signal_value": "M328 Fan 6 Communication Error"
+    },
+    {
+        "signal_name": "M329",
+        "on_time": "2025-04-01 20:10:22",
+        "off_time": "2025-04-02 13:44:17",
+        "signal_value": "M329 Fan 7 Communication Error"
+    },
+    {
+        "signal_name": "M330",
+        "on_time": "2025-04-01 20:10:22",
+        "off_time": "2025-04-02 13:44:17",
+        "signal_value": "M330 Fan 8 Communication Error"
+    },
+    {
+        "signal_name": "M335",
+        "on_time": "2025-04-01 20:10:22",
+        "off_time": "2025-04-02 13:44:17",
+        "signal_value": "M335 Coolant Supply Pressure (P1) Broken Error"
+    },
+    {
+        "signal_name": "M212",
+        "on_time": "2025-04-02 13:46:28",
+        "off_time": "2025-04-02 13:46:50",
+        "signal_value": "M212 Ambient Temperature Over Range (Low) Alert (T a)"
+    },
+    {
+        "signal_name": "M214",
+        "on_time": "2025-04-02 13:46:28",
+        "off_time": "2025-04-02 13:46:50",
+        "signal_value": "M214 Relative Humidity Over Range (Low) Alert (RH)"
+    },
+    {
+        "signal_name": "M216",
+        "on_time": "2025-04-02 13:46:28",
+        "off_time": "2025-04-02 14:24:15",
+        "signal_value": "M216 Condensation Alert (T Dp)"
+    },
+    {
+        "signal_name": "M217",
+        "on_time": "2025-04-02 13:46:28",
+        "off_time": "2025-04-02 13:46:50",
+        "signal_value": "M217 pH Over Range (Low) Alert (PH)"
+    },
+    {
+        "signal_name": "M219",
+        "on_time": "2025-04-02 13:46:28",
+        "off_time": "2025-04-02 14:24:15",
+        "signal_value": "M219 Conductivity Over Range (Low) Alert (CON)"
+    },
+    {
+        "signal_name": "M308",
+        "on_time": "2025-04-02 13:45:20",
+        "off_time": "2025-04-02 13:46:13",
+        "signal_value": "M308 Factory Power Status"
+    },
+    {
+        "signal_name": "M336",
+        "on_time": "2025-04-01 20:10:22",
+        "off_time": "2025-04-02 13:44:17",
+        "signal_value": "M336 Coolant Supply Pressure Spare (P1sp) Broken Error"
+    },
+    {
+        "signal_name": "M337",
+        "on_time": "2025-04-01 20:10:22",
+        "off_time": "2025-04-02 13:44:17",
+        "signal_value": "M337 Coolant Return Pressure (P2) Broken Error"
+    },
+    {
+        "signal_name": "M338",
+        "on_time": "2025-04-01 20:10:22",
+        "off_time": "2025-04-02 13:44:17",
+        "signal_value": "M338 Coolant Return Pressure Spare (P2sp) Broken Error"
+    },
+    {
+        "signal_name": "M339",
+        "on_time": "2025-04-01 20:10:22",
+        "off_time": "2025-04-02 13:44:17",
+        "signal_value": "M339 Filter Inlet Pressure (P3) Broken Error"
+    },
+    {
+        "signal_name": "M340",
+        "on_time": "2025-04-01 20:10:22",
+        "off_time": "2025-04-02 13:44:17",
+        "signal_value": "M340 Filter Outlet Pressure (P4) Broken Error"
+    },
+    {
+        "signal_name": "M341",
+        "on_time": "2025-04-01 20:10:22",
+        "off_time": "2025-04-02 13:44:17",
+        "signal_value": "M341 Coolant Flow Rate (F1) Broken Error"
+    },
+    {
+        "signal_name": "M343",
+        "on_time": "2025-04-01 20:10:22",
+        "off_time": "2025-04-02 09:07:03",
+        "signal_value": "M343 PC2 Error"
+    },
+    {
+        "signal_name": "M349",
+        "on_time": "2025-04-01 20:10:22",
+        "off_time": "2025-04-02 13:44:17",
+        "signal_value": "M349 24V Power Supply 1 Error"
+    },
+    {
+        "signal_name": "M350",
+        "on_time": "2025-04-01 20:10:22",
+        "off_time": "2025-04-02 13:44:17",
+        "signal_value": "M350 24V Power Supply 2 Error"
+    },
+    {
+        "signal_name": "M351",
+        "on_time": "2025-04-01 20:10:22",
+        "off_time": "2025-04-02 13:44:17",
+        "signal_value": "M351 12V Power Supply 1 Error"
+    },
+    {
+        "signal_name": "M352",
+        "on_time": "2025-04-01 20:10:22",
+        "off_time": "2025-04-02 13:44:17",
+        "signal_value": "M352 12V Power Supply 2 Error"
+    },
+    {
+        "signal_name": "M329",
+        "on_time": "2025-04-01 20:08:40",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M329 Fan 7 Communication Error"
+    },
+    {
+        "signal_name": "M330",
+        "on_time": "2025-04-01 20:08:40",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M330 Fan 8 Communication Error"
+    },
+    {
+        "signal_name": "M335",
+        "on_time": "2025-04-01 20:08:40",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M335 Coolant Supply Pressure (P1) Broken Error"
+    },
+    {
+        "signal_name": "M336",
+        "on_time": "2025-04-01 20:08:40",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M336 Coolant Supply Pressure Spare (P1sp) Broken Error"
+    },
+    {
+        "signal_name": "M337",
+        "on_time": "2025-04-01 20:08:40",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M337 Coolant Return Pressure (P2) Broken Error"
+    },
+    {
+        "signal_name": "M338",
+        "on_time": "2025-04-01 20:08:40",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M338 Coolant Return Pressure Spare (P2sp) Broken Error"
+    },
+    {
+        "signal_name": "M339",
+        "on_time": "2025-04-01 20:08:40",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M339 Filter Inlet Pressure (P3) Broken Error"
+    },
+    {
+        "signal_name": "M340",
+        "on_time": "2025-04-01 20:08:40",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M340 Filter Outlet Pressure (P4) Broken Error"
+    },
+    {
+        "signal_name": "M341",
+        "on_time": "2025-04-01 20:08:40",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M341 Coolant Flow Rate (F1) Broken Error"
+    },
+    {
+        "signal_name": "M343",
+        "on_time": "2025-04-01 20:08:40",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M343 PC2 Error"
+    },
+    {
+        "signal_name": "M349",
+        "on_time": "2025-04-01 20:08:40",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M349 24V Power Supply 1 Error"
+    },
+    {
+        "signal_name": "M350",
+        "on_time": "2025-04-01 20:08:40",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M350 24V Power Supply 2 Error"
+    },
+    {
+        "signal_name": "M351",
+        "on_time": "2025-04-01 20:08:40",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M351 12V Power Supply 1 Error"
+    },
+    {
+        "signal_name": "M352",
+        "on_time": "2025-04-01 20:08:40",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M352 12V Power Supply 2 Error"
+    },
+    {
+        "signal_name": "M353",
+        "on_time": "2025-04-01 20:08:40",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M353 Main MC Status Error"
+    },
+    {
+        "signal_name": "M354",
+        "on_time": "2025-04-01 20:08:40",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M354 FAN 1 Alarm Status Error"
+    },
+    {
+        "signal_name": "M355",
+        "on_time": "2025-04-01 20:08:40",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M355 FAN 2 Alarm Status Error"
+    },
+    {
+        "signal_name": "M356",
+        "on_time": "2025-04-01 20:08:40",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M356 FAN 3 Alarm Status Error"
+    },
+    {
+        "signal_name": "M357",
+        "on_time": "2025-04-01 20:08:40",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M357 FAN 4 Alarm Status Error"
+    },
+    {
+        "signal_name": "M358",
+        "on_time": "2025-04-01 20:08:40",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M358 FAN 5 Alarm Status Error"
+    },
+    {
+        "signal_name": "M359",
+        "on_time": "2025-04-01 20:08:40",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M359 FAN 6 Alarm Status Error"
+    },
+    {
+        "signal_name": "M360",
+        "on_time": "2025-04-01 20:08:40",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M360 FAN 7 Alarm Status Error"
+    },
+    {
+        "signal_name": "M361",
+        "on_time": "2025-04-01 20:08:40",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M361 FAN 8 Alarm Status Error"
+    },
+    {
+        "signal_name": "M212",
+        "on_time": "2025-04-01 20:08:39",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M212 Ambient Temperature Over Range (Low) Alert (T a)"
+    },
+    {
+        "signal_name": "M214",
+        "on_time": "2025-04-01 20:08:39",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M214 Relative Humidity Over Range (Low) Alert (RH)"
+    },
+    {
+        "signal_name": "M216",
+        "on_time": "2025-04-01 20:08:39",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M216 Condensation Alert (T Dp)"
+    },
+    {
+        "signal_name": "M217",
+        "on_time": "2025-04-01 20:08:39",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M217 pH Over Range (Low) Alert (PH)"
+    },
+    {
+        "signal_name": "M219",
+        "on_time": "2025-04-01 20:08:39",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M219 Conductivity Over Range (Low) Alert (CON)"
+    },
+    {
+        "signal_name": "M221",
+        "on_time": "2025-04-01 20:08:39",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M221 Turbidity Over Range (Low) Alert (Tur)"
+    },
+    {
+        "signal_name": "M308",
+        "on_time": "2025-04-01 20:08:39",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M308 Factory Power Status"
+    },
+    {
+        "signal_name": "M313",
+        "on_time": "2025-04-01 20:08:39",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M313 Ambient Sensor (Ta) Communication Error"
+    },
+    {
+        "signal_name": "M314",
+        "on_time": "2025-04-01 20:08:39",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M314 Relative Humidity (RH) Communication Error"
+    },
+    {
+        "signal_name": "M315",
+        "on_time": "2025-04-01 20:08:39",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M315 Dew Point Temperature (TDp) Communication Error"
+    },
+    {
+        "signal_name": "M316",
+        "on_time": "2025-04-01 20:08:39",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M316 pH (PH) Sensor Communication Error"
+    },
+    {
+        "signal_name": "M317",
+        "on_time": "2025-04-01 20:08:39",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M317 Conductivity (CON) Sensor Communication Error"
+    },
+    {
+        "signal_name": "M318",
+        "on_time": "2025-04-01 20:08:39",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M318 Turbidity (Tur) Sensor Communication Error"
+    },
+    {
+        "signal_name": "M212",
+        "on_time": "2025-04-01 20:08:39",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M212 Ambient Temperature Over Range (Low) Alert (T a)"
+    },
+    {
+        "signal_name": "M214",
+        "on_time": "2025-04-01 20:08:39",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M214 Relative Humidity Over Range (Low) Alert (RH)"
+    },
+    {
+        "signal_name": "M216",
+        "on_time": "2025-04-01 20:08:39",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M216 Condensation Alert (T Dp)"
+    },
+    {
+        "signal_name": "M217",
+        "on_time": "2025-04-01 20:08:39",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M217 pH Over Range (Low) Alert (PH)"
+    },
+    {
+        "signal_name": "M219",
+        "on_time": "2025-04-01 20:08:39",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M219 Conductivity Over Range (Low) Alert (CON)"
+    },
+    {
+        "signal_name": "M221",
+        "on_time": "2025-04-01 20:08:39",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M221 Turbidity Over Range (Low) Alert (Tur)"
+    },
+    {
+        "signal_name": "M308",
+        "on_time": "2025-04-01 20:08:39",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M308 Factory Power Status"
+    },
+    {
+        "signal_name": "M313",
+        "on_time": "2025-04-01 20:08:39",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M313 Ambient Sensor (Ta) Communication Error"
+    },
+    {
+        "signal_name": "M314",
+        "on_time": "2025-04-01 20:08:39",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M314 Relative Humidity (RH) Communication Error"
+    },
+    {
+        "signal_name": "M315",
+        "on_time": "2025-04-01 20:08:39",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M315 Dew Point Temperature (TDp) Communication Error"
+    },
+    {
+        "signal_name": "M316",
+        "on_time": "2025-04-01 20:08:39",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M316 pH (PH) Sensor Communication Error"
+    },
+    {
+        "signal_name": "M317",
+        "on_time": "2025-04-01 20:08:39",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M317 Conductivity (CON) Sensor Communication Error"
+    },
+    {
+        "signal_name": "M318",
+        "on_time": "2025-04-01 20:08:39",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M318 Turbidity (Tur) Sensor Communication Error"
+    },
+    {
+        "signal_name": "M319",
+        "on_time": "2025-04-01 20:08:39",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M319 ATS 1 Communication Error"
+    },
+    {
+        "signal_name": "M320",
+        "on_time": "2025-04-01 20:08:39",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M320 ATS 2 Communication Error"
+    },
+    {
+        "signal_name": "M321",
+        "on_time": "2025-04-01 20:08:39",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M321 Power Meter Communication Error"
+    },
+    {
+        "signal_name": "M322",
+        "on_time": "2025-04-01 20:08:39",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M322 Average Current Communication Error"
+    },
+    {
+        "signal_name": "M323",
+        "on_time": "2025-04-01 20:08:39",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M323 Fan 1 Communication Error"
+    },
+    {
+        "signal_name": "M324",
+        "on_time": "2025-04-01 20:08:39",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M324 Fan 2 Communication Error"
+    },
+    {
+        "signal_name": "M325",
+        "on_time": "2025-04-01 20:08:39",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M325 Fan 3 Communication Error"
+    },
+    {
+        "signal_name": "M326",
+        "on_time": "2025-04-01 20:08:39",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M326 Fan 4 Communication Error"
+    },
+    {
+        "signal_name": "M327",
+        "on_time": "2025-04-01 20:08:39",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M327 Fan 5 Communication Error"
+    },
+    {
+        "signal_name": "M328",
+        "on_time": "2025-04-01 20:08:39",
+        "off_time": "2025-04-01 20:10:07",
+        "signal_value": "M328 Fan 6 Communication Error"
+    },
+    {
+        "signal_name": "M340",
+        "on_time": "2025-04-01 20:08:02",
+        "off_time": "2025-04-01 20:08:24",
+        "signal_value": "M340 Filter Outlet Pressure (P4) Broken Error"
+    },
+    {
+        "signal_name": "M341",
+        "on_time": "2025-04-01 20:08:02",
+        "off_time": "2025-04-01 20:08:24",
+        "signal_value": "M341 Coolant Flow Rate (F1) Broken Error"
+    },
+    {
+        "signal_name": "M343",
+        "on_time": "2025-04-01 20:08:02",
+        "off_time": "2025-04-01 20:08:24",
+        "signal_value": "M343 PC2 Error"
+    },
+    {
+        "signal_name": "M349",
+        "on_time": "2025-04-01 20:08:02",
+        "off_time": "2025-04-01 20:08:24",
+        "signal_value": "M349 24V Power Supply 1 Error"
+    },
+    {
+        "signal_name": "M350",
+        "on_time": "2025-04-01 20:08:02",
+        "off_time": "2025-04-01 20:08:24",
+        "signal_value": "M350 24V Power Supply 2 Error"
+    },
+    {
+        "signal_name": "M351",
+        "on_time": "2025-04-01 20:08:02",
+        "off_time": "2025-04-01 20:08:24",
+        "signal_value": "M351 12V Power Supply 1 Error"
+    },
+    {
+        "signal_name": "M352",
+        "on_time": "2025-04-01 20:08:02",
+        "off_time": "2025-04-01 20:08:24",
+        "signal_value": "M352 12V Power Supply 2 Error"
+    },
+    {
+        "signal_name": "M353",
+        "on_time": "2025-04-01 20:08:02",
+        "off_time": "2025-04-01 20:08:24",
+        "signal_value": "M353 Main MC Status Error"
+    },
+    {
+        "signal_name": "M354",
+        "on_time": "2025-04-01 20:08:02",
+        "off_time": "2025-04-01 20:08:24",
+        "signal_value": "M354 FAN 1 Alarm Status Error"
+    },
+    {
+        "signal_name": "M355",
+        "on_time": "2025-04-01 20:08:02",
+        "off_time": "2025-04-01 20:08:24",
+        "signal_value": "M355 FAN 2 Alarm Status Error"
+    },
+    {
+        "signal_name": "M356",
+        "on_time": "2025-04-01 20:08:02",
+        "off_time": "2025-04-01 20:08:24",
+        "signal_value": "M356 FAN 3 Alarm Status Error"
+    },
+    {
+        "signal_name": "M357",
+        "on_time": "2025-04-01 20:08:02",
+        "off_time": "2025-04-01 20:08:24",
+        "signal_value": "M357 FAN 4 Alarm Status Error"
+    },
+    {
+        "signal_name": "M358",
+        "on_time": "2025-04-01 20:08:02",
+        "off_time": "2025-04-01 20:08:24",
+        "signal_value": "M358 FAN 5 Alarm Status Error"
+    },
+    {
+        "signal_name": "M359",
+        "on_time": "2025-04-01 20:08:02",
+        "off_time": "2025-04-01 20:08:24",
+        "signal_value": "M359 FAN 6 Alarm Status Error"
+    },
+    {
+        "signal_name": "M360",
+        "on_time": "2025-04-01 20:08:02",
+        "off_time": "2025-04-01 20:08:24",
+        "signal_value": "M360 FAN 7 Alarm Status Error"
+    },
+    {
+        "signal_name": "M361",
+        "on_time": "2025-04-01 20:08:02",
+        "off_time": "2025-04-01 20:08:24",
+        "signal_value": "M361 FAN 8 Alarm Status Error"
+    },
+    {
+        "signal_name": "M212",
+        "on_time": "2025-04-01 20:08:01",
+        "off_time": "2025-04-01 20:08:24",
+        "signal_value": "M212 Ambient Temperature Over Range (Low) Alert (T a)"
+    },
+    {
+        "signal_name": "M214",
+        "on_time": "2025-04-01 20:08:01",
+        "off_time": "2025-04-01 20:08:24",
+        "signal_value": "M214 Relative Humidity Over Range (Low) Alert (RH)"
+    },
+    {
+        "signal_name": "M216",
+        "on_time": "2025-04-01 20:08:01",
+        "off_time": "2025-04-01 20:08:24",
+        "signal_value": "M216 Condensation Alert (T Dp)"
+    },
+    {
+        "signal_name": "M217",
+        "on_time": "2025-04-01 20:08:01",
+        "off_time": "2025-04-01 20:08:24",
+        "signal_value": "M217 pH Over Range (Low) Alert (PH)"
+    },
+    {
+        "signal_name": "M219",
+        "on_time": "2025-04-01 20:08:01",
+        "off_time": "2025-04-01 20:08:24",
+        "signal_value": "M219 Conductivity Over Range (Low) Alert (CON)"
+    },
+    {
+        "signal_name": "M221",
+        "on_time": "2025-04-01 20:08:01",
+        "off_time": "2025-04-01 20:08:24",
+        "signal_value": "M221 Turbidity Over Range (Low) Alert (Tur)"
+    },
+    {
+        "signal_name": "M308",
+        "on_time": "2025-04-01 20:08:01",
+        "off_time": "2025-04-01 20:08:24",
+        "signal_value": "M308 Factory Power Status"
+    },
+    {
+        "signal_name": "M313",
+        "on_time": "2025-04-01 20:08:01",
+        "off_time": "2025-04-01 20:08:24",
+        "signal_value": "M313 Ambient Sensor (Ta) Communication Error"
+    },
+    {
+        "signal_name": "M314",
+        "on_time": "2025-04-01 20:08:01",
+        "off_time": "2025-04-01 20:08:24",
+        "signal_value": "M314 Relative Humidity (RH) Communication Error"
+    },
+    {
+        "signal_name": "M315",
+        "on_time": "2025-04-01 20:08:01",
+        "off_time": "2025-04-01 20:08:24",
+        "signal_value": "M315 Dew Point Temperature (TDp) Communication Error"
+    },
+    {
+        "signal_name": "M316",
+        "on_time": "2025-04-01 20:08:01",
+        "off_time": "2025-04-01 20:08:24",
+        "signal_value": "M316 pH (PH) Sensor Communication Error"
+    },
+    {
+        "signal_name": "M317",
+        "on_time": "2025-04-01 20:08:01",
+        "off_time": "2025-04-01 20:08:24",
+        "signal_value": "M317 Conductivity (CON) Sensor Communication Error"
+    },
+    {
+        "signal_name": "M318",
+        "on_time": "2025-04-01 20:08:01",
+        "off_time": "2025-04-01 20:08:24",
+        "signal_value": "M318 Turbidity (Tur) Sensor Communication Error"
+    },
+    {
+        "signal_name": "M319",
+        "on_time": "2025-04-01 20:08:01",
+        "off_time": "2025-04-01 20:08:24",
+        "signal_value": "M319 ATS 1 Communication Error"
+    },
+    {
+        "signal_name": "M320",
+        "on_time": "2025-04-01 20:08:01",
+        "off_time": "2025-04-01 20:08:24",
+        "signal_value": "M320 ATS 2 Communication Error"
+    },
+    {
+        "signal_name": "M321",
+        "on_time": "2025-04-01 20:08:01",
+        "off_time": "2025-04-01 20:08:24",
+        "signal_value": "M321 Power Meter Communication Error"
+    },
+    {
+        "signal_name": "M322",
+        "on_time": "2025-04-01 20:08:01",
+        "off_time": "2025-04-01 20:08:24",
+        "signal_value": "M322 Average Current Communication Error"
+    },
+    {
+        "signal_name": "M323",
+        "on_time": "2025-04-01 20:08:01",
+        "off_time": "2025-04-01 20:08:24",
+        "signal_value": "M323 Fan 1 Communication Error"
+    },
+    {
+        "signal_name": "M324",
+        "on_time": "2025-04-01 20:08:01",
+        "off_time": "2025-04-01 20:08:24",
+        "signal_value": "M324 Fan 2 Communication Error"
+    },
+    {
+        "signal_name": "M325",
+        "on_time": "2025-04-01 20:08:01",
+        "off_time": "2025-04-01 20:08:24",
+        "signal_value": "M325 Fan 3 Communication Error"
+    },
+    {
+        "signal_name": "M326",
+        "on_time": "2025-04-01 20:08:01",
+        "off_time": "2025-04-01 20:08:24",
+        "signal_value": "M326 Fan 4 Communication Error"
+    },
+    {
+        "signal_name": "M327",
+        "on_time": "2025-04-01 20:08:01",
+        "off_time": "2025-04-01 20:08:24",
+        "signal_value": "M327 Fan 5 Communication Error"
+    },
+    {
+        "signal_name": "M328",
+        "on_time": "2025-04-01 20:08:01",
+        "off_time": "2025-04-01 20:08:24",
+        "signal_value": "M328 Fan 6 Communication Error"
+    },
+    {
+        "signal_name": "M329",
+        "on_time": "2025-04-01 20:08:01",
+        "off_time": "2025-04-01 20:08:24",
+        "signal_value": "M329 Fan 7 Communication Error"
+    },
+    {
+        "signal_name": "M330",
+        "on_time": "2025-04-01 20:08:01",
+        "off_time": "2025-04-01 20:08:24",
+        "signal_value": "M330 Fan 8 Communication Error"
+    },
+    {
+        "signal_name": "M335",
+        "on_time": "2025-04-01 20:08:01",
+        "off_time": "2025-04-01 20:08:24",
+        "signal_value": "M335 Coolant Supply Pressure (P1) Broken Error"
+    },
+    {
+        "signal_name": "M336",
+        "on_time": "2025-04-01 20:08:01",
+        "off_time": "2025-04-01 20:08:24",
+        "signal_value": "M336 Coolant Supply Pressure Spare (P1sp) Broken Error"
+    },
+    {
+        "signal_name": "M337",
+        "on_time": "2025-04-01 20:08:01",
+        "off_time": "2025-04-01 20:08:24",
+        "signal_value": "M337 Coolant Return Pressure (P2) Broken Error"
+    },
+    {
+        "signal_name": "M338",
+        "on_time": "2025-04-01 20:08:01",
+        "off_time": "2025-04-01 20:08:24",
+        "signal_value": "M338 Coolant Return Pressure Spare (P2sp) Broken Error"
+    },
+    {
+        "signal_name": "M339",
+        "on_time": "2025-04-01 20:08:01",
+        "off_time": "2025-04-01 20:08:24",
+        "signal_value": "M339 Filter Inlet Pressure (P3) Broken Error"
+    },
+    {
+        "signal_name": "M308",
+        "on_time": "2025-04-01 20:01:30",
+        "off_time": "2025-04-01 20:07:46",
+        "signal_value": "M308 Factory Power Status"
+    },
+    {
+        "signal_name": "M335",
+        "on_time": "2025-04-01 20:01:30",
+        "off_time": "2025-04-01 20:07:46",
+        "signal_value": "M335 Coolant Supply Pressure (P1) Broken Error"
+    },
+    {
+        "signal_name": "M336",
+        "on_time": "2025-04-01 20:01:30",
+        "off_time": "2025-04-01 20:07:46",
+        "signal_value": "M336 Coolant Supply Pressure Spare (P1sp) Broken Error"
+    },
+    {
+        "signal_name": "M337",
+        "on_time": "2025-04-01 20:01:30",
+        "off_time": "2025-04-01 20:07:46",
+        "signal_value": "M337 Coolant Return Pressure (P2) Broken Error"
+    },
+    {
+        "signal_name": "M338",
+        "on_time": "2025-04-01 20:01:30",
+        "off_time": "2025-04-01 20:07:46",
+        "signal_value": "M338 Coolant Return Pressure Spare (P2sp) Broken Error"
+    },
+    {
+        "signal_name": "M339",
+        "on_time": "2025-04-01 20:01:30",
+        "off_time": "2025-04-01 20:07:46",
+        "signal_value": "M339 Filter Inlet Pressure (P3) Broken Error"
+    },
+    {
+        "signal_name": "M340",
+        "on_time": "2025-04-01 20:01:30",
+        "off_time": "2025-04-01 20:07:46",
+        "signal_value": "M340 Filter Outlet Pressure (P4) Broken Error"
+    },
+    {
+        "signal_name": "M341",
+        "on_time": "2025-04-01 20:01:30",
+        "off_time": "2025-04-01 20:07:46",
+        "signal_value": "M341 Coolant Flow Rate (F1) Broken Error"
+    },
+    {
+        "signal_name": "M363",
+        "on_time": "2025-04-01 20:00:51",
+        "off_time": "2025-04-01 20:01:21",
+        "signal_value": "M363 PLC Communication Broken Error"
+    },
+    {
+        "signal_name": "M212",
+        "on_time": "2025-04-01 20:00:07",
+        "off_time": "2025-04-01 20:07:46",
+        "signal_value": "M212 Ambient Temperature Over Range (Low) Alert (T a)"
+    },
+    {
+        "signal_name": "M214",
+        "on_time": "2025-04-01 20:00:07",
+        "off_time": "2025-04-01 20:07:46",
+        "signal_value": "M214 Relative Humidity Over Range (Low) Alert (RH)"
+    },
+    {
+        "signal_name": "M217",
+        "on_time": "2025-04-01 20:00:07",
+        "off_time": "2025-04-01 20:07:46",
+        "signal_value": "M217 pH Over Range (Low) Alert (PH)"
+    },
+    {
+        "signal_name": "M219",
+        "on_time": "2025-04-01 20:00:07",
+        "off_time": "2025-04-01 20:07:46",
+        "signal_value": "M219 Conductivity Over Range (Low) Alert (CON)"
+    },
+    {
+        "signal_name": "M221",
+        "on_time": "2025-04-01 20:00:07",
+        "off_time": "2025-04-01 20:07:46",
+        "signal_value": "M221 Turbidity Over Range (Low) Alert (Tur)"
+    },
+    {
+        "signal_name": "M313",
+        "on_time": "2025-04-01 20:00:07",
+        "off_time": "2025-04-01 20:07:46",
+        "signal_value": "M313 Ambient Sensor (Ta) Communication Error"
+    },
+    {
+        "signal_name": "M314",
+        "on_time": "2025-04-01 20:00:07",
+        "off_time": "2025-04-01 20:07:46",
+        "signal_value": "M314 Relative Humidity (RH) Communication Error"
+    },
+    {
+        "signal_name": "M315",
+        "on_time": "2025-04-01 20:00:07",
+        "off_time": "2025-04-01 20:07:46",
+        "signal_value": "M315 Dew Point Temperature (TDp) Communication Error"
+    },
+    {
+        "signal_name": "M316",
+        "on_time": "2025-04-01 20:00:07",
+        "off_time": "2025-04-01 20:07:46",
+        "signal_value": "M316 pH (PH) Sensor Communication Error"
+    },
+    {
+        "signal_name": "M317",
+        "on_time": "2025-04-01 20:00:07",
+        "off_time": "2025-04-01 20:07:46",
+        "signal_value": "M317 Conductivity (CON) Sensor Communication Error"
+    },
+    {
+        "signal_name": "M318",
+        "on_time": "2025-04-01 20:00:07",
+        "off_time": "2025-04-01 20:07:46",
+        "signal_value": "M318 Turbidity (Tur) Sensor Communication Error"
+    },
+    {
+        "signal_name": "M319",
+        "on_time": "2025-04-01 20:00:07",
+        "off_time": "2025-04-01 20:07:46",
+        "signal_value": "M319 ATS 1 Communication Error"
+    },
+    {
+        "signal_name": "M320",
+        "on_time": "2025-04-01 20:00:07",
+        "off_time": "2025-04-01 20:07:46",
+        "signal_value": "M320 ATS 2 Communication Error"
+    },
+    {
+        "signal_name": "M321",
+        "on_time": "2025-04-01 20:00:07",
+        "off_time": "2025-04-01 20:07:46",
+        "signal_value": "M321 Power Meter Communication Error"
+    },
+    {
+        "signal_name": "M322",
+        "on_time": "2025-04-01 20:00:07",
+        "off_time": "2025-04-01 20:07:46",
+        "signal_value": "M322 Average Current Communication Error"
+    },
+    {
+        "signal_name": "M323",
+        "on_time": "2025-04-01 20:00:07",
+        "off_time": "2025-04-01 20:07:46",
+        "signal_value": "M323 Fan 1 Communication Error"
+    },
+    {
+        "signal_name": "M324",
+        "on_time": "2025-04-01 20:00:07",
+        "off_time": "2025-04-01 20:07:46",
+        "signal_value": "M324 Fan 2 Communication Error"
+    },
+    {
+        "signal_name": "M325",
+        "on_time": "2025-04-01 20:00:07",
+        "off_time": "2025-04-01 20:07:46",
+        "signal_value": "M325 Fan 3 Communication Error"
+    },
+    {
+        "signal_name": "M326",
+        "on_time": "2025-04-01 20:00:07",
+        "off_time": "2025-04-01 20:07:46",
+        "signal_value": "M326 Fan 4 Communication Error"
+    },
+    {
+        "signal_name": "M327",
+        "on_time": "2025-04-01 20:00:07",
+        "off_time": "2025-04-01 20:07:46",
+        "signal_value": "M327 Fan 5 Communication Error"
+    },
+    {
+        "signal_name": "M328",
+        "on_time": "2025-04-01 20:00:07",
+        "off_time": "2025-04-01 20:07:46",
+        "signal_value": "M328 Fan 6 Communication Error"
+    },
+    {
+        "signal_name": "M329",
+        "on_time": "2025-04-01 20:00:07",
+        "off_time": "2025-04-01 20:07:46",
+        "signal_value": "M329 Fan 7 Communication Error"
+    },
+    {
+        "signal_name": "M330",
+        "on_time": "2025-04-01 20:00:07",
+        "off_time": "2025-04-01 20:07:46",
+        "signal_value": "M330 Fan 8 Communication Error"
+    },
+    {
+        "signal_name": "M335",
+        "on_time": "2025-04-01 19:59:51",
+        "off_time": "2025-04-01 20:00:07",
+        "signal_value": "M335 Coolant Supply Pressure (P1) Broken Error"
+    },
+    {
+        "signal_name": "M336",
+        "on_time": "2025-04-01 19:59:51",
+        "off_time": "2025-04-01 20:00:07",
+        "signal_value": "M336 Coolant Supply Pressure Spare (P1sp) Broken Error"
+    },
+    {
+        "signal_name": "M337",
+        "on_time": "2025-04-01 19:59:51",
+        "off_time": "2025-04-01 20:00:07",
+        "signal_value": "M337 Coolant Return Pressure (P2) Broken Error"
+    },
+    {
+        "signal_name": "M338",
+        "on_time": "2025-04-01 19:59:51",
+        "off_time": "2025-04-01 20:00:07",
+        "signal_value": "M338 Coolant Return Pressure Spare (P2sp) Broken Error"
+    },
+    {
+        "signal_name": "M339",
+        "on_time": "2025-04-01 19:59:51",
+        "off_time": "2025-04-01 20:00:07",
+        "signal_value": "M339 Filter Inlet Pressure (P3) Broken Error"
+    },
+    {
+        "signal_name": "M340",
+        "on_time": "2025-04-01 19:59:51",
+        "off_time": "2025-04-01 20:00:07",
+        "signal_value": "M340 Filter Outlet Pressure (P4) Broken Error"
+    },
+    {
+        "signal_name": "M341",
+        "on_time": "2025-04-01 19:59:51",
+        "off_time": "2025-04-01 20:00:07",
+        "signal_value": "M341 Coolant Flow Rate (F1) Broken Error"
+    },
+    {
+        "signal_name": "M215",
+        "on_time": "2025-04-01 19:59:35",
+        "off_time": "2025-04-01 20:00:07",
+        "signal_value": "M215 Relative Humidity Over Range (High) Alert (RH)"
+    },
+    {
+        "signal_name": "M218",
+        "on_time": "2025-04-01 19:59:35",
+        "off_time": "2025-04-01 20:00:07",
+        "signal_value": "M218 pH Over Range (High) Alert (PH)"
+    },
+    {
+        "signal_name": "M220",
+        "on_time": "2025-04-01 19:59:35",
+        "off_time": "2025-04-01 20:00:07",
+        "signal_value": "M220 Conductivity Over Range (High) Alert (CON)"
+    },
+    {
+        "signal_name": "M222",
+        "on_time": "2025-04-01 19:59:35",
+        "off_time": "2025-04-01 20:00:07",
+        "signal_value": "M222 Turbidity Over Range (High) Alert (Tur)"
+    },
+    {
+        "signal_name": "M213",
+        "on_time": "2025-04-01 19:59:34",
+        "off_time": "2025-04-01 20:00:07",
+        "signal_value": "M213 Ambient Temperature Over Range (High) Alert (T a)"
+    },
+    {
+        "signal_name": "M324",
+        "on_time": "2025-04-01 19:58:48",
+        "off_time": "2025-04-01 19:59:35",
+        "signal_value": "M324 Fan 2 Communication Error"
+    },
+    {
+        "signal_name": "M325",
+        "on_time": "2025-04-01 19:58:48",
+        "off_time": "2025-04-01 19:59:35",
+        "signal_value": "M325 Fan 3 Communication Error"
+    },
+    {
+        "signal_name": "M326",
+        "on_time": "2025-04-01 19:58:48",
+        "off_time": "2025-04-01 19:59:35",
+        "signal_value": "M326 Fan 4 Communication Error"
+    },
+    {
+        "signal_name": "M327",
+        "on_time": "2025-04-01 19:58:48",
+        "off_time": "2025-04-01 19:59:35",
+        "signal_value": "M327 Fan 5 Communication Error"
+    },
+    {
+        "signal_name": "M328",
+        "on_time": "2025-04-01 19:58:48",
+        "off_time": "2025-04-01 19:59:35",
+        "signal_value": "M328 Fan 6 Communication Error"
+    },
+    {
+        "signal_name": "M329",
+        "on_time": "2025-04-01 19:58:48",
+        "off_time": "2025-04-01 19:59:35",
+        "signal_value": "M329 Fan 7 Communication Error"
+    },
+    {
+        "signal_name": "M330",
+        "on_time": "2025-04-01 19:58:48",
+        "off_time": "2025-04-01 19:59:35",
+        "signal_value": "M330 Fan 8 Communication Error"
+    },
+    {
+        "signal_name": "M335",
+        "on_time": "2025-04-01 19:58:48",
+        "off_time": "2025-04-01 19:59:35",
+        "signal_value": "M335 Coolant Supply Pressure (P1) Broken Error"
+    },
+    {
+        "signal_name": "M336",
+        "on_time": "2025-04-01 19:58:48",
+        "off_time": "2025-04-01 19:59:35",
+        "signal_value": "M336 Coolant Supply Pressure Spare (P1sp) Broken Error"
+    },
+    {
+        "signal_name": "M337",
+        "on_time": "2025-04-01 19:58:48",
+        "off_time": "2025-04-01 19:59:35",
+        "signal_value": "M337 Coolant Return Pressure (P2) Broken Error"
+    },
+    {
+        "signal_name": "M338",
+        "on_time": "2025-04-01 19:58:48",
+        "off_time": "2025-04-01 19:59:35",
+        "signal_value": "M338 Coolant Return Pressure Spare (P2sp) Broken Error"
+    },
+    {
+        "signal_name": "M339",
+        "on_time": "2025-04-01 19:58:48",
+        "off_time": "2025-04-01 19:59:35",
+        "signal_value": "M339 Filter Inlet Pressure (P3) Broken Error"
+    },
+    {
+        "signal_name": "M340",
+        "on_time": "2025-04-01 19:58:48",
+        "off_time": "2025-04-01 19:59:35",
+        "signal_value": "M340 Filter Outlet Pressure (P4) Broken Error"
+    },
+    {
+        "signal_name": "M341",
+        "on_time": "2025-04-01 19:58:48",
+        "off_time": "2025-04-01 19:59:35",
+        "signal_value": "M341 Coolant Flow Rate (F1) Broken Error"
+    },
+    {
+        "signal_name": "M343",
+        "on_time": "2025-04-01 19:58:48",
+        "off_time": "2025-04-01 20:07:46",
+        "signal_value": "M343 PC2 Error"
+    },
+    {
+        "signal_name": "M349",
+        "on_time": "2025-04-01 19:58:48",
+        "off_time": "2025-04-01 20:07:46",
+        "signal_value": "M349 24V Power Supply 1 Error"
+    },
+    {
+        "signal_name": "M350",
+        "on_time": "2025-04-01 19:58:48",
+        "off_time": "2025-04-01 20:07:46",
+        "signal_value": "M350 24V Power Supply 2 Error"
+    },
+    {
+        "signal_name": "M351",
+        "on_time": "2025-04-01 19:58:48",
+        "off_time": "2025-04-01 20:07:46",
+        "signal_value": "M351 12V Power Supply 1 Error"
+    },
+    {
+        "signal_name": "M352",
+        "on_time": "2025-04-01 19:58:48",
+        "off_time": "2025-04-01 20:07:46",
+        "signal_value": "M352 12V Power Supply 2 Error"
+    },
+    {
+        "signal_name": "M353",
+        "on_time": "2025-04-01 19:58:48",
+        "off_time": "2025-04-01 20:07:46",
+        "signal_value": "M353 Main MC Status Error"
+    },
+    {
+        "signal_name": "M354",
+        "on_time": "2025-04-01 19:58:48",
+        "off_time": "2025-04-01 20:07:46",
+        "signal_value": "M354 FAN 1 Alarm Status Error"
+    },
+    {
+        "signal_name": "M355",
+        "on_time": "2025-04-01 19:58:48",
+        "off_time": "2025-04-01 20:07:46",
+        "signal_value": "M355 FAN 2 Alarm Status Error"
+    },
+    {
+        "signal_name": "M356",
+        "on_time": "2025-04-01 19:58:48",
+        "off_time": "2025-04-01 20:07:46",
+        "signal_value": "M356 FAN 3 Alarm Status Error"
+    },
+    {
+        "signal_name": "M357",
+        "on_time": "2025-04-01 19:58:48",
+        "off_time": "2025-04-01 20:07:46",
+        "signal_value": "M357 FAN 4 Alarm Status Error"
+    },
+    {
+        "signal_name": "M358",
+        "on_time": "2025-04-01 19:58:48",
+        "off_time": "2025-04-01 20:07:46",
+        "signal_value": "M358 FAN 5 Alarm Status Error"
+    },
+    {
+        "signal_name": "M359",
+        "on_time": "2025-04-01 19:58:48",
+        "off_time": "2025-04-01 20:07:46",
+        "signal_value": "M359 FAN 6 Alarm Status Error"
+    },
+    {
+        "signal_name": "M360",
+        "on_time": "2025-04-01 19:58:48",
+        "off_time": "2025-04-01 20:07:46",
+        "signal_value": "M360 FAN 7 Alarm Status Error"
+    },
+    {
+        "signal_name": "M361",
+        "on_time": "2025-04-01 19:58:48",
+        "off_time": "2025-04-01 20:07:46",
+        "signal_value": "M361 FAN 8 Alarm Status Error"
+    },
+    {
+        "signal_name": "M212",
+        "on_time": "2025-04-01 19:58:47",
+        "off_time": "2025-04-01 19:59:34",
+        "signal_value": "M212 Ambient Temperature Over Range (Low) Alert (T a)"
+    },
+    {
+        "signal_name": "M214",
+        "on_time": "2025-04-01 19:58:47",
+        "off_time": "2025-04-01 19:59:34",
+        "signal_value": "M214 Relative Humidity Over Range (Low) Alert (RH)"
+    },
+    {
+        "signal_name": "M216",
+        "on_time": "2025-04-01 19:58:47",
+        "off_time": "2025-04-01 20:07:46",
+        "signal_value": "M216 Condensation Alert (T Dp)"
+    },
+    {
+        "signal_name": "M217",
+        "on_time": "2025-04-01 19:58:47",
+        "off_time": "2025-04-01 19:59:35",
+        "signal_value": "M217 pH Over Range (Low) Alert (PH)"
+    },
+    {
+        "signal_name": "M219",
+        "on_time": "2025-04-01 19:58:47",
+        "off_time": "2025-04-01 19:59:35",
+        "signal_value": "M219 Conductivity Over Range (Low) Alert (CON)"
+    },
+    {
+        "signal_name": "M221",
+        "on_time": "2025-04-01 19:58:47",
+        "off_time": "2025-04-01 19:59:35",
+        "signal_value": "M221 Turbidity Over Range (Low) Alert (Tur)"
+    },
+    {
+        "signal_name": "M313",
+        "on_time": "2025-04-01 19:58:47",
+        "off_time": "2025-04-01 19:59:35",
+        "signal_value": "M313 Ambient Sensor (Ta) Communication Error"
+    },
+    {
+        "signal_name": "M314",
+        "on_time": "2025-04-01 19:58:47",
+        "off_time": "2025-04-01 19:59:35",
+        "signal_value": "M314 Relative Humidity (RH) Communication Error"
+    },
+    {
+        "signal_name": "M315",
+        "on_time": "2025-04-01 19:58:47",
+        "off_time": "2025-04-01 19:59:35",
+        "signal_value": "M315 Dew Point Temperature (TDp) Communication Error"
+    },
+    {
+        "signal_name": "M316",
+        "on_time": "2025-04-01 19:58:47",
+        "off_time": "2025-04-01 19:59:35",
+        "signal_value": "M316 pH (PH) Sensor Communication Error"
+    },
+    {
+        "signal_name": "M317",
+        "on_time": "2025-04-01 19:58:47",
+        "off_time": "2025-04-01 19:59:35",
+        "signal_value": "M317 Conductivity (CON) Sensor Communication Error"
+    },
+    {
+        "signal_name": "M318",
+        "on_time": "2025-04-01 19:58:47",
+        "off_time": "2025-04-01 19:59:35",
+        "signal_value": "M318 Turbidity (Tur) Sensor Communication Error"
+    },
+    {
+        "signal_name": "M319",
+        "on_time": "2025-04-01 19:58:47",
+        "off_time": "2025-04-01 19:59:35",
+        "signal_value": "M319 ATS 1 Communication Error"
+    },
+    {
+        "signal_name": "M320",
+        "on_time": "2025-04-01 19:58:47",
+        "off_time": "2025-04-01 19:59:35",
+        "signal_value": "M320 ATS 2 Communication Error"
+    },
+    {
+        "signal_name": "M321",
+        "on_time": "2025-04-01 19:58:47",
+        "off_time": "2025-04-01 19:59:35",
+        "signal_value": "M321 Power Meter Communication Error"
+    },
+    {
+        "signal_name": "M322",
+        "on_time": "2025-04-01 19:58:47",
+        "off_time": "2025-04-01 19:59:35",
+        "signal_value": "M322 Average Current Communication Error"
+    },
+    {
+        "signal_name": "M323",
+        "on_time": "2025-04-01 19:58:47",
+        "off_time": "2025-04-01 19:59:35",
+        "signal_value": "M323 Fan 1 Communication Error"
+    },
+    {
+        "signal_name": "M337",
+        "on_time": "2025-04-01 19:58:00",
+        "off_time": "2025-04-01 19:58:31",
+        "signal_value": "M337 Coolant Return Pressure (P2) Broken Error"
+    },
+    {
+        "signal_name": "M338",
+        "on_time": "2025-04-01 19:58:00",
+        "off_time": "2025-04-01 19:58:31",
+        "signal_value": "M338 Coolant Return Pressure Spare (P2sp) Broken Error"
+    },
+    {
+        "signal_name": "M339",
+        "on_time": "2025-04-01 19:58:00",
+        "off_time": "2025-04-01 19:58:31",
+        "signal_value": "M339 Filter Inlet Pressure (P3) Broken Error"
+    },
+    {
+        "signal_name": "M340",
+        "on_time": "2025-04-01 19:58:00",
+        "off_time": "2025-04-01 19:58:31",
+        "signal_value": "M340 Filter Outlet Pressure (P4) Broken Error"
+    },
+    {
+        "signal_name": "M341",
+        "on_time": "2025-04-01 19:58:00",
+        "off_time": "2025-04-01 19:58:31",
+        "signal_value": "M341 Coolant Flow Rate (F1) Broken Error"
+    },
+    {
+        "signal_name": "M343",
+        "on_time": "2025-04-01 19:58:00",
+        "off_time": "2025-04-01 19:58:31",
+        "signal_value": "M343 PC2 Error"
+    },
+    {
+        "signal_name": "M349",
+        "on_time": "2025-04-01 19:58:00",
+        "off_time": "2025-04-01 19:58:31",
+        "signal_value": "M349 24V Power Supply 1 Error"
+    },
+    {
+        "signal_name": "M350",
+        "on_time": "2025-04-01 19:58:00",
+        "off_time": "2025-04-01 19:58:31",
+        "signal_value": "M350 24V Power Supply 2 Error"
+    },
+    {
+        "signal_name": "M351",
+        "on_time": "2025-04-01 19:58:00",
+        "off_time": "2025-04-01 19:58:31",
+        "signal_value": "M351 12V Power Supply 1 Error"
+    },
+    {
+        "signal_name": "M352",
+        "on_time": "2025-04-01 19:58:00",
+        "off_time": "2025-04-01 19:58:31",
+        "signal_value": "M352 12V Power Supply 2 Error"
+    },
+    {
+        "signal_name": "M353",
+        "on_time": "2025-04-01 19:58:00",
+        "off_time": "2025-04-01 19:58:31",
+        "signal_value": "M353 Main MC Status Error"
+    },
+    {
+        "signal_name": "M354",
+        "on_time": "2025-04-01 19:58:00",
+        "off_time": "2025-04-01 19:58:31",
+        "signal_value": "M354 FAN 1 Alarm Status Error"
+    },
+    {
+        "signal_name": "M355",
+        "on_time": "2025-04-01 19:58:00",
+        "off_time": "2025-04-01 19:58:31",
+        "signal_value": "M355 FAN 2 Alarm Status Error"
+    },
+    {
+        "signal_name": "M356",
+        "on_time": "2025-04-01 19:58:00",
+        "off_time": "2025-04-01 19:58:31",
+        "signal_value": "M356 FAN 3 Alarm Status Error"
+    },
+    {
+        "signal_name": "M357",
+        "on_time": "2025-04-01 19:58:00",
+        "off_time": "2025-04-01 19:58:31",
+        "signal_value": "M357 FAN 4 Alarm Status Error"
+    },
+    {
+        "signal_name": "M358",
+        "on_time": "2025-04-01 19:58:00",
+        "off_time": "2025-04-01 19:58:31",
+        "signal_value": "M358 FAN 5 Alarm Status Error"
+    },
+    {
+        "signal_name": "M359",
+        "on_time": "2025-04-01 19:58:00",
+        "off_time": "2025-04-01 19:58:31",
+        "signal_value": "M359 FAN 6 Alarm Status Error"
+    },
+    {
+        "signal_name": "M360",
+        "on_time": "2025-04-01 19:58:00",
+        "off_time": "2025-04-01 19:58:31",
+        "signal_value": "M360 FAN 7 Alarm Status Error"
+    },
+    {
+        "signal_name": "M361",
+        "on_time": "2025-04-01 19:58:00",
+        "off_time": "2025-04-01 19:58:31",
+        "signal_value": "M361 FAN 8 Alarm Status Error"
+    },
+    {
+        "signal_name": "M213",
+        "on_time": "2025-04-01 19:57:59",
+        "off_time": "2025-04-01 19:58:31",
+        "signal_value": "M213 Ambient Temperature Over Range (High) Alert (T a)"
+    },
+    {
+        "signal_name": "M215",
+        "on_time": "2025-04-01 19:57:59",
+        "off_time": "2025-04-01 19:58:31",
+        "signal_value": "M215 Relative Humidity Over Range (High) Alert (RH)"
+    },
+    {
+        "signal_name": "M216",
+        "on_time": "2025-04-01 19:57:59",
+        "off_time": "2025-04-01 19:58:31",
+        "signal_value": "M216 Condensation Alert (T Dp)"
+    },
+    {
+        "signal_name": "M218",
+        "on_time": "2025-04-01 19:57:59",
+        "off_time": "2025-04-01 19:58:31",
+        "signal_value": "M218 pH Over Range (High) Alert (PH)"
+    },
+    {
+        "signal_name": "M220",
+        "on_time": "2025-04-01 19:57:59",
+        "off_time": "2025-04-01 19:58:31",
+        "signal_value": "M220 Conductivity Over Range (High) Alert (CON)"
+    },
+    {
+        "signal_name": "M222",
+        "on_time": "2025-04-01 19:57:59",
+        "off_time": "2025-04-01 19:58:31",
+        "signal_value": "M222 Turbidity Over Range (High) Alert (Tur)"
+    },
+    {
+        "signal_name": "M308",
+        "on_time": "2025-04-01 19:57:59",
+        "off_time": "2025-04-01 19:58:31",
+        "signal_value": "M308 Factory Power Status"
+    },
+    {
+        "signal_name": "M335",
+        "on_time": "2025-04-01 19:57:59",
+        "off_time": "2025-04-01 19:58:31",
+        "signal_value": "M335 Coolant Supply Pressure (P1) Broken Error"
+    },
+    {
+        "signal_name": "M336",
+        "on_time": "2025-04-01 19:57:59",
+        "off_time": "2025-04-01 19:58:31",
+        "signal_value": "M336 Coolant Supply Pressure Spare (P1sp) Broken Error"
+    },
+    {
+        "signal_name": "M308",
+        "on_time": "2025-04-01 19:53:50",
+        "off_time": "2025-04-01 19:57:45",
+        "signal_value": "M308 Factory Power Status"
+    },
+    {
+        "signal_name": "M335",
+        "on_time": "2025-04-01 19:53:03",
+        "off_time": "2025-04-01 19:57:45",
+        "signal_value": "M335 Coolant Supply Pressure (P1) Broken Error"
+    },
+    {
+        "signal_name": "M336",
+        "on_time": "2025-04-01 19:53:03",
+        "off_time": "2025-04-01 19:57:45",
+        "signal_value": "M336 Coolant Supply Pressure Spare (P1sp) Broken Error"
+    },
+    {
+        "signal_name": "M337",
+        "on_time": "2025-04-01 19:53:03",
+        "off_time": "2025-04-01 19:57:45",
+        "signal_value": "M337 Coolant Return Pressure (P2) Broken Error"
+    },
+    {
+        "signal_name": "M338",
+        "on_time": "2025-04-01 19:53:03",
+        "off_time": "2025-04-01 19:57:45",
+        "signal_value": "M338 Coolant Return Pressure Spare (P2sp) Broken Error"
+    },
+    {
+        "signal_name": "M339",
+        "on_time": "2025-04-01 19:53:03",
+        "off_time": "2025-04-01 19:57:45",
+        "signal_value": "M339 Filter Inlet Pressure (P3) Broken Error"
+    },
+    {
+        "signal_name": "M340",
+        "on_time": "2025-04-01 19:53:03",
+        "off_time": "2025-04-01 19:57:45",
+        "signal_value": "M340 Filter Outlet Pressure (P4) Broken Error"
+    },
+    {
+        "signal_name": "M341",
+        "on_time": "2025-04-01 19:53:03",
+        "off_time": "2025-04-01 19:57:45",
+        "signal_value": "M341 Coolant Flow Rate (F1) Broken Error"
+    },
+    {
+        "signal_name": "M343",
+        "on_time": "2025-04-01 19:53:03",
+        "off_time": "2025-04-01 19:57:45",
+        "signal_value": "M343 PC2 Error"
+    },
+    {
+        "signal_name": "M213",
+        "on_time": "2025-04-01 19:52:46",
+        "off_time": "2025-04-01 19:57:45",
+        "signal_value": "M213 Ambient Temperature Over Range (High) Alert (T a)"
+    },
+    {
+        "signal_name": "M215",
+        "on_time": "2025-04-01 19:52:46",
+        "off_time": "2025-04-01 19:57:45",
+        "signal_value": "M215 Relative Humidity Over Range (High) Alert (RH)"
+    },
+    {
+        "signal_name": "M218",
+        "on_time": "2025-04-01 19:52:46",
+        "off_time": "2025-04-01 19:57:45",
+        "signal_value": "M218 pH Over Range (High) Alert (PH)"
+    },
+    {
+        "signal_name": "M220",
+        "on_time": "2025-04-01 19:52:46",
+        "off_time": "2025-04-01 19:57:45",
+        "signal_value": "M220 Conductivity Over Range (High) Alert (CON)"
+    },
+    {
+        "signal_name": "M222",
+        "on_time": "2025-04-01 19:52:46",
+        "off_time": "2025-04-01 19:57:45",
+        "signal_value": "M222 Turbidity Over Range (High) Alert (Tur)"
+    },
+    {
+        "signal_name": "M353",
+        "on_time": "2025-04-01 19:45:42",
+        "off_time": "2025-04-01 19:57:45",
+        "signal_value": "M353 Main MC Status Error"
+    },
+    {
+        "signal_name": "M354",
+        "on_time": "2025-04-01 19:45:42",
+        "off_time": "2025-04-01 19:57:45",
+        "signal_value": "M354 FAN 1 Alarm Status Error"
+    },
+    {
+        "signal_name": "M355",
+        "on_time": "2025-04-01 19:45:42",
+        "off_time": "2025-04-01 19:57:45",
+        "signal_value": "M355 FAN 2 Alarm Status Error"
+    },
+    {
+        "signal_name": "M356",
+        "on_time": "2025-04-01 19:45:42",
+        "off_time": "2025-04-01 19:57:45",
+        "signal_value": "M356 FAN 3 Alarm Status Error"
+    },
+    {
+        "signal_name": "M357",
+        "on_time": "2025-04-01 19:45:42",
+        "off_time": "2025-04-01 19:57:45",
+        "signal_value": "M357 FAN 4 Alarm Status Error"
+    },
+    {
+        "signal_name": "M358",
+        "on_time": "2025-04-01 19:45:42",
+        "off_time": "2025-04-01 19:57:45",
+        "signal_value": "M358 FAN 5 Alarm Status Error"
+    },
+    {
+        "signal_name": "M359",
+        "on_time": "2025-04-01 19:45:42",
+        "off_time": "2025-04-01 19:57:45",
+        "signal_value": "M359 FAN 6 Alarm Status Error"
+    },
+    {
+        "signal_name": "M360",
+        "on_time": "2025-04-01 19:45:42",
+        "off_time": "2025-04-01 19:57:45",
+        "signal_value": "M360 FAN 7 Alarm Status Error"
+    },
+    {
+        "signal_name": "M361",
+        "on_time": "2025-04-01 19:45:42",
+        "off_time": "2025-04-01 19:57:45",
+        "signal_value": "M361 FAN 8 Alarm Status Error"
+    },
+    {
+        "signal_name": "M216",
+        "on_time": "2025-04-01 19:45:41",
+        "off_time": "2025-04-01 19:57:45",
+        "signal_value": "M216 Condensation Alert (T Dp)"
+    },
+    {
+        "signal_name": "M217",
+        "on_time": "2025-04-01 19:45:41",
+        "off_time": "2025-04-01 19:52:46",
+        "signal_value": "M217 pH Over Range (Low) Alert (PH)"
+    },
+    {
+        "signal_name": "M219",
+        "on_time": "2025-04-01 19:45:41",
+        "off_time": "2025-04-01 19:52:46",
+        "signal_value": "M219 Conductivity Over Range (Low) Alert (CON)"
+    },
+    {
+        "signal_name": "M221",
+        "on_time": "2025-04-01 19:45:41",
+        "off_time": "2025-04-01 19:52:46",
+        "signal_value": "M221 Turbidity Over Range (Low) Alert (Tur)"
+    },
+    {
+        "signal_name": "M308",
+        "on_time": "2025-04-01 19:45:41",
+        "off_time": "2025-04-01 19:52:46",
+        "signal_value": "M308 Factory Power Status"
+    },
+    {
+        "signal_name": "M313",
+        "on_time": "2025-04-01 19:45:41",
+        "off_time": "2025-04-01 19:52:46",
+        "signal_value": "M313 Ambient Sensor (Ta) Communication Error"
+    },
+    {
+        "signal_name": "M314",
+        "on_time": "2025-04-01 19:45:41",
+        "off_time": "2025-04-01 19:52:46",
+        "signal_value": "M314 Relative Humidity (RH) Communication Error"
+    },
+    {
+        "signal_name": "M315",
+        "on_time": "2025-04-01 19:45:41",
+        "off_time": "2025-04-01 19:52:46",
+        "signal_value": "M315 Dew Point Temperature (TDp) Communication Error"
+    },
+    {
+        "signal_name": "M316",
+        "on_time": "2025-04-01 19:45:41",
+        "off_time": "2025-04-01 19:52:46",
+        "signal_value": "M316 pH (PH) Sensor Communication Error"
+    },
+    {
+        "signal_name": "M317",
+        "on_time": "2025-04-01 19:45:41",
+        "off_time": "2025-04-01 19:52:46",
+        "signal_value": "M317 Conductivity (CON) Sensor Communication Error"
+    },
+    {
+        "signal_name": "M318",
+        "on_time": "2025-04-01 19:45:41",
+        "off_time": "2025-04-01 19:52:46",
+        "signal_value": "M318 Turbidity (Tur) Sensor Communication Error"
+    },
+    {
+        "signal_name": "M319",
+        "on_time": "2025-04-01 19:45:41",
+        "off_time": "2025-04-01 19:52:46",
+        "signal_value": "M319 ATS 1 Communication Error"
+    },
+    {
+        "signal_name": "M320",
+        "on_time": "2025-04-01 19:45:41",
+        "off_time": "2025-04-01 19:52:46",
+        "signal_value": "M320 ATS 2 Communication Error"
+    },
+    {
+        "signal_name": "M321",
+        "on_time": "2025-04-01 19:45:41",
+        "off_time": "2025-04-01 19:52:46",
+        "signal_value": "M321 Power Meter Communication Error"
+    },
+    {
+        "signal_name": "M322",
+        "on_time": "2025-04-01 19:45:41",
+        "off_time": "2025-04-01 19:52:46",
+        "signal_value": "M322 Average Current Communication Error"
+    },
+    {
+        "signal_name": "M323",
+        "on_time": "2025-04-01 19:45:41",
+        "off_time": "2025-04-01 19:52:46",
+        "signal_value": "M323 Fan 1 Communication Error"
+    },
+    {
+        "signal_name": "M324",
+        "on_time": "2025-04-01 19:45:41",
+        "off_time": "2025-04-01 19:52:46",
+        "signal_value": "M324 Fan 2 Communication Error"
+    },
+    {
+        "signal_name": "M325",
+        "on_time": "2025-04-01 19:45:41",
+        "off_time": "2025-04-01 19:52:46",
+        "signal_value": "M325 Fan 3 Communication Error"
+    },
+    {
+        "signal_name": "M326",
+        "on_time": "2025-04-01 19:45:41",
+        "off_time": "2025-04-01 19:52:46",
+        "signal_value": "M326 Fan 4 Communication Error"
+    },
+    {
+        "signal_name": "M327",
+        "on_time": "2025-04-01 19:45:41",
+        "off_time": "2025-04-01 19:52:46",
+        "signal_value": "M327 Fan 5 Communication Error"
+    },
+    {
+        "signal_name": "M328",
+        "on_time": "2025-04-01 19:45:41",
+        "off_time": "2025-04-01 19:52:46",
+        "signal_value": "M328 Fan 6 Communication Error"
+    },
+    {
+        "signal_name": "M329",
+        "on_time": "2025-04-01 19:45:41",
+        "off_time": "2025-04-01 19:52:46",
+        "signal_value": "M329 Fan 7 Communication Error"
+    },
+    {
+        "signal_name": "M330",
+        "on_time": "2025-04-01 19:45:41",
+        "off_time": "2025-04-01 19:52:46",
+        "signal_value": "M330 Fan 8 Communication Error"
+    },
+    {
+        "signal_name": "M335",
+        "on_time": "2025-04-01 19:45:41",
+        "off_time": "2025-04-01 19:52:46",
+        "signal_value": "M335 Coolant Supply Pressure (P1) Broken Error"
+    },
+    {
+        "signal_name": "M336",
+        "on_time": "2025-04-01 19:45:41",
+        "off_time": "2025-04-01 19:52:46",
+        "signal_value": "M336 Coolant Supply Pressure Spare (P1sp) Broken Error"
+    },
+    {
+        "signal_name": "M337",
+        "on_time": "2025-04-01 19:45:41",
+        "off_time": "2025-04-01 19:52:46",
+        "signal_value": "M337 Coolant Return Pressure (P2) Broken Error"
+    },
+    {
+        "signal_name": "M338",
+        "on_time": "2025-04-01 19:45:41",
+        "off_time": "2025-04-01 19:52:46",
+        "signal_value": "M338 Coolant Return Pressure Spare (P2sp) Broken Error"
+    },
+    {
+        "signal_name": "M339",
+        "on_time": "2025-04-01 19:45:41",
+        "off_time": "2025-04-01 19:52:46",
+        "signal_value": "M339 Filter Inlet Pressure (P3) Broken Error"
+    },
+    {
+        "signal_name": "M340",
+        "on_time": "2025-04-01 19:45:41",
+        "off_time": "2025-04-01 19:52:46",
+        "signal_value": "M340 Filter Outlet Pressure (P4) Broken Error"
+    },
+    {
+        "signal_name": "M341",
+        "on_time": "2025-04-01 19:45:41",
+        "off_time": "2025-04-01 19:52:46",
+        "signal_value": "M341 Coolant Flow Rate (F1) Broken Error"
+    },
+    {
+        "signal_name": "M343",
+        "on_time": "2025-04-01 19:45:41",
+        "off_time": "2025-04-01 19:52:46",
+        "signal_value": "M343 PC2 Error"
+    },
+    {
+        "signal_name": "M349",
+        "on_time": "2025-04-01 19:45:41",
+        "off_time": "2025-04-01 19:57:45",
+        "signal_value": "M349 24V Power Supply 1 Error"
+    },
+    {
+        "signal_name": "M350",
+        "on_time": "2025-04-01 19:45:41",
+        "off_time": "2025-04-01 19:57:45",
+        "signal_value": "M350 24V Power Supply 2 Error"
+    },
+    {
+        "signal_name": "M351",
+        "on_time": "2025-04-01 19:45:41",
+        "off_time": "2025-04-01 19:57:45",
+        "signal_value": "M351 12V Power Supply 1 Error"
+    },
+    {
+        "signal_name": "M352",
+        "on_time": "2025-04-01 19:45:41",
+        "off_time": "2025-04-01 19:57:45",
+        "signal_value": "M352 12V Power Supply 2 Error"
+    },
+    {
+        "signal_name": "M212",
+        "on_time": "2025-04-01 19:45:40",
+        "off_time": "2025-04-01 19:52:46",
+        "signal_value": "M212 Ambient Temperature Over Range (Low) Alert (T a)"
+    },
+    {
+        "signal_name": "M214",
+        "on_time": "2025-04-01 19:45:40",
+        "off_time": "2025-04-01 19:52:46",
+        "signal_value": "M214 Relative Humidity Over Range (Low) Alert (RH)"
+    },
+    {
+        "signal_name": "M321",
+        "on_time": "2025-04-01 19:45:15",
+        "off_time": "2025-04-01 19:45:25",
+        "signal_value": "M321 Power Meter Communication Error"
+    },
+    {
+        "signal_name": "M322",
+        "on_time": "2025-04-01 19:45:15",
+        "off_time": "2025-04-01 19:45:25",
+        "signal_value": "M322 Average Current Communication Error"
+    },
+    {
+        "signal_name": "M323",
+        "on_time": "2025-04-01 19:45:15",
+        "off_time": "2025-04-01 19:45:25",
+        "signal_value": "M323 Fan 1 Communication Error"
+    },
+    {
+        "signal_name": "M324",
+        "on_time": "2025-04-01 19:45:15",
+        "off_time": "2025-04-01 19:45:25",
+        "signal_value": "M324 Fan 2 Communication Error"
+    },
+    {
+        "signal_name": "M325",
+        "on_time": "2025-04-01 19:45:15",
+        "off_time": "2025-04-01 19:45:25",
+        "signal_value": "M325 Fan 3 Communication Error"
+    },
+    {
+        "signal_name": "M326",
+        "on_time": "2025-04-01 19:45:15",
+        "off_time": "2025-04-01 19:45:25",
+        "signal_value": "M326 Fan 4 Communication Error"
+    },
+    {
+        "signal_name": "M327",
+        "on_time": "2025-04-01 19:45:15",
+        "off_time": "2025-04-01 19:45:25",
+        "signal_value": "M327 Fan 5 Communication Error"
+    },
+    {
+        "signal_name": "M328",
+        "on_time": "2025-04-01 19:45:15",
+        "off_time": "2025-04-01 19:45:25",
+        "signal_value": "M328 Fan 6 Communication Error"
+    },
+    {
+        "signal_name": "M329",
+        "on_time": "2025-04-01 19:45:15",
+        "off_time": "2025-04-01 19:45:25",
+        "signal_value": "M329 Fan 7 Communication Error"
+    },
+    {
+        "signal_name": "M330",
+        "on_time": "2025-04-01 19:45:15",
+        "off_time": "2025-04-01 19:45:25",
+        "signal_value": "M330 Fan 8 Communication Error"
+    },
+    {
+        "signal_name": "M335",
+        "on_time": "2025-04-01 19:45:15",
+        "off_time": "2025-04-01 19:45:25",
+        "signal_value": "M335 Coolant Supply Pressure (P1) Broken Error"
+    },
+    {
+        "signal_name": "M336",
+        "on_time": "2025-04-01 19:45:15",
+        "off_time": "2025-04-01 19:45:25",
+        "signal_value": "M336 Coolant Supply Pressure Spare (P1sp) Broken Error"
+    },
+    {
+        "signal_name": "M337",
+        "on_time": "2025-04-01 19:45:15",
+        "off_time": "2025-04-01 19:45:25",
+        "signal_value": "M337 Coolant Return Pressure (P2) Broken Error"
+    },
+    {
+        "signal_name": "M338",
+        "on_time": "2025-04-01 19:45:15",
+        "off_time": "2025-04-01 19:45:25",
+        "signal_value": "M338 Coolant Return Pressure Spare (P2sp) Broken Error"
+    },
+    {
+        "signal_name": "M339",
+        "on_time": "2025-04-01 19:45:15",
+        "off_time": "2025-04-01 19:45:25",
+        "signal_value": "M339 Filter Inlet Pressure (P3) Broken Error"
+    },
+    {
+        "signal_name": "M340",
+        "on_time": "2025-04-01 19:45:15",
+        "off_time": "2025-04-01 19:45:25",
+        "signal_value": "M340 Filter Outlet Pressure (P4) Broken Error"
+    },
+    {
+        "signal_name": "M341",
+        "on_time": "2025-04-01 19:45:15",
+        "off_time": "2025-04-01 19:45:25",
+        "signal_value": "M341 Coolant Flow Rate (F1) Broken Error"
+    },
+    {
+        "signal_name": "M343",
+        "on_time": "2025-04-01 19:45:15",
+        "off_time": "2025-04-01 19:45:25",
+        "signal_value": "M343 PC2 Error"
+    },
+    {
+        "signal_name": "M349",
+        "on_time": "2025-04-01 19:45:15",
+        "off_time": "2025-04-01 19:45:25",
+        "signal_value": "M349 24V Power Supply 1 Error"
+    },
+    {
+        "signal_name": "M350",
+        "on_time": "2025-04-01 19:45:15",
+        "off_time": "2025-04-01 19:45:25",
+        "signal_value": "M350 24V Power Supply 2 Error"
+    },
+    {
+        "signal_name": "M351",
+        "on_time": "2025-04-01 19:45:15",
+        "off_time": "2025-04-01 19:45:25",
+        "signal_value": "M351 12V Power Supply 1 Error"
+    },
+    {
+        "signal_name": "M352",
+        "on_time": "2025-04-01 19:45:15",
+        "off_time": "2025-04-01 19:45:25",
+        "signal_value": "M352 12V Power Supply 2 Error"
+    },
+    {
+        "signal_name": "M353",
+        "on_time": "2025-04-01 19:45:15",
+        "off_time": "2025-04-01 19:45:25",
+        "signal_value": "M353 Main MC Status Error"
+    },
+    {
+        "signal_name": "M354",
+        "on_time": "2025-04-01 19:45:15",
+        "off_time": "2025-04-01 19:45:25",
+        "signal_value": "M354 FAN 1 Alarm Status Error"
+    },
+    {
+        "signal_name": "M355",
+        "on_time": "2025-04-01 19:45:15",
+        "off_time": "2025-04-01 19:45:25",
+        "signal_value": "M355 FAN 2 Alarm Status Error"
+    },
+    {
+        "signal_name": "M356",
+        "on_time": "2025-04-01 19:45:15",
+        "off_time": "2025-04-01 19:45:25",
+        "signal_value": "M356 FAN 3 Alarm Status Error"
+    },
+    {
+        "signal_name": "M357",
+        "on_time": "2025-04-01 19:45:15",
+        "off_time": "2025-04-01 19:45:25",
+        "signal_value": "M357 FAN 4 Alarm Status Error"
+    },
+    {
+        "signal_name": "M358",
+        "on_time": "2025-04-01 19:45:15",
+        "off_time": "2025-04-01 19:45:25",
+        "signal_value": "M358 FAN 5 Alarm Status Error"
+    },
+    {
+        "signal_name": "M359",
+        "on_time": "2025-04-01 19:45:15",
+        "off_time": "2025-04-01 19:45:25",
+        "signal_value": "M359 FAN 6 Alarm Status Error"
+    },
+    {
+        "signal_name": "M360",
+        "on_time": "2025-04-01 19:45:15",
+        "off_time": "2025-04-01 19:45:25",
+        "signal_value": "M360 FAN 7 Alarm Status Error"
+    },
+    {
+        "signal_name": "M361",
+        "on_time": "2025-04-01 19:45:15",
+        "off_time": "2025-04-01 19:45:25",
+        "signal_value": "M361 FAN 8 Alarm Status Error"
+    },
+    {
+        "signal_name": "M212",
+        "on_time": "2025-04-01 19:45:14",
+        "off_time": "2025-04-01 19:45:25",
+        "signal_value": "M212 Ambient Temperature Over Range (Low) Alert (T a)"
+    },
+    {
+        "signal_name": "M214",
+        "on_time": "2025-04-01 19:45:14",
+        "off_time": "2025-04-01 19:45:25",
+        "signal_value": "M214 Relative Humidity Over Range (Low) Alert (RH)"
+    },
+    {
+        "signal_name": "M216",
+        "on_time": "2025-04-01 19:45:14",
+        "off_time": "2025-04-01 19:45:25",
+        "signal_value": "M216 Condensation Alert (T Dp)"
+    },
+    {
+        "signal_name": "M217",
+        "on_time": "2025-04-01 19:45:14",
+        "off_time": "2025-04-01 19:45:25",
+        "signal_value": "M217 pH Over Range (Low) Alert (PH)"
+    },
+    {
+        "signal_name": "M219",
+        "on_time": "2025-04-01 19:45:14",
+        "off_time": "2025-04-01 19:45:25",
+        "signal_value": "M219 Conductivity Over Range (Low) Alert (CON)"
+    },
+    {
+        "signal_name": "M221",
+        "on_time": "2025-04-01 19:45:14",
+        "off_time": "2025-04-01 19:45:25",
+        "signal_value": "M221 Turbidity Over Range (Low) Alert (Tur)"
+    },
+    {
+        "signal_name": "M308",
+        "on_time": "2025-04-01 19:45:14",
+        "off_time": "2025-04-01 19:45:25",
+        "signal_value": "M308 Factory Power Status"
+    },
+    {
+        "signal_name": "M313",
+        "on_time": "2025-04-01 19:45:14",
+        "off_time": "2025-04-01 19:45:25",
+        "signal_value": "M313 Ambient Sensor (Ta) Communication Error"
+    },
+    {
+        "signal_name": "M314",
+        "on_time": "2025-04-01 19:45:14",
+        "off_time": "2025-04-01 19:45:25",
+        "signal_value": "M314 Relative Humidity (RH) Communication Error"
+    },
+    {
+        "signal_name": "M315",
+        "on_time": "2025-04-01 19:45:14",
+        "off_time": "2025-04-01 19:45:25",
+        "signal_value": "M315 Dew Point Temperature (TDp) Communication Error"
+    },
+    {
+        "signal_name": "M316",
+        "on_time": "2025-04-01 19:45:14",
+        "off_time": "2025-04-01 19:45:25",
+        "signal_value": "M316 pH (PH) Sensor Communication Error"
+    },
+    {
+        "signal_name": "M317",
+        "on_time": "2025-04-01 19:45:14",
+        "off_time": "2025-04-01 19:45:25",
+        "signal_value": "M317 Conductivity (CON) Sensor Communication Error"
+    }
+]

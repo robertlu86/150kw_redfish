@@ -1,0 +1,143 @@
+{
+    "sensor_value_data": {
+        "CoolantSupplyTemperature": {
+            "Warning": false,
+            "Alert": false
+        },
+        "CoolantSupplyTemperatureSpare": {
+            "Warning": false,
+            "Alert": false
+        },
+        "CoolantReturnTemperature": {
+            "Warning": false,
+            "Alert": false
+        },
+        "CoolantReturnTemperatureSpare": {
+            "Warning": false,
+            "Alert": false
+        },
+        "CoolantSupplyPressure": {
+            "Warning": false,
+            "Alert": false
+        },
+        "CoolantSupplyPressureSpare": {
+            "Warning": false,
+            "Alert": false
+        },
+        "CoolantReturnPressure": {
+            "Warning": false,
+            "Alert": false
+        },
+        "CoolantReturnPressureSpare": {
+            "Warning": false,
+            "Alert": false
+        },
+        "FilterInletPressure": {
+            "Warning": false,
+            "Alert": false
+        },
+        "FilterOutletPressure": {
+            "Warning": false,
+            "Alert": false
+        },
+        "CoolantFlowRate": {
+            "Warning": false,
+            "Alert": false
+        },
+        "AmbientTemp": {
+            "Warning": false,
+            "Alert": false
+        },
+        "RelativeHumid": {
+            "Warning": false,
+            "Alert": false
+        },
+        "DewPoint": {
+            "Warning": false,
+            "Alert": false
+        },
+        "pH": {
+            "Warning": false,
+            "Alert": false
+        },
+        "Conductivity": {
+            "Warning": false,
+            "Alert": false
+        },
+        "Turbidity": {
+            "Warning": false,
+            "Alert": false
+        },
+        "AverageCurrent": {
+            "Warning": false,
+            "Alert": false
+        }
+    },
+    "devices": {
+        "Inv1Overload": false,
+        "Inv2Overload": false,
+        "Inv3Overload": false,
+        "FanOverload1": false,
+        "FanOverload2": false,
+        "Inv1Error": false,
+        "Inv2Error": false,
+        "Inv3Error": false,
+        "ATS": false,
+        "Inv1SpeedComm": false,
+        "Inv2SpeedComm": false,
+        "Inv3SpeedComm": false,
+        "CoolantFlowRateComm": false,
+        "AmbientTempComm": false,
+        "RelativeHumidComm": false,
+        "DewPointComm": false,
+        "pHComm": false,
+        "ConductivityComm": false,
+        "TurbidityComm": false,
+        "ATS1Comm": false,
+        "ATS2Comm": false,
+        "InstantPowerConsumptionComm": false,
+        "AverageCurrentComm": false,
+        "Fan1Comm": false,
+        "Fan2Comm": false,
+        "Fan3Comm": false,
+        "Fan4Comm": false,
+        "Fan5Comm": false,
+        "Fan6Comm": false,
+        "Fan7Comm": false,
+        "Fan8Comm": false,
+        "CoolantSupplyTemperatureBroken": false,
+        "CoolantSupplyTemperatureSpareBroken": false,
+        "CoolantReturnTemperatureBroken": false,
+        "CoolantReturnTemperatureBrokenSpare": false,
+        "CoolantSupplyPressureBroken": false,
+        "CoolantSupplyPressureSpareBroken": false,
+        "CoolantReturnPressureBroken": false,
+        "CoolantReturnPressureSpareBroken": false,
+        "FilterInletPressure": false,
+        "FilterOutletPressure": false,
+        "CoolantFlowRateBroken": false,
+        "Leakage1Leak": false,
+        "Leakage1Broken": false,
+        "Level1": false,
+        "Level2": false,
+        "Level3": false,
+        "Power24v1": false,
+        "Power24v2": false,
+        "Power12v1": false,
+        "Power12v2": false,
+        "MainMcError": false,
+        "Fan1Error": false,
+        "Fan2Error": false,
+        "Fan3Error": false,
+        "Fan4Error": false,
+        "Fan5Error": false,
+        "Fan6Error": false,
+        "Fan7Error": false,
+        "Fan8Error": false,
+        "RackError": false,
+        "LowCoolantLevelWarning": false,
+        "PC1Error": false,
+        "PC2Error": false,
+        "ControlUnit": false
+    }
+}

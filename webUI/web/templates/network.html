@@ -1,0 +1,1419 @@
+{% extends "base.html" %} {% block title %} Network {% endblock %} {% block
+  styles %}
+  
+  <style type="text/css">
+    .networkInfo,
+    .networkSet {
+      border: 2px solid #008000;
+      border-radius: 10px;
+      margin: 2em 0;
+      padding: 20px;
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+    }
+  
+    .network_option {
+      border: 2px solid #008000;
+  
+      border-radius: 10px;
+      margin: 2em 0;
+      padding: 20px;
+      position: relative;
+    }
+  
+    .networkInfo::before,
+    .network_option::before,
+    .networkSet::before {
+      background-color: #fff;
+      color: #000000;
+      content: attr(data-before);
+      font-weight: bold;
+      left: 1em;
+      padding: 0 0.5em;
+      position: absolute;
+      top: -1em;
+    }
+  
+    .tdCenterAlign {
+      text-align: center;
+    }
+  
+    .navbar .navbar-nav .nav-link:hover {
+      background-color: #778899;
+      color: #fff;
+    }
+  
+    .nav-network {
+      background-color: #008000 !important;
+      color: #fff !important;
+    }
+  
+    .disappear {
+      display: none;
+    }
+  
+    .title.collapsed .content {
+      display: none;
+    }
+  
+    .data-before-trigger {
+      position: absolute;
+      top: -14px;
+      left: 21px;
+      width: 355px;
+      height: 22px;
+      cursor: pointer;
+    }
+  
+    .title::before {
+      content: attr(data-before);
+    }
+  
+    .toggle {
+      transform: scale(1.4);
+    }
+  </style>
+  {% endblock %} {% block content %}
+  
+  <div class="container-fluid" style="margin-top: 100px; margin-bottom: 60px;">
+    <!-- Network Card 1 -->
+    <div class="network_option">
+      <div class="row">
+        <div class="col-4">
+          <p>Show Less Network Information:</p>
+        </div>
+        <div class="col-2">
+          <input type="checkbox" value="" id="more_network" />
+        </div>
+      </div>
+    </div>
+    <div class="networkInfo networkInfo1 title" data-before="Network Information 1 (Eth1)" data-label="Network Information 1 (Eth1)">
+      <div class="data-before-trigger"></div>
+      <div class="content">
+        <div class="" id="ip-info1">
+          <!-- IPv4 information will be populated here by jQuery -->
+        </div>
+      </div>
+    </div>
+  
+    <div class="networkSet networkSet1 title" data-before="Network Setting 1 (Eth1)" data-label="Network Setting 1 (Eth1)">
+      <div class="data-before-trigger"></div>
+  
+      <div class="container-fluid content">
+        <!-- IPv4 Setting -->
+        <p>IPv4 Setting</p>
+        <!-- DHCP -->
+        <div class="row">
+          <div class="col-4">
+            <p>Obtain an IP Address Automatically(DHCP):</p>
+          </div>
+          <div class="col-4">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="v4dhcp_en1" />
+              <label class="form-check-label" for="v4dhcp_en1"></label>
+            </div>
+          </div>
+        </div>
+        <!-- IP Address -->
+        <div class="row">
+          <div class="col-4">
+            <p>IP Address:</p>
+          </div>
+          <div class="col-4">
+            <input id="IPv4Address1" type="text" class="keyboard_ipv4" />
+          </div>
+        </div>
+        <!-- Netmask  -->
+        <div class="row">
+          <div class="col-4">
+            <p>Netmask:</p>
+          </div>
+          <div class="col-4">
+            <input type="text" class="keyboard_ipv4" id="v4Subnet1" />
+          </div>
+        </div>
+        <!-- Default Gateway -->
+        <div class="row">
+          <div class="col-4">
+            <p>Default Gateway:</p>
+          </div>
+          <div class="col-4">
+            <input type="text" class="keyboard_ipv4" id="v4DefaultGateway1" />
+          </div>
+        </div>
+        <!-- Auto DNS Server  -->
+        <div class="row">
+          <div class="col-4">
+            <p>Obtain DNS Server Address Automatically:</p>
+          </div>
+          <div class="col-4">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="v4AutoDNS1" />
+              <label class="form-check-label" for="v4AutoDNS1"></label>
+            </div>
+          </div>
+        </div>
+        <!-- DNS Primary -->
+        <div class="row">
+          <div class="col-4">
+            <p>DNS (Primary):</p>
+          </div>
+          <div class="col-4">
+            <input type="text" class="keyboard_ipv4" id="v4DNSPrimary1" />
+          </div>
+        </div>
+        <!-- DNS Secondary -->
+        <div class="row">
+          <div class="col-4">
+            <p>DNS (Secondary):</p>
+          </div>
+          <div class="col-4">
+            <input type="text" class="keyboard_ipv4" id="v4DNSOther1" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-4"></div>
+          <div class="col-4">
+            <button id="v4set_apply_bt1" class="btn btn-outline-success btn-lg" style="margin-right: 10px">
+              Apply
+            </button>
+            <button id="v4set_cancel_bt1" class="btn btn-outline-success btn-lg">
+              Cancel
+            </button>
+          </div>
+        </div>
+        <hr />
+        <!-- IPv6 Setting -->
+        <p>IPv6 Setting</p>
+        <!-- DHCP -->
+        <div class="row">
+          <div class="col-4">
+            <p>DHCP:</p>
+          </div>
+          <div class="col-4">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="v6dhcp_en1" />
+              <label class="form-check-label" for="v6dhcp_en1"></label>
+            </div>
+          </div>
+        </div>
+        <!-- IPv6 Adress -->
+        <div class="row">
+          <div class="col-4">
+            <p>IPv6 Address:</p>
+          </div>
+          <div class="col-4">
+            <input type="text" class="keyboard_ipv6" size="50" id="IPv6Address1" />
+          </div>
+        </div>
+        <!-- IPv6 Link Local Address -->
+        <div class="row">
+          <div class="col-4">
+            <p>Subnet prefix length:</p>
+          </div>
+          <div class="col-4">
+            <input type="text" class="keyboard_ipv6" size="50" id="v6Subnet1" />
+          </div>
+        </div>
+        <!-- Gateway -->
+        <div class="row">
+          <div class="col-4">
+            <p>Default Gateway:</p>
+          </div>
+          <div class="col-4">
+            <input type="text" class="keyboard_ipv6" size="50" id="v6DefaultGateway1" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-4">
+            <p>Obtain DNS Server Address Automatically:</p>
+          </div>
+          <div class="col-4">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="v6AutoDNS1" />
+              <label class="form-check-label" for="v6AutoDNS1"></label>
+            </div>
+          </div>
+        </div>
+        <!-- DNS Primary -->
+        <div class="row">
+          <div class="col-4">
+            <p>DNS (Primary):</p>
+          </div>
+          <div class="col-4">
+            <input type="text" class="keyboard_ipv6" size="50" id="v6DNSPrimary1" />
+          </div>
+        </div>
+        <!-- Gateway -->
+        <div class="row">
+          <div class="col-4">
+            <p>DNS (Secondary):</p>
+          </div>
+          <div class="col-4">
+            <input type="text" class="keyboard_ipv6" size="50" id="v6DNSOther1" />
+          </div>
+        </div>
+  
+        <div class="row">
+          <div class="col-4"></div>
+          <div class="col-4">
+            <button id="v6set_apply_bt1" class="btn btn-outline-success btn-lg" style="margin-right: 10px">
+              Apply
+            </button>
+            <button id="v6set_cancel_bt1" class="btn btn-outline-success btn-lg">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Network Card 4 -->
+  
+    <div class="networkInfo networkInfo0 title network_hide" data-before="Network Information 2 (Eth0)" data-label="Network Information 2 (Eth0)">
+      <div class="data-before-trigger"></div>
+      <div class="content">
+        <div class="" id="ip-info2">
+          <!-- IPv4 information will be populated here by jQuery -->
+        </div>
+      </div>
+    </div>
+    <div class="networkSet networkSet0 title network_hide" data-before="Network Setting 2 (Eth0)" data-label="Network Setting 2 (Eth0)">
+      <div class="data-before-trigger"></div>
+  
+      <div class="container-fluid content">
+        <!-- IPv4 Setting -->
+        <p>IPv4 Setting</p>
+        <!-- DHCP -->
+        <div class="row">
+          <div class="col-4">
+            <p>Obtain an IP Address Automatically(DHCP):</p>
+          </div>
+          <div class="col-4">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="v4dhcp_en2" />
+              <label class="form-check-label" for="v4dhcp_en2"></label>
+            </div>
+          </div>
+        </div>
+        <!-- IP Address -->
+        <div class="row">
+          <div class="col-4">
+            <p>IP Address:</p>
+          </div>
+          <div class="col-4">
+            <input type="text" class="keyboard_ipv4" id="IPv4Address2" />
+          </div>
+        </div>
+        <!-- Netmask  -->
+        <div class="row">
+          <div class="col-4">
+            <p>Netmask:</p>
+          </div>
+          <div class="col-4">
+            <input type="text" class="keyboard_ipv4" id="v4Subnet2" />
+          </div>
+        </div>
+        <!-- Default Gateway -->
+        <div class="row">
+          <div class="col-4">
+            <p>Default Gateway:</p>
+          </div>
+          <div class="col-4">
+            <input type="text" class="keyboard_ipv4" id="v4DefaultGateway2" />
+          </div>
+        </div>
+        <!-- Auto DNS Server  -->
+        <div class="row">
+          <div class="col-4">
+            <p>Obtain DNS Server Address Automatically:</p>
+          </div>
+          <div class="col-4">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="v4AutoDNS2" />
+              <label class="form-check-label" for="v4AutoDNS2"></label>
+            </div>
+          </div>
+        </div>
+        <!-- DNS Primary -->
+        <div class="row">
+          <div class="col-4">
+            <p>DNS (Primary):</p>
+          </div>
+          <div class="col-4">
+            <input type="text" class="keyboard_ipv4" id="v4DNSPrimary2" />
+          </div>
+        </div>
+        <!-- DNS Secondary -->
+        <div class="row">
+          <div class="col-4">
+            <p>DNS (Secondary):</p>
+          </div>
+          <div class="col-4">
+            <input type="text" class="keyboard_ipv4" id="v4DNSOther2" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-4"></div>
+          <div class="col-4">
+            <button id="v4set_apply_bt2" class="btn btn-outline-success btn-lg" style="margin-right: 10px">
+              Apply
+            </button>
+            <button id="v4set_cancel_bt2" class="btn btn-outline-success btn-lg">
+              Cancel
+            </button>
+          </div>
+        </div>
+        <hr />
+        <!-- IPv6 Setting -->
+        <p>IPv6 Setting</p>
+        <!-- DHCP -->
+        <div class="row">
+          <div class="col-4">
+            <p>DHCP:</p>
+          </div>
+          <div class="col-4">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="v6dhcp_en2" />
+              <label class="form-check-label" for="v6dhcp_en2"></label>
+            </div>
+          </div>
+        </div>
+        <!-- IPv6 Adress -->
+        <div class="row">
+          <div class="col-4">
+            <p>IPv6 Address:</p>
+          </div>
+          <div class="col-4">
+            <input type="text" class="keyboard_ipv6" size="50" id="IPv6Address2" />
+          </div>
+        </div>
+        <!-- IPv6 Link Local Address -->
+        <div class="row">
+          <div class="col-4">
+            <p>Subnet prefix length:</p>
+          </div>
+          <div class="col-4">
+            <input type="text" class="keyboard_ipv6" size="50" id="v6Subnet2" />
+          </div>
+        </div>
+        <!-- Gateway -->
+        <div class="row">
+          <div class="col-4">
+            <p>Default Gateway:</p>
+          </div>
+          <div class="col-4">
+            <input type="text" class="keyboard_ipv6" size="50" id="v6DefaultGateway2" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-4">
+            <p>Obtain DNS Server Address Automatically:</p>
+          </div>
+          <div class="col-4">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="v6AutoDNS2" />
+              <label class="form-check-label" for="v6AutoDNS2"></label>
+            </div>
+          </div>
+        </div>
+        <!-- DNS Primary -->
+        <div class="row">
+          <div class="col-4">
+            <p>DNS (Primary):</p>
+          </div>
+          <div class="col-4">
+            <input type="text" class="keyboard_ipv6" size="50" id="v6DNSPrimary2" />
+          </div>
+        </div>
+        <!-- Gateway -->
+        <div class="row">
+          <div class="col-4">
+            <p>DNS (Secondary):</p>
+          </div>
+          <div class="col-4">
+            <input type="text" class="keyboard_ipv6" size="50" id="v6DNSOther2" />
+          </div>
+        </div>
+  
+        <div class="row">
+          <div class="col-4"></div>
+          <div class="col-4">
+            <button id="v6set_apply_bt2" class="btn btn-outline-success btn-lg" style="margin-right: 10px">
+              Apply
+            </button>
+            <button id="v6set_cancel_bt2" class="btn btn-outline-success btn-lg">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Network Card 2 -->
+    <div class="networkInfo networkInfo2 title" data-before="Network Information 3 (Eth2)" data-label="Network Information 3 (Eth2)">
+      <div class="data-before-trigger"></div>
+      <div class="content">
+        <div class="" id="ip-info3">
+          <!-- IPv4 information will be populated here by jQuery -->
+        </div>
+      </div>
+    </div>
+    <div class="networkSet networkSet2 title" data-before="Network Setting 3 (Eth2)" data-label="Network Setting 3 (Eth2)">
+      <div class="data-before-trigger"></div>
+  
+      <div class="container-fluid content">
+        <!-- IPv4 Setting -->
+        <p>IPv4 Setting</p>
+        <!-- DHCP -->
+        <div class="row">
+          <div class="col-4">
+            <p>Obtain an IP Address Automatically(DHCP):</p>
+          </div>
+          <div class="col-4">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="v4dhcp_en3" />
+              <label class="form-check-label" for="v4dhcp_en2"></label>
+            </div>
+          </div>
+        </div>
+        <!-- IP Address -->
+        <div class="row">
+          <div class="col-4">
+            <p>IP Address:</p>
+          </div>
+          <div class="col-4">
+            <input type="text" class="keyboard_ipv4" id="IPv4Address3" />
+          </div>
+        </div>
+        <!-- Netmask  -->
+        <div class="row">
+          <div class="col-4">
+            <p>Netmask:</p>
+          </div>
+          <div class="col-4">
+            <input type="text" class="keyboard_ipv4" id="v4Subnet3" />
+          </div>
+        </div>
+        <!-- Default Gateway -->
+        <div class="row">
+          <div class="col-4">
+            <p>Default Gateway:</p>
+          </div>
+          <div class="col-4">
+            <input type="text" class="keyboard_ipv4" id="v4DefaultGateway3" />
+          </div>
+        </div>
+        <!-- Auto DNS Server  -->
+        <div class="row">
+          <div class="col-4">
+            <p>Obtain DNS Server Address Automatically:</p>
+          </div>
+          <div class="col-4">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="v4AutoDNS3" />
+              <label class="form-check-label" for="v4AutoDNS3"></label>
+            </div>
+          </div>
+        </div>
+        <!-- DNS Primary -->
+        <div class="row">
+          <div class="col-4">
+            <p>DNS (Primary):</p>
+          </div>
+          <div class="col-4">
+            <input type="text" class="keyboard_ipv4" id="v4DNSPrimary3" />
+          </div>
+        </div>
+        <!-- DNS Secondary -->
+        <div class="row">
+          <div class="col-4">
+            <p>DNS (Secondary):</p>
+          </div>
+          <div class="col-4">
+            <input type="text" class="keyboard_ipv4" id="v4DNSOther3" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-4"></div>
+          <div class="col-4">
+            <button id="v4set_apply_bt3" class="btn btn-outline-success btn-lg" style="margin-right: 10px">
+              Apply
+            </button>
+            <button id="v4set_cancel_bt3" class="btn btn-outline-success btn-lg">
+              Cancel
+            </button>
+          </div>
+        </div>
+        <hr />
+        <!-- IPv6 Setting -->
+        <p>IPv6 Setting</p>
+        <!-- DHCP -->
+        <div class="row">
+          <div class="col-4">
+            <p>DHCP:</p>
+          </div>
+          <div class="col-4">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="v6dhcp_en3" />
+              <label class="form-check-label" for="v6dhcp_en2"></label>
+            </div>
+          </div>
+        </div>
+        <!-- IPv6 Adress -->
+        <div class="row">
+          <div class="col-4">
+            <p>IPv6 Address:</p>
+          </div>
+          <div class="col-4">
+            <input type="text" class="keyboard_ipv6" size="50" id="IPv6Address3" />
+          </div>
+        </div>
+        <!-- IPv6 Link Local Address -->
+        <div class="row">
+          <div class="col-4">
+            <p>Subnet prefix length:</p>
+          </div>
+          <div class="col-4">
+            <input type="text" class="keyboard_ipv6" size="50" id="v6Subnet3" />
+          </div>
+        </div>
+        <!-- Gateway -->
+        <div class="row">
+          <div class="col-4">
+            <p>Default Gateway:</p>
+          </div>
+          <div class="col-4">
+            <input type="text" class="keyboard_ipv6" size="50" id="v6DefaultGateway3" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-4">
+            <p>Obtain DNS Server Address Automatically:</p>
+          </div>
+          <div class="col-4">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="v6AutoDNS3" />
+              <label class="form-check-label" for="v6AutoDNS2"></label>
+            </div>
+          </div>
+        </div>
+        <!-- DNS Primary -->
+        <div class="row">
+          <div class="col-4">
+            <p>DNS (Primary):</p>
+          </div>
+          <div class="col-4">
+            <input type="text" class="keyboard_ipv6" size="50" id="v6DNSPrimary3" />
+          </div>
+        </div>
+        <!-- Gateway -->
+        <div class="row">
+          <div class="col-4">
+            <p>DNS (Secondary):</p>
+          </div>
+          <div class="col-4">
+            <input type="text" class="keyboard_ipv6" size="50" id="v6DNSOther3" />
+          </div>
+        </div>
+  
+        <div class="row">
+          <div class="col-4"></div>
+          <div class="col-4">
+            <button id="v6set_apply_bt3" class="btn btn-outline-success btn-lg" style="margin-right: 10px">
+              Apply
+            </button>
+            <button id="v6set_cancel_bt3" class="btn btn-outline-success btn-lg">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Network Card 3 -->
+    <div class="networkInfo networkInfo3 title" data-before="Network Information 4 (Eth3)" data-label="Network Information 4 (Eth3)">
+      <div class="data-before-trigger"></div>
+      <div class="content">
+        <div class="" id="ip-info4">
+          <!-- IPv4 information will be populated here by jQuery -->
+        </div>
+      </div>
+    </div>
+    <div class=" networkSet networkSet3 title" data-before="Network Information 4 (Eth3)" data-label="Network Information 4 (Eth3)">
+      <div class="data-before-trigger"></div>
+  
+      <div class="container-fluid content">
+        <!-- IPv4 Setting -->
+        <p>IPv4 Setting</p>
+        <!-- DHCP -->
+        <div class="row">
+          <div class="col-4">
+            <p>Obtain an IP Address Automatically(DHCP):</p>
+          </div>
+          <div class="col-4">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="v4dhcp_en4" />
+              <label class="form-check-label" for="v4dhcp_en3"></label>
+            </div>
+          </div>
+        </div>
+        <!-- IP Address -->
+        <div class="row">
+          <div class="col-4">
+            <p>IP Address:</p>
+          </div>
+          <div class="col-4">
+            <input type="text" class="keyboard_ipv4" id="IPv4Address4" />
+          </div>
+        </div>
+        <!-- Netmask  -->
+        <div class="row">
+          <div class="col-4">
+            <p>Netmask:</p>
+          </div>
+          <div class="col-4">
+            <input type="text" class="keyboard_ipv4" id="v4Subnet4" />
+          </div>
+        </div>
+        <!-- Default Gateway -->
+        <div class="row">
+          <div class="col-4">
+            <p>Default Gateway:</p>
+          </div>
+          <div class="col-4">
+            <input type="text" class="keyboard_ipv4" id="v4DefaultGateway4" />
+          </div>
+        </div>
+        <!-- Auto DNS Server  -->
+        <div class="row">
+          <div class="col-4">
+            <p>Obtain DNS Server Address Automatically:</p>
+          </div>
+          <div class="col-4">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="v4AutoDNS4" />
+              <label class="form-check-label" for="v4AutoDNS3"></label>
+            </div>
+          </div>
+        </div>
+        <!-- DNS Primary -->
+        <div class="row">
+          <div class="col-4">
+            <p>DNS (Primary):</p>
+          </div>
+          <div class="col-4">
+            <input type="text" class="keyboard_ipv4" id="v4DNSPrimary4" />
+          </div>
+        </div>
+        <!-- DNS Secondary -->
+        <div class="row">
+          <div class="col-4">
+            <p>DNS (Secondary):</p>
+          </div>
+          <div class="col-4">
+            <input type="text" class="keyboard_ipv4" id="v4DNSOther4" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-4"></div>
+          <div class="col-4">
+            <button id="v4set_apply_bt4" class="btn btn-outline-success btn-lg" style="margin-right: 10px">
+              Apply
+            </button>
+            <button id="v4set_cancel_bt4" class="btn btn-outline-success btn-lg">
+              Cancel
+            </button>
+          </div>
+        </div>
+        <hr />
+        <!-- IPv6 Setting -->
+        <p>IPv6 Setting</p>
+        <!-- DHCP -->
+        <div class="row">
+          <div class="col-4">
+            <p>DHCP:</p>
+          </div>
+          <div class="col-4">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="v6dhcp_en4" />
+              <label class="form-check-label" for="v6dhcp_en4"></label>
+            </div>
+          </div>
+        </div>
+        <!-- IPv6 Adress -->
+        <div class="row">
+          <div class="col-4">
+            <p>IPv6 Address:</p>
+          </div>
+          <div class="col-4">
+            <input type="text" class="keyboard_ipv6" size="50" id="IPv6Address4" />
+          </div>
+        </div>
+        <!-- IPv6 Link Local Address -->
+        <div class="row">
+          <div class="col-4">
+            <p>Subnet prefix length:</p>
+          </div>
+          <div class="col-4">
+            <input type="text" class="keyboard_ipv6" size="50" id="v6Subnet4" />
+          </div>
+        </div>
+        <!-- Gateway -->
+        <div class="row">
+          <div class="col-4">
+            <p>Default Gateway:</p>
+          </div>
+          <div class="col-4">
+            <input type="text" class="keyboard_ipv6" size="50" id="v6DefaultGateway4" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-4">
+            <p>Obtain DNS Server Address Automatically:</p>
+          </div>
+          <div class="col-4">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="v6AutoDNS4" />
+              <label class="form-check-label" for="v6AutoDNS4"></label>
+            </div>
+          </div>
+        </div>
+        <!-- DNS Primary -->
+        <div class="row">
+          <div class="col-4">
+            <p>DNS (Primary):</p>
+          </div>
+          <div class="col-4">
+            <input type="text" class="keyboard_ipv6" size="50" id="v6DNSPrimary4" />
+          </div>
+        </div>
+        <!-- Gateway -->
+        <div class="row">
+          <div class="col-4">
+            <p>DNS (Secondary):</p>
+          </div>
+          <div class="col-4">
+            <input type="text" class="keyboard_ipv6" size="50" id="v6DNSOther4" />
+          </div>
+        </div>
+  
+        <div class="row">
+          <div class="col-4"></div>
+          <div class="col-4">
+            <button id="v6set_apply_bt4" class="btn btn-outline-success btn-lg" style="margin-right: 10px">
+              Apply
+            </button>
+            <button id="v6set_cancel_bt4" class="btn btn-outline-success btn-lg">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endblock %} {% block scripts %}
+  
+  <script>
+    function setIPFields(
+      dhcpCheckboxId,
+      ipFields,
+      infoData_status,
+      infoData,
+      networkId
+    ) {
+      const dhcpCheckbox = document.getElementById(
+        `${dhcpCheckboxId}${networkId}`
+      );
+      if (infoData_status == "auto") {
+        dhcpCheckbox.checked = true;
+        ipFields.forEach(function (fieldId) {
+          var field = document.getElementById(`${fieldId}${networkId}`);
+          field.value = infoData[fieldId];
+          field.setAttribute("disabled", "true");
+          field.setAttribute("style", "color:transparent");
+        });
+      } else if (infoData_status == "manual") {
+        dhcpCheckbox.checked = false;
+        ipFields.forEach(function (fieldId) {
+          var field = document.getElementById(`${fieldId}${networkId}`);
+          field.value = infoData[fieldId];
+          field.removeAttribute("disabled");
+          field.setAttribute("style", "color:black");
+        });
+      }
+    }
+  
+    function configureSettings(infoData, networkId) {
+      const settings = [
+        {
+          checkboxId: "v4dhcp_en",
+          fields: ["IPv4Address", "v4Subnet", "v4DefaultGateway"],
+        },
+        {
+          checkboxId: "v4AutoDNS",
+          fields: ["v4DNSPrimary", "v4DNSOther"],
+        },
+        {
+          checkboxId: "v6dhcp_en",
+          fields: ["IPv6Address", "v6Subnet", "v6DefaultGateway"],
+        },
+        {
+          checkboxId: "v6AutoDNS",
+          fields: ["v6DNSPrimary", "v6DNSOther"],
+        },
+      ];
+  
+      settings.forEach((setting) => {
+        setIPFields(
+          setting.checkboxId,
+          setting.fields,
+          infoData[setting.checkboxId],
+          infoData,
+          networkId
+        );
+      });
+    }
+  
+    function formatEthernetInfo(ethernetInfo) {
+      let formattedInfo = ethernetInfo.slice(1, -1);
+  
+      const replacements = {
+        '"v4dhcp_en"': '"Ipv4DHCP"         ',
+        '"IPv4Address"': '"IPv4Address"      ',
+        '"v4Subnet"': '"Ipv4NetMask"      ',
+        '"v4DefaultGateway"': '"Ipv4Gateway"      ',
+        '"v4AutoDNS"': '"Ipv4DNS"          ',
+        '"v4DNSPrimary"': '"Ipv4DNSPrimary"   ',
+        '"v4DNSOther"': '"Ipv4DNSSecondary" ',
+        '"v6dhcp_en"': '\n    "Ipv6DHCP"         ',
+        '"IPv6Address"': '"IPv6Address"      ',
+        '"v6Subnet"': '"Ipv6NetMask"      ',
+        '"v6DefaultGateway"': '"Ipv6Gateway"      ',
+        '"v6AutoDNS"': '"Ipv6DNS"          ',
+        '"v6DNSPrimary"': '"Ipv6DNSPrimary"   ',
+        '"v6DNSOther"': '"Ipv6DNSSecondary" ',
+      };
+  
+      formattedInfo = formattedInfo.replace(
+        /"v4dhcp_en"|"IPv4Address"|"v4Subnet"|"v4DefaultGateway"|"v4AutoDNS"|"v4DNSPrimary"|"v4DNSOther"|"v6dhcp_en"|"IPv6Address"|"v6Subnet"|"v6DefaultGateway"|"v6AutoDNS"|"v6DNSPrimary"|"v6DNSOther"/g,
+        function (matched) {
+          return replacements[matched];
+        }
+      );
+  
+      return formattedInfo;
+    }
+  
+    jQuery(document).ready(function () {
+      let userType = "{{ user }}";
+      if (userType == "kiosk" || userType == "user") {
+        $(".network_hide").hide();
+      }
+      jQuery(".network_option").attr("data-before", "Network Options");
+      jQuery(".networkSet1").attr("data-before", "Network Setting 1 (Eth1) ▼");
+      jQuery(".networkSet0").attr("data-before", "Network Setting 2 (Eth0) ▼");
+      jQuery(".networkSet2").attr("data-before", "Network Setting 3 (Eth2) ▼");
+      jQuery(".networkSet3").attr("data-before", "Network Setting 4 (Eth3) ▼");
+  
+      jQuery(".networkInfo1").attr("data-before", "Network Information 1 (Eth1) ▼");
+      jQuery(".networkInfo0").attr("data-before", "Network Information 2 (Eth0) ▼");
+      jQuery(".networkInfo2").attr("data-before", "Network Information 3 (Eth2) ▼");
+      jQuery(".networkInfo3").attr("data-before", "Network Information 4 (Eth3) ▼");
+  
+      // jQuery(".networkSet").each(function (index) {
+      //   if (index === 0 || index === 1) {
+      //     $(this).attr(
+      //       "data-before",
+      //       "Network Setting " + (index + 1) + " ▼"
+      //     );
+      //   } else {
+      //     $(this).attr(
+      //       "data-before",
+      //       "Network Setting " + "(U" + (index - 1) + ")" + " ▼"
+      //     );
+      //   }
+      // });
+      // jQuery(".networkInfo").each(function (index) {
+      //   if (index === 0 || index === 1) {
+      //     $(this).attr(
+      //       "data-before",
+      //       "Network Information " + (index + 1) + " ▼"
+      //     );
+      //   } else {
+      //     $(this).attr(
+      //       "data-before",
+      //       "Network Information " + "(U" + (index - 1) + ")" + " ▼"
+      //     );
+      //   }
+      // });
+  
+      $.ajax({
+        url: "/check_network",
+        method: "GET",
+        success: function (data) {
+          if (data["collapse_state"]["status"]) {
+            $("#more_network").prop("checked", true);
+          } else {
+            $("#more_network").prop("checked", false);
+          }
+  
+          if (data["collapse_state"]["status"]) {
+            $(".networkSet").slice(-3).addClass("disappear");
+            $(".networkInfo").slice(-3).addClass("disappear");
+          } else {
+            $(".networkSet").slice(-3).removeClass("disappear");
+            $(".networkInfo").slice(-3).removeClass("disappear");
+          }
+        },
+      });
+  
+      $("#more_network").change(function () {
+        let collapse;
+        if ($("#more_network").prop("checked")) {
+          collapse = true;
+        } else {
+          collapse = false;
+        }
+  
+        $.ajax({
+          type: "POST",
+          url: "/collapse_network",
+          contentType: "application/json;charset=UTF-8",
+          data: JSON.stringify({ collapse: collapse }),
+          success: function (response) {
+            Swal.fire({
+              title: "Success",
+              text: response,
+              icon: "success",
+              confirmButtonText: "OK",
+            }).then(() => {
+              location.reload();
+            });
+          },
+        });
+      });
+  
+      $.ajax({
+        url: "/get_network_info",
+        method: "GET",
+        success: handleSuccess,
+        error: handleError,
+      });
+  
+  
+      async function fetch_network_info() {
+        while (true) {
+          try {
+            const data = await $.ajax({
+              url: "/get_network_info",
+              loader: false,
+              method: "GET",
+              timeout: 10000,
+            });
+  
+            const ethernet_infos = [
+              data.ethernet_info1,
+              data.ethernet_info2,
+              data.ethernet_info3,
+              data.ethernet_info4,
+            ];
+  
+            ethernet_infos.forEach((info, index) => {
+              const formattedInfo = formatEthernetInfo(info);
+              $(`#ip-info${index + 1}`).html(`<pre>${formattedInfo}</pre>`);
+            });
+          } catch (error) {
+            handleError(error);
+          }
+  
+          await new Promise((resolve) => setTimeout(resolve, 3000));
+        }
+      }
+  
+      // 啟動循環請求
+      fetch_network_info();
+  
+      document
+        .querySelectorAll("[id^=v4dhcp_en]")
+        .forEach(function (element) {
+          element.addEventListener("change", disableV4IPSet);
+        });
+  
+      function disableV4IPSet(event) {
+        var targetId = event.target.id;
+        var networkId = targetId.match(/\d+$/)[0];
+        var v4dhcpChecked = $("#v4dhcp_en" + networkId).prop("checked");
+        if (v4dhcpChecked) {
+          $("#IPv4Address" + networkId)
+            .css("color", "transparent")
+            .prop("disabled", true);
+          $("#v4Subnet" + networkId)
+            .css("color", "transparent")
+            .prop("disabled", true);
+          $("#v4DefaultGateway" + networkId)
+            .css("color", "transparent")
+            .prop("disabled", true);
+        } else {
+          $("#IPv4Address" + networkId)
+            .css("color", "black")
+            .prop("disabled", false);
+          $("#v4Subnet" + networkId)
+            .css("color", "black")
+            .prop("disabled", false);
+          $("#v4DefaultGateway" + networkId)
+            .css("color", "black")
+            .prop("disabled", false);
+        }
+      }
+  
+      document
+        .querySelectorAll("[id^=v6dhcp_en]")
+        .forEach(function (element) {
+          element.addEventListener("change", disableV6IPSet);
+        });
+  
+      function disableV6IPSet(event) {
+        var targetId = event.target.id;
+        var networkId = targetId.match(/\d+$/)[0];
+  
+        var v6dhcpChecked = $("#v6dhcp_en" + networkId).prop("checked");
+  
+        if (v6dhcpChecked) {
+          $("#IPv6Address" + networkId)
+            .css("color", "transparent")
+            .prop("disabled", true);
+          $("#v6Subnet" + networkId)
+            .css("color", "transparent")
+            .prop("disabled", true);
+          $("#v6DefaultGateway" + networkId)
+            .css("color", "transparent")
+            .prop("disabled", true);
+        } else {
+          $("#IPv6Address" + networkId)
+            .css("color", "black")
+            .prop("disabled", false);
+          $("#v6Subnet" + networkId)
+            .css("color", "black")
+            .prop("disabled", false);
+          $("#v6DefaultGateway" + networkId)
+            .css("color", "black")
+            .prop("disabled", false);
+        }
+      }
+  
+      document
+        .querySelectorAll("[id^=v4AutoDNS]")
+        .forEach(function (element) {
+          element.addEventListener("change", disableV4DNSSet);
+        });
+  
+      function disableV4DNSSet(event) {
+        var targetId = event.target.id;
+        var networkId = targetId.match(/\d+$/)[0];
+  
+        var v4AutoDNSChecked = $("#v4AutoDNS" + networkId).prop("checked");
+  
+        if (v4AutoDNSChecked) {
+          $("#v4DNSPrimary" + networkId)
+            .css("color", "transparent")
+            .prop("disabled", true);
+          $("#v4DNSOther" + networkId)
+            .css("color", "transparent")
+            .prop("disabled", true);
+        } else {
+          $("#v4DNSPrimary" + networkId)
+            .css("color", "black")
+            .prop("disabled", false);
+          $("#v4DNSOther" + networkId)
+            .css("color", "black")
+            .prop("disabled", false);
+        }
+      }
+  
+      document
+        .querySelectorAll("[id^=v6AutoDNS]")
+        .forEach(function (element) {
+          element.addEventListener("change", disableV6DNSSet);
+        });
+  
+      function disableV6DNSSet(event) {
+        var targetId = event.target.id;
+        var networkId = targetId.match(/\d+$/)[0];
+        var v6AutoDNSChecked = $("#v6AutoDNS" + networkId).prop("checked");
+  
+        if (v6AutoDNSChecked) {
+          $("#v6DNSPrimary" + networkId)
+            .css("color", "transparent")
+            .prop("disabled", true);
+          $("#v6DNSOther" + networkId)
+            .css("color", "transparent")
+            .prop("disabled", true);
+        } else {
+          $("#v6DNSPrimary" + networkId)
+            .css("color", "black")
+            .prop("disabled", false);
+          $("#v6DNSOther" + networkId)
+            .css("color", "black")
+            .prop("disabled", false);
+        }
+      }
+  
+      $("[id^=v4set_apply_bt]").each(function () {
+        $(this).click(function () {
+          var networkId = this.id.match(/\d+$/)[0];
+  
+          var v4dhcp_en = $("#v4dhcp_en" + networkId).prop("checked");
+          var IPv4Address = $("#IPv4Address" + networkId).val();
+          var v4Subnet = $("#v4Subnet" + networkId).val();
+          var v4DefaultGateway = $("#v4DefaultGateway" + networkId).val();
+          var v4AutoDNS = $("#v4AutoDNS" + networkId).prop("checked");
+          var v4DNSPrimary = $("#v4DNSPrimary" + networkId).val();
+          var v4DNSOther = $("#v4DNSOther" + networkId).val();
+  
+          var dataToSend = {
+            networkId: networkId,
+            v4dhcp_en: v4dhcp_en,
+            IPv4Address: IPv4Address,
+            v4Subnet: v4Subnet,
+            v4DefaultGateway: v4DefaultGateway,
+            v4AutoDNS: v4AutoDNS,
+            v4DNSPrimary: v4DNSPrimary,
+            v4DNSOther: v4DNSOther,
+          };
+  
+          $.ajax({
+            type: "POST",
+            url: "/set_network",
+            contentType: "application/json;charset=UTF-8",
+            data: JSON.stringify(dataToSend),
+            success: function (response) {
+              console.log(response);
+              Swal.fire({
+                title: "Success",
+                text: response.message,
+                icon: "success",
+                confirmButtonText: "OK",
+              }).then(() => {
+                setTimeout(function () {
+                  $.ajax({
+                    url: "/get_network_info",
+                    method: "GET",
+                    success: handleSuccess,
+                    error: handleError,
+                  });
+                }, 1500);
+              });
+            },
+            error: function (xhr) {
+              const response = JSON.parse(xhr.responseText);
+              Swal.fire({
+                title: "Error",
+                text: response.message,
+                icon: "error",
+                confirmButtonText: "OK",
+              });
+            },
+          });
+        });
+      });
+  
+      $(".title").each(function () {
+        if ($(this).data("default") === "collapsed") {
+          $(this).addClass("collapsed");
+        }
+      });
+  
+      $(".data-before-trigger").click(function () {
+        let $title = $(this).closest(".title");
+        $title.toggleClass("collapsed");
+        if ($title.hasClass("collapsed")) {
+          $title.attr("data-before", $title.attr("data-label") + " ▲");
+        } else {
+          $title.attr("data-before", $title.attr("data-label") + " ▼");
+        }
+      });
+  
+      $("[id^=v6set_apply_bt]").each(function () {
+        $(this).click(function () {
+          var networkId = this.id.match(/\d+$/)[0];
+  
+          var v6dhcp_en = $("#v6dhcp_en" + networkId).prop("checked");
+          var IPv6Address = $("#IPv6Address" + networkId).val();
+          var v6Subnet = $("#v6Subnet" + networkId).val();
+          var v6DefaultGateway = $("#v6DefaultGateway" + networkId).val();
+          var v6AutoDNS = $("#v6AutoDNS" + networkId).prop("checked");
+          var v6DNSPrimary = $("#v6DNSPrimary" + networkId).val();
+          var v6DNSOther = $("#v6DNSOther" + networkId).val();
+  
+          var dataToSend = {
+            networkId: networkId,
+            v6dhcp_en: v6dhcp_en,
+            IPv6Address: IPv6Address,
+            v6Subnet: v6Subnet,
+            v6DefaultGateway: v6DefaultGateway,
+            v6AutoDNS: v6AutoDNS,
+            v6DNSPrimary: v6DNSPrimary,
+            v6DNSOther: v6DNSOther,
+          };
+  
+          $.ajax({
+            type: "POST",
+            url: "/v6set_network",
+            contentType: "application/json;charset=UTF-8",
+            data: JSON.stringify(dataToSend),
+            success: function (response) {
+              Swal.fire({
+                title: "Success",
+                text: response.message,
+                icon: "success",
+                confirmButtonText: "OK",
+              }).then(() => {
+                setTimeout(function () {
+                  $.ajax({
+                    url: "/get_network_info",
+                    method: "GET",
+                    success: handleSuccess,
+                    error: handleError,
+                  });
+                }, 1500);
+              });
+            },
+            error: function (error) {
+              const response = JSON.parse(xhr.responseText);
+              Swal.fire({
+                title: "Error",
+                text: response.message,
+                icon: "error",
+                confirmButtonText: "OK",
+              });
+            },
+          });
+        });
+      });
+  
+      $("[id^=v4set_cancel_bt]").each(function () {
+        $(this).click(function () {
+          const id = $(this).attr("id"); // e.g., v4set_cancel_bt1
+          const networkId = parseInt(id.replace("v4set_cancel_bt", "")); // 1 ~ 4
+  
+          $.ajax({
+            url: "/get_network_info",
+            method: "GET",
+            success: function (data) {
+              const ethernet_infos = [
+                data.ethernet_info1,
+                data.ethernet_info2,
+                data.ethernet_info3,
+                data.ethernet_info4,
+              ];
+  
+              const info = ethernet_infos[networkId - 1];
+              const infoData = JSON.parse(info);
+  
+              // ✅ 只針對 IPv4 欄位執行 reset
+              const ipv4Settings = [
+                {
+                  checkboxId: "v4dhcp_en",
+                  fields: ["IPv4Address", "v4Subnet", "v4DefaultGateway"],
+                },
+                {
+                  checkboxId: "v4AutoDNS",
+                  fields: ["v4DNSPrimary", "v4DNSOther"],
+                },
+              ];
+  
+              ipv4Settings.forEach((setting) => {
+                setIPFields(
+                  setting.checkboxId,
+                  setting.fields,
+                  infoData[setting.checkboxId],
+                  infoData,
+                  networkId
+                );
+              });
+            },
+            error: handleError,
+          });
+        });
+      });
+  
+      $("[id^=v6set_cancel_bt]").each(function () {
+  
+        $(this).click(function () {
+          const id = $(this).attr("id"); // e.g., v6set_cancel_bt1
+          const networkId = parseInt(id.replace("v6set_cancel_bt", "")); // 1 ~ 4
+  
+          $.ajax({
+            url: "/get_network_info",
+            method: "GET",
+            success: function (data) {
+              const ethernet_infos = [
+                data.ethernet_info1,
+                data.ethernet_info2,
+                data.ethernet_info3,
+                data.ethernet_info4,
+              ];
+  
+              const info = ethernet_infos[networkId - 1];
+              const infoData = JSON.parse(info);
+  
+              // ✅ 只針對 IPv6 欄位執行 reset
+              const ipv6Settings = [
+                {
+                  checkboxId: "v6dhcp_en",
+                  fields: ["IPv6Address", "v6Subnet", "v6DefaultGateway"],
+                },
+                {
+                  checkboxId: "v6AutoDNS",
+                  fields: ["v6DNSPrimary", "v6DNSOther"],
+                },
+              ];
+  
+              ipv6Settings.forEach((setting) => {
+                setIPFields(
+                  setting.checkboxId,
+                  setting.fields,
+                  infoData[setting.checkboxId],
+                  infoData,
+                  networkId
+                );
+              });
+            },
+            error: handleError,
+          });
+        });
+  
+      });
+    });
+  
+    function handleSuccess(data) {
+      const ethernet_infos = [
+        data.ethernet_info1,
+        data.ethernet_info2,
+        data.ethernet_info3,
+        data.ethernet_info4,
+      ];
+  
+      ethernet_infos.forEach((info, index) => {
+        const formattedInfo = formatEthernetInfo(info);
+        $(`#ip-info${index + 1}`).html(`<pre>${formattedInfo}</pre>`);
+      });
+  
+      ethernet_infos.forEach((info, index) => {
+        const infoData = JSON.parse(info);
+        configureSettings(infoData, index + 1);
+      });
+  
+      console.log(`infoData1=${data.ethernet_info1}`);
+      console.log(`infoData2=${data.ethernet_info2}`);
+      console.log(`infoData3=${data.ethernet_info3}`);
+      console.log(`infoData4=${data.ethernet_info4}`);
+    }
+  
+    function handleError(error) {
+      console.error("Error fetching data:", error);
+    }
+  </script>
+  {% endblock %}

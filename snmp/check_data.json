@@ -1,0 +1,110 @@
+[
+    {
+        "ErrorCode": "M100",
+        "Message": "Coolant Supply Temperature Over Range (High) Warning (T1)"
+    },
+    {
+        "ErrorCode": "M101",
+        "Message": "Coolant Supply Temperature Spare Over Range (High) Warning (T1 sp)"
+    },
+    {
+        "ErrorCode": "M102",
+        "Message": "Coolant Return Temperature Over Range (High) Warning (T2)"
+    },
+    {
+        "ErrorCode": "M104",
+        "Message": "Facility Water Supply Temperature Over Range (High) Warning (T4)"
+    },
+    {
+        "ErrorCode": "M106",
+        "Message": "Facility Water Return Temperature Over Range (High) Warning (T5)"
+    },
+    {
+        "ErrorCode": "M122",
+        "Message": "Ambient Temperature Over Range (High) Warning (T a)"
+    },
+    {
+        "ErrorCode": "M200",
+        "Message": "Coolant Supply Temperature Over Range (High) Alert (T1)"
+    },
+    {
+        "ErrorCode": "M201",
+        "Message": "Coolant Supply Temperature Spare Over Range (High) Alert (T1 sp)"
+    },
+    {
+        "ErrorCode": "M202",
+        "Message": "Coolant Return Temperature Over Range (High) Alert (T2)"
+    },
+    {
+        "ErrorCode": "M204",
+        "Message": "Facility Water Supply Temperature Over Range (High) Alert (T4)"
+    },
+    {
+        "ErrorCode": "M206",
+        "Message": "Facility Water Return Temperature Over Range (High) Alert (T5)"
+    },
+    {
+        "ErrorCode": "M222",
+        "Message": "Ambient Temperature Over Range (High) Alert (T a)"
+    },
+    {
+        "ErrorCode": "M300",
+        "Message": "Facility Water Proportional Valve Disconnection"
+    },
+    {
+        "ErrorCode": "M303",
+        "Message": "Coolant Pump1 Inverter Error"
+    },
+    {
+        "ErrorCode": "M304",
+        "Message": "Coolant Pump2 Inverter Error"
+    },
+    {
+        "ErrorCode": "M311",
+        "Message": "Factory Power Status"
+    },
+    {
+        "ErrorCode": "M327",
+        "Message": "Coolant Supply Pressure Error"
+    },
+    {
+        "ErrorCode": "M328",
+        "Message": "Coolant Supply Pressure (Spare) Error"
+    },
+    {
+        "ErrorCode": "M329",
+        "Message": "Coolant Return Pressure Error"
+    },
+    {
+        "ErrorCode": "M330",
+        "Message": "Filter Inlet Pressure Error"
+    },
+    {
+        "ErrorCode": "M331",
+        "Message": "Filter1 Outlet Pressure Error"
+    },
+    {
+        "ErrorCode": "M332",
+        "Message": "Filter2 Outlet Pressure Error"
+    },
+    {
+        "ErrorCode": "M333",
+        "Message": "Filter3 Outlet Pressure Error"
+    },
+    {
+        "ErrorCode": "M334",
+        "Message": "Filter4 Outlet Pressure Error"
+    },
+    {
+        "ErrorCode": "M335",
+        "Message": "Filter5 Outlet Pressure Error"
+    },
+    {
+        "ErrorCode": "M336",
+        "Message": "Facility Water Inlet Pressure Error"
+    },
+    {
+        "ErrorCode": "M337",
+        "Message": "Facility Water Return Pressure Broken Error"
+    }
+]
