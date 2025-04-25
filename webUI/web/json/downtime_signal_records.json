@@ -1,0 +1,2276 @@
+[
+    {
+        "signal_name": "M302",
+        "on_time": "2025-04-01 18:06:46",
+        "off_time": "2025-04-01 18:16:12",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-04-01 18:05:28",
+        "off_time": "2025-04-01 18:06:05",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-04-01 17:29:36",
+        "off_time": "2025-04-01 18:00:34",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-04-01 17:29:36",
+        "off_time": "2025-04-01 17:36:03",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-04-01 17:29:36",
+        "off_time": "2025-04-01 17:36:03",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-04-01 17:27:01",
+        "off_time": "2025-04-01 17:27:50",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-04-01 17:27:01",
+        "off_time": "2025-04-01 17:27:50",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-04-01 17:25:32",
+        "off_time": "2025-04-01 17:25:58",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-04-01 17:25:32",
+        "off_time": "2025-04-01 17:25:58",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-04-01 17:24:53",
+        "off_time": "2025-04-01 17:27:50",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-04-01 17:24:53",
+        "off_time": "2025-04-01 17:25:07",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-04-01 17:24:53",
+        "off_time": "2025-04-01 17:25:07",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-04-01 17:24:05",
+        "off_time": "2025-04-01 17:24:41",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-04-01 17:24:05",
+        "off_time": "2025-04-01 17:24:41",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-04-01 17:22:00",
+        "off_time": "2025-04-01 17:24:41",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-04-01 17:22:00",
+        "off_time": "2025-04-01 17:22:14",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-04-01 17:22:00",
+        "off_time": "2025-04-01 17:22:14",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-04-01 17:20:18",
+        "off_time": "2025-04-01 17:20:44",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-04-01 17:20:18",
+        "off_time": "2025-04-01 17:20:44",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-04-01 17:16:52",
+        "off_time": "2025-04-01 17:21:35",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-04-01 17:16:52",
+        "off_time": "2025-04-01 17:18:09",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-04-01 17:16:52",
+        "off_time": "2025-04-01 17:18:10",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-04-01 17:15:41",
+        "off_time": "2025-04-01 17:16:40",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-04-01 17:15:41",
+        "off_time": "2025-04-01 17:16:40",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-04-01 17:12:57",
+        "off_time": "2025-04-01 17:16:40",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-04-01 17:12:57",
+        "off_time": "2025-04-01 17:13:10",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-04-01 17:12:57",
+        "off_time": "2025-04-01 17:13:10",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-25 15:01:09",
+        "off_time": "2025-03-25 15:13:19",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-25 15:01:09",
+        "off_time": "2025-03-25 15:13:19",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-25 15:00:43",
+        "off_time": "2025-03-25 15:00:56",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-25 15:00:43",
+        "off_time": "2025-03-25 15:00:56",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-25 14:59:53",
+        "off_time": "2025-03-25 15:00:30",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-25 14:59:53",
+        "off_time": "2025-03-25 15:00:30",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-25 14:59:26",
+        "off_time": "2025-03-25 15:13:19",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-25 14:59:26",
+        "off_time": "2025-03-25 14:59:40",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-25 14:59:26",
+        "off_time": "2025-03-25 14:59:40",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-24 16:18:42",
+        "off_time": "2025-03-25 14:59:15",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-24 16:18:42",
+        "off_time": "2025-03-25 14:59:15",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-24 16:18:42",
+        "off_time": "2025-03-25 14:59:15",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-24 16:10:02",
+        "off_time": "2025-03-24 16:18:30",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-24 16:10:02",
+        "off_time": "2025-03-24 16:18:30",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-24 16:10:02",
+        "off_time": "2025-03-24 16:18:30",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-24 16:03:18",
+        "off_time": "2025-03-24 16:09:50",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-24 16:03:18",
+        "off_time": "2025-03-24 16:09:50",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-24 16:03:18",
+        "off_time": "2025-03-24 16:09:50",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-24 13:09:43",
+        "off_time": "2025-03-24 13:12:35",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-24 13:09:06",
+        "off_time": "2025-03-24 14:59:43",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-24 11:13:04",
+        "off_time": "2025-03-24 11:14:01",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-24 11:13:04",
+        "off_time": "2025-03-24 11:14:01",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-24 11:12:28",
+        "off_time": "2025-03-24 11:45:07",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-20 10:19:23",
+        "off_time": "2025-03-20 11:17:02",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-20 10:19:23",
+        "off_time": "2025-03-20 11:13:03",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-20 10:19:23",
+        "off_time": "2025-03-20 11:13:03",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-20 09:54:09",
+        "off_time": "2025-03-20 10:19:09",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-20 09:54:09",
+        "off_time": "2025-03-20 10:19:09",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-20 09:54:09",
+        "off_time": "2025-03-20 10:19:09",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-20 09:53:09",
+        "off_time": "2025-03-20 09:53:49",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-20 09:53:09",
+        "off_time": "2025-03-20 09:53:49",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-20 09:53:09",
+        "off_time": "2025-03-20 09:53:49",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-20 09:52:44",
+        "off_time": "2025-03-20 09:52:55",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-20 09:52:44",
+        "off_time": "2025-03-20 09:52:55",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-20 09:52:33",
+        "off_time": "2025-03-20 09:52:34",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-20 09:52:04",
+        "off_time": "2025-03-20 09:52:55",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-20 09:52:04",
+        "off_time": "2025-03-20 09:52:29",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-20 09:52:04",
+        "off_time": "2025-03-20 09:52:29",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-20 09:49:43",
+        "off_time": "2025-03-20 09:51:49",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-20 09:49:43",
+        "off_time": "2025-03-20 09:51:46",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-20 09:49:43",
+        "off_time": "2025-03-20 09:51:46",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-13 11:32:34",
+        "off_time": "2025-03-18 13:42:36",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-13 11:32:34",
+        "off_time": "2025-03-18 13:42:36",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-13 11:32:34",
+        "off_time": "2025-03-18 13:42:36",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-13 11:17:31",
+        "off_time": "2025-03-13 11:32:18",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-13 11:17:31",
+        "off_time": "2025-03-13 11:32:18",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-13 11:17:31",
+        "off_time": "2025-03-13 11:32:18",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-13 11:14:47",
+        "off_time": "2025-03-13 11:17:14",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-13 11:14:47",
+        "off_time": "2025-03-13 11:17:14",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-13 11:14:47",
+        "off_time": "2025-03-13 11:17:14",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-13 11:12:40",
+        "off_time": "2025-03-13 11:14:30",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-13 11:12:40",
+        "off_time": "2025-03-13 11:14:30",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-13 11:12:40",
+        "off_time": "2025-03-13 11:14:30",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-13 11:06:15",
+        "off_time": "2025-03-13 11:12:23",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-13 11:06:15",
+        "off_time": "2025-03-13 11:12:23",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-13 11:06:15",
+        "off_time": "2025-03-13 11:12:23",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-13 10:21:09",
+        "off_time": "2025-03-13 11:05:57",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-13 10:21:09",
+        "off_time": "2025-03-13 11:05:57",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-13 10:21:09",
+        "off_time": "2025-03-13 11:05:57",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-13 10:16:28",
+        "off_time": "2025-03-13 10:20:50",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-13 10:16:28",
+        "off_time": "2025-03-13 10:20:50",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-13 10:16:28",
+        "off_time": "2025-03-13 10:20:50",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-13 10:16:01",
+        "off_time": "2025-03-13 10:16:10",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-13 10:16:01",
+        "off_time": "2025-03-13 10:16:10",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-13 10:16:01",
+        "off_time": "2025-03-13 10:16:10",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-13 10:15:18",
+        "off_time": "2025-03-13 10:15:23",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-13 10:15:18",
+        "off_time": "2025-03-13 10:15:23",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-13 10:15:18",
+        "off_time": "2025-03-13 10:15:23",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-13 10:14:23",
+        "off_time": "2025-03-13 10:14:53",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-13 10:14:23",
+        "off_time": "2025-03-13 10:14:53",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-13 10:14:23",
+        "off_time": "2025-03-13 10:14:53",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-13 10:12:11",
+        "off_time": "2025-03-13 10:13:55",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-13 10:12:11",
+        "off_time": "2025-03-13 10:13:55",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-13 10:12:11",
+        "off_time": "2025-03-13 10:13:55",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-13 09:59:10",
+        "off_time": "2025-03-13 10:11:54",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-13 09:59:10",
+        "off_time": "2025-03-13 10:11:54",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-13 09:59:10",
+        "off_time": "2025-03-13 10:11:54",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-13 09:21:18",
+        "off_time": "2025-03-13 09:58:53",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-13 09:21:18",
+        "off_time": "2025-03-13 09:58:53",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-13 09:14:30",
+        "off_time": "2025-03-13 09:14:45",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-13 09:14:30",
+        "off_time": "2025-03-13 09:14:45",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-13 09:13:54",
+        "off_time": "2025-03-13 09:58:53",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-13 09:13:54",
+        "off_time": "2025-03-13 09:14:11",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-13 09:13:54",
+        "off_time": "2025-03-13 09:14:11",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-12 17:43:48",
+        "off_time": "2025-03-13 09:13:39",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-12 17:43:48",
+        "off_time": "2025-03-13 09:13:39",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-12 17:43:48",
+        "off_time": "2025-03-13 09:13:39",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-12 16:18:13",
+        "off_time": "2025-03-12 17:43:31",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-12 16:18:13",
+        "off_time": "2025-03-12 17:43:31",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-12 16:18:13",
+        "off_time": "2025-03-12 17:43:31",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-12 16:17:55",
+        "off_time": "2025-03-12 16:17:56",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-12 16:17:55",
+        "off_time": "2025-03-12 16:17:56",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-12 16:17:55",
+        "off_time": "2025-03-12 16:17:56",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-12 16:17:33",
+        "off_time": "2025-03-12 16:17:36",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-12 16:17:33",
+        "off_time": "2025-03-12 16:17:36",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-12 16:17:32",
+        "off_time": "2025-03-12 16:17:36",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-12 16:10:37",
+        "off_time": "2025-03-12 16:17:16",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-12 16:10:37",
+        "off_time": "2025-03-12 16:17:16",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-12 16:10:37",
+        "off_time": "2025-03-12 16:17:16",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-12 16:04:43",
+        "off_time": "2025-03-12 16:10:18",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-12 16:04:43",
+        "off_time": "2025-03-12 16:10:18",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-12 16:04:43",
+        "off_time": "2025-03-12 16:10:18",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-12 16:02:41",
+        "off_time": "2025-03-12 16:04:27",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-12 16:02:41",
+        "off_time": "2025-03-12 16:04:27",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-12 16:02:41",
+        "off_time": "2025-03-12 16:04:27",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-12 16:02:08",
+        "off_time": "2025-03-12 16:02:25",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-12 16:02:08",
+        "off_time": "2025-03-12 16:02:25",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-12 16:02:08",
+        "off_time": "2025-03-12 16:02:25",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-12 15:47:09",
+        "off_time": "2025-03-12 16:01:52",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-12 15:47:09",
+        "off_time": "2025-03-12 16:01:52",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-12 15:47:09",
+        "off_time": "2025-03-12 16:01:52",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-12 15:42:19",
+        "off_time": "2025-03-12 15:46:53",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-12 15:42:19",
+        "off_time": "2025-03-12 15:46:53",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-12 15:42:19",
+        "off_time": "2025-03-12 15:46:53",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-12 15:40:09",
+        "off_time": "2025-03-12 15:41:42",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-12 15:40:09",
+        "off_time": "2025-03-12 15:41:42",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-12 15:40:09",
+        "off_time": "2025-03-12 15:41:42",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-12 15:36:35",
+        "off_time": "2025-03-12 15:39:48",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-12 15:36:35",
+        "off_time": "2025-03-12 15:39:48",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-12 15:36:35",
+        "off_time": "2025-03-12 15:39:48",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-12 15:08:37",
+        "off_time": "2025-03-12 15:35:59",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-12 15:08:37",
+        "off_time": "2025-03-12 15:35:59",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-12 15:08:37",
+        "off_time": "2025-03-12 15:35:59",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-12 14:29:58",
+        "off_time": "2025-03-12 15:08:21",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-12 14:29:58",
+        "off_time": "2025-03-12 15:08:21",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-12 14:29:58",
+        "off_time": "2025-03-12 15:08:21",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-12 14:27:59",
+        "off_time": "2025-03-12 14:29:42",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-12 14:27:59",
+        "off_time": "2025-03-12 14:29:42",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-12 14:27:59",
+        "off_time": "2025-03-12 14:29:42",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-12 11:33:46",
+        "off_time": "2025-03-12 14:27:43",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-12 11:33:46",
+        "off_time": "2025-03-12 14:27:43",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-12 11:33:46",
+        "off_time": "2025-03-12 14:27:43",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-12 11:12:13",
+        "off_time": "2025-03-12 11:17:48",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-12 11:12:13",
+        "off_time": "2025-03-12 11:12:47",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-12 11:12:13",
+        "off_time": "2025-03-12 11:12:47",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-12 11:06:03",
+        "off_time": "2025-03-12 11:09:58",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-12 11:06:03",
+        "off_time": "2025-03-12 11:09:58",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-12 11:06:03",
+        "off_time": "2025-03-12 11:09:58",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-12 11:05:44",
+        "off_time": "2025-03-12 11:05:49",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-12 11:05:44",
+        "off_time": "2025-03-12 11:05:49",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-12 11:05:44",
+        "off_time": "2025-03-12 11:05:49",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-12 11:01:42",
+        "off_time": "2025-03-12 11:05:16",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-12 11:01:42",
+        "off_time": "2025-03-12 11:05:16",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-12 11:01:42",
+        "off_time": "2025-03-12 11:05:16",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-12 10:58:24",
+        "off_time": "2025-03-12 11:00:52",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-12 10:58:24",
+        "off_time": "2025-03-12 11:00:52",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-12 10:58:24",
+        "off_time": "2025-03-12 11:00:52",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-12 10:57:49",
+        "off_time": "2025-03-12 10:58:09",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-12 10:57:49",
+        "off_time": "2025-03-12 10:58:09",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-12 10:57:49",
+        "off_time": "2025-03-12 10:58:09",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-12 10:52:36",
+        "off_time": "2025-03-12 10:57:26",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-12 10:52:36",
+        "off_time": "2025-03-12 10:57:26",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-12 10:52:36",
+        "off_time": "2025-03-12 10:57:26",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-12 10:52:04",
+        "off_time": "2025-03-12 10:52:08",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-12 10:52:04",
+        "off_time": "2025-03-12 10:52:08",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-12 10:52:04",
+        "off_time": "2025-03-12 10:52:08",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-12 10:46:13",
+        "off_time": "2025-03-12 10:51:47",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-12 10:46:13",
+        "off_time": "2025-03-12 10:51:47",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-12 10:46:13",
+        "off_time": "2025-03-12 10:51:47",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-12 10:39:35",
+        "off_time": "2025-03-12 10:40:15",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-12 10:39:35",
+        "off_time": "2025-03-12 10:40:15",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-12 10:39:35",
+        "off_time": "2025-03-12 10:40:15",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-12 10:38:19",
+        "off_time": "2025-03-12 10:38:53",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-12 10:38:19",
+        "off_time": "2025-03-12 10:38:53",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-12 10:38:19",
+        "off_time": "2025-03-12 10:38:53",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-12 10:37:28",
+        "off_time": "2025-03-12 10:38:03",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-12 10:37:28",
+        "off_time": "2025-03-12 10:38:03",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-12 10:37:28",
+        "off_time": "2025-03-12 10:38:03",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-12 10:27:07",
+        "off_time": "2025-03-12 10:29:42",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-12 10:27:07",
+        "off_time": "2025-03-12 10:29:39",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-12 10:27:07",
+        "off_time": "2025-03-12 10:29:39",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-12 10:26:13",
+        "off_time": "2025-03-12 10:26:38",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-12 10:26:13",
+        "off_time": "2025-03-12 10:26:38",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-12 10:26:13",
+        "off_time": "2025-03-12 10:26:38",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-12 10:13:26",
+        "off_time": "2025-03-12 10:14:13",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-12 10:13:26",
+        "off_time": "2025-03-12 10:14:13",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-12 10:13:26",
+        "off_time": "2025-03-12 10:14:13",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-12 10:12:51",
+        "off_time": "2025-03-12 10:13:07",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-12 10:12:51",
+        "off_time": "2025-03-12 10:13:07",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-12 10:12:51",
+        "off_time": "2025-03-12 10:13:07",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-12 10:11:48",
+        "off_time": "2025-03-12 10:12:31",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-12 10:11:48",
+        "off_time": "2025-03-12 10:12:31",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-12 10:11:48",
+        "off_time": "2025-03-12 10:12:31",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-12 09:55:10",
+        "off_time": "2025-03-12 10:11:26",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-12 09:55:10",
+        "off_time": "2025-03-12 10:11:26",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-12 09:55:10",
+        "off_time": "2025-03-12 10:11:26",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-11 14:00:29",
+        "off_time": "2025-03-11 16:15:55",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-11 14:00:29",
+        "off_time": "2025-03-11 16:15:00",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-11 14:00:29",
+        "off_time": "2025-03-11 16:15:00",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-11 13:59:03",
+        "off_time": "2025-03-11 14:00:12",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-11 13:59:03",
+        "off_time": "2025-03-11 14:00:12",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-11 13:59:03",
+        "off_time": "2025-03-11 14:00:12",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-11 11:37:19",
+        "off_time": "2025-03-11 11:45:12",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-11 11:37:19",
+        "off_time": "2025-03-11 11:40:27",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-11 11:37:19",
+        "off_time": "2025-03-11 11:40:27",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-11 10:58:25",
+        "off_time": "2025-03-11 11:37:05",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-11 10:58:25",
+        "off_time": "2025-03-11 11:37:05",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-11 10:58:25",
+        "off_time": "2025-03-11 11:37:05",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-11 10:50:43",
+        "off_time": "2025-03-11 10:52:25",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-11 10:50:43",
+        "off_time": "2025-03-11 10:52:25",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-11 10:50:43",
+        "off_time": "2025-03-11 10:52:25",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-11 10:48:22",
+        "off_time": "2025-03-11 10:50:19",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-11 10:48:22",
+        "off_time": "2025-03-11 10:50:19",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-11 10:48:22",
+        "off_time": "2025-03-11 10:50:19",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-06 13:47:47",
+        "off_time": "2025-03-06 14:10:35",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-06 11:50:18",
+        "off_time": "2025-03-06 13:47:31",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-06 11:41:44",
+        "off_time": "2025-03-06 11:49:57",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-06 11:41:25",
+        "off_time": "2025-03-06 11:41:29",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-06 11:20:16",
+        "off_time": "2025-03-06 11:41:09",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-06 11:18:20",
+        "off_time": "2025-03-06 11:19:59",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-06 11:17:17",
+        "off_time": "2025-03-06 11:18:03",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-06 11:15:27",
+        "off_time": "2025-03-06 11:15:57",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-06 11:13:04",
+        "off_time": "2025-03-06 11:14:58",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-06 10:44:58",
+        "off_time": "2025-03-06 10:45:27",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-06 10:43:33",
+        "off_time": "2025-03-06 10:44:23",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-06 10:40:12",
+        "off_time": "2025-03-06 10:40:23",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-06 10:36:29",
+        "off_time": "2025-03-06 10:36:45",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-06 10:34:58",
+        "off_time": "2025-03-06 10:35:38",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-06 10:26:10",
+        "off_time": "2025-03-06 10:34:42",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-06 10:24:37",
+        "off_time": "2025-03-06 10:25:41",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-06 10:24:00",
+        "off_time": "2025-03-06 10:24:13",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-06 10:21:30",
+        "off_time": "2025-03-06 10:23:30",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-06 10:19:12",
+        "off_time": "2025-03-06 10:21:14",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-06 10:17:37",
+        "off_time": "2025-03-06 10:18:46",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-06 10:02:09",
+        "off_time": "2025-03-06 10:17:14",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-06 10:01:02",
+        "off_time": "2025-03-06 10:01:08",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-06 09:58:58",
+        "off_time": "2025-03-06 10:00:34",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-06 09:32:20",
+        "off_time": "2025-03-06 09:32:27",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-06 09:29:57",
+        "off_time": "2025-03-06 09:31:43",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-06 09:25:23",
+        "off_time": "2025-03-06 09:29:39",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-06 09:22:58",
+        "off_time": "2025-03-06 09:24:52",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-06 09:20:40",
+        "off_time": "2025-03-06 09:22:42",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-06 09:19:36",
+        "off_time": "2025-03-06 09:20:23",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-06 09:17:24",
+        "off_time": "2025-03-06 09:18:59",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-06 09:07:13",
+        "off_time": "2025-03-06 09:16:39",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-05 17:36:04",
+        "off_time": "2025-03-06 09:06:56",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-05 17:34:33",
+        "off_time": "2025-03-05 17:35:45",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-05 17:30:12",
+        "off_time": "2025-03-05 17:34:15",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-05 17:26:04",
+        "off_time": "2025-03-05 17:29:53",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-05 16:40:11",
+        "off_time": "2025-03-05 17:25:46",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-05 16:36:23",
+        "off_time": "2025-03-05 16:39:51",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-05 16:35:50",
+        "off_time": "2025-03-05 16:36:05",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-05 16:34:34",
+        "off_time": "2025-03-05 16:35:02",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-05 16:34:08",
+        "off_time": "2025-03-05 16:34:16",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-05 16:32:44",
+        "off_time": "2025-03-05 16:33:05",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-05 16:31:47",
+        "off_time": "2025-03-05 16:32:27",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-05 16:19:17",
+        "off_time": "2025-03-05 16:30:57",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-05 15:31:24",
+        "off_time": "2025-03-05 16:18:57",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-05 15:30:47",
+        "off_time": "2025-03-05 15:31:04",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-05 11:10:40",
+        "off_time": "2025-03-05 11:11:24",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-05 11:10:40",
+        "off_time": "2025-03-05 11:11:24",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-05 11:10:40",
+        "off_time": "2025-03-05 11:11:24",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-05 10:58:50",
+        "off_time": "2025-03-05 11:10:24",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-05 10:58:50",
+        "off_time": "2025-03-05 11:10:24",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-05 10:58:50",
+        "off_time": "2025-03-05 11:10:24",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-05 10:57:56",
+        "off_time": "2025-03-05 10:58:02",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-05 10:57:56",
+        "off_time": "2025-03-05 10:58:02",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-05 10:57:56",
+        "off_time": "2025-03-05 10:58:02",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-05 10:56:12",
+        "off_time": "2025-03-05 10:57:41",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-05 10:56:12",
+        "off_time": "2025-03-05 10:57:41",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-05 10:56:12",
+        "off_time": "2025-03-05 10:57:41",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-05 10:44:45",
+        "off_time": "2025-03-05 10:55:15",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-05 10:44:45",
+        "off_time": "2025-03-05 10:55:15",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-05 10:44:45",
+        "off_time": "2025-03-05 10:55:15",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-05 10:41:24",
+        "off_time": "2025-03-05 10:44:31",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-05 10:41:23",
+        "off_time": "2025-03-05 10:44:31",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-05 10:41:23",
+        "off_time": "2025-03-05 10:44:31",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-05 10:34:28",
+        "off_time": "2025-03-05 10:41:07",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-05 10:34:28",
+        "off_time": "2025-03-05 10:41:07",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-05 10:34:28",
+        "off_time": "2025-03-05 10:41:07",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-05 10:30:25",
+        "off_time": "2025-03-05 10:33:11",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-05 10:30:25",
+        "off_time": "2025-03-05 10:33:11",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-05 10:30:25",
+        "off_time": "2025-03-05 10:33:11",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-05 10:24:11",
+        "off_time": "2025-03-05 10:28:33",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-05 10:24:11",
+        "off_time": "2025-03-05 10:28:33",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-05 10:24:11",
+        "off_time": "2025-03-05 10:28:33",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-05 10:23:01",
+        "off_time": "2025-03-05 10:23:55",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-05 10:23:01",
+        "off_time": "2025-03-05 10:23:55",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-05 10:23:01",
+        "off_time": "2025-03-05 10:23:55",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-05 10:21:22",
+        "off_time": "2025-03-05 10:22:46",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-05 10:21:22",
+        "off_time": "2025-03-05 10:22:46",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-05 10:21:22",
+        "off_time": "2025-03-05 10:22:46",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-04 10:38:11",
+        "off_time": "2025-03-05 10:21:08",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-03 15:28:23",
+        "off_time": "2025-03-03 15:28:56",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-03 14:52:11",
+        "off_time": "2025-03-03 14:55:24",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-03 14:47:11",
+        "off_time": "2025-03-03 14:57:18",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-03 14:22:32",
+        "off_time": "2025-03-03 14:39:01",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-03 11:10:07",
+        "off_time": "2025-03-03 11:23:36",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-03 11:10:07",
+        "off_time": "2025-03-03 11:23:36",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-03 11:10:07",
+        "off_time": "2025-03-03 11:23:36",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-03 10:43:27",
+        "off_time": "2025-03-03 10:53:18",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-03 10:30:15",
+        "off_time": "2025-03-03 10:35:41",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-03 10:30:15",
+        "off_time": "2025-03-03 10:35:41",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-03-03 10:15:09",
+        "off_time": "2025-03-03 10:29:58",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-03-03 10:15:09",
+        "off_time": "2025-03-03 10:29:58",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-03 10:08:54",
+        "off_time": "2025-03-03 10:43:06",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-03 09:50:41",
+        "off_time": "2025-03-03 09:58:25",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-03 09:30:56",
+        "off_time": "2025-03-03 09:50:24",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-03-03 09:04:02",
+        "off_time": "2025-03-03 09:30:39",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M300",
+        "on_time": "2025-02-27 17:52:27",
+        "off_time": "2025-03-03 09:03:23",
+        "signal_value": "M300 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M338",
+        "on_time": "2025-02-26 16:30:08",
+        "off_time": "2025-02-26 16:36:57",
+        "signal_value": "M338 FAN 4 Alarm Status Error"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-02-26 16:30:07",
+        "off_time": "2025-02-26 16:36:56",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-02-26 16:30:07",
+        "off_time": "2025-02-26 16:36:56",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M338",
+        "on_time": "2025-02-26 15:43:11",
+        "off_time": "2025-02-26 16:02:22",
+        "signal_value": "M338 FAN 4 Alarm Status Error"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-02-26 15:43:10",
+        "off_time": "2025-02-26 16:02:22",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-02-26 15:43:10",
+        "off_time": "2025-02-26 16:02:22",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-02-26 09:45:07",
+        "off_time": "2025-02-26 09:48:01",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-02-26 09:45:07",
+        "off_time": "2025-02-26 09:48:01",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M338",
+        "on_time": "2025-02-26 09:45:07",
+        "off_time": "2025-02-26 09:48:01",
+        "signal_value": "M338 FAN 4 Alarm Status Error"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-02-25 13:32:53",
+        "off_time": "2025-02-25 13:58:05",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-02-25 13:32:53",
+        "off_time": "2025-02-25 13:58:05",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M338",
+        "on_time": "2025-02-25 13:32:53",
+        "off_time": "2025-02-25 13:58:05",
+        "signal_value": "M338 FAN 4 Alarm Status Error"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-02-25 13:14:53",
+        "off_time": "2025-02-25 13:32:35",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-02-25 13:14:53",
+        "off_time": "2025-02-25 13:32:35",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M338",
+        "on_time": "2025-02-25 13:14:53",
+        "off_time": "2025-02-25 13:32:35",
+        "signal_value": "M338 FAN 4 Alarm Status Error"
+    },
+    {
+        "signal_name": "M338",
+        "on_time": "2025-02-25 13:13:27",
+        "off_time": "2025-02-25 13:14:38",
+        "signal_value": "M338 FAN 4 Alarm Status Error"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-02-25 13:13:26",
+        "off_time": "2025-02-25 13:14:38",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-02-25 13:13:26",
+        "off_time": "2025-02-25 13:14:38",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-02-25 10:09:54",
+        "off_time": "2025-02-25 10:13:23",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-02-25 10:09:54",
+        "off_time": "2025-02-25 10:13:23",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M338",
+        "on_time": "2025-02-25 10:09:54",
+        "off_time": "2025-02-25 10:13:23",
+        "signal_value": "M338 FAN 4 Alarm Status Error"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-02-25 10:07:39",
+        "off_time": "2025-02-25 10:09:38",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-02-25 10:07:39",
+        "off_time": "2025-02-25 10:09:38",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-02-25 10:06:28",
+        "off_time": "2025-02-25 10:07:24",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-02-25 10:06:28",
+        "off_time": "2025-02-25 10:07:24",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-02-25 10:02:13",
+        "off_time": "2025-02-25 10:05:59",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-02-25 10:02:13",
+        "off_time": "2025-02-25 10:05:59",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-02-25 09:56:09",
+        "off_time": "2025-02-25 09:59:12",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-02-25 09:56:09",
+        "off_time": "2025-02-25 09:59:12",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-02-25 09:53:11",
+        "off_time": "2025-02-25 09:53:18",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-02-25 09:53:11",
+        "off_time": "2025-02-25 09:53:18",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M338",
+        "on_time": "2025-02-25 09:53:11",
+        "off_time": "2025-02-25 09:53:18",
+        "signal_value": "M338 FAN 4 Alarm Status Error"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-02-25 09:52:52",
+        "off_time": "2025-02-25 09:52:56",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-02-25 09:52:52",
+        "off_time": "2025-02-25 09:52:56",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M338",
+        "on_time": "2025-02-25 09:52:52",
+        "off_time": "2025-02-25 09:52:56",
+        "signal_value": "M338 FAN 4 Alarm Status Error"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-02-20 09:42:18",
+        "off_time": "2025-02-20 09:42:32",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-02-20 09:42:18",
+        "off_time": "2025-02-20 09:42:32",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-02-20 09:40:46",
+        "off_time": "2025-02-20 09:42:00",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-02-20 09:40:46",
+        "off_time": "2025-02-20 09:42:00",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-02-20 09:31:07",
+        "off_time": "2025-02-20 09:40:24",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-02-20 09:31:07",
+        "off_time": "2025-02-20 09:40:24",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-02-20 09:28:27",
+        "off_time": "2025-02-20 09:30:52",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-02-20 09:28:27",
+        "off_time": "2025-02-20 09:30:52",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-02-20 09:15:43",
+        "off_time": "2025-02-20 09:28:13",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-02-20 09:15:43",
+        "off_time": "2025-02-20 09:28:13",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-02-20 09:15:14",
+        "off_time": "2025-02-20 09:15:28",
+        "signal_value": "M301 Coolant Pump2 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-02-20 09:15:14",
+        "off_time": "2025-02-20 09:15:28",
+        "signal_value": "M302 Coolant Pump3 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-02-18 13:31:10",
+        "off_time": "2025-02-18 13:37:52",
+        "signal_value": "M301 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-02-18 09:51:36",
+        "off_time": "2025-02-18 09:52:57",
+        "signal_value": "M301 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-02-18 09:47:23",
+        "off_time": "2025-02-18 09:50:22",
+        "signal_value": "M301 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M301",
+        "on_time": "2025-02-17 10:40:52",
+        "off_time": "2025-02-17 10:41:30",
+        "signal_value": "M301 Coolant Pump1 Inverter Overload"
+    },
+    {
+        "signal_name": "M302",
+        "on_time": "2025-02-17 10:40:52",
+        "off_time": "2025-02-17 10:41:30",
+        "signal_value": "M302 Coolant Pump2 Inverter Overload"
+    }
+]

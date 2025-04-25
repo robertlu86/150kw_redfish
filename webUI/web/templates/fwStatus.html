@@ -1,0 +1,172 @@
+{% extends "base.html" %} {% block title %} FW Status {% endblock %} {% block
+styles %}
+<style type="text/css">
+    .status {
+        border: 2px solid #008000;
+
+        border-radius: 10px;
+        margin: 2em 0;
+        padding: 20px;
+        position: relative;
+    }
+
+    .status::before {
+        background-color: #fff;
+        color: #000000;
+        content: attr(data-before);
+        font-weight: bold;
+        left: 1em;
+        padding: 0 0.5em;
+        position: absolute;
+        top: -1em;
+    }
+
+    .tdCenterAlign {
+        text-align: center;
+    }
+
+    .navbar .navbar-nav .nav-link:hover {
+        background-color: #778899;
+        color: #fff;
+    }
+
+    .nav-fwstatus {
+        background-color: #008000 !important;
+        color: #fff !important;
+    }
+
+    .showScroll {
+        overflow-y: scroll;
+    }
+</style>
+
+{% endblock %} {% block content %}
+
+<div class="container-fluid" style="margin-top: 100px">
+    <div class="status">
+        <div class="row">
+            <div class="col-4">
+                <p>Serial Number:</p>
+            </div>
+            <div class="col-4">
+                <p id="SN">ABC-12345678</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4">
+                <p>Model:</p>
+            </div>
+            <div class="col-4">
+                <p id="Model">800KW-001</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-4">
+                <p>Version</p>
+            </div>
+            <div class="col-4">
+                <p id="Version"></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4">
+                <p>Part Number</p>
+            </div>
+            <div class="col-4">
+                <p id="PartNumber"></p>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-4">
+                <p>WebUI</p>
+            </div>
+            <div class="col-4">
+                <p id="WebUI"></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4">
+                <p>SCC_API</p>
+            </div>
+            <div class="col-4">
+                <p id="SCC_API"></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4">
+                <p>SNMP</p>
+            </div>
+            <div class="col-4">
+                <p id="SNMP"></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4">
+                <p>Redfish_API</p>
+            </div>
+            <div class="col-4">
+                <p id="Redfish_API"></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4">
+                <p>Redfish_Server</p>
+            </div>
+            <div class="col-4">
+                <p id="Redfish_Server"></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4">
+                <p>Modbus Server</p>
+            </div>
+            <div class="col-4">
+                <p id="Modbus_Server"></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4">
+                <p>PLC</p>
+            </div>
+            <div class="col-4">
+                <p id="PLC">231120</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} {% block scripts %}
+
+<script>
+    jQuery(document).ready(function () {
+        jQuery(".status").attr("data-before", "Status");
+
+        $.ajax({
+            url: "/read_version",
+            method: "GET",
+            success: function (data) {
+                FW_Info_Version = data["FW_Info_Version"];
+                json_data = data["FW_Info"];
+                plc_version = data["plc_version"];
+
+                $("#Version").text(json_data["Version"]);
+                $("#PartNumber").text(json_data["PartNumber"]);
+                $("#SN").text(json_data["SN"]);
+                $("#Model").text(json_data["Model"]);
+                $("#WebUI").text(FW_Info_Version["WebUI"]);
+                $("#SCC_API").text(FW_Info_Version["SCC_API"]);
+                $("#SNMP").text(FW_Info_Version["SNMP"]);
+                $("#Redfish_API").text(FW_Info_Version["Redfish_API"]);
+                $("#Redfish_Server").text(FW_Info_Version["Redfish_Server"]);
+                $("#Modbus_Server").text(FW_Info_Version["Modbus_Server"]);
+                $("#PLC").text(`0${plc_version}`);
+
+            },
+            error: function (error) {
+                console.error("Error fetching data:", error);
+            },
+        });
+    });
+</script>
+{% endblock %}

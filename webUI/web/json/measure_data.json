@@ -1,0 +1,17 @@
+{
+    "p1_speed": 1,
+    "p2_speed": 1,
+    "p3_speed": 1,
+    "f1": 1,
+    "Temp_ClntSply_broken": 1,
+    "Temp_ClntSplySpare_broken": 1,
+    "Temp_ClntRtn_broken": 1,
+    "Temp_ClntRtnSpare_broken": 1,
+    "Prsr_ClntSply_broken": 1,
+    "Prsr_ClntSplySpare_broken": 1,
+    "Prsr_ClntRtn_broken": 1,
+    "Prsr_ClntRtnSpare_broken": 1,
+    "Prsr_FltIn_broken": 1,
+    "Prsr_FltOut_broken": 1,
+    "Clnt_Flow_broken": 1
+}

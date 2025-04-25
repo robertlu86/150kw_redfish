@@ -1,0 +1,452 @@
+{
+    "Inv1Overload": {
+        "Name": "Inv1Overload",
+        "DisplayName": "Inverter 1 Overload",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 150
+    },
+    "Inv2Overload": {
+        "Name": "Inv2Overload",
+        "DisplayName": "Inverter 2 Overload",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 151
+    },
+    "Inv3Overload": {
+        "Name": "Inv3Overload",
+        "DisplayName": "Inverter 3 Overload",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 152
+    },
+    "FanOverload1": {
+        "Name": "FanOverload1",
+        "DisplayName": "Fan 1 Overload",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 153
+    },
+    "FanOverload2": {
+        "Name": "FanOverload2",
+        "DisplayName": "Fan 2 Overload",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 154
+    },
+    "Inv1Error": {
+        "Name": "Inv1Error",
+        "DisplayName": "Inverter 1 Error",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 155
+    },
+    "Inv2Error": {
+        "Name": "Inv2Error",
+        "DisplayName": "Inverter 2 Error",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 156
+    },
+    "Inv3Error": {
+        "Name": "Inv3Error",
+        "DisplayName": "Inverter 3 Error",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 157
+    },
+    "ATS": {
+        "Name": "ATS",
+        "DisplayName": "ATS",
+        "Status": "OFF",
+        "TrapEnabled": true,
+        "DelayTime": 158
+    },
+    "Inv1SpeedComm": {
+        "Name": "Inv1SpeedCom",
+        "DisplayName": "Inverter 1",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 159
+    },
+    "Inv2SpeedComm": {
+        "Name": "Inv2SpeedComm",
+        "DisplayName": "Inverter 2",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 160
+    },
+    "Inv3SpeedComm": {
+        "Name": "Inv3SpeedComm",
+        "DisplayName": "Inverter 3",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 161
+    },
+    "CoolantFlowRateComm": {
+        "Name": "CoolantFlowRateComm",
+        "DisplayName": "Coolant Flow Meter",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 162
+    },
+    "AmbientTempComm": {
+        "Name": "AmbientTempComm",
+        "DisplayName": "Ambient Temperature (Ta)",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 163
+    },
+    "RelativeHumidComm": {
+        "Name": "RelativeHumidComm",
+        "DisplayName": "Relative Humidity (RH)",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 164
+    },
+    "DewPointComm": {
+        "Name": "DewPointComm",
+        "DisplayName": "Dew Point Temperature (TDp)",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 165
+    },
+    "pHComm": {
+        "Name": "pHComm",
+        "DisplayName": "pH Sensor",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 167
+    },
+    "ConductivityComm": {
+        "Name": "ConductivityComm",
+        "DisplayName": "Conductivity Sensor",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 166
+    },
+    "TurbidityComm": {
+        "Name": "TurbidityComm",
+        "DisplayName": "Turbidity Sensor",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 168
+    },
+    "ATS1Comm": {
+        "Name": "ATS1Comm",
+        "DisplayName": "ATS 1 Communication",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 169
+    },
+    "ATS2Comm": {
+        "Name": "ATS2Comm",
+        "DisplayName": "ATS 2 Communication",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 170
+    },
+    "InstantPowerConsumptionComm": {
+        "Name": "InstantPowerConsumptionComm",
+        "DisplayName": "Power Meter",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 171
+    },
+    "AverageCurrentComm": {
+        "Name": "AverageCurrentComm",
+        "DisplayName": "Average Current",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 172
+    },
+    "Fan1Comm": {
+        "Name": "Fan1Comm",
+        "DisplayName": "Fan Speed 1",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 173
+    },
+    "Fan2Comm": {
+        "Name": "Fan2Comm",
+        "DisplayName": "Fan Speed 2",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 174
+    },
+    "Fan3Comm": {
+        "Name": "Fan3Comm",
+        "DisplayName": "Fan Speed 3",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 175
+    },
+    "Fan4Comm": {
+        "Name": "Fan4Comm",
+        "DisplayName": "Fan Speed 4",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 176
+    },
+    "Fan5Comm": {
+        "Name": "Fan5Comm",
+        "DisplayName": "Fan Speed 5",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 177
+    },
+    "Fan6Comm": {
+        "Name": "Fan6Comm",
+        "DisplayName": "Fan Speed 6",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 178
+    },
+    "Fan7Comm": {
+        "Name": "Fan7Comm",
+        "DisplayName": "Fan Speed 7",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 179
+    },
+    "Fan8Comm": {
+        "Name": "Fan8Comm",
+        "DisplayName": "Fan Speed 8",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 180
+    },
+    "CoolantSupplyTemperatureBroken": {
+        "Name": "CoolantSupplyTemperatureBroken",
+        "DisplayName": "Coolant Supply Temperature (T1)",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 181
+    },
+    "CoolantSupplyTemperatureSpareBroken": {
+        "Name": "CoolantSupplyTemperatureSpareBroken",
+        "DisplayName": "Coolant Supply Temperature Spare (T1sp)",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 182
+    },
+    "CoolantReturnTemperatureBroken": {
+        "Name": "CoolantReturnTemperatureBroken",
+        "DisplayName": "Coolant Return Temperature (T2)",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 183
+    },
+    "CoolantReturnTemperatureSpareBroken": {
+        "Name": "CoolantReturnTemperatureSpareBroken",
+        "DisplayName": "Coolant Return Temperature Spare (T2sp)",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 184
+    },
+    "CoolantSupplyPressureBroken": {
+        "Name": "CoolantSupplyPressureBroken",
+        "DisplayName": "Coolant Supply Pressure (P1)",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 185
+    },
+    "CoolantSupplyPressureSpareBroken": {
+        "Name": "CoolantSupplyPressureSpareBroken",
+        "DisplayName": "Coolant Supply Pressure Spare (P1sp)",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 186
+    },
+    "CoolantReturnPressureBroken": {
+        "Name": "CoolantReturnPressureBroken",
+        "DisplayName": "Coolant Return Pressure (P2)",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 187
+    },
+    "CoolantReturnPressureSpareBroken": {
+        "Name": "CoolantReturnPressureSpareBroken",
+        "DisplayName": "Coolant Return Pressure Spare (P2sp)",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 188
+    },
+    "FilterInletPressureBroken": {
+        "Name": "FilterInletPressureBroken",
+        "DisplayName": "Filter Inlet Pressure (P3)",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 189
+    },
+    "FilterOutletPressureBroken": {
+        "Name": "FilterOutletPressureBroken",
+        "DisplayName": "Filter Outlet Pressure (P4)",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 190
+    },
+    "CoolantFlowRateBroken": {
+        "Name": "CoolantFlowRateBroken",
+        "DisplayName": "Coolant Flow Rate (F1)",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 191
+    },
+    "Leakage1Leak": {
+        "Name": "Leakage1Leak",
+        "DisplayName": "Leakage 1 Leak",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 192
+    },
+    "Leakage1Broken": {
+        "Name": "Leakage1Broken",
+        "DisplayName": "Leakage 1 Broken",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 193
+    },
+    "Level1": {
+        "Name": "Level1",
+        "DisplayName": "Coolant Level 1",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 194
+    },
+    "Level2": {
+        "Name": "Level2",
+        "DisplayName": "Coolant Level 2",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 195
+    },
+    "Level3": {
+        "Name": "Level3",
+        "DisplayName": "Coolant Level 3",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 196
+    },
+    "Power24v1": {
+        "Name": "Power24v1",
+        "DisplayName": "24V Power Supply 1",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 197
+    },
+    "Power24v2": {
+        "Name": "Power24v2",
+        "DisplayName": "24V Power Supply 2",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 198
+    },
+    "Power12v1": {
+        "Name": "Power12v1",
+        "DisplayName": "12V Power Supply 1",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 199
+    },
+    "Power12v2": {
+        "Name": "Power12v2",
+        "DisplayName": "12V Power Supply 2",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 200
+    },
+    "MainMcError": {
+        "Name": "MainMcError",
+        "DisplayName": "Main MC Status",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 201
+    },
+    "Fan1Error": {
+        "Name": "Fan1Error",
+        "DisplayName": "FAN 1 Alarm Status",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 202
+    },
+    "Fan2Error": {
+        "Name": "Fan2Error",
+        "DisplayName": "FAN 2 Alarm Status",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 203
+    },
+    "Fan3Error": {
+        "Name": "Fan3Error",
+        "DisplayName": "FAN 3 Alarm Status",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 204
+    },
+    "Fan4Error": {
+        "Name": "Fan4Error",
+        "DisplayName": "FAN 4 Alarm Status",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 205
+    },
+    "Fan5Error": {
+        "Name": "Fan5Error",
+        "DisplayName": "FAN 5 Alarm Status",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 206
+    },
+    "Fan6Error": {
+        "Name": "Fan6Error",
+        "DisplayName": "FAN 6 Alarm Status",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 207
+    },
+    "Fan7Error": {
+        "Name": "Fan7Error",
+        "DisplayName": "FAN 7 Alarm Status",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 208
+    },
+    "Fan8Error": {
+        "Name": "Fan8Error",
+        "DisplayName": "FAN 8 Alarm Status",
+        "Status": "Error",
+        "TrapEnabled": true,
+        "DelayTime": 209
+    },
+    "RackError": {
+        "Name": "RackError",
+        "DisplayName": "Rack",
+        "TrapEnabled": true,
+        "DelayTime": 210
+    },
+    "LowCoolantLevelWarning": {
+        "Name": "LowCoolantLevelWarning",
+        "DisplayName": "Low Coolant Level Warning",
+        "Status": "Error",
+        "TrapEnabled": true
+    },
+    "PC1Error": {
+        "Name": "PC1Error",
+        "DisplayName": "PC 1 Error",
+        "Status": "Error",
+        "TrapEnabled": true
+    },
+    "PC2Error": {
+        "Name": "PC2Error",
+        "DisplayName": "PC 2 Error",
+        "Status": "Error",
+        "TrapEnabled": true
+    },
+    "ControlUnit": {
+        "Name": "ControlUnit",
+        "DisplayName": "PLC",
+        "Status": "Good",
+        "TrapEnabled": true
+    }
+}

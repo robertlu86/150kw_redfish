@@ -1,0 +1,1337 @@
+GATEWAY DEFINITIONS ::= BEGIN
+IMPORTS
+       MODULE-IDENTITY, OBJECT-TYPE
+         FROM SNMPv2-SMI
+         DisplayString, TimeStamp
+         FROM SNMPv2-TC
+         enterprises
+         FROM RFC1155-SMI;
+
+ITGSystem OBJECT IDENTIFIER ::= { enterprises 10876 }
+gateway OBJECT IDENTIFIER ::= { ITGSystem 1 }
+application OBJECT IDENTIFIER ::= { gateway 1 }
+data OBJECT IDENTIFIER ::= { application 1 }
+
+hellostring OBJECT-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION ""
+    ::= { data 1 }
+
+countin OBJECT-TYPE
+    SYNTAX INTEGER
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION ""
+    ::= { data 2 }
+
+countout OBJECT-TYPE
+    SYNTAX INTEGER
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION ""
+    ::= { data 3 }
+
+bufferin OBJECT IDENTIFIER ::= { data 4 }
+bufferinval OBJECT IDENTIFIER ::= { bufferin 1 }
+
+CoolantSupplyTemperature OBJECT-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Coolant Supply Temperature"
+    ::= { bufferinval 1 }
+
+CoolantSupplyTemperatureSpare OBJECT-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Coolant Supply Temperature Spare"
+    ::= { bufferinval 2 }
+
+CoolantReturnTemperature OBJECT-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Coolant Return Temperature"
+    ::= { bufferinval 3 }
+
+CoolantReturnTemperatureSpare OBJECT-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Coolant Return Temperature Spare"
+    ::= { bufferinval 4 }
+
+CoolantSupplyPressure OBJECT-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Coolant Supply Pressure"
+    ::= { bufferinval 5 }
+
+CoolantSupplyPressureSpare OBJECT-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Coolant Supply Pressure Spare"
+    ::= { bufferinval 6 }
+
+CoolantReturnPressure OBJECT-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Coolant Return Pressure"
+    ::= { bufferinval 7 }
+
+CoolantReturnPressureSpare OBJECT-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Coolant Return Pressure Spare"
+    ::= { bufferinval 8 }
+
+FilterInletPressure OBJECT-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Filter Inlet Pressure"
+    ::= { bufferinval 9 }
+
+FilterOutletPressure OBJECT-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Filter Outlet Pressure"
+    ::= { bufferinval 10 }
+
+CoolantFlowRate OBJECT-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Coolant Flow Rate"
+    ::= { bufferinval 11 }
+
+AmbientTemp OBJECT-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Ambient Temperature"
+    ::= { bufferinval 12 }
+
+RelativeHumid OBJECT-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Relative Humidity"
+    ::= { bufferinval 13 }
+
+DewPoint OBJECT-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Dew Point Temperature"
+    ::= { bufferinval 14 }
+
+pH OBJECT-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "pH"
+    ::= { bufferinval 15 }
+
+Conductivity OBJECT-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Conductivity"
+    ::= { bufferinval 16 }
+
+Turbidity OBJECT-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Turbidity"
+    ::= { bufferinval 17 }
+
+InstantPowerConsumption OBJECT-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Instant Power Consumption"
+    ::= { bufferinval 18 }
+
+AverageCurrent OBJECT-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Average Current"
+    ::= { bufferinval 19 }
+
+Inv1Speed OBJECT-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Inv1 Speed"
+    ::= { bufferinval 20 }
+
+Inv2Speed OBJECT-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Inv2 Speed"
+    ::= { bufferinval 21 }
+
+Inv3Speed OBJECT-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Inv3 Speed"
+    ::= { bufferinval 22 }
+
+HeatCapacity OBJECT-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Heat Capacity"
+    ::= { bufferinval 23 }
+
+FanSpeed1 OBJECT-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Fan Speed 1"
+    ::= { bufferinval 24 }
+
+FanSpeed2 OBJECT-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Fan Speed 2"
+    ::= { bufferinval 25 }
+
+FanSpeed3 OBJECT-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Fan Speed 3"
+    ::= { bufferinval 26 }
+
+FanSpeed4 OBJECT-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Fan Speed 4"
+    ::= { bufferinval 27 }
+
+FanSpeed5 OBJECT-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Fan Speed 5"
+    ::= { bufferinval 28 }
+
+FanSpeed6 OBJECT-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Fan Speed 6"
+    ::= { bufferinval 29 }
+
+FanSpeed7 OBJECT-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Fan Speed 7"
+    ::= { bufferinval 30 }
+
+FanSpeed8 OBJECT-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Fan Speed 8"
+    ::= { bufferinval 31 }
+
+ATS1 OBJECT-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "ATS1"
+    ::= { bufferinval 32 }
+
+ATS2 OBJECT-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "ATS2"
+    ::= { bufferinval 33 }
+
+bufferout OBJECT IDENTIFIER ::= { data 5 }
+
+bufferoutblk1 OBJECT-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION "data block n.1"
+    ::= { bufferout 1 }
+
+bufferoutblk2 OBJECT-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION "data block n.2"
+    ::= { bufferout 2 }
+
+bufferoutblk3 OBJECT-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION "data block n.3"
+    ::= { bufferout 3 }
+
+bufferoutblk4 OBJECT-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION "data block n.4"
+    ::= { bufferout 4 }
+
+bufferoutblk5 OBJECT-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION "data block n.5"
+    ::= { bufferout 5 }
+
+bufferoutblk6 OBJECT-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION "data block n.6"
+    ::= { bufferout 6 }
+
+bufferoutblk7 OBJECT-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION "data block n.7"
+    ::= { bufferout 7 }
+
+bufferoutblk8 OBJECT-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-write
+    STATUS current
+    DESCRIPTION "data block n.8"
+    ::= { bufferout 8 }
+
+bufferoutval OBJECT IDENTIFIER ::= { bufferout 9 }
+
+traps OBJECT IDENTIFIER ::= { application 2 }
+trapsval OBJECT IDENTIFIER ::= { traps 1 }
+
+M100 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Coolant Supply Temperature Over Range (High) Warning (T1)"
+    ::= { trapsval 1 }
+
+M101 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Coolant Supply Temperature Spare Over Range (High) Warning (T1sp)"
+    ::= { trapsval 2 }
+
+M102 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Coolant Return Temperature Over Range (High) Warning (T2)"
+    ::= { trapsval 3 }
+
+M103 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Coolant Return Temperature Over Range Spare (High) Warning (T2sp)"
+    ::= { trapsval 4 }
+
+M104 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Coolant Supply Pressure Over Range (High) Warning (P1)"
+    ::= { trapsval 5 }
+
+M105 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Coolant Supply Pressure Spare Over Range (High) Warning (P1sp)"
+    ::= { trapsval 6 }
+
+M106 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Coolant Return Pressure Over Range (High) Warning (P2)"
+    ::= { trapsval 7 }
+
+M107 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Coolant Return Pressure Spare Over Range (High) Warning (P2sp)"
+    ::= { trapsval 8 }
+
+M108 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Filter Inlet Pressure Over Range (Low) Warning (P3)"
+    ::= { trapsval 9 }
+
+M109 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Filter Inlet Pressure Over Range (High) Warning (P3)"
+    ::= { trapsval 10 }
+
+M110 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Filter Outlet Pressure Over Range (High) Warning (P4)"
+    ::= { trapsval 11 }
+
+M111 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Coolant Flow Rate (Low) Warning (F1)"
+    ::= { trapsval 12 }
+
+M112 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Ambient Temperature Over Range (Low) Warning (T a)"
+    ::= { trapsval 13 }
+
+M113 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Ambient Temperature Over Range (High) Warning (T a)"
+    ::= { trapsval 14 }
+
+M114 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Relative Humidity Over Range (Low) Warning (RH)"
+    ::= { trapsval 15 }
+
+M115 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Relative Humidity Over Range (High) Warning (RH)"
+    ::= { trapsval 16 }
+
+M116 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Condensation Warning (T Dp)"
+    ::= { trapsval 17 }
+
+M117 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "pH Over Range (Low) Warning (PH)"
+    ::= { trapsval 18 }
+
+M118 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "pH Over Range (High) Warning (PH)"
+    ::= { trapsval 19 }
+
+M119 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Conductivity Over Range (Low) Warning (CON)"
+    ::= { trapsval 20 }
+
+M120 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Conductivity Over Range (High) Warning (CON)"
+    ::= { trapsval 21 }
+
+M121 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Turbidity Over Range (Low) Warning (Tur)"
+    ::= { trapsval 22 }
+
+M122 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Turbidity Over Range (High) Warning (Tur)"
+    ::= { trapsval 23 }
+
+M123 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Average Current Over Range (High) Warning"
+    ::= { trapsval 24 }
+
+M200 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Coolant Supply Temperature Over Range (High) Alert (T1)"
+    ::= { trapsval 33 }
+
+M201 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Coolant Supply Temperature Spare Over Range (High) Alert (T1sp)"
+    ::= { trapsval 34 }
+
+M202 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Coolant Return Temperature Over Range (High) Alert (T2)"
+    ::= { trapsval 35 }
+
+M203 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Coolant Return Temperature Over Range Spare (High) Alert (T2sp)"
+    ::= { trapsval 36 }
+
+M204 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Coolant Supply Pressure Over Range (High) Alert (P1)"
+    ::= { trapsval 37 }
+
+M205 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Coolant Supply Pressure Spare Over Range (High) Alert (P1sp)"
+    ::= { trapsval 38 }
+
+M206 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Coolant Return Pressure Over Range (High) Alert (P2)"
+    ::= { trapsval 39 }
+
+M207 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Coolant Return Pressure Spare Over Range (High) Alert (P2sp)"
+    ::= { trapsval 40 }
+
+M208 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Filter Inlet Pressure Over Range (Low) Alert (P3)"
+    ::= { trapsval 41 }
+
+M209 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Filter Inlet Pressure Over Range (High) Alert (P3)"
+    ::= { trapsval 42 }
+
+M210 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Filter Outlet Pressure Over Range (High) Alert (P4)"
+    ::= { trapsval 43 }
+
+M211 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Coolant Flow Rate (Low) Alert (F1)"
+    ::= { trapsval 44 }
+
+M212 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Ambient Temperature Over Range (Low) Alert (T a)"
+    ::= { trapsval 45 }
+
+M213 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Ambient Temperature Over Range (High) Alert (T a)"
+    ::= { trapsval 46 }
+
+M214 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Relative Humidity Over Range (Low) Alert (RH)"
+    ::= { trapsval 47 }
+
+M215 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Relative Humidity Over Range (High) Alert (RH)"
+    ::= { trapsval 48 }
+
+M216 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Condensation Alert (T Dp)"
+    ::= { trapsval 49 }
+
+M217 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "pH Over Range (Low) Alert (PH)"
+    ::= { trapsval 50 }
+
+M218 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "pH Over Range (High) Alert (PH)"
+    ::= { trapsval 51 }
+
+M219 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Conductivity Over Range (Low) Alert (CON)"
+    ::= { trapsval 52 }
+
+M220 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Conductivity Over Range (High) Alert (CON)"
+    ::= { trapsval 53 }
+
+M221 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Turbidity Over Range (Low) Alert (Tur)"
+    ::= { trapsval 54 }
+
+M222 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Turbidity Over Range (High) Alert (Tur)"
+    ::= { trapsval 55 }
+
+M223 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Average Current Over Range (High) Alert"
+    ::= { trapsval 56 }
+
+M300 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Coolant Pump1 Inverter Overload"
+    ::= { trapsval 65 }
+
+M301 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Coolant Pump2 Inverter Overload"
+    ::= { trapsval 66 }
+
+M302 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Coolant Pump3 Inverter Overload"
+    ::= { trapsval 67 }
+
+M303 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Fan1 Inverter Overload"
+    ::= { trapsval 68 }
+
+M304 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Fan2 Inverter Overload"
+    ::= { trapsval 69 }
+
+M305 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Coolant Pump1 Inverter Error"
+    ::= { trapsval 70 }
+
+M306 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Coolant Pump2 Inverter Error"
+    ::= { trapsval 71 }
+
+M307 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Coolant Pump3 Inverter Error"
+    ::= { trapsval 72 }
+
+M308 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Factory Power Status"
+    ::= { trapsval 73 }
+
+M309 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Inverter1 Communication Error"
+    ::= { trapsval 74 }
+
+M310 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Inverter2 Communication Error"
+    ::= { trapsval 75 }
+
+M311 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Inverter3 Communication Error"
+    ::= { trapsval 76 }
+
+
+M313 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Ambient Sensor (Ta) Communication Error"
+::= { trapsval 77 }
+
+M314 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Relative Humidity (RH) Communication Error"
+::= { trapsval 78 }
+
+M315 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Dew Point Temperature (TDp) Communication Error"
+::= { trapsval 79 }
+
+M316 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "pH (PH) Sensor Communication Error"
+::= { trapsval 80 }
+
+M317 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Conductivity (CON) Sensor Communication Error"
+::= { trapsval 81 }
+
+M318 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Turbidity (Tur) Sensor Communication Error"
+::= { trapsval 82 }
+
+M319 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "ATS 1 Communication Error"
+::= { trapsval 83 }
+
+M320 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "ATS 2 Communication Error"
+::= { trapsval 84 }
+
+M321 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Power Meter Communication Error"
+::= { trapsval 85 }
+
+M322 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Average Current Communication Error"
+::= { trapsval 86 }
+
+M323 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Fan 1 Communication Error"
+::= { trapsval 87 }
+
+M324 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Fan 2 Communication Error"
+::= { trapsval 88 }
+
+M325 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Fan 3 Communication Error"
+::= { trapsval 89 }
+
+M326 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Fan 4 Communication Error"
+::= { trapsval 90 }
+
+M327 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Fan 5 Communication Error"
+::= { trapsval 91 }
+
+M328 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Fan 6 Communication Error"
+::= { trapsval 92 }
+
+M329 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Fan 7 Communication Error"
+::= { trapsval 93 }
+
+M330 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Fan 8 Communication Error"
+::= { trapsval 94 }
+
+M331 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Coolant Supply Temperature (T1) Broken Error"
+::= { trapsval 95 }
+
+M332 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Coolant Supply Temperature Spare (T1sp) Broken Error"
+::= { trapsval 96 }
+
+M333 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Coolant Return Temperature (T2) Broken Error"
+::= { trapsval 97 }
+
+M334 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Coolant Return Temperature Spare (T2sp) Broken Error"
+::= { trapsval 98 }
+
+M335 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Coolant Supply Pressure (P1) Broken Error"
+::= { trapsval 99 }
+
+M336 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Coolant Supply Pressure Spare (P1sp) Broken Error"
+::= { trapsval 100 }
+
+M337 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Coolant Return Pressure (P2) Broken Error"
+::= { trapsval 101 }
+
+M338 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Coolant Return Pressure Spare (P2sp) Broken Error"
+::= { trapsval 102 }
+
+M339 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Filter Inlet Pressure (P3) Broken Error"
+::= { trapsval 103 }
+
+M340 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Filter Outlet Pressure (P4) Broken Error"
+::= { trapsval 104 }
+
+M341 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Coolant Flow Rate (F1) Broken Error"
+::= { trapsval 105 }
+
+M342 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "PC1 Error"
+::= { trapsval 106 }
+
+M343 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "PC2 Error"
+::= { trapsval 107 }
+
+M344 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Leakage 1 Leak Error"
+::= { trapsval 108 }
+
+M345 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Leakage 1 Broken Error"
+::= { trapsval 109 }
+
+M346 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Coolant Level 1 Error"
+::= { trapsval 110 }
+
+M347 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Coolant Level 2 Error"
+::= { trapsval 111 }
+
+M348 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Coolant Level 3 Error"
+::= { trapsval 112 }
+
+M349 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "24V Power Supply 1 Error"
+::= { trapsval 113 }
+
+M350 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "24V Power Supply 2 Error"
+::= { trapsval 114 }
+
+M351 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "12V Power Supply 1 Error"
+::= { trapsval 115 }
+
+M352 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "12V Power Supply 2 Error"
+::= { trapsval 116 }
+
+M353 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Main MC Status Error"
+::= { trapsval 117 }
+
+M354 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "FAN 1 Alarm Status Error"
+::= { trapsval 118 }
+
+M355 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "FAN 2 Alarm Status Error"
+::= { trapsval 119 }
+
+M356 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "FAN 3 Alarm Status Error"
+::= { trapsval 120 }
+
+M357 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "FAN 4 Alarm Status Error"
+::= { trapsval 121 }
+
+M358 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "FAN 5 Alarm Status Error"
+::= { trapsval 122 }
+
+M359 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "FAN 6 Alarm Status Error"
+::= { trapsval 123 }
+
+M360 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "FAN 7 Alarm Status Error"
+::= { trapsval 124 }
+
+M361 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "FAN 8 Alarm Status Error"
+::= { trapsval 125 }
+
+M362 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Stop Due to Low Coolant Level"
+::= { trapsval 126 }
+
+M363 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "PLC Communication Broken Error"
+::= { trapsval 127 }
+
+M400 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Rack1 broken"
+::= { trapsval 128 }
+
+M401 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Rack2 broken"
+::= { trapsval 129 }
+
+M402 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Rack3 broken"
+::= { trapsval 130 }
+
+M403 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Rack4 broken"
+::= { trapsval 131 }
+
+M404 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Rack5 broken"
+::= { trapsval 132 }
+
+M405 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Rack6 broken"
+::= { trapsval 133 }
+
+M406 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Rack7 broken"
+::= { trapsval 134 }
+
+M407 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Rack8 broken"
+::= { trapsval 135 }
+
+M408 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Rack9 broken"
+::= { trapsval 136 }
+
+M409 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Rack10 broken"
+::= { trapsval 137 }
+
+M410 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Rack1 leakage"
+::= { trapsval 138 }
+
+M411 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Rack2 leakage"
+::= { trapsval 139 }
+
+M412 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Rack3 leakage"
+::= { trapsval 140 }
+
+M413 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Rack4 leakage"
+::= { trapsval 141 }
+
+M414 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Rack5 leakage"
+::= { trapsval 142 }
+
+M415 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Rack6 leakage"
+::= { trapsval 143 }
+
+M416 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Rack7 leakage"
+::= { trapsval 144 }
+
+M417 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Rack8 leakage"
+::= { trapsval 145 }
+
+M418 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Rack9 leakage"
+::= { trapsval 146 }
+
+M419 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Rack10 leakage"
+::= { trapsval 147 }
+
+M420 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Rack1 error"
+::= { trapsval 148 }
+
+M421 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Rack2 error"
+::= { trapsval 149 }
+
+M422 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Rack3 error"
+::= { trapsval 150 }
+
+M423 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Rack4 error"
+::= { trapsval 151 }
+
+M424 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Rack5 error"
+::= { trapsval 152 }
+
+M425 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Rack6 error"
+::= { trapsval 153 }
+
+M426 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Rack7 error"
+::= { trapsval 154 }
+
+M427 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Rack8 error"
+::= { trapsval 155 }
+
+M428 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Rack9 error"
+::= { trapsval 156 }
+
+M429 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Rack10 error"
+::= { trapsval 157 }
+
+severity OBJECT IDENTIFIER ::= { traps 2 }
+
+severityLevel OBJECT-TYPE
+    SYNTAX      INTEGER {
+        warning(1),
+        alert(2),
+        error(3),
+        rack(4)
+    }
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION "Severity level of the event."
+    ::= { severity 1 }
+
+
+
+    END

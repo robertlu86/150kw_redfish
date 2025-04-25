@@ -1,0 +1,732 @@
+{% extends "base.html" %} {% block title %} ErrorLogs {% endblock %} {% block
+styles %}
+
+<style type="text/css">
+    .nav-error_logs_table {
+        background-color: #008000 !important;
+        color: #fff !important;
+    }
+
+    .error_container {
+        display: flex;
+
+        justify-content: space-between;
+    }
+
+    .tableContainer,
+    .tableFilteredContainer {
+        width: 49%;
+
+        height: 100%;
+
+        border: 2px solid #008000;
+        border-radius: 10px;
+
+        padding: 20px;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .tableContainer::before,
+    .tableFilteredContainer::before {
+        background-color: #fff;
+        color: #000000;
+        content: attr(data-before);
+        font-weight: bold;
+        left: 1em;
+        padding: 0 0.5em;
+        position: absolute;
+        top: -1em;
+    }
+
+    .signalTable {
+        width: 100%;
+
+        overflow-y: auto;
+
+        table-layout: fixed;
+    }
+
+    .signalTable th,
+    .th_a,
+    .signalTable td {
+        width: 15%;
+
+        text-align: center !important;
+
+        padding: 8px;
+
+        height: 3rem;
+    }
+
+    .hidden-column {
+        display: none;
+    }
+
+    .record-checkbox-all {
+        width: 20px;
+        height: 20px;
+    }
+
+    .record-checkbox {
+        width: 20px;
+        height: 20px;
+    }
+
+    .select-all-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 10px;
+        font-size: 1rem;
+    }
+
+    #pagination-controls {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .signalTable tbody tr:nth-child(even) {
+        background-color: #ffffff;
+    }
+
+    .signalTable tbody tr:nth-child(odd) {
+        background-color: #e9e9e9;
+    }
+
+    .signalTable tbody tr:hover {
+        background-color: #e0e0e0;
+        color: #000;
+    }
+
+    .delete-btn {
+        margin-right: 10px;
+    }
+
+    .alert-text {
+        color: rgb(200, 0, 0);
+        font-weight: bold;
+        background-color: hsla(0, 100%, 50%, 0.377);
+        padding: 5px;
+        border-radius: 5px;
+    }
+
+    .error-text {
+        color: gray;
+        background-color: rgba(128, 128, 128, 0.463);
+        font-weight: bold;
+        padding: 5px;
+        border-radius: 5px;
+    }
+
+    .search_container {
+        padding: 20px;
+        display: flex;
+        justify-content: end;
+    }
+
+    .dropdown2 {
+        font-size: 18px;
+        border-color: #003600;
+        border-radius: 10px;
+        padding: 5px;
+    }
+</style>
+
+{% endblock %} {% block content %}
+
+<body>
+    <div class="container-fluid" style="margin-top: 100px; margin-bottom: 60px;">
+        <div class="search_container">
+            <div>
+                <input type="text" id="searchInput" class="keyboard_text" placeholder="Search" />&nbsp;
+                <button id="searchButton" class="btn btn-outline-success">
+                    <i class="fas fa-search"></i></button>&nbsp;
+                <button id="clear-search-button" class="btn btn-outline-success">
+                    <i class="fas fa-sync"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="error_container">
+            <div class="tableFilteredContainer">
+                <table id="filteredSignalTable" class="signalTable">
+                    <thead>
+                        <tr>
+                            <th class="">Signal Name</th>
+                            <th class="th_a">Occur time</th>
+                            <th class="th_a">Restore Time</th>
+                            <th class="th_a">Severity</th>
+                            <th class="th_a">Message</th>
+                            <th class="th_a">
+                                <div class="">
+                                    Select All &nbsp;&nbsp;
+                                    <div>
+                                        <input class="record-checkbox-all" type="checkbox" id="filtered-select-all" />
+                                    </div>
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <div class="d-flex mt-2">
+                    <div id="pagination-controls " class="col-10 d-flex justify-content-start align-items-center">
+                        <span id="pagination-buttons-filtered" class="col-7 d-flex justify-content-center"></span>
+                        <span>Total Records&nbsp;:&nbsp; </span><span id="total-records-filtered">0</span>
+                    </div>
+                    <div class="col-2 d-flex justify-content-end">
+                        <button class="delete-filter-btn btn btn-danger">
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="tableContainer">
+                <table id="signalTable" class="signalTable">
+                    <thead>
+                        <tr>
+                            <th class="">Signal Name</th>
+                            <th class="th_a">Occur time</th>
+                            <th class="th_a">Restore Time</th>
+                            <th class="th_a">Severity</th>
+                            <th class="th_a">Message</th>
+                            <th class="th_a">
+                                <div class="">
+                                    Select All &nbsp;&nbsp;
+                                    <div>
+                                        <input class="record-checkbox-all" type="checkbox" id="select-all" />
+                                    </div>
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <div class="d-flex mt-2">
+                    <div id="pagination-controls " class="col-10 d-flex justify-content-start align-items-center">
+                        <span id="pagination-buttons-all" class="col-7 d-flex justify-content-center"></span>
+                        <span>Total Records&nbsp;:&nbsp; </span><span id="total-records">0</span>
+                    </div>
+
+                    <div class="col-2 d-flex justify-content-end">
+                        <button class="delete-btn btn btn-danger">
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+{% endblock %} {% block scripts %}
+<script>
+    let selectAllStatus = {
+        signalTable: false,
+        filteredSignalTable: false,
+    };
+    let selectedSignalsTable1 = {};
+    let selectedSignalsTable2 = {};
+
+    let searchKeyword = "";
+    $(document).ready(function () {
+        jQuery(".tableContainer").attr("data-before", "All Error");
+        jQuery(".tableFilteredContainer").attr("data-before", "Shutdown Error");
+
+        let currentPageAll = 1;
+        const recordsPerPage = 9;
+        let totalPagesAll = 1;
+
+        let currentPageFiltered = 1;
+        let totalPagesFiltered = 1;
+
+        let table = $("#signalTable").DataTable({
+            columns: [
+                { data: "signal_name", visible: false },
+                { data: "on_time" },
+                { data: "off_time" },
+                {
+                    data: "severity",
+                    defaultContent: "",
+                    render: function (data, type, row) {
+                        if (row.signal_name.startsWith("M2")) {
+                            return '<span class="alert-text">ALERT</span>';
+                        } else if (row.signal_name.startsWith("M3")) {
+                            return '<span class="error-text">ERROR</span>';
+                        } else {
+                            return "";
+                        }
+                    },
+                },
+                { data: "signal_value" },
+                {
+                    data: null,
+                    defaultContent:
+                        '<input type="checkbox" class="record-checkbox">',
+                },
+            ],
+            columnDefs: [
+                { width: "20%", targets: 1 },
+                { width: "20%", targets: 2 },
+                { width: "20%", targets: 3 },
+                { width: "50%", targets: 4 },
+                { width: "10%", targets: 5 },
+            ],
+            searching: false,
+            info: false,
+            autoWidth: false,
+            scrollCollapse: true,
+            paging: false,
+            ordering: false,
+        });
+
+        let filteredSignalTable = $("#filteredSignalTable").DataTable({
+            columns: [
+                { data: "signal_name", visible: false },
+                { data: "on_time" },
+                { data: "off_time" },
+                {
+                    data: "severity",
+                    defaultContent: "",
+                    render: function (data, type, row) {
+                        if (row.signal_name.startsWith("M2")) {
+                            return '<span class="alert-text">ALERT</span>';
+                        } else if (row.signal_name.startsWith("M3")) {
+                            return '<span class="error-text">ERROR</span>';
+                        } else {
+                            return "";
+                        }
+                    },
+                },
+                { data: "signal_value" },
+                {
+                    data: null,
+                    defaultContent:
+                        '<input type="checkbox" class="record-checkbox">',
+                },
+            ],
+            columnDefs: [
+                { width: "20%", targets: 1 },
+                { width: "20%", targets: 2 },
+                { width: "20%", targets: 3 },
+                { width: "50%", targets: 4 },
+                { width: "10%", targets: 5 },
+            ],
+            searching: false,
+            info: false,
+            autoWidth: false,
+            scrollCollapse: true,
+            paging: false,
+            ordering: false,
+        });
+
+        function updateSignalTable(page) {
+            let requestUrl = `/get_signal_records?page=${page}&limit=${recordsPerPage}`;
+            if (searchKeyword && searchKeyword.trim() !== "") {
+                requestUrl += `&search=${encodeURIComponent(
+                    searchKeyword.trim()
+                )}`;
+            }
+
+            $.ajax({
+                url: requestUrl,
+                method: "GET",
+                loader: false,
+                success: function (data) {
+                    table.clear();
+                    $.each(data.records, function (index, record) {
+                        record.off_time = record.off_time
+                            ? record.off_time
+                            : "-";
+                        table.row.add(record);
+                    });
+                    table.draw();
+
+                    totalPagesAll = data.total_pages;
+                    currentPageAll = page;
+                    totalRecordsAll = data.total_records;
+                    $("#total-records").text(`${totalRecordsAll}`);
+                    $("#pagination-info-all").text(
+                        `Total pages: ${totalPagesAll}`
+                    );
+                    generatePaginationButtons(
+                        "#pagination-buttons-all",
+                        updateSignalTable,
+                        currentPageAll,
+                        totalPagesAll
+                    );
+
+                    restoreCheckboxStates(
+                        table,
+                        "#signalTable",
+                        selectedSignalsTable1
+                    );
+                },
+                error: function (error) {
+                    console.error("Error loading data:", error);
+                },
+            });
+        }
+
+        function updatefilteredSignalTable(page) {
+            let requestUrlFilter = `/get_downtime_signal_records?page=${page}&limit=${recordsPerPage}`;
+            if (searchKeyword && searchKeyword.trim() !== "") {
+                requestUrlFilter += `&search=${encodeURIComponent(
+                    searchKeyword.trim()
+                )}`;
+            }
+            $.ajax({
+                url: requestUrlFilter,
+                method: "GET",
+                loader: false,
+                success: function (data) {
+                    filteredSignalTable.clear();
+                    $.each(data.records, function (index, record) {
+                        record.off_time = record.off_time
+                            ? record.off_time
+                            : "-";
+                        filteredSignalTable.row.add(record);
+                    });
+                    filteredSignalTable.draw();
+                    totalRecordsFiltered = data.total_records;
+                    totalPagesFiltered = data.total_pages;
+                    currentPageFiltered = page;
+                    $("#total-records-filtered").text(
+                        `${totalRecordsFiltered}`
+                    );
+
+                    $("#pagination-info-filtered").text(
+                        `Total pages: ${totalPagesFiltered}`
+                    );
+                    generatePaginationButtons(
+                        "#pagination-buttons-filtered",
+                        updatefilteredSignalTable,
+                        currentPageFiltered,
+                        totalPagesFiltered
+                    );
+
+                    restoreCheckboxStates(
+                        filteredSignalTable,
+                        "#filteredSignalTable",
+                        selectedSignalsTable2
+                    );
+                },
+                error: function (error) {
+                    console.error("Error loading data:", error);
+                },
+            });
+        }
+
+        function generatePaginationButtons(
+            containerId,
+            updateFunction,
+            currentPage,
+            totalPages
+        ) {
+            const paginationContainer = $(containerId);
+            paginationContainer.empty();
+
+            const startPage = Math.max(1, currentPage - 2);
+            const endPage = Math.min(totalPages, currentPage + 2);
+
+            if (currentPage > 1) {
+                const prevButton = $("<button></button>")
+                    .text("<")
+                    .addClass("prev-page btn btn-outline-success mx-1")
+                    .on("click", function () {
+                        updateFunction(currentPage - 1);
+                    });
+                paginationContainer.append(prevButton);
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                const button = $("<button></button>")
+                    .text(i)
+                    .attr("data-page", i)
+                    .addClass("pagination-button btn btn-outline-success mx-1")
+                    .toggleClass("active", i === currentPage);
+
+                button.on("click", function () {
+                    const page = $(this).data("page");
+                    updateFunction(page);
+                });
+
+                paginationContainer.append(button);
+            }
+
+            if (currentPage < totalPages) {
+                const nextButton = $("<button></button>")
+                    .text(">")
+                    .addClass("next-page btn btn-outline-success mx-1")
+                    .on("click", function () {
+                        updateFunction(currentPage + 1);
+                    });
+                paginationContainer.append(nextButton);
+            }
+        }
+
+        function deleteSelectedRecords() {
+            let signalsToDelete = [];
+            let unresolvedSignals = [];
+
+            $("#signalTable tbody .record-checkbox:checked").each(function () {
+                let data = table.row($(this).closest("tr")).data();
+
+                if (!data.off_time || data.off_time == "-") {
+                    unresolvedSignals.push({
+                        signal_name: data.signal_name,
+                        on_time: data.on_time,
+                        off_time: data.off_time,
+                    });
+                } else {
+                    signalsToDelete.push({
+                        signal_name: data.signal_name,
+                        on_time: data.on_time,
+                        off_time: data.off_time,
+                    });
+                }
+            });
+
+            if (unresolvedSignals.length > 0) {
+                Swal.fire({
+                    title: "Warning",
+                    text: " Unresolved signals will not be deleted.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+            }
+            if (signalsToDelete.length > 0) {
+                $.ajax({
+                    url: "/delete_signal_records",
+                    type: "POST",
+                    loader: false,
+
+                    contentType: "application/json",
+                    data: JSON.stringify({ signals: signalsToDelete }),
+                    success: function (response) {
+                        Swal.fire({
+                            title: "Success",
+                            text: response.message,
+                            icon: "success",
+                            confirmButtonText: "OK",
+                        }).then(() => {
+                            signalsToDelete.forEach((signal) => {
+                                let key = `${signal.signal_name}-${signal.on_time}`;
+                                delete selectedSignalsTable1[key];
+                            });
+                            location.reload();
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                        Swal.fire({
+                            title: "Error",
+                            text: "Error deleting records",
+                            icon: "error",
+                            confirmButtonText: "OK",
+                        });
+                    },
+                });
+            } else if (unresolvedSignals.length === 0) {
+                Swal.fire({
+                    title: "Warning",
+                    text: "Please select records to delete",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+            }
+        }
+
+        function deleteSelectedFilterRecords() {
+            let signalsToDelete = [];
+            let unresolvedFilterSignals = [];
+
+            $("#filteredSignalTable tbody .record-checkbox:checked").each(
+                function () {
+                    let data = filteredSignalTable
+                        .row($(this).closest("tr"))
+                        .data();
+
+                    if (!data.off_time || data.off_time == "-") {
+                        unresolvedFilterSignals.push({
+                            signal_name: data.signal_name,
+                            on_time: data.on_time,
+                            off_time: data.off_time,
+                        });
+                    } else {
+                        signalsToDelete.push({
+                            signal_name: data.signal_name,
+                            on_time: data.on_time,
+                            off_time: data.off_time,
+                        });
+                    }
+                }
+            );
+
+            if (unresolvedFilterSignals.length > 0) {
+                Swal.fire({
+                    title: "Warning",
+                    text: "Unresolved signals will not be deleted.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+            }
+            if (signalsToDelete.length > 0) {
+                $.ajax({
+                    url: "/delete_downtime_signal_records",
+                    type: "POST",
+                    loader: false,
+
+                    contentType: "application/json",
+                    data: JSON.stringify({ signals: signalsToDelete }),
+                    success: function (response) {
+                        Swal.fire({
+                            title: "Success",
+                            text: response.message,
+                            icon: "success",
+                            confirmButtonText: "OK",
+                        }).then(() => {
+                            signalsToDelete.forEach((signal) => {
+                                let key = `${signal.signal_name}-${signal.on_time}`;
+                                delete selectedSignalsTable2[key];
+                            });
+                            location.reload();
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                        Swal.fire({
+                            title: "Error",
+                            text: "Error deleting records",
+                            icon: "error",
+                            confirmButtonText: "OK",
+                        });
+                    },
+                });
+            } else {
+                Swal.fire({
+                    title: "Warning",
+                    text: "Please select records to delete",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+            }
+        }
+
+        $("#select-all").on("change", function () {
+            selectAllStatus.signalTable = this.checked;
+            $("#signalTable tbody .record-checkbox").prop(
+                "checked",
+                this.checked
+            );
+            $("#signalTable tbody .record-checkbox").each(function () {
+                let data = table.row($(this).closest("tr")).data();
+                let key = `${data.signal_name}-${data.on_time}`;
+                selectedSignalsTable1[key] = this.checked;
+            });
+        });
+
+        $("#filtered-select-all").on("change", function () {
+            selectAllStatus.filteredSignalTable = this.checked;
+            $("#filteredSignalTable tbody .record-checkbox").prop(
+                "checked",
+                this.checked
+            );
+            $("#filteredSignalTable tbody .record-checkbox").each(function () {
+                let data = filteredSignalTable
+                    .row($(this).closest("tr"))
+                    .data();
+                let key = `${data.signal_name}-${data.on_time}`;
+                selectedSignalsTable2[key] = this.checked;
+            });
+        });
+
+        function restoreCheckboxStates(
+            dataTable,
+            tableSelector,
+            selectedSignals
+        ) {
+            $(`${tableSelector} tbody .record-checkbox`).each(function () {
+                let signal = dataTable
+                    .row($(this).closest("tr"))
+                    .data().signal_name;
+                let on_time = dataTable
+                    .row($(this).closest("tr"))
+                    .data().on_time;
+                let key = `${signal}-${on_time}`;
+                $(this).prop("checked", selectedSignals[key] || false);
+            });
+
+            $(`${tableSelector} .record-checkbox`).on("change", function () {
+                let signal = dataTable
+                    .row($(this).closest("tr"))
+                    .data().signal_name;
+                let on_time = dataTable
+                    .row($(this).closest("tr"))
+                    .data().on_time;
+                let key = `${signal}-${on_time}`;
+                selectedSignals[key] = $(this).prop("checked");
+            });
+        }
+
+        $(".delete-btn").on("click", function () {
+            deleteSelectedRecords();
+        });
+        $(".delete-filter-btn").on("click", function () {
+            deleteSelectedFilterRecords();
+        });
+
+        updateSignalTable(currentPageAll);
+        updatefilteredSignalTable(currentPageFiltered);
+
+        $("#searchButton").click(function () {
+            searchKeyword = $("#searchInput").val().trim();
+            updateSignalTable(1);
+            updatefilteredSignalTable(1);
+        });
+
+        $("#clear-search-button").click(function () {
+            $("#searchInput").val("");
+            searchKeyword = "";
+            updateSignalTable(1);
+            updatefilteredSignalTable(1);
+        });
+        $("#set_table_btn").click(function () {
+            var selectedValue = $("#set_table").val();
+            if (selectedValue == "all") {
+                $(".tableContainer").css("display", "flex");
+                $(".tableFilteredContainer").css("display", "none");
+            } else if (selectedValue == "downtime_error") {
+                $(".tableContainer").css("display", "none");
+                $(".tableFilteredContainer").css("display", "flex");
+            } else {
+                $(".tableContainer").css("display", "none");
+                $(".tableFilteredContainer").css("display", "none");
+            }
+        });
+
+        async function periodicUpdate() {
+            while (true) {
+                try {
+                    // 同步執行兩個函數，等待它們完成
+                    await updateSignalTable(currentPageAll);
+                    await updatefilteredSignalTable(currentPageFiltered);
+                } catch (error) {
+                    console.error("Error during periodic update:", error);
+                }
+
+                // 等待 2 秒後再執行下一次更新
+                await new Promise((resolve) => setTimeout(resolve, 2000));
+            }
+        }
+
+        // 啟動定時更新
+        periodicUpdate();
+    })
+</script>
+
+{% endblock %}

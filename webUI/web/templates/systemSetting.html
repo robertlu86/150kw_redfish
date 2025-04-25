@@ -1,0 +1,885 @@
+{% extends "base.html" %} {% block title %} System Setting {% endblock %} {%
+block styles %}
+<style type="text/css">
+    .unitSetting,
+    .passwordSetting,
+    .datetimeSetting,
+    .closeValve,
+    .sampling_rate,
+    .snmp_setting,
+    .modbus_ip_setting {
+        border: 2px solid #008000;
+
+        border-radius: 10px;
+        margin: 2em 0;
+        padding: 20px;
+        position: relative;
+    }
+
+    .unitSetting::before,
+    .passwordSetting::before,
+    .datetimeSetting::before,
+    .closeValve::before,
+    .sampling_rate::before,
+    .snmp_setting::before,
+    .modbus_ip_setting::before {
+        background-color: #fff;
+        color: #000000;
+        content: attr(data-before);
+        font-weight: bold;
+        left: 1em;
+        padding: 0 0.5em;
+        position: absolute;
+        top: -1em;
+    }
+
+    .tdCenterAlign {
+        text-align: center;
+    }
+
+    .navbar .navbar-nav .nav-link:hover {
+        background-color: #778899;
+        color: #fff;
+    }
+
+    .nav-systemset {
+        background-color: #008000 !important;
+        color: #fff !important;
+    }
+
+    .dropdown2 {
+        font-size: 18px;
+        border-color: #008000;
+        border-radius: 10px;
+        padding: 10px;
+        margin: 10px, 0, 10px, 10px;
+    }
+
+    .toggle {
+        transform: scale(1.4);
+    }
+</style>
+{% endblock %} {% block content %}
+<div class="container-fluid" style="margin-top: 100px; margin-bottom: 60px">
+    <div class="unitSetting">
+        <div class="container-fluid">
+            <!-- Temperature Unit -->
+            <div class="row">
+                <div class="col-4">
+                    <p>Unit:</p>
+                </div>
+                <div class="col-4">
+                    <select id="unit" class="dropdown2">
+                        <option value="metric">Metric</option>
+                        <option value="imperial">Imperial</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4"></div>
+                <div class="col-4">
+                    <button id="unitAplBt" class="btn btn-outline-success" style="margin-right: 10px; margin-top: 20px">
+                        Apply
+                    </button>
+                    <button id="unitCnsBt" class="btn btn-outline-success" type="submit" style="margin-right: 10px; margin-top: 20px">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 密碼設定 Password Setting -->
+    {% if user != 'kiosk' %}
+    <div class="passwordSetting">
+        <div class="row">
+            <div class="col-4">
+                <p>Last Password:</p>
+            </div>
+            <div class="col-4">
+                <input type="password" class="keyboard_password" data-kioskboard-type="all" data-kioskboard-specialcharacters="true" id="last_pwd" placeholder="Enter last password" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4">
+                <p>Change "User" Password:</p>
+            </div>
+            <div class="col-4">
+                <input type="password" class="keyboard_password" data-kioskboard-type="all" data-kioskboard-specialcharacters="true" id="pwd" placeholder="Enter new password" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4">
+                <p>Confirm Password:</p>
+            </div>
+            <div class="col-4">
+                <input type="password" class="keyboard_password" data-kioskboard-type="all" data-kioskboard-specialcharacters="true" id="pwdcfm" placeholder="Enter new password" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4"></div>
+            <div class="col-4">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="showPwd" />
+                    <label class="form-check-label" for="showPwd">
+                        View Password
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4"></div>
+            <div class="col-4">
+                <button id="psw_apply" class="btn btn-outline-success" style="margin-right: 10px; margin-top: 20px">
+                    Apply
+                </button>
+                {% if user == 'superuser' or user == 'admin' %}
+                <button id="psw_reset" class="btn btn-outline-success" style="margin-right: 10px; margin-top: 20px">
+                    Reset to default
+                </button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    <!-- Date Time Setting -->
+    <div class="datetimeSetting">
+        <div class="row mb-2">
+            <div class="col-4">
+                <p>Setting mode:</p>
+            </div>
+            <div class="col-4">
+                <select id="actionSelect" class="dropdown2">
+                    <option value="setTime">Set time</option>
+                    <option value="syncTime">Sync time</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4">
+                <p>DateTime:</p>
+            </div>
+            <div class="col-4">
+                <p id="system-time"></p>
+            </div>
+        </div>
+
+        <!-- Set Time Section -->
+        <div id="setTimeSection" style="display: none">
+            <div class="row">
+                <div class="col-4">
+                    <p>Setting:</p>
+                </div>
+                <div class="col-4">
+                    <input type="datetime-local" id="systemTime" name="systemTime" step="1" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4"></div>
+                <div class="col-4">
+                    <button id="timeAplBt" class="btn btn-outline-success" style="margin-right: 10px; margin-top: 20px">
+                        Apply
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sync Time Section -->
+        <div id="syncTimeSection" style="display: none">
+            <div class="row mb-2">
+                <div class="col-4">
+                    <p>Select TimeZone:</p>
+                </div>
+                <div class="col-4">
+                    <select id="timezoneSelect" class="dropdown2">
+                        <!-- UTC -12 to UTC +12 時區選項 -->
+                        <option value="UTC">
+                            UTC +00:00 (Coordinated Universal Time)
+                        </option>
+                        <option value="Europe/Paris">
+                            UTC +01:00 (Central European Time)
+                        </option>
+                        <option value="Europe/Athens">
+                            UTC +02:00 (Eastern European Time)
+                        </option>
+                        <option value="Europe/Moscow">
+                            UTC +03:00 (Moscow Standard Time)
+                        </option>
+                        <option value="Asia/Dubai">
+                            UTC +04:00 (Gulf Standard Time)
+                        </option>
+                        <option value="Asia/Karachi">
+                            UTC +05:00 (Pakistan Standard Time)
+                        </option>
+                        <option value="Asia/Dhaka">
+                            UTC +06:00 (Bangladesh Standard Time)
+                        </option>
+                        <option value="Asia/Bangkok">
+                            UTC +07:00 (Indochina Time)
+                        </option>
+                        <option value="Asia/Shanghai">
+                            UTC +08:00 (China Standard Time)
+                        </option>
+                        <option value="Asia/Tokyo">
+                            UTC +09:00 (Japan Standard Time)
+                        </option>
+                        <option value="Australia/Brisbane">
+                            UTC +10:00 (Australian Eastern Standard Time)
+                        </option>
+                        <option value="Pacific/Noumea">
+                            UTC +11:00 (New Caledonia Time)
+                        </option>
+                        <option value="Pacific/Auckland">
+                            UTC +12:00 (New Zealand Standard Time)
+                        </option>
+                        <option value="Etc/GMT+12">
+                            UTC -12:00 (Baker Island)
+                        </option>
+                        <option value="Pacific/Pago_Pago">
+                            UTC -11:00 (Samoa)
+                        </option>
+                        <option value="Pacific/Honolulu">
+                            UTC -10:00 (Hawaii)
+                        </option>
+                        <option value="America/Anchorage">
+                            UTC -09:00 (Alaska)
+                        </option>
+                        <option value="America/Los_Angeles">
+                            UTC -08:00 (Pacific Time)
+                        </option>
+                        <option value="America/Denver">
+                            UTC -07:00 (Mountain Time)
+                        </option>
+                        <option value="America/Chicago">
+                            UTC -06:00 (Central Time)
+                        </option>
+                        <option value="America/New_York">
+                            UTC -05:00 (Eastern Time)
+                        </option>
+                        <option value="America/Halifax">
+                            UTC -04:00 (Atlantic Time)
+                        </option>
+                        <option value="America/Sao_Paulo">
+                            UTC -03:00 (Brazil)
+                        </option>
+                        <option value="Atlantic/South_Georgia">
+                            UTC -02:00 (South Georgia)
+                        </option>
+                        <option value="Atlantic/Azores">
+                            UTC -01:00 (Azores)
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <p>Enter NTP server address:</p>
+                </div>
+                <div class="col-4">
+                    <input type="text" class="keyboard_text" id="ntpServer" value="ntp.ubuntu.com" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4"></div>
+                <div class="col-4">
+                    <button id="syncButton" class="btn btn-outline-success" style="margin-right: 10px; margin-top: 20px">
+                        Sync Time
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sampling_rate">
+        <div class="row">
+            <div class="col-4">
+                <p>Log Interval (sec):</p>
+            </div>
+            <div class="col-4">
+                <input type="text" class="keyboard_onlyNumber" id="sampling_rate" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4"></div>
+            <div class="col-4">
+                <button id="sampling_rate_btn" class="btn btn-outline-success" style="margin-right: 10px; margin-top: 20px">
+                    Apply
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="snmp_setting">
+        <div class="row">
+            <div class="col-4">
+                <p>Trap IP:</p>
+            </div>
+            <div class="col-4">
+                <input type="text" class="keyboard_ipv4" id="trap_ip" pattern="^([0-9]{1,3}\.){3}[0-9]{1,3}$" title="Please enter a valid IPv4 address" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4">
+                <p>Read Community:</p>
+            </div>
+            <div class="col-4">
+                <input type="text" class="keyboard_text" id="read_community" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4"></div>
+            <div class="col-4">
+                <button id="snmp_setting_btn" class="btn btn-outline-success" style="margin-right: 10px; margin-top: 20px">
+                    Apply
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} {% block scripts %}
+
+<script>
+    jQuery(document).ready(function () {
+        let userType = "{{user}}";
+
+        jQuery(".unitSetting").attr("data-before", "Unit Setting");
+        jQuery(".passwordSetting").attr("data-before", "User Password Setting");
+        jQuery(".datetimeSetting").attr("data-before", "DateTime Setting");
+        jQuery(".closeValve").attr("data-before", "Valve Setting");
+        jQuery(".sampling_rate").attr("data-before", "Log Interval");
+        jQuery(".snmp_setting").attr("data-before", "SNMP Setting");
+
+        $("#actionSelect").on("change", function () {
+            const selectedValue = $(this).val();
+
+            $("#setTimeSection").hide();
+            $("#syncTimeSection").hide();
+
+            if (selectedValue === "setTime") {
+                $("#setTimeSection").show();
+            } else if (selectedValue === "syncTime") {
+                $("#syncTimeSection").show();
+            }
+        });
+
+        $("#actionSelect").trigger("change");
+
+        $.ajax({
+            url: "/get_modbus_ip",
+            type: "GET",
+            success: function (data) {
+                $("#modbusIpInput").val(data.modbus_ip);
+            },
+            error: function () {
+                $("#result").text("Unable to retrieve current MODBUS IP.");
+            },
+        });
+
+        $("#updateIpBtn").on("click", function () {
+            var modbusIp = $("#modbusIpInput").val();
+
+            if (!isValidIp(modbusIp)) {
+                Swal.fire({
+                    title: "Error",
+                    text: "Please enter a valid IP address",
+                    icon: "error",
+                    confirmButtonText: "OK",
+                });
+                return;
+            }
+        });
+        $.ajax({
+            url: "/get_snmp_setting",
+            method: "GET",
+            success: function (data) {
+                $("#trap_ip").val(data["trap_ip_address"]);
+                $("#read_community").val(data["read_community"]);
+            },
+        });
+
+        $.ajax({
+            url: "/get_data_systemset",
+            method: "GET",
+            success: function (data) {
+                const { system_data, sampling_rate } = data;
+                let unit_set;
+
+                $("#sampling_rate").val(sampling_rate["number"]);
+
+                if (system_data["value"]["unit"] == "imperial") {
+                    unit_set = "imperial";
+                } else if (system_data["value"]["unit"] == "metric") {
+                    unit_set = "metric";
+                }
+
+                $("#unit").val(unit_set);
+            },
+        });
+
+        $.ajax({
+            url: "/get_system_time",
+            type: "GET",
+            success: function (response) {
+                $("#system-time").text(response.system_time);
+                $("#systemTime").val(response.system_time);
+            },
+            error: function (xhr, status, error) {
+                $("#system-time").text("Error: " + error);
+            },
+        });
+
+        $.ajax({
+            url: "/systemSetting/unit_cancel",
+            method: "GET",
+            success: function (data) {
+                for (var key in data["value"]) {
+                    if (data["value"].hasOwnProperty(key)) {
+                        var value = data["value"][key];
+                        var element = document.getElementById(key);
+                        if (element) {
+                            element.value = value;
+                        } else {
+                            console.log(
+                                `Element with ID '${key}' not found. Skipping...`
+                            );
+                        }
+                    }
+                    console.log("Key: " + key + ", Value: " + value);
+                }
+            },
+            error: function (error) {
+                console.error("Error fetching data:", error);
+            },
+        });
+
+        function isValidIp(ip) {
+            const segments = ip.split(".");
+            if (segments.length !== 4) return false;
+            return segments.every((segment) => {
+                const num = Number(segment);
+                return num >= 0 && num <= 255;
+            });
+        }
+
+        $("#snmp_setting_btn").click(function () {
+            let trap_ip = $("#trap_ip").val();
+
+            if (!isValidIp(trap_ip)) {
+                Swal.fire({
+                    title: "Error",
+                    text: "Please enter a valid IP address",
+                    icon: "error",
+                    confirmButtonText: "OK",
+                });
+                return;
+            }
+
+            let read_community = $("#read_community").val();
+
+            $.ajax({
+                type: "POST",
+                url: "/store_snmp_setting",
+                contentType: "application/json;charset=UTF-8",
+                data: JSON.stringify({
+                    trap_ip_address: trap_ip,
+                    read_community: read_community,
+                    v3_switch: false,
+                }),
+                success: function (response) {
+                    Swal.fire({
+                        title: "Success",
+                        text: response,
+                        icon: "success",
+                        confirmButtonText: "OK",
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.log(error);
+                    Swal.fire({
+                        title: "Error",
+                        text: "Fail to update settings",
+                        icon: "error",
+                        confirmButtonText: "OK",
+                    });
+                },
+            });
+        });
+
+        $("#sampling_rate_btn").click(function () {
+            let input_val = $("#sampling_rate").val();
+            let new_val = parseFloat(input_val);
+
+            if (isNaN(new_val)) {
+                Swal.fire({
+                    title: "Error",
+                    text: "Invalid input. Please enter a numeric value.",
+                    icon: "error",
+                    confirmButtonText: "OK",
+                });
+                return;
+            }
+
+            if (userType == "superuser") {
+                if (new_val > 30 || new_val < 0) {
+                    Swal.fire({
+                        title: "Error",
+                        text: "Invalid input. Accepted range is 0 to 30.",
+                        icon: "error",
+                        confirmButtonText: "OK",
+                    });
+                    return;
+                }
+            } else {
+                if (new_val > 30 || new_val < 2) {
+                    Swal.fire({
+                        title: "Error",
+                        text: "Invalid input. Accepted range is 2 to 30.",
+                        icon: "error",
+                        confirmButtonText: "OK",
+                    });
+                    return;
+                }
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/store_sampling_rate",
+                contentType: "application/json;charset=UTF-8",
+                data: JSON.stringify({ sampleRate: new_val }),
+                success: function (response) {
+                    Swal.fire({
+                        title: "Success",
+                        text: "Log Interval Updated Successfully",
+                        icon: "success",
+                        confirmButtonText: "OK",
+                    });
+                },
+                error: function (error) {
+                    Swal.fire({
+                        title: "Error",
+                        text: "Fail to update settings",
+                        icon: "error",
+                        confirmButtonText: "OK",
+                    });
+                    console.log("sampleTime error:", error);
+                },
+            });
+        });
+
+        $("#psw_apply").click(function () {
+            var password = $("#pwd").val();
+            var passwordcfm = $("#pwdcfm").val();
+            let last_pwd = $("#last_pwd").val();
+
+            let pwd_package = {
+                last_pwd: last_pwd,
+                password: password,
+                passwordcfm: passwordcfm,
+            };
+
+            Swal.fire({
+                title: "Confirm",
+                text: 'Are you sure you want to change the "user" password?',
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: "No",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "POST",
+                        url: "/update_password",
+                        contentType: "application/json;charset=UTF-8",
+                        data: JSON.stringify({ pwd_package: pwd_package }),
+                        success: function (response) {
+                            if (response.status == "success") {
+                                Swal.fire({
+                                    title: "Success",
+                                    text: response.message,
+                                    icon: "success",
+                                    confirmButtonText: "OK",
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: "Error",
+                                    text: response.message,
+                                    icon: "error",
+                                    confirmButtonText: "OK",
+                                });
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            Swal.fire({
+                                title: "Error",
+                                text: "Failed to update password.",
+                                icon: "error",
+                                confirmButtonText: "OK",
+                            });
+                            console.error(
+                                "Error:",
+                                xhr.responseJSON?.message || error
+                            );
+                        },
+                    });
+                }
+            });
+        });
+
+        $("#psw_reset").click(function () {
+            Swal.fire({
+                title: "Confirm",
+                text: 'Are you sure you want to reset the "user" password?',
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: "No",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "POST",
+                        url: "/reset_password",
+                        contentType: "application/json;charset=UTF-8",
+
+                        success: function (response) {
+                            if (response.status == "success") {
+                                Swal.fire({
+                                    title: "Success",
+                                    text: response.message,
+                                    icon: "success",
+                                    confirmButtonText: "OK",
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: "Error",
+                                    text: response.message,
+                                    icon: "error",
+                                    confirmButtonText: "OK",
+                                });
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            Swal.fire({
+                                title: "Error",
+                                text: "Failed to update password.",
+                                icon: "error",
+                                confirmButtonText: "OK",
+                            });
+                            console.error(
+                                "Error:",
+                                xhr.responseJSON?.message || error
+                            );
+                        },
+                    });
+                }
+            });
+        });
+
+        $("#unitAplBt").click(function () {
+            var selectedValue = $("#unit").val();
+            console.log(selectedValue);
+
+            $.ajax({
+                type: "POST",
+                url: "/systemSetting/unit_set",
+                contentType: "application/json;charset=UTF-8",
+                data: JSON.stringify({ value: selectedValue }),
+                success: function (response) {
+                    Swal.fire({
+                        title: "Success",
+                        text: response,
+                        icon: "success",
+                        confirmButtonText: "OK",
+                    });
+                },
+            });
+        });
+
+        $("#unitCnsBt").click(inputCnslBtClk);
+        function inputCnslBtClk() {
+            var btID = this.id;
+
+            $.ajax({
+                url: "/systemSetting/unit_cancel",
+                method: "GET",
+                success: function (data) {
+                    for (var key in data["value"]) {
+                        if (data["value"].hasOwnProperty(key)) {
+                            var value = data["value"][key];
+                            var element = document.getElementById(key);
+                            if (element) {
+                                element.value = value;
+                            } else {
+                                console.log(
+                                    `Element with ID '${key}' not found. Skipping...`
+                                );
+                            }
+                        }
+                    }
+                },
+                error: function (error) {
+                    console.error("Error fetching data:", error);
+                },
+            });
+        }
+
+        $("#timeAplBt").click(function () {
+            var selectedTime = $("#systemTime").val();
+
+            Swal.fire({
+                title: "Are you sure?",
+                text: "All users will be logged out. Confirm to proceed?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: "No",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "POST",
+                        url: "/set_time",
+                        contentType: "application/json;charset=UTF-8",
+                        data: JSON.stringify({ value: selectedTime }),
+                        success: function (response) {
+                            console.log(response);
+                            Swal.fire({
+                                title: "Success",
+                                text: "Please log in again.",
+                                icon: "success",
+                                confirmButtonText: "OK",
+                            }).then(() => {
+                                window.location.href = "/";
+                            });
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("Error setting time:", error);
+                            Swal.fire({
+                                title: "Error",
+                                text: "Fail to set time",
+                                icon: "error",
+                                confirmButtonText: "OK",
+                            });
+                            console.log(
+                                "Error: " + xhr.responseJSON?.message || error
+                            );
+                        },
+                    });
+                } else {
+                    console.log("cancel time set");
+                }
+            });
+        });
+
+        $("#syncButton").click(function () {
+            var ntpServer = $("#ntpServer").val();
+            var timeZone = $("#timezoneSelect").val();
+
+            if (!ntpServer) {
+                Swal.fire({
+                    title: "Error",
+                    text: "Please enter an NTP server address.",
+                    icon: "error",
+                    confirmButtonText: "OK",
+                });
+                return;
+            }
+
+            if (!timeZone) {
+                Swal.fire({
+                    title: "Error",
+                    text: "Please select a timezone.",
+                    icon: "error",
+                    confirmButtonText: "OK",
+                });
+                return;
+            }
+
+            Swal.fire({
+                title: "Are you sure?",
+                text: "All users will be logged out. Confirm to proceed?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: "No",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "/sync_time",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify({
+                            ntp_server: ntpServer,
+                            timezone: timeZone,
+                        }),
+                        success: function (response) {
+                            Swal.fire({
+                                title: "Success",
+                                text: "Please log in again.",
+                                icon: "success",
+                                confirmButtonText: "OK",
+                            }).then(() => {
+                                window.location.href = "/";
+                            });
+                        },
+                        error: function (xhr, status, error) {
+                            Swal.fire({
+                                title: "warning",
+                                text: "Please log in again.",
+                                icon: "warning",
+                                confirmButtonText: "OK",
+                            }).then(() => {
+                                window.location.href = "/";
+                            });
+                        },
+                    });
+                } else {
+                    console.log("cancel time set");
+                }
+            });
+        });
+
+        var pwdInput = document.getElementById("pwd");
+        var pwdcfmInput = document.getElementById("pwdcfm");
+        var showPwdCheckbox = document.getElementById("showPwd");
+        var last_pwd = document.getElementById("last_pwd");
+
+        if (showPwdCheckbox) {
+
+            showPwdCheckbox.addEventListener("click", function () {
+                if (showPwdCheckbox.checked) {
+                    pwdInput.type = "text";
+                    pwdcfmInput.type = "text";
+                    last_pwd.type = "text";
+                } else {
+                    pwdInput.type = "password";
+                    pwdcfmInput.type = "password";
+                    last_pwd.type = "password";
+                }
+            });
+        }
+    });
+
+    async function fetch_system_time() {
+        while (true) {
+            try {
+                const response = await $.ajax({
+                    url: "/get_system_time",
+                    type: "GET",
+                    loader: false,
+                    timeout: 10000,
+                });
+
+                $("#system-time").text(response.system_time);
+            } catch (error) {
+                $("#system-time").text(
+                    "Error: " + error.statusText || "Request failed"
+                );
+            }
+
+            // 等待 1 秒後再進行下一次請求
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+        }
+    }
+
+    // 啟動請求循環
+    fetch_system_time();
+</script>
+{% endblock %}

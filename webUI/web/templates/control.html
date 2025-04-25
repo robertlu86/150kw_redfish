@@ -1,0 +1,2503 @@
+{% extends "base.html" %} {% block title %} Control {% endblock %} {% block
+styles %}
+<style type="text/css">
+    .engineerSet,
+    .uiUpdate,
+    .ifModuleControl,
+    .modeSelect,
+    .autoModeSetting,
+    .manualSetting,
+    .pumpExchange,
+    .fanSetting,
+    .restoreSetting,
+    .exportSetting,
+    .importSetting,
+    .overCurrent,
+    .mcSet,
+    .defaultSetting,
+    .rack_setting,
+    .firmware_setting,
+    .rebootPC,
+    .resetWater,
+    .mcInfo {
+        border: 2px solid #008000;
+        border-radius: 10px;
+        margin: 2em 0;
+        padding: 20px;
+        position: relative;
+    }
+
+    .engineerSet::before,
+    .uiUpdate::before,
+    .ifModuleControl::before,
+    .modeSelect::before,
+    .autoModeSetting::before,
+    .manualSetting::before,
+    .pumpExchange::before,
+    .fanSetting::before,
+    .restoreSetting::before,
+    .exportSetting::before,
+    .importSetting::before,
+    .overCurrent::before,
+    .mcSet::before,
+    .defaultSetting::before,
+    .rack_setting::before,
+    .firmware_setting::before,
+    .rebootPC::before,
+    .resetWater::before,
+    .mcInfo::before {
+        background-color: #fff;
+        color: #000000;
+        content: attr(data-before);
+        font-weight: bold;
+        left: 1em;
+        padding: 0 0.5em;
+        position: absolute;
+        top: -1em;
+    }
+
+    .tdCenterAlign {
+        text-align: center;
+    }
+
+    .navbar .navbar-nav .nav-link:hover {
+        background-color: #778899;
+        color: #fff;
+    }
+
+    .nav-control {
+        background-color: #008000 !important;
+        color: #fff !important;
+    }
+
+    .dropdown2 {
+        font-size: 18px;
+        border-color: #003600;
+        border-radius: 10px;
+        padding: 10px;
+    }
+
+    .sideNum {
+        display: flex;
+        align-items: center;
+    }
+
+    .sideNum_formode {
+        display: flex;
+        align-items: start;
+        flex-direction: column;
+    }
+
+    .center_text {
+        display: flex;
+        align-items: center;
+    }
+
+    .mode_setting_bar {
+        margin-top: 30px;
+
+        width: 100%;
+    }
+
+    .mode_setting_bar_r {
+        margin-top: 41px;
+
+        width: 100%;
+    }
+
+    .result {
+        border: 2px solid #002e00;
+        width: 90px;
+        height: 35px;
+        text-align: center;
+        margin-left: 20px;
+        font-weight: 500;
+        align-items: center;
+        display: flex;
+        justify-content: center;
+        border-radius: 4px;
+        box-shadow: 0.5px 0.5px 1px 1px #002e00;
+    }
+
+    .result-box {
+        padding-left: 70px;
+    }
+
+    .result-box_r {
+        padding-left: 70px;
+    }
+
+    .toggle {
+        transform: scale(1.4);
+    }
+
+    .bg-green {
+        background-color: #7a89f8;
+    }
+
+    .bg-red {
+        background-color: #b82e2e;
+    }
+
+    .gone {
+        display: none;
+    }
+
+    .gap {
+        margin-top: 4px;
+    }
+
+    .gap_formode {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin-bottom: 15px;
+    }
+
+    .gap_formode_r {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+
+    .select_box {
+        display: flex;
+        width: 100%;
+    }
+
+    .choosing_box {
+        margin-right: 6px;
+    }
+
+    .title.collapsed .content {
+        display: none;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .data-before-trigger {
+        position: absolute;
+        top: -14px;
+        left: 21px;
+        width: 355px;
+        height: 22px;
+        cursor: pointer;
+    }
+
+    .title::before {
+        content: attr(data-before);
+    }
+
+    .margin_top {
+        margin-top: 4px;
+    }
+
+    .toggle {
+        transform: scale(1.4);
+    }
+
+    .form-check-input {
+        width: 1em;
+        height: 1em;
+        margin-top: 0.25em;
+        vertical-align: top;
+        background-color: #fff;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: contain;
+        border: 1px solid rgba(0, 0, 0, 0.25);
+        appearance: none;
+        print-color-adjust: exact;
+    }
+
+    .form-check-input:checked {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+    }
+
+    .form-check-input:focus {
+        border-color: #86b7fe;
+        outline: 0;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+
+    .form-check-input:disabled {
+        pointer-events: none;
+        filter: none;
+        opacity: 0.5;
+    }
+
+    #progress-text {
+        font-weight: bold;
+        color: white;
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translate(-50%, 0);
+        font-size: 14px;
+        color: black;
+    }
+
+    #progress-bar {
+        width: 0%;
+        height: 20px;
+        background-color: #6ab96d;
+        transition: width 0.3s ease;
+        border-radius: 5px;
+    }
+
+    #progress-container {
+        display: none;
+        position: relative;
+        width: 100%;
+        background-color: #f3f3f3;
+        border: 1px solid #ccc;
+        margin: 10px 0;
+        border-radius: 5px;
+    }
+</style>
+{% endblock %} {% block content %}
+<div class="container-fluid" style="margin-top: 100px; margin-bottom: 60px">
+    {% if user == 'superuser' or user == 'admin' %}
+    <div class="overCurrent" data-label="Error Reset">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-4">
+                    <p>Error Reset:</p>
+                </div>
+                <div class="col-4">
+                    <button class="btn btn-outline-success" id="resetCurrentBtn">
+                        Reset
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="modeSelect" data-label="Mode Selection">
+        <div class="row">
+            <div class="col-4">
+                <p>Select Mode:</p>
+            </div>
+            <div class="col-6 sideNum_formode">
+                <div class="select_box">
+                    <select id="opMod" class="col-2 dropdown2">
+                        <option value="manual">Manual</option>
+                        <option value="auto">Auto</option>
+                        <option value="stop">Stop</option>
+                        {% if user == 'superuser' or user == 'admin' %}
+                        <option class="hidden" value="engineer">
+                            Engineer
+                        </option>
+                        <option class="" value="inspection">Inspection</option>
+                        {% endif %}
+                    </select>
+                    <div class="col-7 choosing_box"></div>
+                    <div class="col-1 result-box_r margin_top">
+                        <div class="result resultMode" id="resultMode"></div>
+                    </div>
+                </div>
+                <div class="mode_setting_bar">
+                    <div id="auto_set" class="hidden auto_set gap_formode">
+                        <div class="row">
+                            <div class="col-6 center_text">
+                                Target Coolant Temperature :
+                            </div>
+                            <div class="col-3 sideNum">
+                                <input id="oil_temp_set" class="form-control keyboard_onlyNumber" type="text" placeholder="" />
+                                <div class="col-1">
+                                    <p class="unit_temp"></p>
+                                </div>
+                            </div>
+                            <div class="col-2 result-box_r">
+                                <div class="result resultTemp" id="resultTemp"></div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-6 center_text">
+                                Target Coolant Differential Pressure :
+                            </div>
+                            <div class="col-3 sideNum">
+                                <input id="oil_pressure_set" class="form-control keyboard_onlyNumber" placeholder="" />
+                                <div class="col-1">
+                                    <p class="unit_prsr"></p>
+                                </div>
+                            </div>
+                            <div class="col-2 result-box_r">
+                                <div class="result resultPressure" id="resultPressure"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 center_text">Pump Swap Time:</div>
+                            <div class="col-3 sideNum">
+                                <input id="p_swap" class="form-control keyboard_onlyNumber" placeholder="" />
+                                <div class="col-1">
+                                    <p class="">hr</p>
+                                </div>
+                            </div>
+                            <div class="col-2 result-box_r">
+                                <div class="result resultSwap" id="resultSwap"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="manual_set" class="hidden gap_formode manual_set">
+                        <div class="row">
+                            <div class="col-6 center_text">Pump Speed:</div>
+                            <div class="col-3 sideNum">
+                                <input id="pump_speed" class="form-control keyboard_onlyNumber" type="text" placeholder="" />
+                                <div class="col-1 sideNum">
+                                    <p>%</p>
+                                </div>
+                            </div>
+                            <div class="col-2 result-box_r">
+                                <div class="result resultPS" id="resultPS"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 center_text">Pump1:</div>
+                            <div class="col-3 sideNum">
+                                <div class="form-check">
+                                    <input id="pump1_check" class="toggle form-check-input" type="checkbox" />
+                                </div>
+                            </div>
+                            <div class="col-2 result-box_r">
+                                <div class="result resultP1" id="resultP1"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 center_text">Pump2:</div>
+                            <div class="col-3 sideNum">
+                                <div class="form-check">
+                                    <input id="pump2_check" class="toggle form-check-input" type="checkbox" />
+                                </div>
+                            </div>
+                            <div class="col-2 result-box_r">
+                                <div class="result resultP2" id="resultP2"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 center_text">Pump3:</div>
+                            <div class="col-3 sideNum">
+                                <div class="form-check">
+                                    <input id="pump3_check" class="toggle form-check-input" type="checkbox" />
+                                </div>
+                            </div>
+                            <div class="col-2 result-box_r">
+                                <div class="result resultP3" id="resultP3"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 center_text">Fan Speed:</div>
+                            <div class="col-3 sideNum">
+                                <input id="fan_speed" class="form-control keyboard_onlyNumber" type="text" placeholder="" />
+                                <div class="col-1">
+                                    <p>%</p>
+                                </div>
+                            </div>
+                            <div class="col-2 result-box_r">
+                                <div class="result resultFan" id="resultFan"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 center_text">Fan1:</div>
+                            <div class="col-3 sideNum">
+                                <div class="form-check">
+                                    <input id="fan1_check" class="toggle form-check-input" type="checkbox" />
+                                </div>
+                            </div>
+                            <div class="col-2 result-box_r">
+                                <div class="result resultFan1" id="resultFan1"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 center_text">Fan2:</div>
+                            <div class="col-3 sideNum">
+                                <div class="form-check">
+                                    <input id="fan2_check" class="toggle form-check-input" type="checkbox" />
+                                </div>
+                            </div>
+                            <div class="col-2 result-box_r">
+                                <div class="result resultFan2" id="resultFan2"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 center_text">Fan3:</div>
+                            <div class="col-3 sideNum">
+                                <div class="form-check">
+                                    <input id="fan3_check" class="toggle form-check-input" type="checkbox" />
+                                </div>
+                            </div>
+                            <div class="col-2 result-box_r">
+                                <div class="result resultFan3" id="resultFan3"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 center_text">Fan4:</div>
+                            <div class="col-3 sideNum">
+                                <div class="form-check">
+                                    <input id="fan4_check" class="toggle form-check-input" type="checkbox" />
+                                </div>
+                            </div>
+                            <div class="col-2 result-box_r">
+                                <div class="result resultFan4" id="resultFan4"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 center_text">Fan5:</div>
+                            <div class="col-3 sideNum">
+                                <div class="form-check">
+                                    <input id="fan5_check" class="toggle form-check-input" type="checkbox" />
+                                </div>
+                            </div>
+                            <div class="col-2 result-box_r">
+                                <div class="result resultFan5" id="resultFan5"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 center_text">Fan6:</div>
+                            <div class="col-3 sideNum">
+                                <div class="form-check">
+                                    <input id="fan6_check" class="toggle form-check-input" type="checkbox" />
+                                </div>
+                            </div>
+                            <div class="col-2 result-box_r">
+                                <div class="result resultFan6" id="resultFan6"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 center_text">Fan7:</div>
+                            <div class="col-3 sideNum">
+                                <div class="form-check">
+                                    <input id="fan7_check" class="toggle form-check-input" type="checkbox" />
+                                </div>
+                            </div>
+                            <div class="col-2 result-box_r">
+                                <div class="result resultFan7" id="resultFan7"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 center_text">Fan8:</div>
+                            <div class="col-3 sideNum">
+                                <div class="form-check">
+                                    <input id="fan8_check" class="toggle form-check-input" type="checkbox" />
+                                </div>
+                            </div>
+                            <div class="col-2 result-box_r">
+                                <div class="result resultFan8" id="resultFan8"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="stop_set" class="stop_set"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-4"></div>
+            <div class="col-4">
+                <button id="modAplBt" class="btn btn-outline-success" style="margin-right: 10px; margin-top: 20px">
+                    Apply
+                </button>
+                <button id="modCnsBt" class="btn btn-outline-success" type="submit" style="margin-right: 10px; margin-top: 20px">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    {% if user == 'superuser' or user == 'admin' %}
+    <div class="mcSet title" data-default="collapsed" data-label="Magnetic Contactor">
+        <div class="data-before-trigger"></div>
+        <div class="content">
+            <div class="row">
+                <div class="col-4">
+                    <p>Inverter 1:</p>
+                </div>
+                <div class="col-2 sideNum">
+                    <div class="form-check">
+                        <input class="form-check-input toggle" type="checkbox" id="mc1_sw" />
+                        <label class="form-check-label" for="mc1_sw"></label>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="result-box">
+                        <div class="result resultMC1" id="resultMC1"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <p>Inverter 2:</p>
+                </div>
+                <div class="col-2 sideNum">
+                    <div class="form-check">
+                        <input class="form-check-input toggle" type="checkbox" id="mc2_sw" />
+                        <label class="form-check-label" for="mc2_sw"></label>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="result-box">
+                        <div class="result resultMC2" id="resultMC2"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <p>Inverter 3:</p>
+                </div>
+                <div class="col-2 sideNum">
+                    <div class="form-check">
+                        <input class="form-check-input toggle" type="checkbox" id="mc3_sw" />
+                        <label class="form-check-label" for="mc3_sw"></label>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="result-box">
+                        <div class="result resultMC3" id="resultMC3"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <p>Fan Group 1:</p>
+                </div>
+                <div class="col-2 sideNum">
+                    <div class="form-check">
+                        <input class="form-check-input toggle" type="checkbox" id="fan_mc1" />
+                        <label class="form-check-label" for="fan_mc1"></label>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="result-box">
+                        <div class="result fan_mc1_result" id="fan_mc1_result"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <p>Fan Group 2:</p>
+                </div>
+                <div class="col-2 sideNum">
+                    <div class="form-check">
+                        <input class="form-check-input toggle" type="checkbox" id="fan_mc2" />
+                        <label class="form-check-label" for="fan_mc2"></label>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="result-box">
+                        <div class="result fan_mc2_result" id="fan_mc2_result"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4"></div>
+                <div class="col-4">
+                    <button id="mcSetBnt" class="btn btn-outline-success" style="margin-right: 10px; margin-top: 20px">
+                        Apply
+                    </button>
+                    <button id="mcCnsBnt" class="btn btn-outline-success" type="submit" style="margin-right: 10px; margin-top: 20px">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    <div class="fanSetting title" data-default="collapsed" data-label="Running Time">
+        <div class="data-before-trigger"></div>
+        <div class="content">
+            <div class="row">
+                <div class="col-4">
+                    <p>Pump1 Running Time:</p>
+                </div>
+                <div class="col-2 sideNum">
+                    <p id="Pump1_run_time" style="width: 100%"></p>
+
+                    <div class="col-1">
+                        <p>hr</p>
+                    </div>
+                </div>
+                {% if user == 'superuser' or user == 'admin' %}
+                <div class="col-2" style="padding-left: 115px">
+                    <button id="Pump1ResetBtn" class="btn btn-outline-success" type="submit">
+                        Reset
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <p>Pump2 Running Time:</p>
+                </div>
+                <div class="col-2 sideNum">
+                    <p id="Pump2_run_time" style="width: 100%"></p>
+                    <div class="col-1">
+                        <p>hr</p>
+                    </div>
+                </div>
+                {% if user == 'superuser' or user == 'admin' %}
+                <div class="col-2" style="padding-left: 115px">
+                    <button id="Pump2ResetBtn" class="btn btn-outline-success" type="submit">
+                        Reset
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <p>Pump3 Running Time:</p>
+                </div>
+                <div class="col-2 sideNum">
+                    <p id="Pump3_run_time" style="width: 100%"></p>
+
+                    <div class="col-1">
+                        <p>hr</p>
+                    </div>
+                </div>
+                {% if user == 'superuser' or user == 'admin' %}
+                <div class="col-2" style="padding-left: 115px">
+                    <button id="Pump3ResetBtn" class="btn btn-outline-success" type="submit">
+                        Reset
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+            <!-- fan running time -->
+            <div class="row">
+                <div class="col-4">
+                    <p>Fan1 Running Time:</p>
+                </div>
+                <div class="col-2 sideNum">
+                    <p id="Fan1_run_time" style="width: 100%"></p>
+
+                    <div class="col-1">
+                        <p>hr</p>
+                    </div>
+                </div>
+                {% if user == 'superuser' or user == 'admin' %}
+                <div class="col-2" style="padding-left: 115px">
+                    <button id="Fan1ResetBtn" class="btn btn-outline-success" type="submit">
+                        Reset
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <p>Fan2 Running Time:</p>
+                </div>
+                <div class="col-2 sideNum">
+                    <p id="Fan2_run_time" style="width: 100%"></p>
+
+                    <div class="col-1">
+                        <p>hr</p>
+                    </div>
+                </div>
+                {% if user == 'superuser' or user == 'admin' %}
+                <div class="col-2" style="padding-left: 115px">
+                    <button id="Fan2ResetBtn" class="btn btn-outline-success" type="submit">
+                        Reset
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <p>Fan3 Running Time:</p>
+                </div>
+                <div class="col-2 sideNum">
+                    <p id="Fan3_run_time" style="width: 100%"></p>
+
+                    <div class="col-1">
+                        <p>hr</p>
+                    </div>
+                </div>
+                {% if user == 'superuser' or user == 'admin' %}
+                <div class="col-2" style="padding-left: 115px">
+                    <button id="Fan3ResetBtn" class="btn btn-outline-success" type="submit">
+                        Reset
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <p>Fan4 Running Time:</p>
+                </div>
+                <div class="col-2 sideNum">
+                    <p id="Fan4_run_time" style="width: 100%"></p>
+
+                    <div class="col-1">
+                        <p>hr</p>
+                    </div>
+                </div>
+                {% if user == 'superuser' or user == 'admin' %}
+                <div class="col-2" style="padding-left: 115px">
+                    <button id="Fan4ResetBtn" class="btn btn-outline-success" type="submit">
+                        Reset
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <p>Fan5 Running Time:</p>
+                </div>
+                <div class="col-2 sideNum">
+                    <p id="Fan5_run_time" style="width: 100%"></p>
+
+                    <div class="col-1">
+                        <p>hr</p>
+                    </div>
+                </div>
+                {% if user == 'superuser' or user == 'admin' %}
+                <div class="col-2" style="padding-left: 115px">
+                    <button id="Fan5ResetBtn" class="btn btn-outline-success" type="submit">
+                        Reset
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <p>Fan6 Running Time:</p>
+                </div>
+                <div class="col-2 sideNum">
+                    <p id="Fan6_run_time" style="width: 100%"></p>
+
+                    <div class="col-1">
+                        <p>hr</p>
+                    </div>
+                </div>
+                {% if user == 'superuser' or user == 'admin' %}
+                <div class="col-2" style="padding-left: 115px">
+                    <button id="Fan6ResetBtn" class="btn btn-outline-success" type="submit">
+                        Reset
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <p>Fan7 Running Time:</p>
+                </div>
+                <div class="col-2 sideNum">
+                    <p id="Fan7_run_time" style="width: 100%"></p>
+
+                    <div class="col-1">
+                        <p>hr</p>
+                    </div>
+                </div>
+                {% if user == 'superuser' or user == 'admin' %}
+                <div class="col-2" style="padding-left: 115px">
+                    <button id="Fan7ResetBtn" class="btn btn-outline-success" type="submit">
+                        Reset
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <p>Fan8 Running Time:</p>
+                </div>
+                <div class="col-2 sideNum">
+                    <p id="Fan8_run_time" style="width: 100%"></p>
+
+                    <div class="col-1">
+                        <p>hr</p>
+                    </div>
+                </div>
+                {% if user == 'superuser' or user == 'admin' %}
+                <div class="col-2" style="padding-left: 115px">
+                    <button id="Fan8ResetBtn" class="btn btn-outline-success" type="submit">
+                        Reset
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+
+
+
+            <!-- end fan running time -->
+        </div>
+    </div>
+
+    {% if user != 'kiosk' %}
+
+    <div class="firmware_setting title" data-default="collapsed" data-label="Firmware Update">
+        <div class="data-before-trigger"></div>
+        <div class="content">
+            <div class="row">
+                <div class="col-4">
+                    <p>Firmware Update:</p>
+                </div>
+                <div class="col-4">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <input class="form-control" type="file" id="folderInput" accept=".zip" />
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn btn-outline-success" id="uiUpdateBtn">
+                                Update
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div id="progress-container">
+                        <div id="progress-bar"></div>
+                        <span id="progress-text">0%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="exportSetting title" data-default="collapsed" data-label="Export/Import Setting">
+        <div class="data-before-trigger"></div>
+        <div class="content">
+            <div class="row">
+                <div class="col-4">
+                    <p>Export Network Setting:</p>
+                </div>
+                <div class="col-4">
+                    <div class="form-check">
+                        <input class="form-check-input toggle" type="checkbox" value="" id="exp_ntw_chk" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-4">
+                    <p>Export System Setting:</p>
+                </div>
+                <div class="col-4">
+                    <div class="form-check">
+                        <input class="form-check-input toggle" type="checkbox" value="" id="exp_system_chk" />
+                    </div>
+                </div>
+            </div>
+            <!-- {% if user == 'superuser' or user == 'admin' %}
+
+            <div class="row">
+                <div class="col-4">
+                    <p>Export Alert Setting:</p>
+                </div>
+                <div class="col-4">
+                    <div class="form-check">
+                        <input class="form-check-input toggle" type="checkbox" value="" id="exp_alt_chk" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-4">
+                    <p>Export PID Setting:</p>
+                </div>
+                <div class="col-4">
+                    <div class="form-check">
+                        <input class="form-check-input toggle" type="checkbox" value="" id="exp_pid_set" />
+                    </div>
+                </div>
+            </div>
+            {% endif %} -->
+
+            <div class="row">
+                <div class="col-4"></div>
+                <div class="col-4">
+                    <button class="btn btn-outline-success" id="settings_export_bt" style="margin-right: 10px; margin-top: 20px">
+                        Export
+                    </button>
+                </div>
+            </div>
+            <hr />
+
+            <div class="row gap">
+                <div class="col-4">
+                    <p>Import Configuration Files:</p>
+                </div>
+                <div class="col-4">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <input class="form-control" type="file" id="fileInput" accept=".json" />
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn btn-outline-success" id="importBtn">
+                                Import
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="rebootPC title" data-default="collapsed" data-label="Reboot Box PC">
+        <div class="data-before-trigger"></div>
+        <div class="content">
+            <div class="row">
+                <div class="col-4">
+                    <p>Reboot Box PC:</p>
+                </div>
+                <div class="col-4">
+                    <button class="btn btn-outline-success" id="rebootBtn">
+                        Reboot
+                    </button>
+                </div>
+            </div>
+            {% if user == 'superuser' %}
+            <div class="row gap">
+                <div class="col-4">
+                    <p>Shutdown Box PC:</p>
+                </div>
+                <div class="col-4">
+                    <button class="btn btn-outline-success" id="shutdownBtn">
+                        Shutdown
+                    </button>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="rack_setting hidden title" data-default="collapsed" data-label="Rack Setting">
+        <div class="data-before-trigger"></div>
+        <div class="content">
+            <div class="row rack1">
+                <div class="col-4">
+                    <p>Rack 1:</p>
+                </div>
+                <div class="col-2 sideNum">
+                    <div class="form-check">
+                        <input class="form-check-input toggle" type="checkbox" id="rack1_sw" />
+                        <label class="form-check-label" for="rack1_sw"></label>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="result-box">
+                        <div class="result rack1_sw_result" id="rack1_sw_result"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row rack2">
+                <div class="col-4">
+                    <p>Rack 2:</p>
+                </div>
+                <div class="col-2 sideNum">
+                    <div class="form-check">
+                        <input class="form-check-input toggle" type="checkbox" id="rack2_sw" />
+                        <label class="form-check-label" for="rack2_sw"></label>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="result-box">
+                        <div class="result rack2_sw_result" id="rack2_sw_result"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row rack3">
+                <div class="col-4">
+                    <p>Rack 3:</p>
+                </div>
+                <div class="col-2 sideNum">
+                    <div class="form-check">
+                        <input class="form-check-input toggle" type="checkbox" id="rack3_sw" />
+                        <label class="form-check-label" for="rack3_sw"></label>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="result-box">
+                        <div class="result rack3_sw_result" id="rack3_sw_result"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row rack4">
+                <div class="col-4">
+                    <p>Rack 4:</p>
+                </div>
+                <div class="col-2 sideNum">
+                    <div class="form-check">
+                        <input class="form-check-input toggle" type="checkbox" id="rack4_sw" />
+                        <label class="form-check-label" for="rack4_sw"></label>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="result-box">
+                        <div class="result rack4_sw_result" id="rack4_sw_result"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row rack5">
+                <div class="col-4">
+                    <p>Rack 5:</p>
+                </div>
+                <div class="col-2 sideNum">
+                    <div class="form-check">
+                        <input class="form-check-input toggle" type="checkbox" id="rack5_sw" />
+                        <label class="form-check-label" for="rack5_sw"></label>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="result-box">
+                        <div class="result rack5_sw_result" id="rack5_sw_result"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row rack6">
+                <div class="col-4">
+                    <p>Rack 6:</p>
+                </div>
+                <div class="col-2 sideNum">
+                    <div class="form-check">
+                        <input class="form-check-input toggle" type="checkbox" id="rack6_sw" />
+                        <label class="form-check-label" for="rack6_sw"></label>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="result-box">
+                        <div class="result rack6_sw_result" id="rack6_sw_result"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row rack7">
+                <div class="col-4">
+                    <p>Rack 7:</p>
+                </div>
+                <div class="col-2 sideNum">
+                    <div class="form-check">
+                        <input class="form-check-input toggle" type="checkbox" id="rack7_sw" />
+                        <label class="form-check-label" for="rack7_sw"></label>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="result-box">
+                        <div class="result rack7_sw_result" id="rack7_sw_result"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row rack8">
+                <div class="col-4">
+                    <p>Rack 8:</p>
+                </div>
+                <div class="col-2 sideNum">
+                    <div class="form-check">
+                        <input class="form-check-input toggle" type="checkbox" id="rack8_sw" />
+                        <label class="form-check-label" for="rack8_sw"></label>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="result-box">
+                        <div class="result rack8_sw_result" id="rack8_sw_result"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row rack9">
+                <div class="col-4">
+                    <p>Rack 9:</p>
+                </div>
+                <div class="col-2 sideNum">
+                    <div class="form-check">
+                        <input class="form-check-input toggle" type="checkbox" id="rack9_sw" />
+                        <label class="form-check-label" for="rack9_sw"></label>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="result-box">
+                        <div class="result rack9_sw_result" id="rack9_sw_result"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row rack10">
+                <div class="col-4">
+                    <p>Rack 10:</p>
+                </div>
+                <div class="col-2 sideNum">
+                    <div class="form-check">
+                        <input class="form-check-input toggle" type="checkbox" id="rack10_sw" />
+                        <label class="form-check-label" for="rack10_sw"></label>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="result-box">
+                        <div class="result rack10_sw_result" id="rack10_sw_result"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-4"></div>
+                <div class="col-4">
+                    <button id="set_rack" class="btn btn-outline-success" style="margin-right: 10px; margin-top: 20px">
+                        Apply
+                    </button>
+                    <button id="cancel_rack" class="btn btn-outline-success" type="submit" style="margin-right: 10px; margin-top: 20px">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} {% block scripts %}
+<script>
+    function changeAgentVal() {
+        document.getElementById("picpath").value =
+            document.getElementById("inputFileAgent").value;
+    }
+    function cvtInputValue(val_in) {
+        var val_cvt = val_in.replace(/[^0-9.]/g, "");
+
+        const decimalPointIndex = val_cvt.indexOf(".");
+        if (decimalPointIndex !== -1) {
+            val_cvt =
+                val_cvt.slice(0, decimalPointIndex + 1) +
+                val_cvt.slice(decimalPointIndex + 1).replace(".", "");
+        }
+        return val_cvt;
+    }
+
+    function cvtInputValueNoPnt(val_in) {
+        var val_cvt = val_in.replace(/[^0-9]/g, "");
+
+        const decimalPointIndex = val_cvt.indexOf(".");
+        if (decimalPointIndex !== -1) {
+            val_cvt =
+                val_cvt.slice(0, decimalPointIndex + 1) +
+                val_cvt.slice(decimalPointIndex + 1).replace(".", "");
+        }
+        return val_cvt;
+    }
+
+    jQuery(document).ready(function () {
+        let user_status = false;
+        let mode;
+        let force_change_mode = false;
+        let oc_issue = false;
+        let f1_issue = false;
+        let overload1 = false;
+        let overload2 = false;
+        let one_time = false;
+        let max_Fan = 0;
+        let userType = "{{ user }}";
+        let inspect_action = 0;
+        let current_mode;
+
+        if (userType == "superuser") {
+            user_status = true;
+        }
+
+        jQuery(".mcSet").attr("data-before", "Magnetic Contactor ▲");
+        jQuery(".fanSetting").attr("data-before", "Running Time ▲");
+        jQuery(".exportSetting").attr("data-before", "Export/Import Setting ▲");
+        jQuery(".modeSelect").attr("data-before", "Mode Selection");
+        jQuery(".uiUpdate").attr("data-before", "Upload Settings ▼");
+        jQuery(".overCurrent").attr("data-before", "Error Reset");
+        jQuery(".rack_setting").attr("data-before", "Rack Setting ▲");
+        jQuery(".firmware_setting").attr("data-before", "Firmware Update ▲");
+        jQuery(".rebootPC").attr("data-before", "Reboot Box PC ▲");
+
+        async function fetchData() {
+            while (true) {
+                try {
+                    const data = await $.ajax({
+                        url: "/get_data",
+                        method: "GET",
+                        timeout: 10000,
+                        loader: false,
+                    });
+                    /// 如果Inverter 1~3有error 便不能開 
+                    for (let i = 1; i <= 3; i++) {  // pump  從 1 到 3
+                        if (data["error"][`Inv${i}_Error`] || data["error"][`Inv${i}_OverLoad`]) {
+                            $(`#mc${i}_sw`).prop("disabled", true).prop("checked", false);
+                        } else {
+                            $(`#mc${i}_sw`).prop("disabled", false);
+
+                        }
+                    }
+                    for (let i = 1; i <= 2; i++) {  // fan 從 1 到 2
+                        if (data["error"][`Fan_OverLoad${i}`]) {
+                            $(`#fan_mc${i}`).prop("disabled", true).prop("checked", false);
+                        } else {
+                            $(`#fan_mc${i}`).prop("disabled", false);
+
+                        }
+                    }
+
+                } catch (error) {
+                    console.error("Error fetching data:", error);
+                }
+
+                await new Promise((resolve) => setTimeout(resolve, 5000));
+            }
+        }
+        fetchData()
+        $.ajax({
+            url: "/get_data_control",
+            method: "GET",
+            success: function (data) {
+                shared_data(data);
+                console.log(data);
+
+                for (var key in data["value"]) {
+                    if (data["value"].hasOwnProperty(key)) {
+                        var value = data["value"][key];
+                        var element = document.getElementById(key);
+
+                        if (!key.includes("result")) {
+                            if (data["value"].hasOwnProperty(key)) {
+                                var value = data["value"][key];
+                                var element = document.getElementById(key);
+                                if (typeof value === "string") {
+                                    element.value = value;
+                                } else if (typeof value === "boolean") {
+                                    element.checked = value;
+                                } else {
+                                    if (key.includes("pressure")) {
+                                        value = Math.round(value * 10) / 10;
+                                        element.value = value;
+                                    } else {
+                                        if (element) {
+                                            value = Math.round(value);
+                                            element.value = value;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (userType == "superuser" || userType == "admin") {
+                    for (var key in data["mc"]) {
+                        if (!key.includes("result")) {
+                            if (data["mc"].hasOwnProperty(key)) {
+                                var value = data["mc"][key];
+                                $("#" + key).prop("checked", value);
+                            }
+                        }
+                    }
+                }
+
+                for (var key in data["rack_set"]) {
+                    if (data["rack_set"].hasOwnProperty(key)) {
+                        var value = data["rack_set"][key];
+                        let rack_sw_result = key + "_result";
+
+                        $("#" + key).prop("checked", value);
+                        $("#" + rack_sw_result).text(value ? "ON" : "OFF");
+                    }
+                }
+
+                let selectedValue = $("#opMod").val();
+                if (userType == "kiosk" || userType == "user") {
+                    $(".engineer_set").css("display", "none");
+
+                    if (selectedValue == "auto") {
+                        $(".auto_set").css("display", "flex");
+                        $(".manual_set").css("display", "none");
+                    } else if (selectedValue == "manual") {
+                        $(".auto_set").css("display", "none");
+                        $(".manual_set").css("display", "flex");
+                    } else {
+                        $(".auto_set, .manual_set").css("display", "none");
+                    }
+                } else {
+                    $(".manual_set, .engineer_set, .auto_set").css(
+                        "display",
+                        "none"
+                    );
+
+                    if (selectedValue == "auto") {
+                        $(".auto_set").css("display", "flex");
+                    } else if (selectedValue == "engineer") {
+                        $(".engineer_set, .manual_set").css("display", "flex");
+                    } else if (selectedValue == "manual") {
+                        $(".manual_set").css("display", "flex");
+                    }
+                }
+            },
+            error: function (error) {
+                console.error("Error fetching data:", error);
+            },
+        });
+
+        async function fetchDataControl() {
+            while (true) {
+                try {
+                    const data = await $.ajax({
+                        url: "/get_data_control",
+                        method: "GET",
+                        timeout: 10000,
+                        loader: false,
+                    });
+
+                    shared_data(data);
+                } catch (error) {
+                    console.error("Error fetching data:", error);
+                }
+
+                await new Promise((resolve) => setTimeout(resolve, 1000));
+            }
+        }
+
+        fetchDataControl();
+
+
+        function shared_data(data) {
+            // console.log(data);
+
+            let selectedValue = $("#opMod").val();
+            current_mode = data["value"]["resultMode"];
+            inspect_action = data["inspect_action"];
+            oc_issue = data["downtime_error"]["oc_issue"];
+            f1_issue = data["downtime_error"]["f1_issue"];
+
+            for (let i = 1; i <= 3; i++) {  // pump  從 1 到 3
+                if (data["mc"][`mc${i}_sw`]) {
+                    $(`#pump${i}_check`).prop("disabled", false)
+                } else {
+                    $(`#pump${i}_check`).prop("disabled", true).prop("checked", false)
+                }
+            }
+
+            if (data["mc"][`fan_mc1`]) {
+                for (let i = 1; i <= 4; i++) {
+                    $(`#fan${i}_check`).prop("disabled", false)
+                }
+            } else {
+                for (let i = 1; i <= 4; i++) {
+                    $(`#fan${i}_check`).prop("disabled", true).prop("checked", false)
+                }
+            }
+            if (data["mc"][`fan_mc2`]) {
+                for (let i = 5; i <= 8; i++) {
+                    $(`#fan${i}_check`).prop("disabled", false)
+                }
+            } else {
+                for (let i = 5; i <= 8; i++) {
+                    $(`#fan${i}_check`).prop("disabled", true).prop("checked", false)
+                }
+            }
+            for (var key in data["value"]) {
+                if (key.includes("result")) {
+                    if (data["value"].hasOwnProperty(key)) {
+                        var value = data["value"][key];
+                        var element = document.getElementById(key);
+                        if (typeof value === "string") {
+                            element.innerHTML = value;
+                        } else if (typeof value === "boolean") {
+                            element.innerHTML = value ? "ON" : "OFF";
+                        } else {
+                            if (key.includes("Pressure")) {
+                                value = Math.round(value * 10) / 10;
+                                element.innerHTML = value;
+                            } else {
+                                if (element) {
+                                    value = Math.round(value);
+                                    element.innerHTML = value;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (userType == "superuser" || userType == "admin") {
+                    const evElements = $("#ev1_sw, #ev2_sw, #ev3_sw, #ev4_sw");
+                    evElements.attr("disabled", true);
+                    if (
+                        selectedValue === "engineer" &&
+                        data["value"]["resultP1"] == 0 &&
+                        data["value"]["resultP2"] == 0
+                    ) {
+                        evElements.removeAttr("disabled");
+                    } else {
+                        evElements.attr("disabled", true);
+                    }
+                }
+            }
+
+            for (var key in data["text"]) {
+                if (data["text"].hasOwnProperty(key)) {
+                    var value = data["text"][key];
+                    var element = document.getElementById(key);
+                    element.innerHTML = value;
+                }
+            }
+
+            for (var key in data["unit"]) {
+                if (data["unit"].hasOwnProperty(key)) {
+                    var value = data["unit"][key];
+                    $("." + key).text(value);
+                }
+            }
+
+            for (var key in data["rack_set"]) {
+                if (data["rack_set"].hasOwnProperty(key)) {
+                    var value = data["rack_set"][key];
+                    let rack_sw_result = key + "_result";
+                    $("#" + rack_sw_result).text(value ? "ON" : "OFF");
+                }
+            }
+
+            for (var key in data["rack_visibility"]) {
+                if (data["rack_visibility"].hasOwnProperty(key)) {
+                    var value = data["rack_visibility"][key];
+                    let rack_key = key.replace("_enable", "");
+                    if (value) {
+                        $("." + rack_key).show();
+                    } else {
+                        $("." + rack_key).hide();
+                    }
+                }
+
+                let allFalse = Object.values(data["rack_visibility"]).every(
+                    (value) => value === false
+                );
+
+                if (allFalse) {
+                    $(".rack_setting").hide();
+                } else {
+                    $(".rack_setting").show();
+                }
+            }
+
+            if (userType == "superuser" || userType == "admin") {
+                for (var key in data["mc"]) {
+                    if (key.includes("result")) {
+                        if (data["mc"].hasOwnProperty(key)) {
+                            var value = data["mc"][key];
+                            $("." + key).text(value ? "ON" : "OFF");
+                        }
+                    }
+                }
+            }
+
+            if (userType == "kiosk" || userType == "user") {
+                $(".engineer_set").css("display", "none");
+
+                if (selectedValue == "auto") {
+                    $(".auto_set").css("display", "flex");
+                    $(".manual_set").css("display", "none");
+                } else if (selectedValue == "manual") {
+                    $(".auto_set").css("display", "none");
+                    $(".manual_set").css("display", "flex");
+                } else {
+                    $(".auto_set, .manual_set").css("display", "none");
+                }
+            } else {
+                $(".manual_set, .engineer_set, .auto_set").css(
+                    "display",
+                    "none"
+                );
+
+                if (selectedValue == "auto") {
+                    $(".auto_set").css("display", "flex");
+                } else if (selectedValue == "engineer") {
+                    $(".engineer_set, .manual_set").css("display", "flex");
+                } else if (selectedValue == "manual") {
+                    $(".manual_set").css("display", "flex");
+                }
+            }
+        }
+
+        function set_mc(dataToSend) {
+            $.ajax({
+                type: "POST",
+                url: "/mc_setting",
+                contentType: "application/json;charset=UTF-8",
+                data: JSON.stringify(dataToSend),
+                success: function (response) {
+                    if (response.status == "success") {
+                        Swal.fire({
+                            title: "Success",
+                            text: response.message,
+                            icon: "success",
+                            confirmButtonText: "OK",
+                        });
+                    } else if (response.status == "OC") {
+                        Swal.fire({
+                            title: "Info",
+                            html: response.message.replace(/\n/g, "<br>"),
+                            icon: "info",
+                            confirmButtonText: "OK",
+                        });
+                    } else {
+                        Swal.fire({
+                            title: "Error",
+                            text: response.message,
+                            icon: "error",
+                            confirmButtonText: "OK",
+                        });
+                    }
+                },
+            });
+        }
+
+        $("#mcSetBnt").click(function () {
+            var dataToSend = {
+                mc1_sw: $("#mc1_sw").prop("checked"),
+                mc2_sw: $("#mc2_sw").prop("checked"),
+                mc3_sw: $("#mc3_sw").prop("checked"),
+                fan_mc1: $("#fan_mc1").prop("checked"),
+                fan_mc2: $("#fan_mc2").prop("checked"),
+            };
+
+            set_mc(dataToSend)
+        });
+
+        $("#mcCnsBnt").click(function () {
+            $.ajax({
+                url: "/get_data_control",
+                method: "GET",
+                success: function (data) {
+                    for (var key in data["mc"]) {
+                        if (data["mc"].hasOwnProperty(key)) {
+                            var value = data["mc"][key];
+                            $("#" + key)
+                                .text(value ? "ON" : "OFF")
+                                .prop("checked", value);
+                        }
+                    }
+                },
+            });
+        });
+
+        $("#water_factory").click(function () {
+            $.ajax({
+                url: "/reset_water",
+                method: "POST",
+                success: function (r) {
+                    if (r.status == "success") {
+                        Swal.fire({
+                            title: "Success",
+                            text: r.message,
+                            icon: "success",
+                            confirmButtonText: "OK",
+                        });
+                    } else {
+                        Swal.fire({
+                            title: "Error",
+                            text: r.message,
+                            icon: "info",
+                            confirmButtonText: "OK",
+                        });
+                    }
+                },
+                error: function (error) {
+                    console.error("Error fetching data:", error);
+                },
+            });
+        });
+
+        $("#resetCurrentBtn").click(function () {
+            let mode = $("#opMod").val();
+
+            if (mode == "auto") {
+                $("#ev1_sw").prop("checked", true);
+                $("#ev2_sw").prop("checked", true);
+                $("#ev3_sw").prop("checked", true);
+                $("#ev4_sw").prop("checked", true);
+            }
+
+            $.ajax({
+                url: "/reset_current",
+                method: "POST",
+                success: function (r) {
+                    if (r.status == "success") {
+                        Swal.fire({
+                            title: "Success",
+                            text: r.message,
+                            icon: "success",
+                            confirmButtonText: "OK",
+                        });
+                    } else {
+                        Swal.fire({
+                            title: "Info",
+                            text: r.message,
+                            icon: "info",
+                            confirmButtonText: "OK",
+                        });
+                    }
+                },
+                error: function (error) {
+                    console.error("Error fetching data:", error);
+                },
+            });
+        });
+
+        $(".fanResetBtn").click(function () {
+            let index = $(this).data("index");
+
+            Swal.fire({
+                title: "Confirm Reset",
+                text: "Confirm to reset Fan Running Time?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: "No",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "/fan_reset",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify({ index: index }),
+                        success: function (response) {
+                            Swal.fire({
+                                title: "Success",
+                                text: response,
+                                icon: "success",
+                                confirmButtonText: "OK",
+                            });
+                        },
+                        error: function (xhr, status, error) {
+                            Swal.fire({
+                                title: "Error",
+                                text: "Reset Fan Running Time failed!",
+                                icon: "error",
+                                confirmButtonText: "OK",
+                            });
+                        },
+                    });
+                }
+            });
+        });
+
+        // 重製pump runtime
+        function resetPump(pumpId) {
+            Swal.fire({
+                title: "Confirm Reset",
+                text: `Confirm to reset ${pumpId} Running Time?`,
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: "No",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: `/${pumpId}reset`,
+                        type: "POST",
+                        contentType: "application/json",
+                        success: function (response) {
+                            Swal.fire({
+                                title: "Success",
+                                text: response,
+                                icon: "success",
+                                confirmButtonText: "OK",
+                            });
+                        },
+                        error: function () {
+                            Swal.fire({
+                                title: "Error",
+                                text: `Reset ${pumpId} Running Time failed!`,
+                                icon: "error",
+                                confirmButtonText: "OK",
+                            });
+                        },
+                    });
+                }
+            });
+        }
+
+        for (let i = 1; i <= 3; i++) {
+            $(`#Pump${i}ResetBtn`).click(() => resetPump(`Pump${i}`));
+        }
+
+
+        //重製 fan runtime
+
+        function resetFan(fanId) {
+            Swal.fire({
+                title: "Confirm Reset",
+                text: `Confirm to reset ${fanId} Running Time?`,
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: "No",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: `/${fanId}reset`,
+                        type: "POST",
+                        contentType: "application/json",
+                        success: function (response) {
+                            Swal.fire({
+                                title: "Success",
+                                text: response,
+                                icon: "success",
+                                confirmButtonText: "OK",
+                            });
+                        },
+                        error: function () {
+                            Swal.fire({
+                                title: "Error",
+                                text: `Reset ${fanId} Running Time failed!`,
+                                icon: "error",
+                                confirmButtonText: "OK",
+                            });
+                        },
+                    });
+                }
+            });
+        }
+
+        for (let i = 1; i <= 8; i++) {
+            $(`#Fan${i}ResetBtn`).click(() => resetPump(`Fan${i}`));
+        }
+
+        $("#settings_export_bt").click(function () {
+            var network = document.getElementById("exp_ntw_chk").checked;
+            var system = document.getElementById("exp_system_chk").checked;
+            // if (userType === "superuser" || userType === "admin") {
+            //     var pid = document.getElementById("exp_pid_set").checked;
+            //     var alert = document.getElementById("exp_alt_chk").checked;
+            // }
+            var dataToSend = {
+                // exp_alt_chk: alert,
+                exp_ntw_chk: network,
+                // exp_pid_set: pid,
+                exp_psw_adj: false,
+                exp_system_chk: system,
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "/export_settings",
+                contentType: "application/json;charset=UTF-8",
+                data: JSON.stringify(dataToSend),
+                success: function (data) {
+                    var jsonData = JSON.stringify(data, null, 4);
+
+                    var blob = new Blob([jsonData], {
+                        type: "application/json",
+                    });
+                    var url = window.URL.createObjectURL(blob);
+                    var a = document.createElement("a");
+                    a.href = url;
+                    a.download = "data.json";
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                },
+            });
+        });
+
+        let limit = 50000;
+
+        function checkValues(json_data) {
+            let exceed = false;
+
+            check_exceed(json_data);
+
+            function check_exceed(value) {
+                if (typeof value === "number" && value > limit) {
+                    exceed = true;
+                } else if (typeof value === "object" && value !== null) {
+                    Object.values(value).forEach(check_exceed);
+                }
+            }
+
+            return exceed;
+        }
+
+        $("#importBtn").click(function () {
+            var fileInput = document.getElementById("fileInput");
+            var file = fileInput.files[0];
+            var formData = new FormData();
+            formData.append("file", file);
+
+            if (!file) {
+                Swal.fire({
+                    title: "Warning",
+                    text: "Please Select a File",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                return;
+            }
+
+            let reader = new FileReader();
+            reader.onload = function (e) {
+                let data = JSON.parse(e.target.result);
+                let exceedsLimit = checkValues(data);
+                let formattedLimit = limit.toLocaleString();
+
+                if (exceedsLimit) {
+                    Swal.fire(
+                        "Warning",
+                        `File cannot contains values exceeding ${formattedLimit}`,
+                        "warning"
+                    );
+                } else {
+                    $.ajax({
+                        type: "POST",
+                        url: "/import_settings",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (response) {
+                            if (response.status == "success") {
+                                Swal.fire({
+                                    title: "Success",
+                                    text: response.message,
+                                    icon: "success",
+                                    confirmButtonText: "OK",
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: "Warning",
+                                    text: response.message,
+                                    icon: "warning",
+                                    confirmButtonText: "OK",
+                                });
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.log("Error: " + error);
+                            Swal.fire({
+                                title: "Error",
+                                html: "Fail to update configuration.<br>Please provide a valid file.",
+                                icon: "error",
+                                confirmButtonText: "OK",
+                            });
+                        },
+                    });
+                }
+            };
+            reader.readAsText(file);
+        });
+
+        $("#uiUpdateBtn").click(function () {
+            var folderInput = document.getElementById("folderInput");
+            var files = folderInput.files;
+            const formData = new FormData();
+
+            if (files.length === 0) {
+                Swal.fire({
+                    title: "Warning",
+                    text: "Please Select a File",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                return;
+            }
+
+            formData.append("file", files[0]);
+
+            var progressBar = $("#progress-bar");
+            var progressText = $("#progress-text");
+            var progressContainer = $("#progress-container");
+            progressBar.css("width", "0%");
+            progressText.text("0%");
+            progressContainer.show();
+
+            var progress = 0;
+            var interval = setInterval(function () {
+                progress += 2;
+                if (progress >= 90) {
+                    progress = 90;
+                    clearInterval(interval);
+                }
+                progressBar.css("width", progress + "%");
+                progressText.text(progress + "%");
+            }, 1000);
+
+            $.ajax({
+                url: "/upload_zip_pc_both",
+                type: "POST",
+                loader: false,
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    clearInterval(interval);
+                    progressBar.css("width", "100%");
+                    progressText.text("100% upload successfully");
+                    Swal.fire({
+                        title: "Success",
+                        text: "Upload Completed, system will reboot...",
+                        icon: "success",
+                        showConfirmButton: false,
+                        timer: 5000, // 5 秒後自動關閉
+                        didOpen: () => {
+                            // SweetAlert 開啟後呼叫 reboot API
+                            $.ajax({
+                                url: "/reboot-all",
+                                type: "GET",
+                                success: function (res) {
+                                    console.log("Reboot triggered:", res);
+                                },
+                                error: function (xhr) {
+                                    console.error("Failed to reboot:", xhr);
+                                }
+                            });
+                        }
+                    });
+                },
+                error: function (xhr) {
+                    clearInterval(interval);
+                    progressContainer.hide();
+                    let errorMessage = xhr.responseText || "Upload failed";
+                    console.log(errorMessage);
+                    Swal.fire({
+                        title: "Error",
+                        text: "Fail to update new version",
+                        icon: "error",
+                        confirmButtonText: "OK",
+                    });
+                },
+            });
+        });
+
+        if (userType === "superuser" || userType === "admin") {
+            $("#ev1_sw, #ev2_sw, #ev3_sw, #ev4_sw").attr("disabled", true);
+        }
+
+        function set_mode(force_change_mode, mode_input, selectedValue) {
+            $.ajax({
+                type: "POST",
+                url: "/set_operation_mode",
+                contentType: "application/json;charset=UTF-8",
+                data: JSON.stringify({
+                    input: mode_input,
+                    value: selectedValue,
+                    force_change_mode: force_change_mode,
+                }),
+                success: function (response) {
+                    selectedValue_onwriting =
+                        selectedValue.charAt(0).toUpperCase() +
+                        selectedValue.slice(1);
+
+                    let swalConfig = {
+                        title: "",
+                        text: "",
+                        icon: "",
+                        confirmButtonText: "OK",
+                        width: "600px",
+                    };
+
+                    // console.log(response);
+
+                    if (response.status == "success") {
+                        swalConfig.html = response.message.replace(
+                            /\n/g,
+                            "<br>"
+                        );
+                        swalConfig.title = "Success";
+                        swalConfig.icon = "success";
+                    } else if (response.status == "warning") {
+                        swalConfig.text = response.message;
+                        swalConfig.html = response.message.replace(
+                            /\n/g,
+                            "<br>"
+                        );
+                        swalConfig.title = response.title;
+                        swalConfig.icon = "warning";
+                        className: "my-custom-swal";
+                    } else if (response.status == "f1_issue") {
+                        swalConfig.text = response.message;
+                        swalConfig.html = response.message.replace(
+                            /\n/g,
+                            "<br>"
+                        );
+                        swalConfig.title = "Warning";
+                        swalConfig.icon = "warning";
+                        className: "my-custom-swal";
+                    } else if (response.status == "error") {
+                        swalConfig.html = response.message.replace(
+                            /\n/g,
+                            "<br>"
+                        );
+                        swalConfig.title = response.title;
+                        swalConfig.icon = "warning";
+                        className: "my-custom-swal";
+                    } else if (response.status == "info") {
+                        swalConfig.html = response.message.replace(
+                            /\n/g,
+                            "<br>"
+                        );
+                        swalConfig.title = response.title;
+                        swalConfig.icon = "warning";
+                        className: "my-custom-swal";
+                    } else {
+                        swalConfig.text = "Writing failed";
+                        swalConfig.title = "warning";
+                        swalConfig.icon = "error";
+                    }
+
+                    Swal.fire(swalConfig).then(() => {
+                        if (selectedValue === "inspection") {
+                            var responseMessage = response.responseJSON
+                                ? response.responseJSON.message
+                                : "";
+                            if (
+                                responseMessage !==
+                                "Mode change blocked due to F1 (Low) and P3 (Low) alerts."
+                            ) {
+                                window.location.href = "/inspection";
+                            }
+                        }
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error:", error);
+                    Swal.fire({
+                        title: "Error",
+                        text: "Failed to Connect to Server",
+                        icon: "error",
+                        confirmButtonText: "OK",
+                    });
+                },
+            });
+        }
+
+        $("#modAplBt").click(function () {
+            force_change_mode = false;
+            let mode = $("#opMod").val();
+            let currentMode = $("#resultMode").text();
+            let resultP1 = $("#resultP1").text();
+            let resultP2 = $("#resultP2").text();
+            let ps = $("#pump_speed").val();
+            let fan = $("#fan_speed").val();
+            let p1 = $("#pump1_check").prop("checked");
+            let p2 = $("#pump2_check").prop("checked");
+            let p3 = $("#pump3_check").prop("checked");
+            let f1 = $("#fan1_check").prop("checked");
+            let f2 = $("#fan2_check").prop("checked");
+            let f3 = $("#fan3_check").prop("checked");
+            let f4 = $("#fan4_check").prop("checked");
+            let f5 = $("#fan5_check").prop("checked");
+            let f6 = $("#fan6_check").prop("checked");
+            let f7 = $("#fan7_check").prop("checked");
+            let f8 = $("#fan8_check").prop("checked");
+            let oil_pressure_set = $("#oil_pressure_set").val();
+            let oil_temp_set = $("#oil_temp_set").val();
+            let swap = $("#p_swap").val();
+
+            let mode_input = {
+                ps: 0,
+                p1: false,
+                p2: false,
+                p3: false,
+                fan: 0,
+                prsr: 0,
+                temp: 0,
+                fan: 0,
+                swap: 0,
+                selectMode: "",
+                currentMode: "",
+                f1: false,
+                f2: false,
+                f3: false,
+                f4: false,
+                f5: false,
+                f6: false,
+                f7: false,
+                f8: false
+            };
+
+            mode_input.ps = parseFloat($("#pump_speed").val());
+            mode_input.p1 = $("#pump1_check").prop("checked");
+            mode_input.p2 = $("#pump2_check").prop("checked");
+            mode_input.p3 = $("#pump3_check").prop("checked");
+            mode_input.f1 = $("#fan1_check").prop("checked");
+            mode_input.f2 = $("#fan2_check").prop("checked");
+            mode_input.f3 = $("#fan3_check").prop("checked");
+            mode_input.f4 = $("#fan4_check").prop("checked");
+            mode_input.f5 = $("#fan5_check").prop("checked");
+            mode_input.f6 = $("#fan6_check").prop("checked");
+            mode_input.f7 = $("#fan7_check").prop("checked");
+            mode_input.f8 = $("#fan8_check").prop("checked");
+            mode_input.fan = parseFloat($("#fan_speed").val());
+            mode_input.prsr = parseFloat($("#oil_pressure_set").val());
+            mode_input.temp = parseFloat($("#oil_temp_set").val());
+            mode_input.selectMode = $("#opMod").val();
+            mode_input.currentMode = $("#resultMode").text();
+            mode_input.swap = parseFloat($("#p_swap").val());
+
+            if (mode == "auto") {
+                let check_val = cvtInputValue(oil_pressure_set);
+                if (oil_pressure_set !== check_val || !check_val) {
+                    Swal.fire({
+                        title: "Error",
+                        text: "Format of Oil pressure is not valid",
+                        icon: "error",
+                        confirmButtonText: "OK",
+                    });
+                    return;
+                }
+
+                check_val = cvtInputValue(oil_temp_set);
+                if (oil_temp_set !== check_val || !check_val) {
+                    Swal.fire({
+                        title: "Error",
+                        text: "Format of Oil temp is not valid",
+                        icon: "error",
+                        confirmButtonText: "OK",
+                    });
+                    return;
+                }
+
+                check_val = cvtInputValue(swap);
+                if (swap !== check_val || !check_val) {
+                    Swal.fire({
+                        title: "Error",
+                        text: "Format of pump swap time is not valid",
+                        icon: "error",
+                        confirmButtonText: "OK",
+                    });
+                    return;
+                }
+            }
+
+            if (mode == "manual" || mode == "engineer") {
+                let check_val = cvtInputValue(ps);
+                if (ps !== check_val || !check_val) {
+                    Swal.fire({
+                        title: "Error",
+                        text: "Format of Pump Speed is not valid",
+                        icon: "error",
+                        confirmButtonText: "OK",
+                    });
+                    return;
+                }
+
+                ps = parseFloat(ps);
+
+                if (ps > 100 || (ps !== 0 && ps < 25)) {
+                    const range = ps > 100 ? "Over Range" : "Under Range";
+                    Swal.fire({
+                        title: range,
+                        html: "Pump Speed invalid input.<br>The accepted setting range is 25-100 or 0.",
+                        icon: "error",
+                        confirmButtonText: "OK",
+                    });
+                    return;
+                }
+
+                fan = parseFloat(fan);
+
+                if (fan > 100 || (fan !== 0 && fan < 20)) {
+                    const range = fan > 100 ? "Over Range" : "Under Range";
+                    Swal.fire({
+                        title: range,
+                        html: "Fan Speed invalid input.<br>The accepted setting range is 20-100",
+                        icon: "error",
+                        confirmButtonText: "OK",
+                    });
+                    return;
+                }
+
+                if (ps == 0 && (p1 || p2 || p3)) {
+                    Swal.fire({
+                        title: "Error",
+                        text: "Please check off pump settings at 0 speed.",
+                        icon: "error",
+                        confirmButtonText: "OK",
+                    });
+                    return;
+                }
+            }
+
+            if (currentMode == "Inspection" && mode !== "inspection") {
+                if (inspect_action == 1) {
+                    Swal.fire({
+                        title: "Change Mode",
+                        html: "Currently in Inspection Mode<br>Confirm to Change Mode?",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonText: "Yes",
+                        cancelButtonText: "No",
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            force_change_mode = true;
+                            set_mode(force_change_mode, mode_input, mode);
+                        }
+                    });
+                } else {
+                    force_change_mode = false;
+                    set_mode(force_change_mode, mode_input, mode);
+                }
+            } else {
+                force_change_mode = false;
+                set_mode(force_change_mode, mode_input, mode);
+            }
+        });
+
+        if (userType == "superuser" || userType == "admin") {
+            $("#evSetBnt").click(function () {
+                let ev1_sw = document.getElementById("ev1_sw").checked;
+                let ev2_sw = document.getElementById("ev2_sw").checked;
+                let ev3_sw = document.getElementById("ev3_sw").checked;
+                let ev4_sw = document.getElementById("ev4_sw").checked;
+
+                var dataToSend = {
+                    ev1_sw: ev1_sw,
+                    ev2_sw: ev2_sw,
+                    ev3_sw: ev3_sw,
+                    ev4_sw: ev4_sw,
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: "/ev_set",
+                    contentType: "application/json;charset=UTF-8",
+                    data: JSON.stringify(dataToSend),
+                    success: function (response) {
+                        if (response == "EV Set Updated Successfully") {
+                            Swal.fire({
+                                title: "Success",
+                                text: response,
+                                icon: "success",
+                                confirmButtonText: "OK",
+                            });
+                        } else {
+                            Swal.fire({
+                                title: "Error",
+                                text: response,
+                                icon: "error",
+                                confirmButtonText: "OK",
+                            });
+                        }
+                    },
+                });
+            });
+            $("#evCnsBnt").click(function () {
+                $.ajax({
+                    url: "/get_data_control",
+                    method: "GET",
+                    success: function (data) {
+                        for (var key in data["valve"]) {
+                            if (data["valve"].hasOwnProperty(key)) {
+                                var value = data["valve"][key];
+                                var element = document.getElementById(key);
+
+                                if (value === true) {
+                                    $("#" + key).text("Open");
+                                    $("." + key).text("Open");
+                                    element.checked = value;
+                                } else {
+                                    $("#" + key).text("Close");
+                                    $("." + key).text("Close");
+                                    element.checked = value;
+                                }
+                            }
+                        }
+                    },
+                });
+            });
+        }
+
+        $("#submitButton").click(function () {
+            $("#cars").css("border-color", "blue");
+
+            var selectedValue = $("#cars").val();
+
+            $.ajax({
+                type: "POST",
+                url: "/process_dropdown_value",
+                contentType: "application/json;charset=UTF-8",
+                data: JSON.stringify({ value: selectedValue }),
+                success: function (response) {
+                    $("#result").html("Flask received value: " + response);
+                },
+            });
+        });
+
+        $("#modCnsBt").click(function () {
+            $.ajax({
+                url: "/get_data_control",
+                method: "GET",
+                success: function (data) {
+                    for (var key in data["value"]) {
+                        if (data["value"].hasOwnProperty(key)) {
+                            var value = data["value"][key];
+                            var element = document.getElementById(key);
+
+                            if (element) {
+                                if (element.tagName == "SELECT") {
+                                    element.value = value;
+                                    mode = value;
+                                }
+                            } else {
+                            }
+                        }
+                    }
+                },
+                error: function (error) {
+                    console.error("Error fetching data:", error);
+                },
+            });
+        });
+
+        $("#rstr_apply").click(function () {
+            var rstr_alt_chk = document.getElementById("rstr_alt_chk").checked;
+            var rstr_ntw_chk = document.getElementById("rstr_ntw_chk").checked;
+            var rstr_snmp_chk =
+                document.getElementById("rstr_snmp_chk").checked;
+            var rstr_psw_chk = document.getElementById("rstr_psw_chk").checked;
+
+            var dataToSend = {
+                rstr_alt_chk: rstr_alt_chk,
+                rstr_ntw_chk: rstr_ntw_chk,
+                rstr_snmp_chk: rstr_snmp_chk,
+                rstr_psw_chk: rstr_psw_chk,
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "/rstr_fctr_dft",
+                contentType: "application/json;charset=UTF-8",
+                data: JSON.stringify(dataToSend),
+                success: function (response) {
+                    console.log(response);
+                },
+            });
+        });
+
+        $("#shutdownBtn").click(function () {
+            Swal.fire({
+                title: "Confirm Shutdown",
+                text: "Personnel must stay near the device to shut down",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: "No",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "/shutdown",
+                        method: "GET",
+                        success: function (response) {
+                            console.log("電腦已關閉");
+                            Swal.fire({
+                                title: "Success",
+                                text: response,
+                                icon: "success",
+                                confirmButtonText: "OK",
+                            });
+                        },
+                        error: function (xhr, statusText) {
+                            console.log("Error:", statusText);
+                            Swal.fire({
+                                title: "Error",
+                                text: "Failed to shutdown the computer.",
+                                icon: "error",
+                                confirmButtonText: "OK",
+                            });
+                        },
+                    });
+                }
+            });
+        });
+
+        $("#rebootBtn").click(function () {
+            Swal.fire({
+                title: "Confirm Reboot",
+                text: "Confirm to reboot?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: "No",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "/reboot",
+                        method: "GET",
+                        success: function (response) {
+                            console.log("電腦已關閉");
+                            Swal.fire({
+                                title: "Success",
+                                text: response,
+                                icon: "success",
+                                confirmButtonText: "OK",
+                            });
+                        },
+                        error: function (xhr, statusText) {
+                            console.log("Error:", statusText);
+                            Swal.fire({
+                                title: "Error",
+                                text: "Reboot failed. Please try again.",
+                                icon: "error",
+                                confirmButtonText: "OK",
+                            });
+                        },
+                    });
+                }
+            });
+        });
+
+        $("#set_rack").click(function () {
+            let checkbox = [];
+            for (let i = 1; i <= 10; i++) {
+                let check = $(`#rack${i}_sw`);
+                checkbox.push(check.prop("checked"));
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/set_rack_control",
+                contentType: "application/json;charset=UTF-8",
+                data: JSON.stringify(checkbox),
+                success: function (r) {
+                    if (r.status == "success") {
+                        Swal.fire({
+                            title: "Success",
+                            text: r.message,
+                            icon: "success",
+                            confirmButtonText: "OK",
+                        });
+                    } else if (r.status == "error") {
+                        Swal.fire({
+                            title: "Error",
+                            html: r.message,
+                            icon: "error",
+                            confirmButtonText: "OK",
+                        });
+                    }
+                },
+                error: function (xhr, statusText) {
+                    console.log("Error:", statusText);
+                    Swal.fire({
+                        title: "Error",
+                        text: "Rack setting failed. Please try again.",
+                        icon: "error",
+                        confirmButtonText: "OK",
+                    });
+                },
+            });
+        });
+
+        $(".title").each(function () {
+            if ($(this).data("default") === "collapsed") {
+                $(this).addClass("collapsed");
+            }
+        });
+
+        $(".data-before-trigger").click(function () {
+            let $title = $(this).closest(".title");
+            $title.toggleClass("collapsed");
+            if ($title.hasClass("collapsed")) {
+                $title.attr("data-before", $title.attr("data-label") + " ▲");
+            } else {
+                $title.attr("data-before", $title.attr("data-label") + " ▼");
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,171 @@
+{% extends "base.html" %} {% block title %} Logs {% endblock %} {% block styles
+%}
+<style type="text/css">
+    .nav-logs {
+        background-color: #008000 !important;
+        color: #fff !important;
+    }
+
+    .form-container {
+        width: 100%;
+    }
+
+    #download-log-form {
+        display: flex;
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .list-group-container {
+        width: 100%;
+        margin-top: 50px;
+    }
+
+    .table_container {
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+
+    .btn-outline-success {
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    #download-log-form,
+    .list-group-container {
+        border: 2px solid #008000;
+
+        border-radius: 10px;
+
+        padding: 20px;
+        position: relative;
+    }
+
+    #download-log-form::before,
+    .list-group-container::before {
+        background-color: #fff;
+        color: #000000;
+        content: attr(data-before);
+        font-weight: bold;
+        left: 1em;
+        padding: 0 0.5em;
+        position: absolute;
+        top: -1em;
+    }
+
+    .table_container .list-group-item:nth-child(odd) {
+        background-color: #ffffff;
+    }
+
+    .table_container .list-group-item:nth-child(even) {
+        background-color: rgba(0, 0, 0, 0.09);
+    }
+
+    .form-group {
+        display: flex;
+    }
+
+    ul {
+        padding: 0;
+    }
+</style>
+{% endblock %} {% block content %}
+
+<body>
+    <div class="container-fluid" style="margin-top: 100px">
+        <div class="form-container">
+            <form id="download-log-form">
+                <div class="form-group-container">
+                    <div class="row">
+                        <div class="col-4" style="margin: 10px">
+                            <label for="start-date">Start Date&nbsp;:&nbsp;</label>
+                            <input type="date" id="start-date" name="start-date" required />
+                            <span>&nbsp;-&nbsp;</span>
+                            <label for="end-date">End Date&nbsp;:&nbsp;</label>
+                            <input type="date" id="end-date" name="end-date" required />
+                        </div>
+                        <div class="col-1">
+                            <button class="btn btn-outline-success" type="submit">
+                                Download
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="list-group-container">
+            <ul class="table_container">
+                {% for file in files %}
+                <li class="list-group-item">
+                    <a href="{{ url_for('download_error_logs', filename=file) }}">{{ file }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</body>
+{% endblock %} {% block scripts %}
+
+<script>
+    jQuery(document).ready(function () {
+        jQuery("#download-log-form").attr(
+            "data-before",
+            " Download Multiple Error Logs"
+        );
+
+        jQuery(".list-group-container").attr(
+            "data-before",
+            "Download Single Error log"
+        );
+    });
+
+    document
+        .getElementById("download-log-form")
+        .addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const startDate = new Date(
+                document.getElementById("start-date").value
+            );
+            const endDate = new Date(document.getElementById("end-date").value);
+
+            const today = new Date();
+
+            today.setHours(0, 0, 0, 0);
+
+            const timeDiff = endDate - startDate;
+            const dayDiff = timeDiff / (1000 * 3600 * 24);
+
+            if (dayDiff < 0) {
+                Swal.fire({
+                    title: "Error",
+                    text: "The end date must be after the start date.",
+                    icon: "error",
+                    confirmButtonText: "OK",
+                });
+                return;
+            } else if (dayDiff > 7) {
+                Swal.fire({
+                    title: "Error",
+                    text: "To avoid large file sizes, please select a date range of no more than seven days.",
+                    icon: "error",
+                    confirmButtonText: "OK",
+                });
+                return;
+            } else if (endDate > today) {
+                Swal.fire({
+                    title: "Error",
+                    text: "The date range cannot exceed today.",
+                    icon: "error",
+                    confirmButtonText: "OK",
+                });
+                return;
+            }
+
+            const url = `/download_logs/error/${startDate.toISOString().split("T")[0]
+                }~${endDate.toISOString().split("T")[0]}`;
+
+            window.location.href = url;
+        });
+</script>
+{% endblock %}

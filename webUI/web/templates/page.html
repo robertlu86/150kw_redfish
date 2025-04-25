@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Template - Page</title>
+</head>
+
+<body>
+    <h1>Template - Page</h1>
+    <h2>{{text}}</h2>
+
+    {% if appInfo1 != undefined %}
+
+    <h2>AppInfo :</h2>
+    <p>id : {{appInfo1.id}}</p>
+    <p>name : {{appInfo1.name}}</p>
+    <p>version : {{appInfo1.version}}</p>
+    <p>author : {{appInfo1.author}}</p>
+    <p>remark : {{appInfo1.remark}}</p>
+    {% endif %} {% if data != undefined %}
+    <h2>Data :</h2>
+    <table border="1">
+        {% for key, value in data.items() %}
+        <tr>
+            <th>{{ key }}</th>
+            <td>{{ value }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+</body>
+
+</html>

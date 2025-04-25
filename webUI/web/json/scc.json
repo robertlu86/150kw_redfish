@@ -1,0 +1,338 @@
+{
+    "CoolantSupplyTemperature": {
+        "Name": "CoolantSupplyTemperature",
+        "DisplayName": "Coolant Supply Temperature (T1)",
+        "Status": "Error",
+        "Value": 1.0,
+        "Unit": "\u00b0C",
+        "WarningLevel": {
+            "TrapEnabled": true,
+            "MinValue": null,
+            "MaxValue": 60.0
+        },
+        "AlertLevel": {
+            "TrapEnabled": true,
+            "MinValue": null,
+            "MaxValue": 65.0
+        },
+        "DelayTime": 0
+    },
+    "CoolantSupplyTemperatureSpare": {
+        "Name": "CoolantSupplyTemperatureSpare",
+        "DisplayName": "Coolant Supply Temperature Spare (T1sp)",
+        "Status": "Error",
+        "Value": 2.0,
+        "Unit": "\u00b0C",
+        "WarningLevel": {
+            "TrapEnabled": true,
+            "MinValue": null,
+            "MaxValue": 60.0
+        },
+        "AlertLevel": {
+            "TrapEnabled": true,
+            "MinValue": null,
+            "MaxValue": 65.0
+        },
+        "DelayTime": 0
+    },
+    "CoolantReturnTemperature": {
+        "Name": "CoolantReturnTemperature",
+        "DisplayName": "Coolant Return Temperature (T2)",
+        "Status": "Error",
+        "Value": 3.0,
+        "Unit": "\u00b0C",
+        "WarningLevel": {
+            "TrapEnabled": true,
+            "MinValue": null,
+            "MaxValue": 60.0
+        },
+        "AlertLevel": {
+            "TrapEnabled": true,
+            "MinValue": null,
+            "MaxValue": 65.0
+        },
+        "DelayTime": 0
+    },
+    "CoolantReturnTemperatureSpare": {
+        "Name": "CoolantReturnTemperatureSpare",
+        "DisplayName": "Coolant Return Temperature Spare (T2sp)",
+        "Status": "Error",
+        "Value": 4.0,
+        "Unit": "\u00b0C",
+        "WarningLevel": {
+            "TrapEnabled": true,
+            "MinValue": null,
+            "MaxValue": 60.0
+        },
+        "AlertLevel": {
+            "TrapEnabled": true,
+            "MinValue": null,
+            "MaxValue": 65.0
+        },
+        "DelayTime": 0
+    },
+    "CoolantSupplyPressure": {
+        "Name": "CoolantSupplyPressure",
+        "DisplayName": "Coolant Supply Pressure (P1)",
+        "Status": "Error",
+        "Value": 5.0,
+        "Unit": "kPa",
+        "WarningLevel": {
+            "TrapEnabled": true,
+            "MinValue": null,
+            "MaxValue": 350.0
+        },
+        "AlertLevel": {
+            "TrapEnabled": true,
+            "MinValue": null,
+            "MaxValue": 400.0
+        },
+        "DelayTime": 0
+    },
+    "CoolantSupplyPressureSpare": {
+        "Name": "CoolantSupplyPressureSpare",
+        "DisplayName": "Coolant Supply Pressure Spare (P1sp)",
+        "Status": "Error",
+        "Value": 6.0,
+        "Unit": "kPa",
+        "WarningLevel": {
+            "TrapEnabled": true,
+            "MinValue": null,
+            "MaxValue": 350.0
+        },
+        "AlertLevel": {
+            "TrapEnabled": true,
+            "MinValue": null,
+            "MaxValue": 400.0
+        },
+        "DelayTime": 0
+    },
+    "CoolantReturnPressure": {
+        "Name": "CoolantReturnPressure",
+        "DisplayName": "Coolant Return Pressure (P2)",
+        "Status": "Error",
+        "Value": 7.0,
+        "Unit": "kPa",
+        "WarningLevel": {
+            "TrapEnabled": true,
+            "MinValue": null,
+            "MaxValue": 150.0
+        },
+        "AlertLevel": {
+            "TrapEnabled": true,
+            "MinValue": null,
+            "MaxValue": 200.0
+        },
+        "DelayTime": 0
+    },
+    "CoolantReturnPressureSpare": {
+        "Name": "CoolantReturnPressureSpare",
+        "DisplayName": "Coolant Return Pressure Spare (P2sp)",
+        "Status": "Error",
+        "Value": 8.0,
+        "Unit": "kPa",
+        "WarningLevel": {
+            "TrapEnabled": true,
+            "MinValue": null,
+            "MaxValue": 150.0
+        },
+        "AlertLevel": {
+            "TrapEnabled": true,
+            "MinValue": null,
+            "MaxValue": 200.0
+        },
+        "DelayTime": 0
+    },
+    "FilterInletPressure": {
+        "Name": "FilterInletPressure",
+        "DisplayName": "Filter Inlet Pressure (P3)",
+        "Status": "Error",
+        "Value": "1.23",
+        "Unit": "kPa",
+        "WarningLevel": {
+            "TrapEnabled": true,
+            "MinValue": 30.0,
+            "MaxValue": 500.0
+        },
+        "AlertLevel": {
+            "TrapEnabled": true,
+            "MinValue": 23.0,
+            "MaxValue": 550.0
+        },
+        "DelayTime": 0
+    },
+    "FilterOutletPressure": {
+        "Name": "FilterOutletPressure",
+        "DisplayName": "Filter Outlet Pressure (P4)",
+        "Status": "Error",
+        "Value": "1.23",
+        "Unit": "kPa",
+        "WarningLevel": {
+            "TrapEnabled": true,
+            "MinValue": null,
+            "MaxValue": 150.0
+        },
+        "AlertLevel": {
+            "TrapEnabled": true,
+            "MinValue": null,
+            "MaxValue": 200.0
+        },
+        "DelayTime": 0
+    },
+    "CoolantFlowRate": {
+        "Name": "CoolantFlowRate",
+        "DisplayName": "Coolant Flow Rate (F1)",
+        "Status": "Error",
+        "Value": 11,
+        "Unit": "LPM",
+        "WarningLevel": {
+            "TrapEnabled": true,
+            "MinValue": 30.0,
+            "MaxValue": null
+        },
+        "AlertLevel": {
+            "TrapEnabled": true,
+            "MinValue": 20.0,
+            "MaxValue": null
+        },
+        "DelayTime": 40
+    },
+    "AmbientTemp": {
+        "Name": "AmbientTemp",
+        "DisplayName": "Ambient Temperature (Ta)",
+        "Status": "Error",
+        "Value": 12.0,
+        "Unit": "\u00b0C",
+        "WarningLevel": {
+            "TrapEnabled": true,
+            "MinValue": 23.0,
+            "MaxValue": 40.0
+        },
+        "AlertLevel": {
+            "TrapEnabled": true,
+            "MinValue": 18.0,
+            "MaxValue": 45.0
+        },
+        "DelayTime": 0
+    },
+    "RelativeHumid": {
+        "Name": "RelativeHumid",
+        "DisplayName": "Relative Humidity (RH)",
+        "Status": "Error",
+        "Value": 13.0,
+        "Unit": "%",
+        "WarningLevel": {
+            "TrapEnabled": true,
+            "MinValue": 8.5,
+            "MaxValue": 75.0
+        },
+        "AlertLevel": {
+            "TrapEnabled": true,
+            "MinValue": 8.0,
+            "MaxValue": 80.0
+        },
+        "DelayTime": 0
+    },
+    "DewPoint": {
+        "Name": "DewPoint",
+        "DisplayName": "Dew Point Temperature (TDp)",
+        "Status": "Error",
+        "Value": 14.0,
+        "Unit": "\u00b0C",
+        "WarningLevel": {
+            "TrapEnabled": true,
+            "MinValue": 5.0,
+            "MaxValue": null
+        },
+        "AlertLevel": {
+            "TrapEnabled": true,
+            "MinValue": 2.0,
+            "MaxValue": null
+        },
+        "DelayTime": 0
+    },
+    "pH": {
+        "Name": "pH",
+        "DisplayName": "pH (PH)",
+        "Status": "Good",
+        "Value": 15.0,
+        "Unit": "pH",
+        "WarningLevel": {
+            "TrapEnabled": true,
+            "MinValue": 7.2,
+            "MaxValue": 7.9
+        },
+        "AlertLevel": {
+            "TrapEnabled": true,
+            "MinValue": 7.0,
+            "MaxValue": 8.0
+        },
+        "DelayTime": 0
+    },
+    "Conductivity": {
+        "Name": "Conductivity",
+        "DisplayName": "Conductivity (CON)",
+        "Status": "Error",
+        "Value": 16.0,
+        "Unit": "\u00b5S/cm",
+        "WarningLevel": {
+            "TrapEnabled": true,
+            "MinValue": 4200.0,
+            "MaxValue": 4600.0
+        },
+        "AlertLevel": {
+            "TrapEnabled": true,
+            "MinValue": 4000.0,
+            "MaxValue": 4700.0
+        },
+        "DelayTime": 0
+    },
+    "Turbidity": {
+        "Name": "Turbidity",
+        "DisplayName": "Turbidity (Tur)",
+        "Status": "Error",
+        "Value": 17.0,
+        "Unit": "NRU",
+        "WarningLevel": {
+            "TrapEnabled": true,
+            "MinValue": 2.0,
+            "MaxValue": 10.0
+        },
+        "AlertLevel": {
+            "TrapEnabled": true,
+            "MinValue": 1.0,
+            "MaxValue": 15.0
+        },
+        "DelayTime": 0
+    },
+    "InstantPowerConsumption": {
+        "Name": "InstantPowerConsumption",
+        "DisplayName": "Instant Power Consumption",
+        "Value": 18.0,
+        "Unit": "kW"
+    },
+    "AverageCurrent": {
+        "Name": "AverageCurrent",
+        "DisplayName": "Average Current",
+        "Status": "Good",
+        "Value": 19.0,
+        "Unit": "kW",
+        "WarningLevel": {
+            "TrapEnabled": true,
+            "MinValue": null,
+            "MaxValue": 40.0
+        },
+        "AlertLevel": {
+            "TrapEnabled": true,
+            "MinValue": null,
+            "MaxValue": 45.0
+        },
+        "DelayTime": 10
+    },
+    "HeatCapacity": {
+        "Name": "HeatCapacity",
+        "DisplayName": "Heat Capacity",
+        "Value": 20.0,
+        "Unit": "kW"
+    }
+}

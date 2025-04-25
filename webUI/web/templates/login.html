@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Login Page</title>
+
+    <link rel="stylesheet" href="/static/bootstrap4-3-1.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
+    <link rel="stylesheet" href="/static/css/sweetalert2.min.css" />
+    <link rel="stylesheet" href="/static/css/all.min.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/kioskboard-2.3.0.min.css') }}" />
+    <script src="{{ url_for('static', filename='js/kioskboard-2.3.0.min.js') }}"></script>
+
+    <style type="text/css">
+        html,
+        body {
+            overscroll-behavior: none;
+            user-select: none;
+        }
+
+        .user {
+            display: flex;
+            justify-content: center;
+            align-items: top;
+            height: 90vh;
+            font-size: 2rem;
+            gap: 10px;
+            font-family: Arial, sans-serif;
+        }
+
+        td {
+            padding: 10px;
+        }
+
+        .submitBtn {
+            font-size: 1.5rem;
+            padding: 6px 18px;
+            border-radius: 4px;
+        }
+
+        .submitBtn:active {
+            transform: scale(0.9);
+        }
+
+        .submitBtn:hover {
+            background-color: #999999;
+        }
+
+        .loginInput {
+            font-size: 2rem;
+            width: 300px;
+            height: 50px;
+        }
+
+        .tdBtn {
+            padding-top: 20px;
+            text-align: center;
+        }
+
+        .errMessage {
+            text-align: center;
+            font-size: 1.6rem;
+            margin-top: 10px;
+            color: red;
+        }
+
+        #autoLogin {
+            opacity: 0;
+            cursor: default;
+        }
+
+        .box {
+            width: 100%;
+        }
+
+        #autoFill {
+            position: absolute;
+            right: 0px;
+            bottom: 0px;
+            opacity: 0;
+            cursor: default;
+        }
+
+        #autoFill_micro {
+            position: absolute;
+            left: 0px;
+            bottom: 0px;
+            opacity: 0;
+            cursor: default;
+        }
+
+        #autoFill_user {
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            opacity: 0;
+            cursor: default;
+        }
+
+        #autoFill_kiosk {
+            position: absolute;
+            right: 0px;
+            top: 0px;
+            opacity: 0;
+            cursor: default;
+        }
+
+        .swal2-input {
+            width: 65%;
+        }
+
+        .my-custom-swal {
+            height: auto;
+        }
+
+        .password-box {
+            position: relative;
+        }
+
+        #password {
+            padding-right: 30px;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 20%;
+            top: 60%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            color: #7b7b7b;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="user"></div>
+
+    <button id="logoutBtn" style="display: none">Logout</button>
+    <button id="autoLogin">autoLogin</button>
+
+    <script src="/static/js/jquery-3.6.4.min.js"></script>
+    <script src="/static/js/sweetalert2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const username = urlParams.get("username");
+
+            if (username == "kiosk") {
+                autoLogin(username, "0000");
+            } else {
+                showLoginDialog();
+            }
+
+            function autoLogin(username, password) {
+                $.post("/login", { username, password })
+                    .done(function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                title: "Success",
+                                text: "Login successful",
+                                icon: "success",
+                                timer: 2000,
+                                showConfirmButton: true,
+                                timerProgressBar: true,
+                            }).then(() => {
+                                window.location.href = "/status";
+                            });
+                        } else {
+                            showLoginDialog();
+                        }
+                    })
+                    .fail(function () {
+                        showLoginDialog();
+                    });
+            }
+
+            function showLoginDialog() {
+                Swal.fire({
+                    title: "LOGIN",
+                    html: `<div class="box">
+      <input type="text" id="username" class="swal2-input keyboard_text" data-kioskboard-specialcharacters="true"  placeholder="Username">
+      <div class="password-box">
+      <input type="password" id="password" class="swal2-input keyboard_text" data-kioskboard-specialcharacters="true"  placeholder="Password">
+        <button type="button" id="togglePassword" class="toggle-password"><i class="fas fa-eye"></i></button>
+      </div>
+      <div id="autoFill">login</div>
+      <div id="autoFill_micro">login</div>
+      <div id="autoFill_user">login</div>
+      <div id="autoFill_kiosk">login</div>
+      </div>
+    `,
+                    showCancelButton: false,
+                    confirmButtonText: "LOGIN",
+                    allowOutsideClick: false,
+                    width: "30%",
+                    customClass: {
+                        popup: "my-custom-swal",
+                    },
+                    preConfirm: () => {
+                        const username =
+                            Swal.getPopup().querySelector(
+                                "#username"
+                            ).value;
+                        const password =
+                            Swal.getPopup().querySelector(
+                                "#password"
+                            ).value;
+                        if (!username || !password) {
+                            Swal.showValidationMessage(
+                                `Please enter username and password`
+                            );
+                        }
+                        return { username: username, password: password };
+                    },
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.post("/login", {
+                            username: result.value.username,
+                            password: result.value.password,
+                        })
+                            .done(function (response) {
+                                if (response.success) {
+                                    Swal.fire({
+                                        title: "Success",
+                                        text: "Login successful",
+                                        icon: "success",
+                                        timer: 1000,
+                                        showConfirmButton: true,
+                                        timerProgressBar: true,
+                                    }).then(() => {
+                                        window.location.href = "/status";
+                                    });
+                                } else {
+                                    Swal.fire(
+                                        "Error",
+                                        "Wrong username or password",
+                                        "error"
+                                    ).then(() => {
+                                        showLoginDialog();
+                                    });
+                                }
+                            })
+                            .fail(function () {
+                                Swal.fire(
+                                    "Error",
+                                    "Wrong username or password",
+                                    "error"
+                                ).then(() => {
+                                    showLoginDialog();
+                                });
+                            });
+                    }
+                });
+                if(window.location.hostname === "127.0.0.1"){
+                    var enKeyboard = [
+                        {
+                            0: "Q",
+                            1: "W",
+                            2: "E",
+                            3: "R",
+                            4: "T",
+                            5: "Y",
+                            6: "U",
+                            7: "I",
+                            8: "O",
+                            9: "P",
+                        },
+                        {
+                            0: "A",
+                            1: "S",
+                            2: "D",
+                            3: "F",
+                            4: "G",
+                            5: "H",
+                            6: "J",
+                            7: "K",
+                            8: "L",
+                        },
+                        {
+                            0: "Z",
+                            1: "X",
+                            2: "C",
+                            3: "V",
+                            4: "B",
+                            5: "N",
+                            6: "M",
+                            7: ".",
+                        },
+                    ];
+                    KioskBoard.run(".keyboard_text", {
+                        keysArrayOfObjects: enKeyboard,
+                        language: "en",
+                        keysFontFamily: "Barlow",
+                        keysFontWeight: "500",
+                        cssAnimationsStyle: "fade",
+                        keysFontSize: "20px",
+                        allowRealKeyboard: true,
+                        allowMobileKeyboard: true,
+                        keysAllowSpacebar: true,
+                        capsLockActive: false,
+                        autoScroll: false,
+                        cssAnimations: false,
+                    });
+                }
+                
+            }
+
+            $(document).on("click", "#autoFill", function () {
+                Swal.getPopup().querySelector("#username").value =
+                    "superuser";
+                Swal.getPopup().querySelector("#password").value =
+                    "Kaori35319185";
+            });
+
+            $(document).on("click", "#autoFill_micro", function () {
+                Swal.getPopup().querySelector("#username").value = "admin";
+                Swal.getPopup().querySelector("#password").value =
+                    "Supermicro12729477";
+            });
+
+            $(document).on("click", "#autoFill_user", function () {
+                Swal.getPopup().querySelector("#username").value = "user";
+                Swal.getPopup().querySelector("#password").value = "0000";
+            });
+
+            $(document).on("click", "#autoFill_kiosk", function () {
+                Swal.getPopup().querySelector("#username").value = "kiosk";
+                Swal.getPopup().querySelector("#password").value = "0000";
+            });
+
+            $("#logoutBtn").click(function () {
+                $.get("/logout", function (response) {
+                    $("#logoutBtn").hide();
+                    showLoginDialog();
+                });
+            });
+
+            $("#autoLogin").click(function () {
+                $("#username").val("superuser");
+                $("#password").val("Kaori35319185");
+            });
+
+            $(document).on("click", "#togglePassword", function () {
+                const passwordInput =
+                    Swal.getPopup().querySelector("#password");
+                const icon = $(this).find("i");
+
+                const type =
+                    passwordInput.type === "password" ? "text" : "password";
+                passwordInput.type = type;
+
+                icon.toggleClass("fa-eye fa-eye-slash");
+            });
+        });
+    </script>
+</body>
+
+</html>
