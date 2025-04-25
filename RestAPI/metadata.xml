@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0">
+    <!-- 各種服務 -->
+    <edmx:Reference Uri="http://redfish.dmtf.org/schemas/v1/ServiceRoot_v1.xml">
+      <edmx:Include Namespace="ServiceRoot"/>
+      <edmx:Include Namespace="ServiceRoot.v1_18_0"/>
+    </edmx:Reference>  
+
+    <edmx:Reference Uri="http://redfish.dmtf.org/schemas/v1/AccountService_v1.xml">
+      <edmx:Include Namespace="AccountService"/>
+      <edmx:Include Namespace="AccountService.v1_18_0"/>
+    </edmx:Reference>  
+
+    <edmx:Reference Uri="http://redfish.dmtf.org/schemas/v1/Chassis_v1.xml">
+      <edmx:Include Namespace="Chassis"/>
+      <edmx:Include Namespace="Chassis.v1_26_0"/>
+    </edmx:Reference>  
+    
+    <edmx:Reference Uri="http://redfish.dmtf.org/schemas/v1/Manager_v1.xml">
+      <edmx:Include Namespace="Manager"/> 
+      <edmx:Include Namespace="Manager.v1_21_0"/> 
+    </edmx:Reference>  
+
+    <edmx:Reference Uri="http://redfish.dmtf.org/schemas/v1/SessionService_v1.xml">
+      <edmx:Include Namespace="SessionService"/>
+      <edmx:Include Namespace="SessionService.v1_2_0"/> 
+    </edmx:Reference>  
+
+    <edmx:Reference Uri="http://redfish.dmtf.org/schemas/v1/TelemetryService_v1.xml">
+      <edmx:Include Namespace="TelemetryService"/>  
+      <edmx:Include Namespace="TelemetryService.v1_3_4"/> 
+    </edmx:Reference> 
+
+    <edmx:Reference Uri="http://redfish.dmtf.org/schemas/v1/ThermalEquipment_v1.xml">
+      <edmx:Include Namespace="ThermalEquipment"/>  
+      <edmx:Include Namespace="ThermalEquipment.v1_1_2"/> 
+    </edmx:Reference> 
+
+    <edmx:Reference Uri="http://redfish.dmtf.org/schemas/v1/UpdateService_v1.xml">
+      <edmx:Include Namespace="UpdateService"/>  
+      <edmx:Include Namespace="UpdateService.v1_15_0"/> 
+    </edmx:Reference>  
+
+    <edmx:Reference Uri="http://redfish.dmtf.org/schemas/v1/RedfishExtensions_v1.xml">
+          <edmx:Include Namespace="Validation.v1_0_0" Alias="Validation"/>
+          <edmx:Include Namespace="RedfishExtensions.v1_0_0" Alias="Redfish"/>
+    </edmx:Reference>
+
+    <edmx:Reference Uri="http://redfish.dmtf.org/schemas/v1/Resource_v1.xml">
+      <edmx:Include Namespace="Resource" />
+      <edmx:Include Namespace="Resource.v1_0_0"/>
+    </edmx:Reference>  
+  
+  <!-- service -->
+  <edmx:DataServices>
+    <Schema Namespace="RedfishService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+      <!-- <EntityContainer Name="ServiceRoot" Extends="ServiceRoot.ServiceRoot">
+        <EntitySet Name="AccountService"        EntityType="AccountService.AccountService"/>
+        <EntitySet Name="Chassis"               EntityType="Chassis.Chassis"/>
+        <EntitySet Name="Managers"              EntityType="Manager.Manager"/>
+        <EntitySet Name="SessionService"        EntityType="SessionService.SessionService"/>
+        <EntitySet Name="TelemetryService"      EntityType="TelemetryService.TelemetryService"/>
+        <EntitySet Name="ThermalEquipment"      EntityType="ThermalEquipment.ThermalEquipment"/>
+        <EntitySet Name="UpdateService"         EntityType="UpdateService.UpdateService"/>
+      </EntityContainer> -->
+    </Schema>
+  </edmx:DataServices>
+
+</edmx:Edmx>
