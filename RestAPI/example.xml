@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Copyright 2014-2015 Distributed Management Task Force, Inc. (DMTF). All rights reserved. -->
+<edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0">
+    <edmx:Reference Uri="http://redfish.dmtf.org/schemas/v1/AttributeRegistry_v1.xml">
+        <edmx:Include Namespace="AttributeRegistry"/>
+        <edmx:Include Namespace="AttributeRegistry.v1_2_2"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="http://redfish.dmtf.org/schemas/v1/Resource_v1.xml">
+        <edmx:Include Namespace="Resource"/>
+        <edmx:Include Namespace="Resource.v1_0_0"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="http://redfish.dmtf.org/schemas/v1/RedfishExtensions_v1.xml">
+        <edmx:Include Namespace="Validation.v1_0_0" Alias="Validation"/>
+        <edmx:Include Namespace="RedfishExtensions.v1_0_0" Alias="Redfish"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="http://redfish.dmtf.org/schemas/v1/JsonSchemaFile_v1.xml">
+        <edmx:Include Namespace="JsonSchemaFile"/>
+        <edmx:Include Namespace="JsonSchemaFile.v1_1_3"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="http://redfish.dmtf.org/schemas/v1/IPAddresses_v1.xml">
+        <edmx:Include Namespace="IPAddresses"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="http://redfish.dmtf.org/schemas/v1/Schedule_v1.xml">
+        <edmx:Include Namespace="Schedule"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="http://redfish.dmtf.org/schemas/v1/MessageRegistry_v1.xml">
+        <edmx:Include Namespace="MessageRegistry"/>
+        <edmx:Include Namespace="MessageRegistry.v1_4_0"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="http://redfish.dmtf.org/schemas/v1/PhysicalContext_v1.xml">
+        <edmx:Include Namespace="PhysicalContext"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="http://redfish.dmtf.org/schemas/v1/AccountService_v1.xml">
+        <edmx:Include Namespace="AccountService"/>
+        <edmx:Include Namespace="AccountService.v1_8_0"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="http://redfish.dmtf.org/schemas/v1/ManagerAccountCollection_v1.xml">
+        <edmx:Include Namespace="ManagerAccountCollection"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="http://redfish.dmtf.org/schemas/v1/ActionInfo_v1.xml">
+        <edmx:Include Namespace="ActionInfo"/>
+        <edmx:Include Namespace="ActionInfo.v1_0_0"/>
+        <edmx:Include Namespace="ActionInfo.v1_1_2"/>
+        <edmx:Include Namespace="ActionInfo.v1_2_0"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="http://redfish.dmtf.org/schemas/v1/ManagerNetworkProtocol_v1.xml">
+        <edmx:Include Namespace="ManagerNetworkProtocol"/>
+        <edmx:Include Namespace="ManagerNetworkProtocol.v1_10_1"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="http://redfish.dmtf.org/schemas/v1/SessionCollection_v1.xml">
+        <edmx:Include Namespace="SessionCollection"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="http://redfish.dmtf.org/schemas/v1/ServiceRoot_v1.xml">
+        <edmx:Include Namespace="ServiceRoot"/>
+        <edmx:Include Namespace="ServiceRoot.v1_17_0"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="http://redfish.dmtf.org/schemas/v1/Manager_v1.xml">
+        <edmx:Include Namespace="Manager"/>
+        <edmx:Include Namespace="Manager.v1_16_0"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="http://redfish.dmtf.org/schemas/v1/LogService_v1.xml">
+        <edmx:Include Namespace="LogService"/>
+        <edmx:Include Namespace="LogService.v1_2_0"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="http://redfish.dmtf.org/schemas/v1/ThermalEquipment_v1.xml">
+        <edmx:Include Namespace="ThermalEquipment"/>
+        <edmx:Include Namespace="ThermalEquipment.v1_0_0"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="http://redfish.dmtf.org/schemas/v1/Chassis_v1.xml">
+        <edmx:Include Namespace="Chassis"/>
+        <edmx:Include Namespace="Chassis.v1_17_0"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="http://redfish.dmtf.org/schemas/v1/SessionService_v1.xml">
+        <edmx:Include Namespace="SessionService"/>
+        <edmx:Include Namespace="SessionService.v1_1_7"/>
+    </edmx:Reference>
+</edmx:Edmx>
