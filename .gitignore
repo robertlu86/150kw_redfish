@@ -2,7 +2,6 @@
 instance/*
 !instance/.gitignore
 .webassets-cache
-.env
 .DS_Store
 
 ### Flask.Python Stack ###
