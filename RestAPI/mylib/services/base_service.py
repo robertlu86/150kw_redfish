@@ -7,8 +7,8 @@ class BaseService:
         return HttpRequestUtil.send_get(url, params)
 
     @classmethod
-    def send_get_as_json(cls, url, params):
-        return HttpRequestUtil.send_get_as_json(url, headers, params, timeout)
+    def send_get_as_json(cls, url, params={}):
+        return HttpRequestUtil.send_get_as_json(url, params)
 
     @classmethod
     def send_post(cls, url, req_body, opts):

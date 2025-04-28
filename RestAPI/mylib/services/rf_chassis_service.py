@@ -1,7 +1,8 @@
 '''
 這是Redfish的chassis service
 '''
-from mylib.models.sensor_model import SensorCollectionModel, SensorModel
+import os, re
+from mylib.models.sensor_model import SensorCollectionModel, SensorModel, StatusModel
 from mylib.services.base_service import BaseService
 import re
 
@@ -73,39 +74,149 @@ class RfChassisService(BaseService):
         :param sensor_name: str, ex: PrimaryFlowLitersPerMinute|PrimaryHeatRemovedkW|...
         :return: dict
         """
-        m = SensorModel(chassis_id=chassis_id)
-        m.Id = sensor_name
-        m.Name = self._camel_to_words(m.Id)
-        m.Reading = 0.0
-        m.ReadingUnits = self._get_unit_by_sensor_id(m.Id)
-        m.odata_id = f"/redfish/v1/Chassis/{chassis_id}/Sensors/{sensor_name}"
+        # m = SensorModel(chassis_id=chassis_id)
 
-        # to be continue
-        # url = "http://127.0.0.1:5001/api/v1/cdu/status/sensor_value"
-        # response = self.send_get(url)
-        # response.json()['coolant_flow_rate']
+        # m.Id = sensor_name
+        # m.Name = self._camel_to_words(m.Id)
 
-        return m.model_dump(by_alias=True)
+        # Reading, ReadingUnits
+        reading_info = self._load_reading_info_by_sensor_id(sensor_name)
+        # m.Reading = reading_info["Reading"]
+        # m.ReadingUnits = reading_info["ReadingUnits"]
 
-    def _get_unit_by_sensor_id(self, sensor_id: str) -> str:
-        id_readingUnit_map = {
-            "PrimaryFlowLitersPerMinute": "L/min",
-            "PrimaryHeatRemovedkW": "kW",
-            "PrimarySupplyTemperatureCelsius": "Celsius",
-            "PrimaryReturnTemperatureCelsius": "Celsius",
-            "PrimaryDeltaTemperatureCelsius": "Celsius",
-            "PrimarySupplyPressurekPa": "kPa",
-            "PrimaryReturnPressurekPa": "kPa",
-            "PrimaryDeltaPressurekPa": "kPa",
-            "TemperatureCelsius": "Celsius",
-            "DewPointCelsius": "Celsius",
-            "HumidityPercent": "Percent",
-            "WaterPH": "pH",
-            "Conductivity": "μs/cm",
-            "Turbidity": "NTU",
-            "PowerConsume": "kW",
+        m = SensorModel(
+            chassis_id=chassis_id,
+            Id = sensor_name,
+            Name = self._camel_to_words(sensor_name),
+            Reading=reading_info["Reading"],
+            ReadingUnits = reading_info["ReadingUnits"],
+            Status = StatusModel(Health="OK", State="Enabled")
+        )
+
+        # odata_id
+        # m.odata_id = f"/redfish/v1/Chassis/{chassis_id}/Sensors/{sensor_name}"
+
+        resp_json = m.model_dump(by_alias=True)
+        del resp_json['chassis_id']
+        return resp_json
+
+    def _load_reading_info_by_sensor_id(self, sensor_id: str) -> str:
+        """
+        @return Reading & ReadingUnits
+        @note api response from /cdu/status/sensor_value is
+            {
+                "temp_coolant_supply": 0,
+                " temp_coolant_supply_spare": 0,
+                "temp_coolant_return": 0,
+                "temp_coolant_return_spare": 0,
+                "pressure_coolant_supply": -125,
+                "pressure_coolant_supply_spare": -125,
+                "pressure_coolant_return": -125,
+                "pressure_coolant_return_spare": -125,
+                "pressure_filter_in": -125,
+                "pressure_filter_out": -125,
+                "coolant_flow_rate": -70,
+                "temperature_ambient": 0,
+                "humidity_relative": 0,
+                "temperature_dew_point": 0,
+                "ph_level": 0,
+                "conductivity": 0,
+                "turbidity": 0,
+                "power_total": 0,
+                "cooling_capacity": 0,
+                "heat_capacity": 0,
+                "fan1_speed": 0,
+                "fan2_speed": 0,
+                "fan3_speed": 0,
+                "fan4_speed": 0,
+                "fan5_speed": 0,
+                "fan6_speed": 0,
+                "fan7_speed": 0,
+                "fan8_speed": 0
+            }
+        """
+        id_readingInfo_map = {
+            "PrimaryFlowLitersPerMinute": {
+                "ReadingUnits": "L/min", 
+                "fieldNameToFetchSensorValue": "coolant_flow_rate"
+            },
+            "PrimaryHeatRemovedkW": {
+                "ReadingUnits": "kW", 
+                "fieldNameToFetchSensorValue": "heat_capacity"
+            },
+            "PrimarySupplyTemperatureCelsius": {
+                "ReadingUnits": "Celsius", 
+                "fieldNameToFetchSensorValue": "temp_coolant_supply"
+            },
+            "PrimaryReturnTemperatureCelsius": {
+                "ReadingUnits": "Celsius", 
+                "fieldNameToFetchSensorValue": "temp_coolant_return"
+            }, 
+            "PrimaryDeltaTemperatureCelsius": {
+                "ReadingUnits": "Celsius", 
+                "fieldNameToFetchSensorValue": "temp_coolant_supply,temp_coolant_return"
+            },
+            "PrimarySupplyPressurekPa": {
+                "ReadingUnits": "kPa", 
+                "fieldNameToFetchSensorValue": "pressure_coolant_supply"
+            },
+            "PrimaryReturnPressurekPa": {
+                "ReadingUnits": "kPa", 
+                "fieldNameToFetchSensorValue": "pressure_coolant_return"
+            },
+            "PrimaryDeltaPressurekPa": {
+                "ReadingUnits": "kPa", 
+                "fieldNameToFetchSensorValue": "pressure_coolant_supply,pressure_coolant_return"
+            },
+            "TemperatureCelsius": {
+                "ReadingUnits": "Celsius", 
+                "fieldNameToFetchSensorValue": "temperature_ambient"
+            },
+            "DewPointCelsius": {
+                "ReadingUnits": "Celsius", 
+                "fieldNameToFetchSensorValue": "temperature_dew_point"
+            },
+            "HumidityPercent": {
+                "ReadingUnits": "Percent", 
+                "fieldNameToFetchSensorValue": "humidity_relative"
+            },
+            "WaterPH": {
+                "ReadingUnits": "pH", 
+                "fieldNameToFetchSensorValue": "ph_level"
+            },
+            "Conductivity": {
+                "ReadingUnits": "μs/cm", 
+                "fieldNameToFetchSensorValue": "conductivity"
+            },
+            "Turbidity": {
+                "ReadingUnits": "NTU", 
+                "fieldNameToFetchSensorValue": "turbidity"
+            },
+            "PowerConsume": {
+                "ReadingUnits": "kW", 
+                "fieldNameToFetchSensorValue": "power_total"
+            },
         }
-        return id_readingUnit_map.get(sensor_name, "")
+        reading_info = id_readingInfo_map.get(sensor_id, {})
+        if reading_info:
+            url = f"{os.environ['ITG_REST_HOST']}/api/v1/cdu/status/sensor_value"
+            response = self.send_get(url)
+            sensor_value_json = response.json()
+            reading_info["Reading"] = self._calc_delta_value(sensor_value_json, reading_info["fieldNameToFetchSensorValue"])
+        else:
+            reading_info["Reading"] = 0.0
+        return reading_info
     
-    def _camel_to_words(name: str) -> str:
+    
+    def _calc_delta_value(self, sensor_value: dict, fieldNameToFetchSensorValue: str ) -> str:
+        """
+        如果有兩欄(欄位含',')，則計算兩個sensor value的差值
+        """
+        if "," in fieldNameToFetchSensorValue: 
+            fieldNames = fieldNameToFetchSensorValue.split(",")
+            return sensor_value[ fieldNames[0] ] - sensor_value[ fieldNames[1] ]
+        else:
+            return sensor_value[ fieldNameToFetchSensorValue ]
+
+    def _camel_to_words(self, name: str) -> str:
         return re.sub(r'(?<!^)(?=[A-Z])', ' ', name)
