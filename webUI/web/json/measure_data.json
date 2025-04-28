@@ -13,5 +13,13 @@
     "Prsr_ClntRtnSpare_broken": 1,
     "Prsr_FltIn_broken": 1,
     "Prsr_FltOut_broken": 1,
-    "Clnt_Flow_broken": 1
+    "Clnt_Flow_broken": 1,
+    "fan1_speed": 1,
+    "fan2_speed": 1,
+    "fan3_speed": 1,
+    "fan4_speed": 1,
+    "fan5_speed": 1,
+    "fan6_speed": 1,
+    "fan7_speed": 1,
+    "fan8_speed": 1
 }

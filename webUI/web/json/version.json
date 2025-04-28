@@ -1,5 +1,4 @@
 {
-    "function_switch": false,
-    "flow_switch": false,
-    "median_switch": false
+    "median_switch": false,
+    "coolant_quality_meter_switch": false
 }
