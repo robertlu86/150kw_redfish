@@ -1,33 +1,29 @@
-from flask import (
-    request,
-    Blueprint,
-    jsonify,
-    g,
-    send_file,
-    Flask,
-    Response,
-)
-from flask_login import LoginManager
-from flask_login import UserMixin
+# 標準函式庫
+import json
+import logging
+import os
+import platform
+import re
+import struct
+import subprocess
+import threading
+import time
+import zipfile
+from datetime import datetime
+from functools import wraps
+from io import BytesIO
+
+# 第三方套件
+import pyzipper
 from dotenv import load_dotenv
+from concurrent_log_handler import ConcurrentTimedRotatingFileHandler
+from flask import (
+    Flask, Blueprint, Response, g, jsonify, request, send_file
+)
+from flask_login import LoginManager, UserMixin
 from pymodbus.client.sync import ModbusTcpClient
 from pymodbus.constants import Endian
 from pymodbus.payload import BinaryPayloadDecoder
-from concurrent_log_handler import ConcurrentTimedRotatingFileHandler
-import logging
-import struct
-import os
-import zipfile
-from io import BytesIO
-from datetime import datetime
-import json
-import re
-import subprocess
-from functools import wraps
-import pyzipper
-import platform
-import threading
-import time
 
 
 USERNAME = "admin"
@@ -399,7 +395,7 @@ sensor_value_data = {
         "DisplayName": "Turbidity (Tur)",
         "Status": "Good",
         "Value": "0",
-        "Unit": "NRU",
+        "Unit": "NTU",
         "WarningLevel": {"TrapEnabled": True, "MinValue": "2", "MaxValue": "10"},
         "AlertLevel": {"TrapEnabled": True, "MinValue": "1", "MaxValue": "15"},
         "DelayTime": 0,
@@ -2674,8 +2670,8 @@ def get_sensor_value():
                     if g.sensorData["error"][e_key]:
                         sensor_value_data[key]["Status"] = "Error"
 
-                if g.sensorData["error"]["Clnt_Flow_Com"]:
-                    sensor_value_data["CoolantFlowRate"]["Status"] = "Error"
+                # if g.sensorData["error"]["Clnt_Flow_Com"]:
+                #     sensor_value_data["CoolantFlowRate"]["Status"] = "Error"
 
     except Exception as e:
         print(f"alert plc error: {e}")
@@ -3283,7 +3279,7 @@ def get_devices():
             "Inv1SpeedComm": "Inv1_Com",
             "Inv2SpeedComm": "Inv2_Com",
             "Inv3SpeedComm": "Inv3_Com",
-            "CoolantFlowRateComm": "Clnt_Flow_Com",
+            # "CoolantFlowRateComm": "Clnt_Flow_Com",
             "AmbientTempComm": "Ambient_Temp_Com",
             "RelativeHumidComm": "Relative_Humid_Com",
             "DewPointComm": "Dew_Point_Com",
@@ -3437,40 +3433,43 @@ def get():
 @requires_auth
 def download_errorlogs_by_range(date_range):
     """Get Error Logs"""
+    try:
+        start_date_str, end_date_str = date_range.split("~")
 
-    start_date_str, end_date_str = date_range.split("~")
+        start_date = datetime.strptime(start_date_str, "%Y-%m-%d").date()
+        end_date = datetime.strptime(end_date_str, "%Y-%m-%d").date()
 
-    start_date = datetime.strptime(start_date_str, "%Y-%m-%d").date()
-    end_date = datetime.strptime(end_date_str, "%Y-%m-%d").date()
+        today = datetime.now().date()
 
-    today = datetime.now().date()
+        zip_buffer = BytesIO()
 
-    zip_buffer = BytesIO()
+        with zipfile.ZipFile(zip_buffer, "w") as zip_file:
+            files = os.listdir(f"{log_path}/logs/error")
 
-    with zipfile.ZipFile(zip_buffer, "w") as zip_file:
-        files = os.listdir(f"{log_path}/logs/error")
+            for file in files:
+                try:
+                    if file == "errorlog.log":
+                        file_date = today
+                    else:
+                        file_date_str = file.rsplit(".", 1)[-1]
+                        file_date = datetime.strptime(file_date_str, "%Y-%m-%d").date()
 
-        for file in files:
-            try:
-                if file == "errorlog.log":
-                    file_date = today
-                else:
-                    file_date_str = file.rsplit(".", 1)[-1]
-                    file_date = datetime.strptime(file_date_str, "%Y-%m-%d").date()
+                    if start_date <= file_date <= end_date:
+                        zip_file.write(f"{log_path}/logs/error/{file}", arcname=file)
+                except (IndexError, ValueError):
+                    continue
 
-                if start_date <= file_date <= end_date:
-                    zip_file.write(f"{log_path}/logs/error/{file}", arcname=file)
-            except (IndexError, ValueError):
-                continue
+        zip_buffer.seek(0)
 
-    zip_buffer.seek(0)
-
-    return send_file(
-        zip_buffer,
-        mimetype="application/zip",
-        as_attachment=True,
-        download_name=f"errorlogs_{start_date_str}_to_{end_date_str}.zip",
-    )
+        return send_file(
+            zip_buffer,
+            mimetype="application/zip",
+            as_attachment=True,
+            download_name=f"errorlogs_{start_date_str}_to_{end_date_str}.zip",
+        )
+    except Exception as e:
+        
+        return api_error_response()
 
 
 @scc_bp.route("/api/v1/download_logs/operation/<date_range>")
