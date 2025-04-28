@@ -52,44 +52,44 @@ class SensorModel(BaseModel):
     #     chassis_id = self.chassis_id
     #     return f"/redfish/v1/Chassis/{chassis_id}/Sensors/{self.Id}"
     
-if __name__ == "__main__":
-    import json
+# if __name__ == "__main__":
+#     import json
 
-    Sensors_data = {
-        "PrimaryFlowLitersPerMinute": {
-            "@odata.type": "#Sensor.v1_1_0.Sensor",
-            "Id": "PrimaryFlowLitersPerMinute",
-            "Name": "Primary Flow Liters Per Minute",
-            "Reading": "1",
-            "ReadingUnits": "L/min",
-            "@odata.id": "/redfish/v1/Chassis/1/Sensors/PrimaryFlowLitersPerMinute",
-        },
-        "PrimaryHeatRemovedkW": {
-            "@odata.type": "#Sensor.v1_1_0.Sensor",
-            "Id": "PrimaryHeatRemovedkW",
-            "Name": "Primary Heat Removed kW",
-            "Reading": 0.2,
-            "ReadingUnits": "kW",
-            "@odata.id": "/redfish/v1/Chassis/1/Sensors/PrimaryHeatRemovedkW",
-        },
-        "HumidityPercent": {
-            "@odata.type": "#Sensor.v1_1_0.Sensor",
-            "Id": "HumidityPercent",
-            "Name": "Humidity Percent",
-            "Reading": 56.73,
-            "ReadingUnits": "Percent",
-            "Status": {
-                "Health": "OK", 
-                "State": "Enabled"
-            },
-            "@odata.id": "/redfish/v1/Chassis/1/Sensors/HumidityPercent",
-        },
-    }
-    for key in Sensors_data.keys():
-        sensor = Sensors_data[key]
-        del sensor['@odata.id']
-        # sensor['chassis_id'] = "1"
-        m = SensorModel(**sensor, chassis_id="100000000")
-        # print(f"output => {m.model_dump_json(by_alias=True)}")
-        dump_result = m.model_dump(by_alias=True, exclude_none=True) #exclude_none: 排除值為 None 的欄位
-        print(f"output => {json.dumps(dump_result, indent=4, ensure_ascii=False)}")
+#     Sensors_data = {
+#         "PrimaryFlowLitersPerMinute": {
+#             "@odata.type": "#Sensor.v1_1_0.Sensor",
+#             "Id": "PrimaryFlowLitersPerMinute",
+#             "Name": "Primary Flow Liters Per Minute",
+#             "Reading": "1",
+#             "ReadingUnits": "L/min",
+#             "@odata.id": "/redfish/v1/Chassis/1/Sensors/PrimaryFlowLitersPerMinute",
+#         },
+#         "PrimaryHeatRemovedkW": {
+#             "@odata.type": "#Sensor.v1_1_0.Sensor",
+#             "Id": "PrimaryHeatRemovedkW",
+#             "Name": "Primary Heat Removed kW",
+#             "Reading": 0.2,
+#             "ReadingUnits": "kW",
+#             "@odata.id": "/redfish/v1/Chassis/1/Sensors/PrimaryHeatRemovedkW",
+#         },
+#         "HumidityPercent": {
+#             "@odata.type": "#Sensor.v1_1_0.Sensor",
+#             "Id": "HumidityPercent",
+#             "Name": "Humidity Percent",
+#             "Reading": 56.73,
+#             "ReadingUnits": "Percent",
+#             "Status": {
+#                 "Health": "OK", 
+#                 "State": "Enabled"
+#             },
+#             "@odata.id": "/redfish/v1/Chassis/1/Sensors/HumidityPercent",
+#         },
+#     }
+#     for key in Sensors_data.keys():
+#         sensor = Sensors_data[key]
+#         del sensor['@odata.id']
+#         # sensor['chassis_id'] = "1"
+#         m = SensorModel(**sensor, chassis_id="100000000")
+#         # print(f"output => {m.model_dump_json(by_alias=True)}")
+#         dump_result = m.model_dump(by_alias=True, exclude_none=True) #exclude_none: 排除值為 None 的欄位
+#         print(f"output => {json.dumps(dump_result, indent=4, ensure_ascii=False)}")
