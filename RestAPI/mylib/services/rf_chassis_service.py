@@ -2,7 +2,7 @@
 這是Redfish的chassis service
 '''
 import os, re
-from mylib.models.sensor_model import SensorCollectionModel, SensorModel
+from mylib.models.sensor_model import SensorCollectionModel, SensorModel, StatusModel
 from mylib.services.base_service import BaseService
 
 class RfChassisService(BaseService):
@@ -88,13 +88,16 @@ class RfChassisService(BaseService):
             Id = sensor_name,
             Name = self._camel_to_words(sensor_name),
             Reading=reading_info["Reading"],
-            ReadingUnits = reading_info["ReadingUnits"]
+            ReadingUnits = reading_info["ReadingUnits"],
+            Status = StatusModel(Health="OK", State="Enabled")
         )
 
         # odata_id
         # m.odata_id = f"/redfish/v1/Chassis/{chassis_id}/Sensors/{sensor_name}"
 
-        return m.model_dump(by_alias=True)
+        resp_json = m.model_dump(by_alias=True)
+        del resp_json['chassis_id']
+        return resp_json
 
     def _load_reading_info_by_sensor_id(self, sensor_id: str) -> str:
         """
