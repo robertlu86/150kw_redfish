@@ -1,1 +1,1 @@
-{"temperature": {"sample_time_temp": 100, "kp_temp": 50, "ki_time_temp": 10, "kd_temp": 0, "kd_time_temp": 0}, "pressure": {"sample_time_pressure": 20, "kp_pressure": 800, "ki_time_pressure": 10, "kd_pressure": 0, "kd_time_pressure": 0}}
+{"temperature": {"sample_time_temp": 0, "kp_temp": 0, "ki_time_temp": 0, "kd_temp": 0, "kd_time_temp": 0}, "pressure": {"sample_time_pressure": 0, "kp_pressure": 0, "ki_time_pressure": 0, "kd_pressure": 0, "kd_time_pressure": 0}}

@@ -1,20 +1,23 @@
+# 標準函式庫
+import json
+import logging
+import os
+import struct
+import time
+import zipfile
+from collections import OrderedDict
+
+# 第三方套件
 from flask import Flask, request
 from flask_restx import Api, Resource, fields, Namespace, reqparse
 from pymodbus.client.sync import ModbusTcpClient
 from pymodbus.constants import Endian
-from collections import OrderedDict
-from pymodbus.payload import BinaryPayloadDecoder
-import os
+from pymodbus.payload import BinaryPayloadDecoder, BinaryPayloadBuilder
 from concurrent_log_handler import ConcurrentTimedRotatingFileHandler
-import logging
-from pymodbus.payload import BinaryPayloadBuilder
-import struct
-import json
-import zipfile
+import requests
 # from flask_limiter import Limiter
 # from flask_limiter.util import get_remote_address
-import requests
-import time
+
 log_path = os.path.dirname(os.getcwd())
 json_path = f"{log_path}/webUI/web/json"
 

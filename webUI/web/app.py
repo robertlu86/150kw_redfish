@@ -1,43 +1,39 @@
+# 標準函式庫
 import csv
 import datetime as dt
+from datetime import datetime
 import glob
 import ipaddress
 import json
 import logging
 import math
 import os
+import platform
 import struct
 import subprocess
-import time
-from io import BytesIO
-import zipfile
-import requests
-
-from collections import OrderedDict
-from datetime import datetime
-from logging.handlers import RotatingFileHandler
 import threading
-import platform
-import pyzipper
-from concurrent_log_handler import ConcurrentTimedRotatingFileHandler
-from cryptography.fernet import Fernet, InvalidToken
-from dotenv import load_dotenv, set_key
-from flask import (
-    Flask,
-    g,
-    jsonify,
-    redirect,
-    render_template,
-    request,
-    send_from_directory,
-    session,
-    send_file,
-)
+import time
+import zipfile
+from collections import OrderedDict
+from io import BytesIO
 
-from flask_login import LoginManager, current_user, login_required, logout_user
+# 第三方套件
+import requests
+import pyzipper
+from dotenv import load_dotenv, set_key
+from cryptography.fernet import Fernet, InvalidToken
+from flask import (
+    Flask, g, jsonify, redirect, render_template, request, 
+    send_from_directory, send_file, session
+)
+from flask_login import (
+    LoginManager, current_user, login_required, logout_user
+)
 from pymodbus.client.sync import ModbusTcpClient
 from pymodbus.constants import Endian
 from pymodbus.payload import BinaryPayloadDecoder
+from logging.handlers import RotatingFileHandler
+from concurrent_log_handler import ConcurrentTimedRotatingFileHandler
 
 load_dotenv()
 app = Flask(__name__)
@@ -57,6 +53,16 @@ if platform.system() == "Linux":
     onLinux = True
 else:
     onLinux = False
+
+if onLinux:
+    modbus_host = os.environ.get("MODBUS_IP")
+else:
+    # modbus_host = "192.168.3.250"
+    modbus_host = "127.0.0.1"
+
+modbus_port = 502
+modbus_slave_id = 1
+modbus_address = 0
 
 warning_toggle = os.environ.get("WARNING_TOGGLE") == "True"
 alert_toggle = os.environ.get("ALERT_TOGGLE") == "True"
@@ -170,15 +176,6 @@ def load_user(user_id):
     return None
 
 
-if onLinux:
-    modbus_host = os.environ.get("MODBUS_IP")
-else:
-    modbus_host = "192.168.3.250"
-    # modbus_host = "127.0.0.1"
-
-modbus_port = 502
-modbus_slave_id = 1
-modbus_address = 0
 
 pc2_active = False
 get_data_timeout = 5

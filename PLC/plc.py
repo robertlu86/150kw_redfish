@@ -1,18 +1,21 @@
-import threading
-import time
-import os
+# 標準函式庫
+import json
 import logging
-from pymodbus.client.sync import ModbusTcpClient
-from pymodbus.client.sync import ModbusSerialClient
+import os
+import platform
 import struct
+import statistics
+import time
+import threading
+from collections import deque
+
+# 第三方套件
+from dotenv import load_dotenv
+from pymodbus.client.sync import ModbusTcpClient, ModbusSerialClient
 from pymodbus.payload import BinaryPayloadDecoder
 from pymodbus.constants import Endian
 from concurrent_log_handler import ConcurrentTimedRotatingFileHandler
-import statistics
-from collections import deque
-from dotenv import load_dotenv
-import platform
-import json
+
 
 
 if platform.system() == "Linux":

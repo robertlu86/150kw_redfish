@@ -1,17 +1,15 @@
-import logging
-from pymodbus.server.sync import ModbusTcpServer
-from pymodbus.client.sync import ModbusTcpClient
-from pymodbus.datastore import (
-    ModbusSlaveContext,
-    ModbusServerContext,
-    ModbusSequentialDataBlock,
-)
-from pymodbus.device import ModbusDeviceIdentification
-from pymodbus.transaction import ModbusSocketFramer
-from pymodbus.server.sync import ModbusBaseRequestHandler
-from threading import Thread
+# 標準函式庫
 import sys
 import time
+from threading import Thread
+
+# 第三方套件
+import logging
+from pymodbus.server.sync import ModbusTcpServer, ModbusBaseRequestHandler
+from pymodbus.client.sync import ModbusTcpClient
+from pymodbus.datastore import ModbusSlaveContext, ModbusServerContext, ModbusSequentialDataBlock
+from pymodbus.device import ModbusDeviceIdentification
+from pymodbus.transaction import ModbusSocketFramer
 
 
 logging.basicConfig()
