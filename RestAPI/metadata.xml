@@ -54,15 +54,15 @@
   <!-- service -->
   <edmx:DataServices>
     <Schema Namespace="RedfishService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
-      <!-- <EntityContainer Name="ServiceRoot" Extends="ServiceRoot.ServiceRoot">
-        <EntitySet Name="AccountService"        EntityType="AccountService.AccountService"/>
+      <EntityContainer Name="ServiceRoot" Extends="ServiceRoot.ServiceRoot">
+        <!-- <EntitySet Name="AccountService"        EntityType="AccountService.AccountService"/>
         <EntitySet Name="Chassis"               EntityType="Chassis.Chassis"/>
         <EntitySet Name="Managers"              EntityType="Manager.Manager"/>
         <EntitySet Name="SessionService"        EntityType="SessionService.SessionService"/>
         <EntitySet Name="TelemetryService"      EntityType="TelemetryService.TelemetryService"/>
         <EntitySet Name="ThermalEquipment"      EntityType="ThermalEquipment.ThermalEquipment"/>
-        <EntitySet Name="UpdateService"         EntityType="UpdateService.UpdateService"/>
-      </EntityContainer> -->
+        <EntitySet Name="UpdateService"         EntityType="UpdateService.UpdateService"/> -->
+      </EntityContainer>
     </Schema>
   </edmx:DataServices>
 
