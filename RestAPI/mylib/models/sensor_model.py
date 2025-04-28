@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, List, Dict, Any
 from pydantic import (
     BaseModel,
     ConfigDict,
@@ -10,12 +10,24 @@ from pydantic import (
     field_validator,
 )
 
-from status_model import StatusModel
+from mylib.models.status_model import StatusModel
 # from mylib.models.status_model import StatusModel
+
+class SensorCollectionModel(BaseModel):
+    odata_type: str   = Field(default="#SensorCollection.SensorCollection", alias="@odata.type")
+    Name: str         = Field(default="Sensor Collection")
+    Members_odata_count: int      = Field(default=0, alias="Members@odata.count")
+    Members: List[Dict[str, Any]] = Field(default=[], description='[{"@odata.id": "/redfish/v1/Chassis/1/Sensors/PrimaryFlowLitersPerMinute"}, ...]')
+    Oem: Dict[str, Any]           = Field(default={})
+    odata_id: Optional[str]       = Field(default=None, alias="@odata.id", description="/redfish/v1/Chassis/<chassis_id>/Sensors")
+
+    def build_odata_id(self, chassis_id: str):
+        return f"/redfish/v1/Chassis/{chassis_id}/Sensors"
+
 
 class SensorModel(BaseModel):
     odata_type: str   = Field(default="#Sensor.v1_1_0.Sensor", alias="@odata.type")
-    Id: str           = Field(default="", description="ex: PrimaryFlowLitersPerMinute|PrimaryHeatRemovedkW|..., 會放到odata_id的最後")
+    Id: str           = Field(default="", description="ex: PrimaryFlowLitersPerMinute|PrimaryHeatRemovedkW|..., 會放到odata_id的最後一層")
     Name: str         = Field(default="")
     Reading: float    = Field(default=0.0, description="ex: 23.5")
     ReadingUnits: str = Field(default="", description="ex: L/min, kW, kPa, ...")
@@ -27,16 +39,31 @@ class SensorModel(BaseModel):
         exclude_none=True # 排除 None 的值
     )
 
+    def build_odata_id(self, chassis_id: str):
+        return f"/redfish/v1/Chassis/{chassis_id}/Sensors/{self.Id}"
+
     # @model_validator(mode="before")
     # @classmethod
     # def validate_odata_id(cls, v, values):
     #     return f"/redfish/v1/Chassis/{values['chassis_id']}/Sensors/{values['Id']}"
     
-    @model_validator(mode='before') # 'after' is not work
+    # @model_validator(mode='before') # 'after' is not work
+    # @classmethod
+    # def _set_odata_id(cls, values, **kwargs):
+    #     """
+    #     @note Note that `@root_validator` is deprecated and should be replaced with `@model_validator`.
+    #     @see https://docs.pydantic.dev/latest/concepts/validators/#model-validators
+    #     """
+    #     chassis_id = values.get('chassis_id')
+    #     values['@odata.id'] = f"/redfish/v1/Chassis/{chassis_id}/Sensors/{values['Id']}"
+    #     # del redundant fields
+    #     del values['chassis_id'] # Not in redfish spec.
+    #     return values
+
+    @model_validator(mode='after') # 'after' is not work
     @classmethod
     def _set_odata_id(cls, values, **kwargs):
         """
-        @note Note that `@root_validator` is deprecated and should be replaced with `@model_validator`.
         @see https://docs.pydantic.dev/latest/concepts/validators/#model-validators
         """
         chassis_id = values.get('chassis_id')
@@ -44,6 +71,7 @@ class SensorModel(BaseModel):
         # del redundant fields
         del values['chassis_id'] # Not in redfish spec.
         return values
+
 
     # @computed_field
     # @property

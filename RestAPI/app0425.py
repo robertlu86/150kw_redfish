@@ -1,3 +1,4 @@
+from dotenv import load_dotenv
 from flask import Flask, request,Response
 from flask_restx import Api, Resource, fields, Namespace, reqparse
 from pymodbus.client.sync import ModbusTcpClient
@@ -18,6 +19,9 @@ import time
 log_path = os.path.dirname(os.getcwd())
 json_path = f"{log_path}/webUI/web/json"
 from functools import wraps
+
+from mylib.services.rf_chassis_service import RfChassisService
+
 
 
 app = Flask(__name__)
@@ -3736,30 +3740,33 @@ Fans_data = {
     },
 }
 
-Sensors_data = {
-    "@odata.type": "#SensorCollection.SensorCollection",
-    "Name": "Sensor Collection",
-    "Members@odata.count": 11,
-    "Members": [
-        {"@odata.id": "/redfish/v1/Chassis/1/Sensors/PrimaryFlowLitersPerMinute"},
-        {"@odata.id": "/redfish/v1/Chassis/1/Sensors/PrimaryHeatRemovedkW"},
-        {"@odata.id": "/redfish/v1/Chassis/1/Sensors/PrimarySupplyTemperatureCelsius"},
-        {"@odata.id": "/redfish/v1/Chassis/1/Sensors/PrimaryReturnTemperatureCelsius"},
-        {"@odata.id": "/redfish/v1/Chassis/1/Sensors/PrimaryDeltaTemperatureCelsius"},
-        {"@odata.id": "/redfish/v1/Chassis/1/Sensors/PrimarySupplyPressurekPa"},
-        {"@odata.id": "/redfish/v1/Chassis/1/Sensors/PrimaryReturnPressurekPa"},
-        {"@odata.id": "/redfish/v1/Chassis/1/Sensors/PrimaryDeltaPressurekPa"},
-        {"@odata.id": "/redfish/v1/Chassis/1/Sensors/TemperatureCelsius"},
-        {"@odata.id": "/redfish/v1/Chassis/1/Sensors/DewPointCelsius"},
-        {"@odata.id": "/redfish/v1/Chassis/1/Sensors/HumidityPercent"},
-        {"@odata.id": "/redfish/v1/Chassis/1/Sensors/WaterPH"},
-        {"@odata.id": "/redfish/v1/Chassis/1/Sensors/Conductivity"},
-        {"@odata.id": "/redfish/v1/Chassis/1/Sensors/Turbidity"},
-        {"@odata.id": "/redfish/v1/Chassis/1/Sensors/PowerConsume"},
-    ],
-    "Oem": {},
-    "@odata.id": "/redfish/v1/Chassis/1/Sensors",
-}
+## 
+# move to rf_chassis_service.py
+##
+# sensor_collection_data = {
+#     "@odata.type": "#SensorCollection.SensorCollection",
+#     "Name": "Sensor Collection",
+#     "Members@odata.count": 11,
+#     "Members": [
+#         {"@odata.id": "/redfish/v1/Chassis/1/Sensors/PrimaryFlowLitersPerMinute"},
+#         {"@odata.id": "/redfish/v1/Chassis/1/Sensors/PrimaryHeatRemovedkW"},
+#         {"@odata.id": "/redfish/v1/Chassis/1/Sensors/PrimarySupplyTemperatureCelsius"},
+#         {"@odata.id": "/redfish/v1/Chassis/1/Sensors/PrimaryReturnTemperatureCelsius"},
+#         {"@odata.id": "/redfish/v1/Chassis/1/Sensors/PrimaryDeltaTemperatureCelsius"},
+#         {"@odata.id": "/redfish/v1/Chassis/1/Sensors/PrimarySupplyPressurekPa"},
+#         {"@odata.id": "/redfish/v1/Chassis/1/Sensors/PrimaryReturnPressurekPa"},
+#         {"@odata.id": "/redfish/v1/Chassis/1/Sensors/PrimaryDeltaPressurekPa"},
+#         {"@odata.id": "/redfish/v1/Chassis/1/Sensors/TemperatureCelsius"},
+#         {"@odata.id": "/redfish/v1/Chassis/1/Sensors/DewPointCelsius"},
+#         {"@odata.id": "/redfish/v1/Chassis/1/Sensors/HumidityPercent"},
+#         {"@odata.id": "/redfish/v1/Chassis/1/Sensors/WaterPH"},
+#         {"@odata.id": "/redfish/v1/Chassis/1/Sensors/Conductivity"},
+#         {"@odata.id": "/redfish/v1/Chassis/1/Sensors/Turbidity"},
+#         {"@odata.id": "/redfish/v1/Chassis/1/Sensors/PowerConsume"},
+#     ],
+#     "Oem": {},
+#     "@odata.id": "/redfish/v1/Chassis/1/Sensors",
+# }
 
 Sensors_data_all = {
     "PrimaryFlowLitersPerMinute": {
@@ -4051,19 +4058,30 @@ class ThermalSubsystem_Fans_8(Resource):
         return Fans_data["Fan8"]
 
 
-@redfish_ns.route("/Chassis/1/Sensors")
+@redfish_ns.route("/Chassis/<chassis_id>/Sensors")
 class Sensors(Resource):
     @requires_auth
-    def get(self):
-        return Sensors_data
+    def get(self, chassis_id):
+        chassis_service = RfChassisService()
+        return chassis_service.fetch_sensors_collection(chassis_id)
 
 
-@redfish_ns.route("/Chassis/1/Sensors/PrimaryFlowLitersPerMinute")
+# @redfish_ns.route("/Chassis/<chassis_id>/Sensors/<sensor_id>")
+# class FetchSensorsById(Resource):
+#     @requires_auth
+#     def get(self, chassis_id, sensor_id):
+#         chassis_service = RfChassisService()
+#         return chassis_service.fetch_sensors_by_name(chassis_id, sensor_id)
+
+@redfish_ns.route("/Chassis/<chassis_id>/Sensors/PrimaryFlowLitersPerMinute")
 class Sensors_PrimaryFlowLitersPerMinute(Resource):
     @requires_auth
-    def get(self):
-        return Sensors_data_all["PrimaryFlowLitersPerMinute"]
+    def get(self, chassis_id):
+        # to be continue
+        # chassis_service = RfChassisService()
+        # return chassis_service.fetch_sensors_by_name(chassis_id, "PrimaryFlowLitersPerMinute")
 
+        return Sensors_data_all["PrimaryFlowLitersPerMinute"]
 
 @redfish_ns.route("/Chassis/1/Sensors/PrimaryHeatRemovedkW")
 class Sensors_PrimaryHeatRemovedkW(Resource):
@@ -4669,6 +4687,18 @@ api.add_namespace(redfish_ns)
 # 
 
 if __name__ == '__main__':
+    import sys
+    import os
+    dir_name = os.path.dirname(os.path.abspath(__file__))
+    sys.path.append(dir_name)
+
+    dotenv_path = os.path.join(dir_name, '.env')
+    cert_pem_path = os.path.join(dir_name, 'cert.pem')
+    key_pem_path = os.path.join(dir_name, 'key.pem')
+    
+    load_dotenv(dotenv_path)
+    print("os.environ['ITG_REST_HOST']:", os.environ['ITG_REST_HOST'])
+
     # ssl_context=(憑證檔, 私鑰檔)
     app.run(host='0.0.0.0', port=5000,
-            ssl_context=('cert.pem', 'key.pem'))
+            ssl_context=(cert_pem_path, key_pem_path))
