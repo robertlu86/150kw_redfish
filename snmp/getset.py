@@ -71,6 +71,7 @@ alarm_value = [ALARM_THRESHOLD] * 30
 ats_list = [None] * 2
 cnt = 0
 index = 0
+check_switch = False
 
 check_key_list = [
     [
@@ -445,6 +446,7 @@ sensor = {
     "CoolantSupplyTemperatureSpare": 0,
     "CoolantReturnTemperature": 0,
     "CoolantReturnTemperatureSpare": 0,
+    #"space",
     "CoolantSupplyPressure": 0,
     "CoolantSupplyPressureSpare": 0,
     "CoolantReturnPressure": 0,
@@ -700,7 +702,11 @@ def trap(trap_bool_lists, check_switch):
                     if index < level1_reg:
                         if data_details["sensor_value_data"][a_name]["Warning"]:
                             # messages(oid, warning_alert_list[i][j])
-                            if check_switch and (a_name == "pH" or a_name == "Conductivity" or a_name == "Turbidity"):
+                            if not check_switch and a_name in [
+                                "pH",
+                                "Conductivity",
+                                "Turbidity",
+                            ]:
                                 continue
                             
                             send_snmp_trap(
@@ -712,7 +718,11 @@ def trap(trap_bool_lists, check_switch):
                     elif level1_reg <= index < level2_reg:
                         if data_details["sensor_value_data"][a_name]["Alert"]:
                             # messages(oid, warning_alert_list[i][j])
-                            if check_switch and ["pH", "Conductivity", "Turbidity"].includes(a_name):
+                            if not check_switch and a_name in [
+                                "pH",
+                                "Conductivity",
+                                "Turbidity",
+                            ]:
                                 continue
                             
                             send_snmp_trap(
@@ -724,13 +734,13 @@ def trap(trap_bool_lists, check_switch):
                     elif level2_reg <= index < level3_reg:
                         if data_details["devices"][a_name]:
                             # messages(oid, warning_alert_list[i][j])
-                            if check_switch and (
-                                a_name == "pHComm"
-                                or a_name == "ConductivityComm"
-                                or a_name == "TurbidityComm"
-                                or a_name == "Power12v1"
-                                or a_name == "Power12v1"
-                            ):
+                            if not check_switch and a_name in [
+                                "pHComm",
+                                "ConductivityComm",
+                                "TurbidityComm",
+                                "Power12v1",
+                                "Power12v2",
+                            ]:
                                 continue
                             
                             send_snmp_trap(
@@ -756,7 +766,7 @@ def trap(trap_bool_lists, check_switch):
 
 
 def Mbus_get():
-    global float_values, trap_bool_lists, ats_list, cnt, data_details
+    global float_values, trap_bool_lists, ats_list, cnt, data_details, check_switch
 
     while True:
         with open(
@@ -766,7 +776,7 @@ def Mbus_get():
 
         with open(f"{os.path.dirname(log_path)}/webUI/web/json/version.json", "r") as file:
             version_data = json.load(file)
-            check_switch = version_data["coolant_quality_meter_switch"] # Enable = false、 Disabled = true
+            check_switch = not version_data["coolant_quality_meter_switch"] # Enable = false、 Disabled = true
         
         if cnt > 5:
             try:
@@ -799,7 +809,7 @@ def Mbus_get():
                             trap_bool_lists[i]
                             for i in [0, 1, 5, 6, 8, 9, 10, 11, 15, 16]
                         ]
-                        trap(error_section)
+                        trap(error_section, check_switch)
                 cnt = 0
             except Exception as e:
                 print(f"trap list error: {e}")
@@ -822,7 +832,7 @@ def mib(jsondata):
             item.name = modified_oid
             if num > 4:
                 item.value = {float_values[num]}
-            else:    
+            else:
                 item.value = {float_values[num - 1]}   
             mibInstr.append(item)
         for num, ats_val in enumerate(ats_list, start=ats_start):
