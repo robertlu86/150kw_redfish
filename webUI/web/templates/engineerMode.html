@@ -2888,6 +2888,17 @@ block styles %}
                     </select>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-4">
+                    <p>Coolant Quality Meter:</p>
+                </div>
+                <div class="col-2 sideNum">
+                    <select class="form-select" id="coolant_quality_meter_switch">
+                        <option value="old">Disabled</option>
+                        <option value="new">Enable</option>
+                    </select>
+                </div>
+            </div>
 
             <div class="row">
                 <div class="col-4"></div>
@@ -4662,6 +4673,7 @@ block styles %}
 
         $("#ver_switch_apply").click(function () {
             let median_switch = $("#median_switch").val();
+            let coolant_quality_meter_switch = $("#coolant_quality_meter_switch").val();
 
             if (median_switch == "old") {
                 median_switch = true;
@@ -4669,8 +4681,15 @@ block styles %}
                 median_switch = false;
             }
 
-            let combined_data = {
+            if (coolant_quality_meter_switch == "old") {
+                coolant_quality_meter_switch = true;
+            } else {
+                coolant_quality_meter_switch = false;
+            }
+
+            combined_data = {
                 median_switch: median_switch,
+                coolant_quality_meter_switch: coolant_quality_meter_switch
             };
 
             console.log(combined_data);

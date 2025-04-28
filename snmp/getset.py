@@ -649,7 +649,7 @@ def send_snmp_trap(oid, target_ip, severity, port=SNMP_TRAP_PORT, value="0"):
         )
 
 
-def trap(trap_bool_lists):
+def trap(trap_bool_lists, check_switch):
     base_oid = (1, 3, 6, 1, 4, 1, 10876, 1, 1, 2, 1)
     global index
     index = 0
@@ -700,6 +700,9 @@ def trap(trap_bool_lists):
                     if index < level1_reg:
                         if data_details["sensor_value_data"][a_name]["Warning"]:
                             # messages(oid, warning_alert_list[i][j])
+                            if check_switch and (a_name == "pH" or a_name == "Conductivity" or a_name == "Turbidity"):
+                                continue
+                            
                             send_snmp_trap(
                                 oid,
                                 SNMP_TRAP_RECEIVER_IP,
@@ -709,6 +712,9 @@ def trap(trap_bool_lists):
                     elif level1_reg <= index < level2_reg:
                         if data_details["sensor_value_data"][a_name]["Alert"]:
                             # messages(oid, warning_alert_list[i][j])
+                            if check_switch and ["pH", "Conductivity", "Turbidity"].includes(a_name):
+                                continue
+                            
                             send_snmp_trap(
                                 oid,
                                 SNMP_TRAP_RECEIVER_IP,
@@ -718,6 +724,15 @@ def trap(trap_bool_lists):
                     elif level2_reg <= index < level3_reg:
                         if data_details["devices"][a_name]:
                             # messages(oid, warning_alert_list[i][j])
+                            if check_switch and (
+                                a_name == "pHComm"
+                                or a_name == "ConductivityComm"
+                                or a_name == "TurbidityComm"
+                                or a_name == "Power12v1"
+                                or a_name == "Power12v1"
+                            ):
+                                continue
+                            
                             send_snmp_trap(
                                 oid,
                                 SNMP_TRAP_RECEIVER_IP,
@@ -749,6 +764,10 @@ def Mbus_get():
         ) as file:
             data_details = json.load(file)
 
+        with open(f"{os.path.dirname(log_path)}/webUI/web/json/version.json", "r") as file:
+            version_data = json.load(file)
+            check_switch = version_data["coolant_quality_meter_switch"] # Enable = false、 Disabled = true
+        
         if cnt > 5:
             try:
                 with ModbusTcpClient(

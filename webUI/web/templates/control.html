@@ -2329,12 +2329,33 @@ styles %}
                             var value = data["value"][key];
                             var element = document.getElementById(key);
 
-                            if (element) {
-                                if (element.tagName == "SELECT") {
-                                    element.value = value;
-                                    mode = value;
+                            // if (element) {
+                            //     if (element.tagName == "SELECT") {
+                            //         element.value = value;
+                            //         mode = value;
+                            //     }
+                            // } else {
+                            // }
+                            if (!key.includes("result")) {
+                                if (data["value"].hasOwnProperty(key)) {
+                                    var value = data["value"][key];
+                                    var element = document.getElementById(key);
+                                    if (typeof value === "string") {
+                                        element.value = value;
+                                    } else if (typeof value === "boolean") {
+                                        element.checked = value;
+                                    } else {
+                                        if (key.includes("pressure")) {
+                                            value = Math.round(value * 10) / 10;
+                                            element.value = value;
+                                        } else {
+                                            if (element) {
+                                                value = Math.round(value);
+                                                element.value = value;
+                                            }
+                                        }
+                                    }
                                 }
-                            } else {
                             }
                         }
                     }

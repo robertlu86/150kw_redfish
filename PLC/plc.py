@@ -1,18 +1,21 @@
-import threading
-import time
-import os
+# 標準函式庫
+import json
 import logging
-from pymodbus.client.sync import ModbusTcpClient
-from pymodbus.client.sync import ModbusSerialClient
+import os
+import platform
 import struct
+import statistics
+import time
+import threading
+from collections import deque
+
+# 第三方套件
+from dotenv import load_dotenv
+from pymodbus.client.sync import ModbusTcpClient, ModbusSerialClient
 from pymodbus.payload import BinaryPayloadDecoder
 from pymodbus.constants import Endian
 from concurrent_log_handler import ConcurrentTimedRotatingFileHandler
-import statistics
-from collections import deque
-from dotenv import load_dotenv
-import platform
-import json
+
 
 
 if platform.system() == "Linux":
@@ -474,6 +477,7 @@ inspection_data = {
 
 ver_switch = {
     "median_switch": False,
+    "coolant_quality_meter_switch": False,
 }
 
 measured_data_mapping = {
@@ -2277,10 +2281,98 @@ def check_dewPt_warning(thr_key, rst_key, delay_key, type):
 
 def set_warning_registers(mode):
     global thrshd_data, status_data, x, warning_light
-
+    
+    ####檢查各上下限並送出警告
+    
     thr_check()
     status_check()
 
+    ###切換水質計開關邏輯
+    if not ver_switch["coolant_quality_meter_switch"]:
+        check_communication("conductivity", "Delay_Conductivity_Sensor_Communication", True)
+        check_communication("pH", "Delay_pH_Sensor_Communication", True)
+        check_communication("turbidity", "Delay_Turbidity_Sensor_Communication", True)
+        check_level("Delay_power12v1", "power12v1", True)
+        check_level("Delay_power12v2", "power12v2", True)
+        check_both_warning(
+        "Thr_W_pH_L",
+        "Thr_W_pH_H",
+        "Thr_W_Rst_pH_L",
+        "Thr_W_Rst_pH_H",
+        "Delay_pH",
+        "W",
+        )
+
+        check_both_warning(
+            "Thr_A_pH_L",
+            "Thr_A_pH_H",
+            "Thr_A_Rst_pH_L",
+            "Thr_A_Rst_pH_H",
+            "Delay_pH",
+            "A",
+        )
+
+        check_both_warning(
+            "Thr_W_Cdct_L",
+            "Thr_W_Cdct_H",
+            "Thr_W_Rst_Cdct_L",
+            "Thr_W_Rst_Cdct_H",
+            "Delay_Cdct",
+            "W",
+        )
+
+        check_both_warning(
+            "Thr_A_Cdct_L",
+            "Thr_A_Cdct_H",
+            "Thr_A_Rst_Cdct_L",
+            "Thr_A_Rst_Cdct_H",
+            "Delay_Cdct",
+            "A",
+        )
+
+        check_both_warning(
+            "Thr_W_Tbt_L",
+            "Thr_W_Tbt_H",
+            "Thr_W_Rst_Tbt_L",
+            "Thr_W_Rst_Tbt_H",
+            "Delay_Tbt",
+            "W",
+        )
+
+        check_both_warning(
+            "Thr_A_Tbt_L",
+            "Thr_A_Tbt_H",
+            "Thr_A_Rst_Tbt_L",
+            "Thr_A_Rst_Tbt_H",
+            "Delay_Tbt",
+            "A",
+        )
+    else:
+        ###賦歸回false以免繼續傳warning_data
+        warning_data['warning']['pH_Low']= False
+        warning_data['warning']['pH_High']= False
+        warning_data['warning']['Cdct_Low']= False
+        warning_data['warning']['Cdct_High']= False
+        warning_data['warning']['Tbt_Low']= False
+        warning_data['warning']['Tbt_High']= False
+        
+        warning_data['alert']['pH_Low']= False
+        warning_data['alert']['pH_High']= False
+        warning_data['alert']['Cdct_Low']= False
+        warning_data['alert']['Cdct_High']= False
+        warning_data['alert']['Tbt_Low']= False
+        warning_data['alert']['Tbt_High']= False
+        
+        warning_data['error']['pH_communication']= False
+        warning_data['error']['conductivity_communication']= False
+        warning_data['error']['turbidity_communication']= False
+        warning_data['error']['power12v1']= False
+        warning_data['error']['power12v2']= False
+    ###切換水質計開關邏輯 結束
+        
+        
+        
+        
     check_communication("Inv1_Freq", "Delay_Inverter1_Communication", True)
     check_communication("Inv2_Freq", "Delay_Inverter2_Communication", True)
     check_communication("Inv3_Freq", "Delay_Inverter3_Communication", True)
@@ -2288,21 +2380,22 @@ def set_warning_registers(mode):
     check_communication("RelativeHumid", "Delay_RelativeHumid_Communication", True)
     check_communication("DewPoint", "Delay_DewPoint_Communication", True)
     # check_communication("coolant_flow_rate", "Delay_Coolant_Flow_Meter_Communication")
-    check_communication("conductivity", "Delay_Conductivity_Sensor_Communication", True)
-    check_communication("pH", "Delay_pH_Sensor_Communication", True)
-    check_communication("turbidity", "Delay_Turbidity_Sensor_Communication", True)
+    
     check_communication("ATS1", "Delay_ATS1_Communication", True)
     check_communication("ATS2", "Delay_ATS2_Communication", True)
     check_communication("inst_power", "Delay_Power_Meter_Communication", True)
     check_communication("average_current", "Delay_average_current_Communication", True)
-    check_communication("Fan1Com", "Delay_Fan1Com_Communication", True)
-    check_communication("Fan2Com", "Delay_Fan2Com_Communication", True)
-    check_communication("Fan3Com", "Delay_Fan3Com_Communication", True)
-    check_communication("Fan4Com", "Delay_Fan4Com_Communication", True)
-    check_communication("Fan5Com", "Delay_Fan5Com_Communication", True)
-    check_communication("Fan6Com", "Delay_Fan6Com_Communication", True)
-    check_communication("Fan7Com", "Delay_Fan7Com_Communication", True)
-    check_communication("Fan8Com", "Delay_Fan8Com_Communication", True)
+    
+    ######測試用#####
+    # check_communication("Fan1Com", "Delay_Fan1Com_Communication", True)
+    # check_communication("Fan2Com", "Delay_Fan2Com_Communication", True)
+    # check_communication("Fan3Com", "Delay_Fan3Com_Communication", True)
+    # check_communication("Fan4Com", "Delay_Fan4Com_Communication", True)
+    # check_communication("Fan5Com", "Delay_Fan5Com_Communication", True)
+    # check_communication("Fan6Com", "Delay_Fan6Com_Communication", True)
+    # check_communication("Fan7Com", "Delay_Fan7Com_Communication", True)
+    # check_communication("Fan8Com", "Delay_Fan8Com_Communication", True)
+    ######測試用結束#####
 
 
     ### 先隱藏不顯示
@@ -2311,8 +2404,7 @@ def set_warning_registers(mode):
     # check_level("Delay_level3", "level3", True)
     check_level("Delay_power24v1", "power24v1", True)
     check_level("Delay_power24v2", "power24v2", True)
-    check_level("Delay_power12v1", "power12v1", True)
-    check_level("Delay_power12v2", "power12v2", True)
+
 
     check_input("Delay_leakage1_leak", "leakage1_leak", True)
     check_input("Delay_leakage1_broken", "leakage1_broken", True)
@@ -2525,59 +2617,7 @@ def set_warning_registers(mode):
         "A",
     )
 
-    check_both_warning(
-        "Thr_W_pH_L",
-        "Thr_W_pH_H",
-        "Thr_W_Rst_pH_L",
-        "Thr_W_Rst_pH_H",
-        "Delay_pH",
-        "W",
-    )
-
-    check_both_warning(
-        "Thr_A_pH_L",
-        "Thr_A_pH_H",
-        "Thr_A_Rst_pH_L",
-        "Thr_A_Rst_pH_H",
-        "Delay_pH",
-        "A",
-    )
-
-    check_both_warning(
-        "Thr_W_Cdct_L",
-        "Thr_W_Cdct_H",
-        "Thr_W_Rst_Cdct_L",
-        "Thr_W_Rst_Cdct_H",
-        "Delay_Cdct",
-        "W",
-    )
-
-    check_both_warning(
-        "Thr_A_Cdct_L",
-        "Thr_A_Cdct_H",
-        "Thr_A_Rst_Cdct_L",
-        "Thr_A_Rst_Cdct_H",
-        "Delay_Cdct",
-        "A",
-    )
-
-    check_both_warning(
-        "Thr_W_Tbt_L",
-        "Thr_W_Tbt_H",
-        "Thr_W_Rst_Tbt_L",
-        "Thr_W_Rst_Tbt_H",
-        "Delay_Tbt",
-        "W",
-    )
-
-    check_both_warning(
-        "Thr_A_Tbt_L",
-        "Thr_A_Tbt_H",
-        "Thr_A_Rst_Tbt_L",
-        "Thr_A_Rst_Tbt_H",
-        "Delay_Tbt",
-        "A",
-    )
+    
 
     check_high_warning(
         "Thr_W_AC_H",
@@ -2962,7 +3002,18 @@ def check_mc():
             mc_fan2_sw = mc.bits[4]
     except Exception as e:
         print(f"mc_switch read: {e}")
-
+####嘗試做重啟不會讓pump關閉####
+    if not mc1_sw:
+        clear_p1_speed()
+    if not mc2_sw:
+        clear_p2_speed()
+    if not mc3_sw:
+        clear_p3_speed()
+    if not mc_fan1_sw:
+        clear_fan_group1_speed()
+    if not mc_fan2_sw:
+        clear_fan_group2_speed()
+        
     ### mc..._sw 為前端各個開關是否為true
     if not overload_error["Inv1_OverLoad"] and not bit_input_regs["Inv1_Error"] and mc1_sw:
         bit_output_regs["mc1"] = True
@@ -3499,9 +3550,10 @@ def control():
 
             try:
                 with ModbusTcpClient(host=modbus_host, port=modbus_port) as client:
-                    r = client.read_coils((8192 + 800), 4)
+                    r = client.read_coils((8192 + 800), 5)
                     reset_current_btn["status"] = r.bits[0]
                     ver_switch["median_switch"] = r.bits[3]
+                    ver_switch["coolant_quality_meter_switch"] = r.bits[4]
 
                     r2 = client.read_holding_registers(900, 1)
                     inspection_data["start_btn"] = r2.registers[0]
@@ -5124,17 +5176,18 @@ def control():
 
             ### inspection 部分結束
             
-            for i in range(1, 4):
-                if (
-                    not bit_output_regs[f"mc{i}"]
-                    or warning_data["error"][f"Inv{i}_Error"]
-                ):
-                    if i == 1:
-                        clear_p1_speed()
-                    elif i == 2:
-                        clear_p2_speed()
-                    elif i == 3:
-                        clear_p3_speed()
+        
+            # for i in range(1, 4):
+            #     if (
+            #         not bit_output_regs[f"mc{i}"]
+            #         or warning_data["error"][f"Inv{i}_Error"]
+            #     ):
+            #         if i == 1:
+            #             clear_p1_speed()
+            #         elif i == 2:
+            #             clear_p2_speed()
+            #         elif i == 3:
+            #             clear_p3_speed()
 
             
 
@@ -5467,6 +5520,7 @@ def control():
                 with ModbusTcpClient(host=modbus_host, port=modbus_port) as client:
                     r = client.read_holding_registers(301, 1, unit=modbus_slave_id)
                     check_server2 = r.registers[0]
+                    # journal_logger.info(f"停滯時間：{server_error['diff']}")
 
                     if zero_flag:
                         server_error["diff"] = 0
