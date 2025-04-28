@@ -1,4 +1,7 @@
+# 標準函式庫
 import os
+
+# 第三方套件
 from dotenv import load_dotenv
 from flask import Blueprint, jsonify, request, session
 from flask_login import UserMixin, login_user
