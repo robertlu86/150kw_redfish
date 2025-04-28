@@ -173,8 +173,8 @@ def load_user(user_id):
 if onLinux:
     modbus_host = os.environ.get("MODBUS_IP")
 else:
-    # modbus_host = "192.168.3.250"
-    modbus_host = "127.0.0.1"
+    modbus_host = "192.168.3.250"
+    # modbus_host = "127.0.0.1"
 
 modbus_port = 502
 modbus_slave_id = 1
@@ -575,7 +575,7 @@ sensorData = {
         "unit_flow": "",
     },
     "filter": {"all_filter_sw": False},
-    "valve": {"EV1": False, "EV2": False, "EV3": False, "EV4": False},
+    # "valve": {"EV1": False, "EV2": False, "EV3": False, "EV4": False},
     "collapse": {
         "t1sp_adjust_zero": False,
         "p1sp_adjust_zero": False,
@@ -587,16 +587,16 @@ sensorData = {
         "p1sp_show_final": False,
         "p2sp_show_final": False,
     },
-    "ev": {
-        "EV1_Open": False,
-        "EV1_Close": False,
-        "EV2_Open": False,
-        "EV2_Close": False,
-        "EV3_Open": False,
-        "EV3_Close": False,
-        "EV4_Open": False,
-        "EV4_Close": False,
-    },
+    # "ev": {
+    #     "EV1_Open": False,
+    #     "EV1_Close": False,
+    #     "EV2_Open": False,
+    #     "EV2_Close": False,
+    #     "EV3_Open": False,
+    #     "EV3_Close": False,
+    #     "EV4_Open": False,
+    #     "EV4_Close": False,
+    # },
     "rack_status": {
         "rack1_status": 0,
         "rack2_status": 0,
@@ -758,16 +758,16 @@ ctr_data = {
     },
     "checkbox": {"filter_unlock_sw": True, "all_filter_sw": False},
     "unit": {"unit_temp": "", "unit_prsr": ""},
-    "valve": {
-        "ev1_sw": False,
-        "ev2_sw": False,
-        "ev3_sw": False,
-        "ev4_sw": False,
-        "resultEV1": False,
-        "resultEV2": False,
-        "resultEV3": False,
-        "resultEV4": False,
-    },
+    # "valve": {
+    #     "ev1_sw": False,
+    #     "ev2_sw": False,
+    #     "ev3_sw": False,
+    #     "ev4_sw": False,
+    #     "resultEV1": False,
+    #     "resultEV2": False,
+    #     "resultEV3": False,
+    #     "resultEV4": False,
+    # },
     "filter": {
         "f1": 0,
         "f2": 0,
@@ -1273,6 +1273,7 @@ auto_factory = {"pv1": 80, "pump": 50, "water_min": 20}
 
 ver_switch = {
     "median_switch": False,
+    "coolant_quality_meter_switch": False
 }
 
 
@@ -1285,17 +1286,17 @@ adjust_factory = {
     "Temp_ClntRtn_Offset": 0,
     "Temp_ClntRtnSpare_Factor": 1,
     "Temp_ClntRtnSpare_Offset": 0,
-    "Prsr_ClntSply_Factor": 1000,
+    "Prsr_ClntSply_Factor": 500,
     "Prsr_ClntSply_Offset": 0,
-    "Prsr_ClntSplySpare_Factor": 1000,
+    "Prsr_ClntSplySpare_Factor": 500,
     "Prsr_ClntSplySpare_Offset": 0,
-    "Prsr_ClntRtn_Factor": 1000,
+    "Prsr_ClntRtn_Factor": 500,
     "Prsr_ClntRtn_Offset": 0,
-    "Prsr_ClntRtnSpare_Factor": 1000,
+    "Prsr_ClntRtnSpare_Factor": 500,
     "Prsr_ClntRtnSpare_Offset": 0,
-    "Prsr_FltIn_Factor": 1,
+    "Prsr_FltIn_Factor": 500,
     "Prsr_FltIn_Offset": 0,
-    "Prsr_FltOut_Factor": 1,
+    "Prsr_FltOut_Factor": 500,
     "Prsr_FltOut_Offset": 0,
     "Clnt_Flow_Factor": 1,
     "Clnt_Flow_Offset": 0,
@@ -3599,9 +3600,16 @@ def read_modbus_data():
                 ctr_data["mc"]["fan_mc2"] = read_mc3.bits[1]
                 ctr_data["mc"]["fan_mc2_result"] = read_mc3.bits[1]
 
-                read_ver = client.read_coils((8192 + 803), 1)
+                read_ver = client.read_coils((8192 + 803), 2)
                 ver_switch["median_switch"] = read_ver.bits[0]
-
+                ver_switch["coolant_quality_meter_switch"] = read_ver.bits[1]
+                
+                if not os.path.exists(f"{web_path}/json/version.json"):
+                    with open(f"{web_path}/json/version.json", "w") as file:
+                        file.write("")
+                with open(f"{web_path}/json/version.json", "w") as json_file:
+                    json.dump(ver_switch, json_file, indent=4)
+                    
         except Exception as e:
             print(f"read oc issue error: {e}")
 
@@ -3991,7 +3999,30 @@ def read_modbus_data():
 
         if not any(ctr_data["inv"].values()):
             ctr_data["value"]["resultPS"] = 0
-        
+  ########寫入resultFan 
+        fan_inv_addresses = {"fan1": 7020, "fan2": 7060, "fan3": 7100,"fan4":7140, "fan5":7380, "fan6":7400, "fan7":7460, "fan8":7500}
+  
+        for k, v in ctr_data["inv"].items():
+            if v:
+                address = fan_inv_addresses.get(k)
+                try:
+                    with ModbusTcpClient(
+                        host=modbus_host, port=modbus_port, unit=modbus_slave_id
+                    ) as client:
+                        r = client.read_holding_registers(
+                            address=(20480 + address), count=1
+                        )
+                        ### 轉換 freq
+                        fs = r.registers[0]
+                        fs = fs / 16000 * 100
+                        ctr_data["value"]["resultFan"] = round(fs)
+                        break
+                except Exception as e:
+                    print(f"pump speed error: {e}")
+                break
+
+        if not any(ctr_data["inv"].values()):
+            ctr_data["value"]["resultFan"] = 0      
         ### 讀取pump runtime
         
         try:
@@ -7012,27 +7043,20 @@ def version_switch():
     data = request.get_json()
 
     median_switch = data["median_switch"]
-
+    coolant_quality_meter_switch = data["coolant_quality_meter_switch"]
+    
     try:
         with ModbusTcpClient(
             host=modbus_host, port=modbus_port, unit=modbus_slave_id
         ) as client:
-            client.write_coils(
-                (8192 + 803),
-                [
-                    median_switch,
-                ],
-            )
+            client.write_coils((8192 + 803), [median_switch])
+            client.write_coils((8192 + 804), [coolant_quality_meter_switch])
         op_logger.info(f"Version setting updated successfully. {data}")
         return jsonify(status="success", message="Version setting updated successfully")
     except Exception as e:
         print(f"Error: {e}")
-        return retry_modbus(
-            (8192 + 803),
-            [
-                median_switch,
-            ],
-            "coil",
+        return retry_modbus_2coil(
+            (8192 + 803), [median_switch,],(8192 + 804), [coolant_quality_meter_switch]
         )
 
 

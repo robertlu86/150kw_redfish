@@ -130,9 +130,9 @@
         }
     
         /*.image_machine_container{
-            width: 1700px; 
-            height: 900px;
-        }*/
+                    width: 1700px; 
+                    height: 900px;
+                }*/
     
         .machine {
             max-width: 100%;
@@ -242,6 +242,16 @@
                 height: 18px;
                 position: absolute;
             }
+    
+            tr:nth-of-type(even) {
+                background-color: rgba(0, 0, 0, 0.09);
+            }
+    
+    
+            tr:nth-of-type(odd) {
+                background-color: white;
+            }
+    
         }
     </style>
     {% endblock %} {% block content %}
@@ -328,37 +338,37 @@
                 </div>
                 <!-- 顯示fan 1-8 數值框 -->
                 <!--<div class="value_border" style="top: 275px; left:1250px">
-                    <span class="fan_freq_image" id="fan_freq1_image">-</span>
-                    <span class="fan_unit">%</span>
-                </div>
-                <div class="value_border" style="top: 315px; left:1250px">
-                    <span class="fan_freq_image" id="fan_freq2_image">-</span>
-                    <span class="fan_unit">%</span>
-                </div>
-                <div class="value_border" style="top: 355px; left:1250px">
-                    <span class="fan_freq_image" id="fan_freq3_image">-</span>
-                    <span class="fan_unit">%</span>
-                </div>
-                <div class="value_border" style="top: 395px; left:1250px">
-                    <span class="fan_freq_image" id="fan_freq4_image">-</span>
-                    <span class="fan_unit">%</span>
-                </div>
-                <div class="value_border" style="top: 275px; left:1560px">
-                    <span class="fan_freq_image" id="fan_freq5_image">-</span>
-                    <span class="fan_unit">%</span>
-                </div>
-                <div class="value_border" style="top: 315px; left:1560px">
-                    <span class="fan_freq_image" id="fan_freq6_image">-</span>
-                    <span class="fan_unit">%</span>
-                </div>
-                <div class="value_border" style="top: 355px; left:1560px">
-                    <span class="fan_freq_image" id="fan_freq7_image">-</span>
-                    <span class="fan_unit">%</span>
-                </div>
-                <div class="value_border" style="top: 395px; left:1560px">
-                    <span class="fan_freq_image" id="fan_freq8_image">-</span>
-                    <span class="fan_unit">%</span>
-                </div>-->
+                            <span class="fan_freq_image" id="fan_freq1_image">-</span>
+                            <span class="fan_unit">%</span>
+                        </div>
+                        <div class="value_border" style="top: 315px; left:1250px">
+                            <span class="fan_freq_image" id="fan_freq2_image">-</span>
+                            <span class="fan_unit">%</span>
+                        </div>
+                        <div class="value_border" style="top: 355px; left:1250px">
+                            <span class="fan_freq_image" id="fan_freq3_image">-</span>
+                            <span class="fan_unit">%</span>
+                        </div>
+                        <div class="value_border" style="top: 395px; left:1250px">
+                            <span class="fan_freq_image" id="fan_freq4_image">-</span>
+                            <span class="fan_unit">%</span>
+                        </div>
+                        <div class="value_border" style="top: 275px; left:1560px">
+                            <span class="fan_freq_image" id="fan_freq5_image">-</span>
+                            <span class="fan_unit">%</span>
+                        </div>
+                        <div class="value_border" style="top: 315px; left:1560px">
+                            <span class="fan_freq_image" id="fan_freq6_image">-</span>
+                            <span class="fan_unit">%</span>
+                        </div>
+                        <div class="value_border" style="top: 355px; left:1560px">
+                            <span class="fan_freq_image" id="fan_freq7_image">-</span>
+                            <span class="fan_unit">%</span>
+                        </div>
+                        <div class="value_border" style="top: 395px; left:1560px">
+                            <span class="fan_freq_image" id="fan_freq8_image">-</span>
+                            <span class="fan_unit">%</span>
+                        </div>-->
     
                 <!-- 顯示T2數值框 -->
                 <div class="value_border" style="top: 77.5%; left:9.2%">
@@ -387,16 +397,21 @@
                 </div>
                 <!-- 顯示P3數值框 -->
                 <div class="value_border" style="top: 77.5%; left:56.4%">
-                    <span class="prsr_fltOut_image" id="prsr_fltOut_image">-</span>
+                    <!-- <span class="prsr_fltOut_image" id="prsr_fltOut_image">-</span> -->
+                    <span class="prsr_fltIn_image" id="prsr_fltIn_image">N/A</span>
+    
                     <span class="unit_pressure image"></span>
                 </div>
                 <!-- 顯示Filtter數值框 -->
                 <div class="value_border" style="top: 77.5%; left:63%">
                     <span class="prsr_fltDiffa_image" id="prsr_fltDiff_image">-</span>
+                    <span class="unit_pressure image"></span>
                 </div>
                 <!-- 顯示P4數值框 -->
                 <div class="value_border" style="top: 77.5%; left:70%">
-                    <span class="prsr_fltIn_image" id="prsr_fltIn_image">N/A</span>
+                    <!-- <span class="prsr_fltIn_image" id="prsr_fltIn_image">N/A</span> -->
+                    <span class="prsr_fltOut_image" id="prsr_fltOut_image">-</span>
+    
                     <span class="unit_pressure image"></span>
                 </div>
                 <!-- 顯示F1數值框 -->
@@ -406,7 +421,7 @@
                 </div>
     
                 <div class="unit_block">
-                    <table class="table table-striped table-hover">
+                    <table class="table table-hover">
                         <tbody>
                             <tr>
                                 <td scope="row">CDU Status:</td>
@@ -435,7 +450,7 @@
         <div class="sensor title" data-label="Sensor Value">
             <div class="data-before-trigger"></div>
             <div class="content">
-                <table class="table table-striped table-hover">
+                <table class="table table-hover">
                     <thead>
                         <tr class="row_sticky">
                             <th class="col-4 tdCenterAlign" scope="col">Sensor</th>
@@ -551,13 +566,13 @@
                             <td class="unit_temp" scope="row"></td>
                         </tr>
     
-                        <tr>
+                        <tr class = "pH_set">
                             <td class="tdCenterAlign" scope="row">pH (PH)</td>
                             <td id="pH_status" class="tdCenterAlign" scope="row"></td>
                             <td id="pH" scope="row"></td>
                             <td scope="row">pH</td>
                         </tr>
-                        <tr>
+                        <tr class = "cdct_set">
                             <td class="tdCenterAlign" scope="row">
                                 Conductivity (CON)
                             </td>
@@ -565,7 +580,7 @@
                             <td id="cdct" scope="row"></td>
                             <td scope="row">µS/cm</td>
                         </tr>
-                        <tr>
+                        <tr class = "tbd_set">
                             <td class="tdCenterAlign" scope="row">
                                 Turbidity (Tur)
                             </td>
@@ -624,7 +639,7 @@
         <div class="pumpValve title" data-label="Pump Information">
             <div class="data-before-trigger"></div>
             <div class="content">
-                <table class="table table-striped table-hover">
+                <table class="table table-hover">
                     <thead>
                         <tr>
                             <th class="col-4 tdCenterAlign"></th>
@@ -653,53 +668,53 @@
                             <td>%</td>
                         </tr>
                         <!-- <tr>
-                            <td class="w-12 tdCenterAlign" scope="row">
-                                Inverter 1 Error
-                            </td>
-                            <td id="Inv1_Error" class="w-12 tdCenterAlign" scope="row"></td>
-                            <td scope="row"></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td class="w-12 tdCenterAlign" scope="row">
-                                Inverter 2 Error
-                            </td>
-                            <td id="Inv2_Error" class="w-12 tdCenterAlign" scope="row"></td>
-                            <td scope="row"></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td class="w-12 tdCenterAlign" scope="row">
-                                Inverter 3 Error
-                            </td>
-                            <td id="Inv3_Error" class="w-12 tdCenterAlign" scope="row"></td>
-                            <td scope="row"></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td class="w-12 tdCenterAlign" scope="row">
-                                Inverter 1 Overload
-                            </td>
-                            <td id="Inv1_OverLoad" class="w-12 tdCenterAlign" scope="row"></td>
-                            <td scope="row"></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td class="w-12 tdCenterAlign" scope="row">
-                                Inverter 2 Overload
-                            </td>
-                            <td id="Inv2_OverLoad" class="w-12 tdCenterAlign" scope="row"></td>
-                            <td scope="row"></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td class="w-12 tdCenterAlign" scope="row">
-                                Inverter 3 Overload
-                            </td>
-                            <td id="Inv3_OverLoad" class="w-12 tdCenterAlign" scope="row"></td>
-                            <td scope="row"></td>
-                            <td></td>
-                        </tr> -->
+                                    <td class="w-12 tdCenterAlign" scope="row">
+                                        Inverter 1 Error
+                                    </td>
+                                    <td id="Inv1_Error" class="w-12 tdCenterAlign" scope="row"></td>
+                                    <td scope="row"></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class="w-12 tdCenterAlign" scope="row">
+                                        Inverter 2 Error
+                                    </td>
+                                    <td id="Inv2_Error" class="w-12 tdCenterAlign" scope="row"></td>
+                                    <td scope="row"></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class="w-12 tdCenterAlign" scope="row">
+                                        Inverter 3 Error
+                                    </td>
+                                    <td id="Inv3_Error" class="w-12 tdCenterAlign" scope="row"></td>
+                                    <td scope="row"></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class="w-12 tdCenterAlign" scope="row">
+                                        Inverter 1 Overload
+                                    </td>
+                                    <td id="Inv1_OverLoad" class="w-12 tdCenterAlign" scope="row"></td>
+                                    <td scope="row"></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class="w-12 tdCenterAlign" scope="row">
+                                        Inverter 2 Overload
+                                    </td>
+                                    <td id="Inv2_OverLoad" class="w-12 tdCenterAlign" scope="row"></td>
+                                    <td scope="row"></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class="w-12 tdCenterAlign" scope="row">
+                                        Inverter 3 Overload
+                                    </td>
+                                    <td id="Inv3_OverLoad" class="w-12 tdCenterAlign" scope="row"></td>
+                                    <td scope="row"></td>
+                                    <td></td>
+                                </tr> -->
                     </tbody>
                 </table>
             </div>
@@ -708,7 +723,7 @@
         <div class="fanValve title" data-label="Fan Information">
             <div class="data-before-trigger"></div>
             <div class="content">
-                <table class="table table-striped table-hover">
+                <table class="table table-hover">
                     <thead>
                         <tr>
                             <th class="col-4 tdCenterAlign"></th>
@@ -768,85 +783,85 @@
                         </tr>
     
                         <!-- <tr>
-                            <td class="w-12 tdCenterAlign" scope="row">
-                                Fan Overload 1
-                            </td>
-                            <td id="Fan_OverLoad1" class="w-12 tdCenterAlign" scope="row"></td>
-                            <td scope="row"></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td class="w-12 tdCenterAlign" scope="row">
-                                Fan Overload 2
-                            </td>
-                            <td id="Fan_OverLoad2" class="w-12 tdCenterAlign" scope="row"></td>
-                            <td scope="row"></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td class="w-12 tdCenterAlign" scope="row">
-                                Fan 1 Alarm Status
-                            </td>
-                            <td id="fan1_error" class="w-12 tdCenterAlign" scope="row"></td>
-                            <td scope="row"></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td class="w-12 tdCenterAlign" scope="row">
-                                Fan 2 Alarm Status
-                            </td>
-                            <td id="fan2_error" class="w-12 tdCenterAlign" scope="row"></td>
-                            <td scope="row"></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td class="w-12 tdCenterAlign" scope="row">
-                                Fan 3 Alarm Status
-                            </td>
-                            <td id="fan3_error" class="w-12 tdCenterAlign" scope="row"></td>
-                            <td scope="row"></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td class="w-12 tdCenterAlign" scope="row">
-                                Fan 4 Alarm Status
-                            </td>
-                            <td id="fan4_error" class="w-12 tdCenterAlign" scope="row"></td>
-                            <td scope="row"></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td class="w-12 tdCenterAlign" scope="row">
-                                Fan 5 Alarm Status
-                            </td>
-                            <td id="fan5_error" class="w-12 tdCenterAlign" scope="row"></td>
-                            <td scope="row"></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td class="w-12 tdCenterAlign" scope="row">
-                                Fan 6 Alarm Status
-                            </td>
-                            <td id="fan6_error" class="w-12 tdCenterAlign" scope="row"></td>
-                            <td scope="row"></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td class="w-12 tdCenterAlign" scope="row">
-                                Fan 7 Alarm Status
-                            </td>
-                            <td id="fan7_error" class="w-12 tdCenterAlign" scope="row"></td>
-                            <td scope="row"></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td class="w-12 tdCenterAlign" scope="row">
-                                Fan 8 Alarm Status
-                            </td>
-                            <td id="fan8_error" class="w-12 tdCenterAlign" scope="row"></td>
-                            <td scope="row"></td>
-                            <td></td>
-                        </tr> -->
+                                    <td class="w-12 tdCenterAlign" scope="row">
+                                        Fan Overload 1
+                                    </td>
+                                    <td id="Fan_OverLoad1" class="w-12 tdCenterAlign" scope="row"></td>
+                                    <td scope="row"></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class="w-12 tdCenterAlign" scope="row">
+                                        Fan Overload 2
+                                    </td>
+                                    <td id="Fan_OverLoad2" class="w-12 tdCenterAlign" scope="row"></td>
+                                    <td scope="row"></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class="w-12 tdCenterAlign" scope="row">
+                                        Fan 1 Alarm Status
+                                    </td>
+                                    <td id="fan1_error" class="w-12 tdCenterAlign" scope="row"></td>
+                                    <td scope="row"></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class="w-12 tdCenterAlign" scope="row">
+                                        Fan 2 Alarm Status
+                                    </td>
+                                    <td id="fan2_error" class="w-12 tdCenterAlign" scope="row"></td>
+                                    <td scope="row"></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class="w-12 tdCenterAlign" scope="row">
+                                        Fan 3 Alarm Status
+                                    </td>
+                                    <td id="fan3_error" class="w-12 tdCenterAlign" scope="row"></td>
+                                    <td scope="row"></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class="w-12 tdCenterAlign" scope="row">
+                                        Fan 4 Alarm Status
+                                    </td>
+                                    <td id="fan4_error" class="w-12 tdCenterAlign" scope="row"></td>
+                                    <td scope="row"></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class="w-12 tdCenterAlign" scope="row">
+                                        Fan 5 Alarm Status
+                                    </td>
+                                    <td id="fan5_error" class="w-12 tdCenterAlign" scope="row"></td>
+                                    <td scope="row"></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class="w-12 tdCenterAlign" scope="row">
+                                        Fan 6 Alarm Status
+                                    </td>
+                                    <td id="fan6_error" class="w-12 tdCenterAlign" scope="row"></td>
+                                    <td scope="row"></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class="w-12 tdCenterAlign" scope="row">
+                                        Fan 7 Alarm Status
+                                    </td>
+                                    <td id="fan7_error" class="w-12 tdCenterAlign" scope="row"></td>
+                                    <td scope="row"></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class="w-12 tdCenterAlign" scope="row">
+                                        Fan 8 Alarm Status
+                                    </td>
+                                    <td id="fan8_error" class="w-12 tdCenterAlign" scope="row"></td>
+                                    <td scope="row"></td>
+                                    <td></td>
+                                </tr> -->
                     </tbody>
                 </table>
             </div>
@@ -855,7 +870,7 @@
         <div class="mcInfo title" data-label="Magnetic Contactor Information">
             <div class="data-before-trigger"></div>
             <div class="content">
-                <table class="table table-striped table-hover">
+                <table class="table table-hover">
                     <thead>
                         <tr>
                             <th class="col-4 tdCenterAlign"></th>
@@ -912,7 +927,7 @@
         <div class="deviceStatus title" data-label="Device Status">
             <div class="data-before-trigger"></div>
             <div class="content">
-                <table class="table table-striped table-hover">
+                <table class="table table-hover">
                     <thead>
                         <tr class="row_sticky">
                             <th class="col-4 tdCenterAlign" scope="col">Sensor</th>
@@ -932,31 +947,31 @@
                         </tr>
                         <!-- 暫時隱藏liquid coolant level -->
                         <!-- <tr>
-                            <td class="w-12 tdCenterAlign" scope="row">
-                                Liquid Coolant Level 1
-                            </td>
-                            <td id="level1" class="w-12 tdCenterAlign" scope="row"></td>
-                            <td scope="row"></td>
-                            <td></td>
-                        </tr>
-    
-                        <tr>
-                            <td class="w-12 tdCenterAlign" scope="row">
-                                Liquid Coolant Level 2
-                            </td>
-                            <td id="level2" class="w-12 tdCenterAlign" scope="row"></td>
-                            <td scope="row"></td>
-                            <td></td>
-                        </tr>
-    
-                        <tr>
-                            <td class="w-12 tdCenterAlign" scope="row">
-                                Liquid Coolant Level 3
-                            </td>
-                            <td id="level3" class="w-12 tdCenterAlign" scope="row"></td>
-                            <td scope="row"></td>
-                            <td></td>
-                        </tr> -->
+                                    <td class="w-12 tdCenterAlign" scope="row">
+                                        Liquid Coolant Level 1
+                                    </td>
+                                    <td id="level1" class="w-12 tdCenterAlign" scope="row"></td>
+                                    <td scope="row"></td>
+                                    <td></td>
+                                </tr>
+            
+                                <tr>
+                                    <td class="w-12 tdCenterAlign" scope="row">
+                                        Liquid Coolant Level 2
+                                    </td>
+                                    <td id="level2" class="w-12 tdCenterAlign" scope="row"></td>
+                                    <td scope="row"></td>
+                                    <td></td>
+                                </tr>
+            
+                                <tr>
+                                    <td class="w-12 tdCenterAlign" scope="row">
+                                        Liquid Coolant Level 3
+                                    </td>
+                                    <td id="level3" class="w-12 tdCenterAlign" scope="row"></td>
+                                    <td scope="row"></td>
+                                    <td></td>
+                                </tr> -->
     
                         <tr>
                             <td class="w-12 tdCenterAlign" scope="row">
@@ -968,15 +983,15 @@
                         </tr>
     
                         <!--<tr>
-                            <td class="w-12 tdCenterAlign" scope="row">
-                                24V Power Supply 2
-                            </td>
-                            <td id="power24v2" class="w-12 tdCenterAlign" scope="row"></td>
-                            <td scope="row"></td>
-                            <td></td>
-                        </tr>-->
+                                    <td class="w-12 tdCenterAlign" scope="row">
+                                        24V Power Supply 2
+                                    </td>
+                                    <td id="power24v2" class="w-12 tdCenterAlign" scope="row"></td>
+                                    <td scope="row"></td>
+                                    <td></td>
+                                </tr>-->
     
-                        <tr>
+                        <tr class = "power12v_set">
                             <td class="w-12 tdCenterAlign" scope="row">
                                 12V Power Supply
                             </td>
@@ -986,13 +1001,13 @@
                         </tr>
     
                         <!--<tr>
-                            <td class="w-12 tdCenterAlign" scope="row">
-                                12V Power Supply 2
-                            </td>
-                            <td id="power12v2" class="w-12 tdCenterAlign" scope="row"></td>
-                            <td scope="row"></td>
-                            <td></td>
-                        </tr>-->
+                                    <td class="w-12 tdCenterAlign" scope="row">
+                                        12V Power Supply 2
+                                    </td>
+                                    <td id="power12v2" class="w-12 tdCenterAlign" scope="row"></td>
+                                    <td scope="row"></td>
+                                    <td></td>
+                                </tr>-->
     
                         <tr>
                             <td class="w-12 tdCenterAlign" scope="row">ATS</td>
@@ -1008,11 +1023,11 @@
                             <td></td>
                         </tr>
                         <!--<tr>
-                            <td class="w-12 tdCenterAlign" scope="row">PC2</td>
-                            <td id="pc2_error" class="w-12 tdCenterAlign" scope="row"></td>
-                            <td scope="row"></td>
-                            <td></td>
-                        </tr>-->
+                                    <td class="w-12 tdCenterAlign" scope="row">PC2</td>
+                                    <td id="pc2_error" class="w-12 tdCenterAlign" scope="row"></td>
+                                    <td scope="row"></td>
+                                    <td></td>
+                                </tr>-->
                     </tbody>
                 </table>
             </div>
@@ -1023,7 +1038,7 @@
         <div class="rack_setting hidden title" data-label="Rack Information">
             <div class="data-before-trigger"></div>
             <div class="content">
-                <table class="table table-striped table-hover">
+                <table class="table table-hover">
                     <thead>
                         <tr>
                             <th class="col-4 tdCenterAlign"></th>
@@ -1145,25 +1160,42 @@
     
     
             function current_data(data) {
-                console.log(data);
+                // console.log(data);
     
+                // $("#inv1_freq").text(150)
                 for (let key in data["value"]) {
                     if (data["value"].hasOwnProperty(key)) {
                         let value = data["value"][key];
                         let inv1 = data["value"]["inv1_freq"];
                         let inv2 = data["value"]["inv2_freq"];
-    
+                        let inv3 = data["value"]["inv3_freq"];
                         $(`#${key}`).css("color", "black");
                         $(`#${key}_image`).css("color", "black");
                         $(`#${key}_status`).css("color", "black").text("Valid");
     
                         if (key.includes("flow") || key.includes("freq")) {
+    
+                            ///////////測試用///////////
+    
+                            const test_group = ["fan_freq1",
+                                "fan_freq2",
+                                "fan_freq3",
+                                "fan_freq4",
+                                "fan_freq5",
+                                "fan_freq6",
+                                "fan_freq7",
+                                "fan_freq8"]
+                            if (test_group.includes(key)) {
+                                continue;
+                            }
+                            ///////////測試用結束///////////
                             $("#" + key).text(value.toFixed(0));
                             $("#" + key + "_image").text(value.toFixed(0));
-                            if (inv1 > 100 || inv2 > 100) {
-                                $("#" + key).text(100);
-                                $("#" + key + "_image").test(100);
-                            }
+    
+                            // if (inv1 > 100 || inv2 > 100) {
+                            //     $("#" + key).text(100);
+                            //     $("#" + key + "_image").test(100);
+                            // }
                         } else {
                             $("#" + key).text(
                                 value.toFixed(userType == "superuser" ? 2 : 1)
@@ -1171,6 +1203,8 @@
                             $(`#${key}_image`).text(
                                 value.toFixed(userType == "superuser" ? 2 : 1)
                             );
+    
+    
                         }
                     }
                 }
@@ -1183,7 +1217,7 @@
                         } else if (key == "ATS2" && !data["ats_status"]["ATS1"]) {
                             let ats_status = value ? "Secondary" : "OFF";
                             $("#ATS_status").css("color", "black").text(ats_status);
-                        }else{
+                        } else {
                             $("#ATS_status").css("color", "black").text("OFF");
                         }
                     }
@@ -1688,6 +1722,30 @@
                 }
             }
     
+            function change_coolant_quality_meter_div(ver_switch){
+                if(ver_switch == true){
+                    $(".pH_set").hide();
+                    $(".cdct_set").hide();
+                    $(".tbd_set").hide();
+                    $(".power12v_set").hide();
+                }else{
+                    $(".pH_set").show();
+                    $(".cdct_set").show();
+                    $(".tbd_set").show();
+                    $(".power12v_set").show();
+                }
+            }
+    
+            function updateRowStripes() {
+                $("table").each(function () {  // 遍歷每個 table
+                    var table = $(this);
+                    table.find("tbody tr:visible").each(function (index) {
+                        // 將每個 table 的第一行設為灰色，其他行交替顯示
+                        $(this).css("background-color", index % 2 === 0 ? "rgba(0, 0, 0, 0.09)" : "white");
+                    });
+                });
+            }
+    
             async function fetch_get_data() {
                 while (true) {
                     try {
@@ -1698,10 +1756,18 @@
                             timeout: 10000,
                             dataType: "json",
                         });
-    
+                        const ver_switch = await $.ajax({
+                            url: "/get_data_version",
+                            method: "GET",
+                            loader: false,
+                            timeout: 10000,
+                            dataType: "json",
+                        });
+                        change_coolant_quality_meter_div(ver_switch["coolant_quality_meter_switch"]);
                         current_data(data);
                         change_status_light(data);
                         check_fan_status(data);
+                        updateRowStripes();
                     } catch (xhr) {
                         console.error(
                             `AJAX request failed with status: ${xhr.status} - ${xhr.statusText}`
@@ -1733,6 +1799,19 @@
                             timeout: 10000,
                             dataType: "json",
                         });
+    
+                        ///////////暫時測試用///////////
+    
+                        for (let i = 1; i <= 8; i++) {
+                            if (data["value"][`fan${i}_check`]) {
+                                let value = data["value"][`resultFan`];
+                                $(`#fan_freq${i}`).text(value.toFixed(0));
+                            } else {
+                                $(`#fan_freq${i}`).text(0);
+    
+                            }
+                        }
+                        ///////////測試用結束///////////
     
                         if (get_fan_speed(data)) {
                             let value = data["value"]["resultFan"];
