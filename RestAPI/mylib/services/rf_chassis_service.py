@@ -4,7 +4,6 @@
 import os, re
 from mylib.models.sensor_model import SensorCollectionModel, SensorModel, StatusModel
 from mylib.services.base_service import BaseService
-import re
 
 class RfChassisService(BaseService):
 
