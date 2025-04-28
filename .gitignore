@@ -151,9 +151,6 @@ pyrightconfig.json
 pyvenv.cfg
 pip-selfcheck.json
 
-# 忽略环境变量文件
-.env
-
 # 忽略所有日志文件和日志目录
 logs/
 webUI/logs/
