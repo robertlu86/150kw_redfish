@@ -61,16 +61,16 @@ class SensorModel(BaseModel):
     #     return values
 
     @model_validator(mode='after') # 'after' is not work
-    @classmethod
-    def _set_odata_id(cls, values, **kwargs):
+    # @classmethod
+    def _set_odata_id(cls, self, **kwargs):
         """
         @see https://docs.pydantic.dev/latest/concepts/validators/#model-validators
         """
-        chassis_id = values.get('chassis_id')
-        values['@odata.id'] = f"/redfish/v1/Chassis/{chassis_id}/Sensors/{values['Id']}"
-        # del redundant fields
-        del values['chassis_id'] # Not in redfish spec.
-        return values
+        # chassis_id = values.get('chassis_id')
+        # values['@odata.id'] = f"/redfish/v1/Chassis/{chassis_id}/Sensors/{self.Id}"
+        chassis_id = self.__pydantic_extra__.get('chassis_id')
+        self.odata_id = f"/redfish/v1/Chassis/{chassis_id}/Sensors/{self.Id}"
+        return self
 
 
     # @computed_field
