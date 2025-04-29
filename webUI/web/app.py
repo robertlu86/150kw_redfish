@@ -752,6 +752,14 @@ ctr_data = {
         "inv1": False,
         "inv2": False,
         "inv3": False,
+        "fan1": False,
+        "fan2": False,
+        "fan3": False,
+        "fan4": False,
+        "fan5": False,
+        "fan6": False,
+        "fan7": False,
+        "fan8": False,
     },
     "checkbox": {"filter_unlock_sw": True, "all_filter_sw": False},
     "unit": {"unit_temp": "", "unit_prsr": ""},
@@ -1270,7 +1278,8 @@ auto_factory = {"pv1": 80, "pump": 50, "water_min": 20}
 
 ver_switch = {
     "median_switch": False,
-    "coolant_quality_meter_switch": False
+    "coolant_quality_meter_switch": False,
+    "fan_count_switch": False
 }
 
 
@@ -3169,6 +3178,32 @@ def retry_modbus_2coil(
                     }
                 )
 
+def retry_modbus_3coil(
+    address_coil1, value_coil1, address_coil2, value_coil2, address_coil3, value_coil3,max_retries=3
+):
+    attempt = 0
+
+    while attempt < max_retries:
+        try:
+            with ModbusTcpClient(
+                host=modbus_host, port=modbus_port, unit=modbus_slave_id
+            ) as client:
+                client.write_coils(address_coil1, value_coil1)
+                client.write_coils(address_coil2, value_coil2)
+                client.write_coils(address_coil3, value_coil3)
+                return True
+        except Exception as e:
+            attempt += 1
+            print(f"Write attempt {attempt} failed: {e}")
+            if attempt == max_retries:
+                print("Max retries reached. Write failed.")
+                return jsonify(
+                    {
+                        "status": "error",
+                        "title": "Error",
+                        "message": "Writing failed",
+                    }
+                )
 
 def retry_modbus_setmode_singlecoil(address_coil, value_coil, max_retries=3):
     attempt = 0
@@ -3597,9 +3632,10 @@ def read_modbus_data():
                 ctr_data["mc"]["fan_mc2"] = read_mc3.bits[1]
                 ctr_data["mc"]["fan_mc2_result"] = read_mc3.bits[1]
 
-                read_ver = client.read_coils((8192 + 803), 2)
+                read_ver = client.read_coils((8192 + 803), 3)
                 ver_switch["median_switch"] = read_ver.bits[0]
                 ver_switch["coolant_quality_meter_switch"] = read_ver.bits[1]
+                ver_switch["fan_count_switch"] = read_ver.bits[2]
                 
                 if not os.path.exists(f"{web_path}/json/version.json"):
                     with open(f"{web_path}/json/version.json", "w") as file:
@@ -3889,11 +3925,27 @@ def read_modbus_data():
                 inv1 = client.read_holding_registers(address=(20480 + 6660), count=1)
                 inv2 = client.read_holding_registers(address=(20480 + 6700), count=1)
                 inv3 = client.read_holding_registers(address=(20480 + 6740), count=1)
-
+                fan1 = client.read_holding_registers(address=(20480 + 7020), count=1)
+                fan2 = client.read_holding_registers(address=(20480 + 7060), count=1)
+                fan3 = client.read_holding_registers(address=(20480 + 7100), count=1)
+                fan4 = client.read_holding_registers(address=(20480 + 7140), count=1)
+                fan5 = client.read_holding_registers(address=(20480 + 7380), count=1)
+                fan6 = client.read_holding_registers(address=(20480 + 7420), count=1)
+                fan7 = client.read_holding_registers(address=(20480 + 7460), count=1)
+                fan8 = client.read_holding_registers(address=(20480 + 7500), count=1)
+                
                 inv1_v = inv1.registers[0] / 16000 * 100
                 inv2_v = inv2.registers[0] / 16000 * 100
                 inv3_v = inv3.registers[0] / 16000 * 100
-
+                fan1_v = fan1.registers[0] / 16000 * 100
+                fan2_v = fan2.registers[0] / 16000 * 100
+                fan3_v = fan3.registers[0] / 16000 * 100
+                fan4_v = fan4.registers[0] / 16000 * 100
+                fan5_v = fan5.registers[0] / 16000 * 100
+                fan6_v = fan6.registers[0] / 16000 * 100
+                fan7_v = fan7.registers[0] / 16000 * 100
+                fan8_v = fan8.registers[0] / 16000 * 100
+                
                 if not ctr_data["mc"]["resultMC1"] or not ctr_data["value"]["resultP1"]:
                     inv1_v = 0
 
@@ -3902,10 +3954,66 @@ def read_modbus_data():
 
                 if not ctr_data["mc"]["resultMC3"] or not ctr_data["value"]["resultP3"]:
                     inv3_v = 0
+                    
+                if (
+                    not ctr_data["mc"]["fan_mc1_result"]
+                    or not ctr_data["value"]["resultFan1"]
+                ):
+                    fan1_v = 0
+                        
+                if (
+                    not ctr_data["mc"]["fan_mc1_result"]
+                    or not ctr_data["value"]["resultFan2"]
+                ):
+                    fan2_v = 0
 
+                if (
+                    not ctr_data["mc"]["fan_mc1_result"]
+                    or not ctr_data["value"]["resultFan3"]
+                ):
+                    fan3_v = 0
+                
+                if (
+                    not ctr_data["mc"]["fan_mc1_result"]
+                    or not ctr_data["value"]["resultFan4"]
+                ):
+                    fan4_v = 0
+                
+                if (
+                    not ctr_data["mc"]["fan_mc2_result"]
+                    or not ctr_data["value"]["resultFan5"]
+                ):
+                    fan5_v = 0
+                
+                if (
+                    not ctr_data["mc"]["fan_mc2_result"]
+                    or not ctr_data["value"]["resultFan6"]
+                ):
+                    fan6_v = 0
+                    
+                if (
+                    not ctr_data["mc"]["fan_mc2_result"]
+                    or not ctr_data["value"]["resultFan7"]
+                ):
+                    fan7_v = 0
+                    
+                if (
+                    not ctr_data["mc"]["fan_mc2_result"]
+                    or not ctr_data["value"]["resultFan8"]
+                ):
+                    fan8_v = 0
+                
                 ctr_data["inv"]["inv1"] = inv1_v >= 25
                 ctr_data["inv"]["inv2"] = inv2_v >= 25
                 ctr_data["inv"]["inv3"] = inv3_v >= 25
+                ctr_data["inv"]["fan1"] = fan1_v >= 25
+                ctr_data["inv"]["fan2"] = fan2_v >= 25
+                ctr_data["inv"]["fan3"] = fan3_v >= 25
+                ctr_data["inv"]["fan4"] = fan4_v >= 25
+                ctr_data["inv"]["fan5"] = fan5_v >= 25
+                ctr_data["inv"]["fan6"] = fan6_v >= 25
+                ctr_data["inv"]["fan7"] = fan7_v >= 25
+                ctr_data["inv"]["fan8"] = fan8_v >= 25
         except Exception as e:
             print(f"read inv_en error:{e}")
 
@@ -3976,49 +4084,51 @@ def read_modbus_data():
         inv_addresses = {"inv1": 6660, "inv2": 6700, "inv3": 6740}
 
         for k, v in ctr_data["inv"].items():
-            if v:
-                address = inv_addresses.get(k)
-                try:
-                    with ModbusTcpClient(
-                        host=modbus_host, port=modbus_port, unit=modbus_slave_id
-                    ) as client:
-                        r = client.read_holding_registers(
-                            address=(20480 + address), count=1
-                        )
-                        ### 轉換 freq
-                        ps = r.registers[0]
-                        ps = ps / 16000 * 100
-                        ctr_data["value"]["resultPS"] = round(ps)
-                        break
-                except Exception as e:
-                    print(f"pump speed error: {e}")
-                break
+            if k.startswith("inv"):
+                if v:
+                    address = inv_addresses.get(k)
+                    try:
+                        with ModbusTcpClient(
+                            host=modbus_host, port=modbus_port, unit=modbus_slave_id
+                        ) as client:
+                            r = client.read_holding_registers(
+                                address=(20480 + address), count=1
+                            )
+                            ### 轉換 freq
+                            ps = r.registers[0]
+                            ps = ps / 16000 * 100
+                            ctr_data["value"]["resultPS"] = round(ps)
+                            break
+                    except Exception as e:
+                        print(f"pump speed error: {e}")
+                    break
 
-        if not any(ctr_data["inv"].values()):
+        if not any(v for k, v in ctr_data["inv"].items() if k.startswith("inv")):
             ctr_data["value"]["resultPS"] = 0
   ########寫入resultFan 
         fan_inv_addresses = {"fan1": 7020, "fan2": 7060, "fan3": 7100,"fan4":7140, "fan5":7380, "fan6":7400, "fan7":7460, "fan8":7500}
   
         for k, v in ctr_data["inv"].items():
-            if v:
-                address = fan_inv_addresses.get(k)
-                try:
-                    with ModbusTcpClient(
-                        host=modbus_host, port=modbus_port, unit=modbus_slave_id
-                    ) as client:
-                        r = client.read_holding_registers(
-                            address=(20480 + address), count=1
-                        )
-                        ### 轉換 freq
-                        fs = r.registers[0]
-                        fs = fs / 16000 * 100
-                        ctr_data["value"]["resultFan"] = round(fs)
-                        break
-                except Exception as e:
-                    print(f"pump speed error: {e}")
-                break
+            if k.startswith("fan"):
+                if v:
+                    address = fan_inv_addresses.get(k)
+                    try:
+                        with ModbusTcpClient(
+                            host=modbus_host, port=modbus_port, unit=modbus_slave_id
+                        ) as client:
+                            r = client.read_holding_registers(
+                                address=(20480 + address), count=1
+                            )
+                            ### 轉換 freq
+                            fs = r.registers[0]
+                            fs = fs / 16000 * 100
+                            ctr_data["value"]["resultFan"] = round(fs)
+                            break
+                    except Exception as e:
+                        print(f"fan speed error: {e}")
+                    break
 
-        if not any(ctr_data["inv"].values()):
+        if not any(v for k, v in ctr_data["inv"].items() if k.startswith("fan")):
             ctr_data["value"]["resultFan"] = 0      
         ### 讀取pump runtime
         
@@ -7041,6 +7151,7 @@ def version_switch():
 
     median_switch = data["median_switch"]
     coolant_quality_meter_switch = data["coolant_quality_meter_switch"]
+    fan_count_switch = data["fan_count_switch"]
     
     try:
         with ModbusTcpClient(
@@ -7048,12 +7159,18 @@ def version_switch():
         ) as client:
             client.write_coils((8192 + 803), [median_switch])
             client.write_coils((8192 + 804), [coolant_quality_meter_switch])
+            client.write_coils((8192 + 805), [fan_count_switch])
         op_logger.info(f"Version setting updated successfully. {data}")
         return jsonify(status="success", message="Version setting updated successfully")
     except Exception as e:
         print(f"Error: {e}")
-        return retry_modbus_2coil(
-            (8192 + 803), [median_switch,],(8192 + 804), [coolant_quality_meter_switch]
+        return retry_modbus_3coil(
+            (8192 + 803),
+            [median_switch,],
+            (8192 + 804),
+            [coolant_quality_meter_switch],
+            ((8192 + 805), 
+            [fan_count_switch]),
         )
 
 
