@@ -436,7 +436,7 @@ styles %}
                                 <div class="result resultFan3" id="resultFan3"></div>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row" id="Fan4_set">
                             <div class="col-6 center_text">Fan4:</div>
                             <div class="col-3 sideNum">
                                 <div class="form-check">
@@ -448,7 +448,7 @@ styles %}
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-6 center_text">Fan5:</div>
+                            <div class="col-6 center_text" id="Fan5_name">Fan5:</div>
                             <div class="col-3 sideNum">
                                 <div class="form-check">
                                     <input id="fan5_check" class="toggle form-check-input" type="checkbox" />
@@ -459,7 +459,7 @@ styles %}
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-6 center_text">Fan6:</div>
+                            <div class="col-6 center_text" id="Fan6_name">Fan6:</div>
                             <div class="col-3 sideNum">
                                 <div class="form-check">
                                     <input id="fan6_check" class="toggle form-check-input" type="checkbox" />
@@ -470,7 +470,7 @@ styles %}
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-6 center_text">Fan7:</div>
+                            <div class="col-6 center_text" id="Fan7_name">Fan7:</div>
                             <div class="col-3 sideNum">
                                 <div class="form-check">
                                     <input id="fan7_check" class="toggle form-check-input" type="checkbox" />
@@ -480,7 +480,7 @@ styles %}
                                 <div class="result resultFan7" id="resultFan7"></div>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row" id="Fan8_set">
                             <div class="col-6 center_text">Fan8:</div>
                             <div class="col-3 sideNum">
                                 <div class="form-check">
@@ -1335,6 +1335,21 @@ styles %}
                 console.error("Error fetching data:", error);
             },
         });
+        
+        function fan_count_version(ver_switch){
+            if(ver_switch === true){
+                $("#Fan4_set, #Fan8_set").hide();
+                $("#fan4_check, #fan8_check").prop("checked", false);
+                $("#Fan5_name").text("Fan4:");
+                $("#Fan6_name").text("Fan5:");
+                $("#Fan7_name").text("Fan6:");
+            }else{
+                $("#Fan4_set, #Fan8_set").show();
+                $("#Fan5_name").text("Fan5:");
+                $("#Fan6_name").text("Fan6:");
+                $("#Fan7_name").text("Fan7:");
+            }
+        }
 
         async function fetchDataControl() {
             while (true) {
@@ -1345,7 +1360,14 @@ styles %}
                         timeout: 10000,
                         loader: false,
                     });
-
+                    const ver_switch = await $.ajax({
+                            url: "/get_data_version",
+                            method: "GET",
+                            loader: false,
+                            timeout: 10000,
+                            dataType: "json",
+                        });
+                    fan_count_version(ver_switch["fan_count_switch"])
                     shared_data(data);
                 } catch (error) {
                     console.error("Error fetching data:", error);
@@ -1366,6 +1388,7 @@ styles %}
             inspect_action = data["inspect_action"];
             oc_issue = data["downtime_error"]["oc_issue"];
             f1_issue = data["downtime_error"]["f1_issue"];
+            
 
             for (let i = 1; i <= 3; i++) {  // pump  從 1 到 3
                 if (data["mc"][`mc${i}_sw`]) {
