@@ -753,31 +753,31 @@ styles %}
                         <td class="tdCenterAlign" id="fan_freq3"></td>
                         <td>%</td>
                     </tr>
-                    <tr>
+                    <tr id="Fan4_set">
                         <td class="tdCenterAlign">Fan Speed 4</td>
                         <td class="tdCenterAlign" id="fan_freq4_status"></td>
                         <td class="tdCenterAlign" id="fan_freq4"></td>
                         <td>%</td>
                     </tr>
                     <tr>
-                        <td class="tdCenterAlign">Fan Speed 5</td>
+                        <td class="tdCenterAlign" id="Fan5_name">Fan Speed 5</td>
                         <td class="tdCenterAlign" id="fan_freq5_status"></td>
                         <td class="tdCenterAlign" id="fan_freq5"></td>
                         <td>%</td>
                     </tr>
                     <tr>
-                        <td class="tdCenterAlign">Fan Speed 6</td>
+                        <td class="tdCenterAlign" id="Fan6_name">Fan Speed 6</td>
                         <td class="tdCenterAlign" id="fan_freq6_status"></td>
                         <td class="tdCenterAlign" id="fan_freq6"></td>
                         <td>%</td>
                     </tr>
                     <tr>
-                        <td class="tdCenterAlign">Fan Speed 7</td>
+                        <td class="tdCenterAlign" id="Fan7_name">Fan Speed 7</td>
                         <td class="tdCenterAlign" id="fan_freq7_status"></td>
                         <td class="tdCenterAlign" id="fan_freq7"></td>
                         <td>%</td>
                     </tr>
-                    <tr>
+                    <tr id="Fan8_set">
                         <td class="tdCenterAlign">Fan Speed 8</td>
                         <td class="tdCenterAlign" id="fan_freq8_status"></td>
                         <td class="tdCenterAlign" id="fan_freq8"></td>
@@ -901,7 +901,7 @@ styles %}
                         <td></td>
                     </tr>
                     <tr>
-                        <td class="w-12 tdCenterAlign" scope="row">Fan 1-4 MC</td>
+                        <td class="w-12 tdCenterAlign" scope="row" id="Fan">Fan 1-4 MC</td>
                         <td id="fan_mc1" class="w-12 tdCenterAlign" scope="row"></td>
                         <td scope="row"></td>
                         <td></td>
@@ -1723,6 +1723,28 @@ styles %}
                 }
             }
         }
+        function change_version(ver_switch){
+            if(ver_switch["coolant_quality_meter_switch"] === true){
+                $(".pH_set, .cdct_set, .tbd_set, .power12v_set").hide();
+                $("#pH_image_set, #cdct_image_set, #tbd_image_set").hide();
+                $(".machine").attr("src", "../static/images/full_picture.jpg")
+            }else{
+                $(".pH_set, .cdct_set, .tbd_set, .power12v_set").show();
+                $("#pH_image_set, #cdct_image_set, #tbd_image_set").show();
+                $(".machine").attr("src", "../static/images/full_picture.jpg")
+            }
+            if(ver_switch["fan_count_switch"] === true){
+                $("#Fan4_set, #Fan8_set").hide()
+                $("#Fan5_name").text("Fan Speed4");
+                $("#Fan6_name").text("Fan Speed5");
+                $("#Fan7_name").text("Fan Speed6");
+            }else{
+                $("#Fan4_set, #Fan8_set").show();
+                $("#Fan5_name").text("Fan Speed5");
+                $("#Fan6_name").text("Fan Speed6");
+                $("#Fan7_name").text("Fan Speed7");
+            }
+        }
         //水質計切換版本Status頁面
         function change_coolant_quality_meter_version(ver_switch){
             if(ver_switch === true){
@@ -1763,7 +1785,8 @@ styles %}
                         timeout: 10000,
                         dataType: "json",
                     });
-                    change_coolant_quality_meter_version(ver_switch["coolant_quality_meter_switch"]);
+                    change_version(ver_switch);
+                    //change_coolant_quality_meter_version(ver_switch["coolant_quality_meter_switch"]);
                     current_data(data);
                     change_status_light(data);
                     updateRowStripes();
