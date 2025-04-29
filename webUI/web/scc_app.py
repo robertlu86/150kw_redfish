@@ -2621,6 +2621,8 @@ def get_sensor_value():
             "CoolantSupplyPressureSpare": "prsr_clntSplySpare",
             "CoolantReturnPressure": "prsr_clntRtn",
             "CoolantReturnPressureSpare": "prsr_clntRtnSpare",
+            "FilterInletPressure":"prsr_fltIn",
+            "FilterOutletPressure":"prsr_fltOut",
             "CoolantFlowRate": "clnt_flow",
             "AmbientTemp": "ambient_temp",
             "RelativeHumid": "relative_humid",
