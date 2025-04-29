@@ -40,10 +40,7 @@ def load_raw_from_api(
 # curl資料
 CDU_BASE = "http://192.168.3.137:5001"
 
-def get_ThermalSubsystem_value():
-    sensor_value = f"{CDU_BASE}/api/v1/cdu/status/sensor_value"
-    data = load_raw_from_api(sensor_value)
-    return data
+
 
 
 app = Flask(__name__)
@@ -2490,6 +2487,9 @@ CDUs_data_1 = {
                 },
                 {
                     "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Pumps/2"
+                },                
+                {
+                    "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Pumps/3"
                 }
             ],
             "Status": {
@@ -3407,9 +3407,20 @@ class ThermalEquipmentCdus1Pumps1(Resource):
                 json={"pump_speed": new_sp, "pump_switch": new_sw},
                 timeout=3
             )
-            r.raise_for_status()
+        except requests.HTTPError:
+            # 如果 CDU 回了 4xx/5xx，直接把它的 status code 和 body 回來
+            try:
+                err_body = r.json()
+            except ValueError:
+                err_body = {"error": r.text}
+            return err_body, r.status_code
+
         except requests.RequestException as e:
-            return {"error":"CDU 控制服務失敗","details":str(e)}, 502
+            # 純粹網路／timeout／連線失敗
+            return {
+                "error": "轉發到 CDU 控制服務失敗",
+                "details": str(e)
+            }, 502
 
         # 更新內存資料
         scp["SetPoint"] = new_sp
@@ -3450,8 +3461,20 @@ class ThermalEquipmentCdus1Pumps2(Resource):
                 timeout=3
             )
             r.raise_for_status()
+        except requests.HTTPError:
+            # 如果 CDU 回了 4xx/5xx，直接把它的 status code 和 body 回來
+            try:
+                err_body = r.json()
+            except ValueError:
+                err_body = {"error": r.text}
+            return err_body, r.status_code
+
         except requests.RequestException as e:
-            return {"error":"CDU 控制服務失敗","details":str(e)}, 502
+            # 純粹網路／timeout／連線失敗
+            return {
+                "error": "轉發到 CDU 控制服務失敗",
+                "details": str(e)
+            }, 502
 
         # 更新內存資料
         scp["SetPoint"] = new_sp
@@ -3493,8 +3516,20 @@ class ThermalEquipmentCdus1Pumps3(Resource):
                 timeout=3
             )
             r.raise_for_status()
+        except requests.HTTPError:
+            # 如果 CDU 回了 4xx/5xx，直接把它的 status code 和 body 回來
+            try:
+                err_body = r.json()
+            except ValueError:
+                err_body = {"error": r.text}
+            return err_body, r.status_code
+
         except requests.RequestException as e:
-            return {"error":"CDU 控制服務失敗","details":str(e)}, 502
+            # 純粹網路／timeout／連線失敗
+            return {
+                "error": "轉發到 CDU 控制服務失敗",
+                "details": str(e)
+            }, 502
 
         # 更新內存資料
         scp["SetPoint"] = new_sp
@@ -3908,6 +3943,7 @@ Fans_data = {
 #     "@odata.id": "/redfish/v1/Chassis/1/Sensors",
 # }
 
+# 統一有 status
 Sensors_data_all = {
     "PrimaryFlowLitersPerMinute": {
         "@odata.type": "#Sensor.v1_1_0.Sensor",
@@ -3995,7 +4031,7 @@ Sensors_data_all = {
         "Name": "Humidity Percent",
         "Reading": 56.73,
         "ReadingUnits": "Percent",
-        "Status": {"Health": "OK", "State": "Enabled"},
+        "Status": {"Health": "OK", "State": "Disable"},
         "@odata.id": "/redfish/v1/Chassis/1/Sensors/HumidityPercent",
     },
     "WaterPH": {
@@ -4038,7 +4074,7 @@ Sensors_data_all = {
         "@odata.type": "#Sensor.v1_1_0.Sensor",
         "Id": "fan1",
         "Name": "fan 1 Speed Sensor",
-        "Reading": get_ThermalSubsystem_value()["fan1_speed"],
+        "Reading": 5,
         "ReadingUnits": "rpm",
         "Status": {"Health": "OK", "State": "Enabled"},
         "@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/1",
@@ -4047,7 +4083,7 @@ Sensors_data_all = {
         "@odata.type": "#Sensor.v1_1_0.Sensor",
         "Id": "fan2",
         "Name": "fan 2 Speed Sensor",
-        "Reading": get_ThermalSubsystem_value()["fan2_speed"],
+        "Reading": 0,
         "ReadingUnits": "rpm",
         "Status": {"Health": "OK", "State": "Enabled"},
         "@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/2",
@@ -4056,7 +4092,7 @@ Sensors_data_all = {
         "@odata.type": "#Sensor.v1_1_0.Sensor",
         "Id": "fan3",
         "Name": "fan 3 Speed Sensor",
-        "Reading": get_ThermalSubsystem_value()["fan3_speed"],
+        "Reading": 0,
         "ReadingUnits": "rpm",
         "Status": {"Health": "OK", "State": "Enabled"},
         "@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/3",
@@ -4065,7 +4101,7 @@ Sensors_data_all = {
         "@odata.type": "#Sensor.v1_1_0.Sensor",
         "Id": "fan4",
         "Name": "fan 4 Speed Sensor",
-        "Reading": get_ThermalSubsystem_value()["fan4_speed"],
+        "Reading": 0,
         "ReadingUnits": "rpm",
         "Status": {"Health": "OK", "State": "Enabled"},
         "@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/4",
@@ -4074,7 +4110,7 @@ Sensors_data_all = {
         "@odata.type": "#Sensor.v1_1_0.Sensor",
         "Id": "fan5",
         "Name": "fan 5 Speed Sensor",
-        "Reading": get_ThermalSubsystem_value()["fan5_speed"],
+        "Reading": 0,
         "ReadingUnits": "rpm",
         "Status": {"Health": "OK", "State": "Enabled"},
         "@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/5",
@@ -4083,7 +4119,7 @@ Sensors_data_all = {
         "@odata.type": "#Sensor.v1_1_0.Sensor",
         "Id": "fan6",
         "Name": "fan 6 Speed Sensor",
-        "Reading": get_ThermalSubsystem_value()["fan6_speed"],
+        "Reading": 0,
         "ReadingUnits": "rpm",
         "Status": {"Health": "OK", "State": "Enabled"},
         "@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/6",
@@ -4092,7 +4128,7 @@ Sensors_data_all = {
         "@odata.type": "#Sensor.v1_1_0.Sensor",
         "Id": "fan7",
         "Name": "fan 7 Speed Sensor",
-        "Reading": get_ThermalSubsystem_value()["fan7_speed"],
+        "Reading": 0,
         "ReadingUnits": "rpm",
         "Status": {"Health": "OK", "State": "Enabled"},
         "@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/7",
@@ -4101,7 +4137,7 @@ Sensors_data_all = {
         "@odata.type": "#Sensor.v1_1_0.Sensor",
         "Id": "fan8",
         "Name": "fan 8 Speed Sensor",
-        "Reading": get_ThermalSubsystem_value()["fan8_speed"],
+        "Reading": 0,
         "ReadingUnits": "rpm",
         "Status": {"Health": "OK", "State": "Enabled"},
         "@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/8",
@@ -4126,7 +4162,7 @@ Controls_data_all = {
         "Id": "OperationMode",
         "Name": "OperationMode",
         "PhysicalContext": "Chassis",
-        "ControlMode": "Manual",
+        "ControlMode": "Automatic",
         "@odata.id": "/redfish/v1/Chassis/1/Controls/OperationMode",
     },
     "PumpsSpeedControl": {
@@ -4139,7 +4175,7 @@ Controls_data_all = {
         "SetPoint": 35,
         "SetPointUnits": "%",
         "AllowableMax": 100,
-        "AllowableMin": 0,
+        "AllowableMin": 25,
         "@odata.id": "/redfish/v1/Chassis/1/Controls/PumpsSpeedControl",
     },
     "FansSpeedControl": {
@@ -4162,12 +4198,38 @@ OperationMode_patch = redfish_ns.model('OperationModePatch', {
     'mode': fields.String(
         required=True,
         description='模式控制',
-        default='auto',   # 這裡設定預設值
-        example='auto',   # 也可加 example，讓 UI 顯示範例
-        enum=['auto', 'manual', 'stop']  # 如果有固定選項，也可以列出
+        default='Automatic',   # 這裡設定預設值
+        example='Automatic',   # 也可加 example，讓 UI 顯示範例
+        enum=['Automatic', 'Manual', 'Disabled', 'Override']  # 如果有固定選項，也可以列出
     ),
 })
-
+# PumpSpeed patch設置
+pumpspeed_patch_all = redfish_ns.model('pumpspeed_patch_all', {
+    'speed_set': fields.Integer(
+        required=True,
+        description='速度控制',
+        default='50',   # 這裡設定預設值
+        example='50',   # 也可加 example，讓 UI 顯示範例
+    ),
+    'pump1_switch': fields.Boolean(
+        required=True,
+        description='開關控制',
+        default=True,   # 這裡設定預設值
+        example=True,   # 也可加 example，讓 UI 顯示範例
+    ),    
+    'pump2_switch': fields.Boolean(
+        required=True,
+        description='開關控制',
+        default=True,   # 這裡設定預設值
+        example=True,   # 也可加 example，讓 UI 顯示範例
+    ),      
+    'pump3_switch': fields.Boolean(
+        required=True,
+        description='開關控制',
+        default=True,   # 這裡設定預設值
+        example=True,   # 也可加 example，讓 UI 顯示範例
+    ),    
+})
 # fanspeed patch設置
 fanspeed_patch = redfish_ns.model('FanSpeedControlPatch', {
     'fan_speed': fields.Integer(
@@ -4308,6 +4370,8 @@ class FetchSensorsById(Resource):
     def get(self, chassis_id, sensor_id):
         chassis_service = RfChassisService()
         return chassis_service.fetch_sensors_by_name(chassis_id, sensor_id)
+    
+    
 
 # @redfish_ns.route("/Chassis/<chassis_id>/Sensors/PrimaryFlowLitersPerMinute")
 # class Sensors_PrimaryFlowLitersPerMinute(Resource):
@@ -4421,48 +4485,56 @@ class FetchSensorsById(Resource):
 class Sensors_Fan1(Resource):
     @requires_auth
     def get(self):
+        Sensors_data_all["Fan1"]["Reading"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/sensor_value")["fan1_speed"]     
         return Sensors_data_all["Fan1"]    
     
 @redfish_ns.route("/Chassis/1/Sensors/fan/2")
 class Sensors_Fan2(Resource):
     @requires_auth
     def get(self):
+        Sensors_data_all["Fan2"]["Reading"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/sensor_value")["fan2_speed"]   
         return Sensors_data_all["Fan2"]    
 
 @redfish_ns.route("/Chassis/1/Sensors/fan/3")
 class Sensors_Fan3(Resource):
     @requires_auth
     def get(self):
+        Sensors_data_all["Fan3"]["Reading"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/sensor_value")["fan3_speed"]   
         return Sensors_data_all["Fan3"]    
 
 @redfish_ns.route("/Chassis/1/Sensors/fan/4")
 class Sensors_Fan4(Resource):
     @requires_auth
     def get(self):
+        Sensors_data_all["Fan4"]["Reading"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/sensor_value")["fan4_speed"]   
         return Sensors_data_all["Fan4"]    
 
 @redfish_ns.route("/Chassis/1/Sensors/fan/5")
 class Sensors_Fan5(Resource):
     @requires_auth
     def get(self):
+        Sensors_data_all["Fan5"]["Reading"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/sensor_value")["fan5_speed"]   
         return Sensors_data_all["Fan5"]    
 
 @redfish_ns.route("/Chassis/1/Sensors/fan/6")
 class Sensors_Fan6(Resource):
     @requires_auth
     def get(self):
+        Sensors_data_all["Fan6"]["Reading"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/sensor_value")["fan6_speed"]   
         return Sensors_data_all["Fan6"]    
 
 @redfish_ns.route("/Chassis/1/Sensors/fan/7")
 class Sensors_Fan7(Resource):
     @requires_auth
     def get(self):
+        Sensors_data_all["Fan7"]["Reading"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/sensor_value")["fan7_speed"]   
         return Sensors_data_all["Fan7"]    
 
 @redfish_ns.route("/Chassis/1/Sensors/fan/8")
 class Sensors_Fan8(Resource):
     @requires_auth
     def get(self):
+        Sensors_data_all["Fan8"]["Reading"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/sensor_value")["fan8_speed"]   
         return Sensors_data_all["Fan8"]    
     
 
@@ -4478,6 +4550,11 @@ class Controls(Resource):
 class OperationMode(Resource):
     @requires_auth
     def get(self):
+        rep_operation = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/op_mode")["mode"]
+        if rep_operation == "auto": new_rep_operation = "Automatic"
+        if rep_operation == "manual": new_rep_operation = "Manual"
+        if rep_operation == "stop": new_rep_operation = "Disabled"
+        Controls_data_all["OperationMode"]["ControlMode"] = new_rep_operation
         return Controls_data_all["OperationMode"]
     
     @redfish_ns.expect(OperationMode_patch, validate=True)
@@ -4485,23 +4562,43 @@ class OperationMode(Resource):
     def patch(self):
         payload = request.get_json(force=True)
         new_sp = payload["mode"]
-
+        if new_sp == "Automatic": new_api_sp = "auto"
+        if new_sp == "Manual": new_api_sp = "manual"
+        if new_sp == "Disabled": 
+            new_api_sp = "stop"
+            # pump 狀態
+            # cdus_pumps_1["Status"]["State"] = "Disabled"
+            # cdus_pumps_2["Status"]["State"] = "Disabled"
+            # cdus_pumps_3["Status"]["State"] = "Disabled"
+        
         try:
             r = requests.patch(
                 f"{CDU_BASE}/api/v1/cdu/status/op_mode",
-                json={"mode": new_sp},  
+                json={"mode": new_api_sp},  
                 timeout=3
             )
             r.raise_for_status()
+        except requests.HTTPError:
+            # 如果 CDU 回了 4xx/5xx，直接把它的 status code 和 body 回來
+            try:
+                err_body = r.json()
+            except ValueError:
+                err_body = {"error": r.text}
+            return err_body, r.status_code
+
         except requests.RequestException as e:
-            # 如果轉發失敗，就回 502 Bad Gateway
-            return {"error": "轉發到 CDU 控制服務失敗", "details": str(e)}, 502
+            # 純粹網路／timeout／連線失敗
+            return {
+                "error": "轉發到 CDU 控制服務失敗",
+                "details": str(e)
+            }, 502
 
         # 內部服務回傳 OK，更新 Redfish 內存資料
-        Controls_data_all["PumpsSpeedControl"]["SetPoint"] = new_sp
+        Controls_data_all["OperationMode"]["ControlMode"] = new_sp
+        print(Controls_data_all["OperationMode"]["ControlMode"])
 
         # 回傳更新後的 Redfish Control 資源
-        return Controls_data_all["PumpsSpeedControl"], 200
+        return Controls_data_all["OperationMode"], 200
     
 
 @redfish_ns.route("/Chassis/1/Controls/PumpsSpeedControl")
@@ -4509,7 +4606,67 @@ class PumpsSpeedControl(Resource):
     @requires_auth
     def get(self):
         return Controls_data_all["PumpsSpeedControl"]
+    
+    @requires_auth
+    @redfish_ns.expect(pumpspeed_patch_all, validate=True)
+    def patch(self):
+        body = request.get_json(force=True)
+        new_sp = body['speed_set']
+        new_sw1 = body['pump1_switch']
+        new_sw2 = body['pump2_switch']
+        new_sw3 = body['pump3_switch']
+        
+        # 驗證範圍
+        scp = Controls_data_all["PumpsSpeedControl"]
+        if not (scp["AllowableMin"] <= new_sp <= scp["AllowableMax"]):
+            return {
+                "error": f"pump_speed 必須介於 {scp['AllowableMin']} 和 {scp['AllowableMax']}"
+            }, 400
 
+        # 轉發到內部控制 API
+        try:
+            r = requests.patch(
+                f"{CDU_BASE}/api/v1/cdu/control/pump1_speed",
+                json={"pump_speed": new_sp, "pump_switch": new_sw1},
+                timeout=3
+            )
+            r.raise_for_status()
+            r = requests.patch(
+                f"{CDU_BASE}/api/v1/cdu/control/pump2_speed",
+                json={"pump_speed": new_sp, "pump_switch": new_sw2},
+                timeout=3
+            )
+            r.raise_for_status()
+            r = requests.patch(
+                f"{CDU_BASE}/api/v1/cdu/control/pump3_speed",
+                json={"pump_speed": new_sp, "pump_switch": new_sw3},
+                timeout=3
+            )
+            r.raise_for_status()
+        except requests.HTTPError:
+            # 如果 CDU 回了 4xx/5xx，直接把它的 status code 和 body 回來
+            try:
+                err_body = r.json()
+            except ValueError:
+                err_body = {"error": r.text}
+            return err_body, r.status_code
+
+        except requests.RequestException as e:
+            # 純粹網路／timeout／連線失敗
+            return {
+                "error": "轉發到 CDU 控制服務失敗",
+                "details": str(e)
+            }, 502
+
+        # 更新內存資料
+        scp["SetPoint"] = new_sp
+        # pump_switch 控制 State
+        cdus_pumps_1["Status"]["State"] = "Enabled" if new_sw1 else "Disabled"
+        cdus_pumps_2["Status"]["State"] = "Enabled" if new_sw2 else "Disabled"
+        cdus_pumps_3["Status"]["State"] = "Enabled" if new_sw3 else "Disabled"
+
+        # 回傳整個 Pump 資源
+        return Controls_data_all["PumpsSpeedControl"], 200
 
 
 @redfish_ns.route("/Chassis/1/Controls/FansSpeedControl")
@@ -4531,9 +4688,21 @@ class FansSpeedControl(Resource):
                 timeout=3
             )
             r.raise_for_status()
+
+        except requests.HTTPError:
+            # 如果 CDU 回了 4xx/5xx，直接把它的 status code 和 body 回來
+            try:
+                err_body = r.json()
+            except ValueError:
+                err_body = {"error": r.text}
+            return err_body, r.status_code
+
         except requests.RequestException as e:
-            # 如果轉發失敗，就回 502 Bad Gateway
-            return {"error": "轉發到 CDU 控制服務失敗", "details": str(e)}, 502
+            # 純粹網路／timeout／連線失敗
+            return {
+                "error": "轉發到 CDU 控制服務失敗",
+                "details": str(e)
+            }, 502
 
         # 內部服務回傳 OK，更新 Redfish 內存資料
         Controls_data_all["FansSpeedControl"]["SetPoint"] = new_sp
