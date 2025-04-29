@@ -2899,6 +2899,17 @@ block styles %}
                     </select>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-4">
+                    <p>Count:</p>
+                </div>
+                <div class="col-2 sideNum">
+                    <select class="form-select" id="fan_count_switch">
+                        <option value="old">6</option>
+                        <option value="new">8</option>
+                    </select>
+                </div>
+            </div>
 
             <div class="row">
                 <div class="col-4"></div>
@@ -4674,6 +4685,7 @@ block styles %}
         $("#ver_switch_apply").click(function () {
             let median_switch = $("#median_switch").val();
             let coolant_quality_meter_switch = $("#coolant_quality_meter_switch").val();
+            let fan_count_switch = $("#fan_count_switch").val();
 
             if (median_switch == "old") {
                 median_switch = true;
@@ -4686,10 +4698,17 @@ block styles %}
             } else {
                 coolant_quality_meter_switch = false;
             }
+            
+            if (fan_count_switch == "old") {
+                fan_count_switch = true;
+            } else {
+                fan_count_switch = false;
+            }
 
             combined_data = {
                 median_switch: median_switch,
-                coolant_quality_meter_switch: coolant_quality_meter_switch
+                coolant_quality_meter_switch: coolant_quality_meter_switch,
+                fan_count_switch: fan_count_switch
             };
 
             console.log(combined_data);

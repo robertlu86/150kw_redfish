@@ -478,6 +478,7 @@ inspection_data = {
 ver_switch = {
     "median_switch": False,
     "coolant_quality_meter_switch": False,
+    "fan_count_switch": False
 }
 
 measured_data_mapping = {
@@ -3550,11 +3551,12 @@ def control():
 
             try:
                 with ModbusTcpClient(host=modbus_host, port=modbus_port) as client:
-                    r = client.read_coils((8192 + 800), 5)
+                    r = client.read_coils((8192 + 800), 6)
                     reset_current_btn["status"] = r.bits[0]
                     ver_switch["median_switch"] = r.bits[3]
                     ver_switch["coolant_quality_meter_switch"] = r.bits[4]
-
+                    ver_switch["fan_count_switch"] = r.bits[5]
+                    
                     r2 = client.read_holding_registers(900, 1)
                     inspection_data["start_btn"] = r2.registers[0]
             except Exception as e:
