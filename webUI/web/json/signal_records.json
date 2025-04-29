@@ -1,5 +1,107 @@
 [
     {
+        "signal_name": "M308",
+        "on_time": "2025-04-29 11:16:37",
+        "off_time": null,
+        "signal_value": "M308 Factory Power Status"
+    },
+    {
+        "signal_name": "M309",
+        "on_time": "2025-04-29 11:16:37",
+        "off_time": null,
+        "signal_value": "M309 Inverter1 Communication Error"
+    },
+    {
+        "signal_name": "M310",
+        "on_time": "2025-04-29 11:16:37",
+        "off_time": null,
+        "signal_value": "M310 Inverter2 Communication Error"
+    },
+    {
+        "signal_name": "M311",
+        "on_time": "2025-04-29 11:16:37",
+        "off_time": null,
+        "signal_value": "M311 Inverter3 Communication Error"
+    },
+    {
+        "signal_name": "M335",
+        "on_time": "2025-04-29 11:16:37",
+        "off_time": null,
+        "signal_value": "M335 Coolant Supply Pressure (P1) Broken Error"
+    },
+    {
+        "signal_name": "M336",
+        "on_time": "2025-04-29 11:16:37",
+        "off_time": null,
+        "signal_value": "M336 Coolant Supply Pressure Spare (P1sp) Broken Error"
+    },
+    {
+        "signal_name": "M337",
+        "on_time": "2025-04-29 11:16:37",
+        "off_time": null,
+        "signal_value": "M337 Coolant Return Pressure (P2) Broken Error"
+    },
+    {
+        "signal_name": "M338",
+        "on_time": "2025-04-29 11:16:37",
+        "off_time": null,
+        "signal_value": "M338 Coolant Return Pressure Spare (P2sp) Broken Error"
+    },
+    {
+        "signal_name": "M339",
+        "on_time": "2025-04-29 11:16:37",
+        "off_time": null,
+        "signal_value": "M339 Filter Inlet Pressure (P3) Broken Error"
+    },
+    {
+        "signal_name": "M340",
+        "on_time": "2025-04-29 11:16:37",
+        "off_time": null,
+        "signal_value": "M340 Filter Outlet Pressure (P4) Broken Error"
+    },
+    {
+        "signal_name": "M341",
+        "on_time": "2025-04-29 11:16:37",
+        "off_time": null,
+        "signal_value": "M341 Coolant Flow Rate (F1) Broken Error"
+    },
+    {
+        "signal_name": "M343",
+        "on_time": "2025-04-29 11:16:37",
+        "off_time": null,
+        "signal_value": "M343 PC2 Error"
+    },
+    {
+        "signal_name": "M349",
+        "on_time": "2025-04-29 11:16:37",
+        "off_time": null,
+        "signal_value": "M349 24V Power Supply 1 Error"
+    },
+    {
+        "signal_name": "M350",
+        "on_time": "2025-04-29 11:16:37",
+        "off_time": null,
+        "signal_value": "M350 24V Power Supply 2 Error"
+    },
+    {
+        "signal_name": "M351",
+        "on_time": "2025-04-29 11:16:37",
+        "off_time": null,
+        "signal_value": "M351 12V Power Supply 1 Error"
+    },
+    {
+        "signal_name": "M352",
+        "on_time": "2025-04-29 11:16:37",
+        "off_time": null,
+        "signal_value": "M352 12V Power Supply 2 Error"
+    },
+    {
+        "signal_name": "M353",
+        "on_time": "2025-04-29 11:16:37",
+        "off_time": null,
+        "signal_value": "M353 Main MC Status Error"
+    },
+    {
         "signal_name": "M343",
         "on_time": "2025-04-28 11:41:16",
         "off_time": "2025-04-28 11:42:41",
@@ -2896,107 +2998,5 @@
         "on_time": "2025-04-01 20:08:01",
         "off_time": "2025-04-01 20:08:24",
         "signal_value": "M326 Fan 4 Communication Error"
-    },
-    {
-        "signal_name": "M327",
-        "on_time": "2025-04-01 20:08:01",
-        "off_time": "2025-04-01 20:08:24",
-        "signal_value": "M327 Fan 5 Communication Error"
-    },
-    {
-        "signal_name": "M328",
-        "on_time": "2025-04-01 20:08:01",
-        "off_time": "2025-04-01 20:08:24",
-        "signal_value": "M328 Fan 6 Communication Error"
-    },
-    {
-        "signal_name": "M329",
-        "on_time": "2025-04-01 20:08:01",
-        "off_time": "2025-04-01 20:08:24",
-        "signal_value": "M329 Fan 7 Communication Error"
-    },
-    {
-        "signal_name": "M330",
-        "on_time": "2025-04-01 20:08:01",
-        "off_time": "2025-04-01 20:08:24",
-        "signal_value": "M330 Fan 8 Communication Error"
-    },
-    {
-        "signal_name": "M335",
-        "on_time": "2025-04-01 20:08:01",
-        "off_time": "2025-04-01 20:08:24",
-        "signal_value": "M335 Coolant Supply Pressure (P1) Broken Error"
-    },
-    {
-        "signal_name": "M336",
-        "on_time": "2025-04-01 20:08:01",
-        "off_time": "2025-04-01 20:08:24",
-        "signal_value": "M336 Coolant Supply Pressure Spare (P1sp) Broken Error"
-    },
-    {
-        "signal_name": "M337",
-        "on_time": "2025-04-01 20:08:01",
-        "off_time": "2025-04-01 20:08:24",
-        "signal_value": "M337 Coolant Return Pressure (P2) Broken Error"
-    },
-    {
-        "signal_name": "M338",
-        "on_time": "2025-04-01 20:08:01",
-        "off_time": "2025-04-01 20:08:24",
-        "signal_value": "M338 Coolant Return Pressure Spare (P2sp) Broken Error"
-    },
-    {
-        "signal_name": "M339",
-        "on_time": "2025-04-01 20:08:01",
-        "off_time": "2025-04-01 20:08:24",
-        "signal_value": "M339 Filter Inlet Pressure (P3) Broken Error"
-    },
-    {
-        "signal_name": "M308",
-        "on_time": "2025-04-01 20:01:30",
-        "off_time": "2025-04-01 20:07:46",
-        "signal_value": "M308 Factory Power Status"
-    },
-    {
-        "signal_name": "M335",
-        "on_time": "2025-04-01 20:01:30",
-        "off_time": "2025-04-01 20:07:46",
-        "signal_value": "M335 Coolant Supply Pressure (P1) Broken Error"
-    },
-    {
-        "signal_name": "M336",
-        "on_time": "2025-04-01 20:01:30",
-        "off_time": "2025-04-01 20:07:46",
-        "signal_value": "M336 Coolant Supply Pressure Spare (P1sp) Broken Error"
-    },
-    {
-        "signal_name": "M337",
-        "on_time": "2025-04-01 20:01:30",
-        "off_time": "2025-04-01 20:07:46",
-        "signal_value": "M337 Coolant Return Pressure (P2) Broken Error"
-    },
-    {
-        "signal_name": "M338",
-        "on_time": "2025-04-01 20:01:30",
-        "off_time": "2025-04-01 20:07:46",
-        "signal_value": "M338 Coolant Return Pressure Spare (P2sp) Broken Error"
-    },
-    {
-        "signal_name": "M339",
-        "on_time": "2025-04-01 20:01:30",
-        "off_time": "2025-04-01 20:07:46",
-        "signal_value": "M339 Filter Inlet Pressure (P3) Broken Error"
-    },
-    {
-        "signal_name": "M340",
-        "on_time": "2025-04-01 20:01:30",
-        "off_time": "2025-04-01 20:07:46",
-        "signal_value": "M340 Filter Outlet Pressure (P4) Broken Error"
-    },
-    {
-        "signal_name": "M341",
-        "on_time": "2025-04-01 20:01:30",
-        "off_time": "2025-04-01 20:07:46",
-        "signal_value": "M341 Coolant Flow Rate (F1) Broken Error"
     }
 ]

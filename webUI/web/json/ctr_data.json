@@ -63,7 +63,15 @@
     "inv": {
         "inv1": false,
         "inv2": false,
-        "inv3": false
+        "inv3": false,
+        "fan1": false,
+        "fan2": false,
+        "fan3": false,
+        "fan4": false,
+        "fan5": false,
+        "fan6": false,
+        "fan7": false,
+        "fan8": false
     },
     "checkbox": {
         "filter_unlock_sw": true,

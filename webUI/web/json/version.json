@@ -1,5 +1,5 @@
 {
     "median_switch": false,
     "coolant_quality_meter_switch": false,
-    "fan_count_switch": true
+    "fan_count_switch": false
 }
