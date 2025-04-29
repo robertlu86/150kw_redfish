@@ -2,7 +2,6 @@
 instance/*
 !instance/.gitignore
 .webassets-cache
-.env
 .DS_Store
 
 ### Flask.Python Stack ###
@@ -151,9 +150,6 @@ pyrightconfig.json
 [Ss]cripts
 pyvenv.cfg
 pip-selfcheck.json
-
-# 忽略环境变量文件
-.env
 
 # 忽略所有日志文件和日志目录
 logs/

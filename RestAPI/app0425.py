@@ -1,3 +1,4 @@
+from dotenv import load_dotenv
 from flask import Flask, request,Response
 from flask_restx import Api, Resource, fields, Namespace, reqparse
 from pymodbus.client.sync import ModbusTcpClient
@@ -18,6 +19,31 @@ import time
 log_path = os.path.dirname(os.getcwd())
 json_path = f"{log_path}/webUI/web/json"
 from functools import wraps
+from typing import Any, Dict
+from mylib.services.rf_chassis_service import RfChassisService
+
+
+
+# -------------- 取得資料 --------------
+def load_raw_from_api(
+    url: str,
+    params: Dict[str, Any] = None,
+    timeout: float = 5.0
+) -> Dict:
+    """
+    從本機 API 拿回整張 JSON 並轉成 dict
+    """
+    resp = requests.get(url, params=params, timeout=timeout)
+    resp.raise_for_status()
+    return resp.json()
+
+# curl資料
+CDU_BASE = "http://192.168.3.137:5001"
+
+def get_ThermalSubsystem_value():
+    sensor_value = f"{CDU_BASE}/api/v1/cdu/status/sensor_value"
+    data = load_raw_from_api(sensor_value)
+    return data
 
 
 app = Flask(__name__)
@@ -2585,6 +2611,20 @@ cdus_pumps={
     "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Pumps"
 }
 
+# -------------------------------------
+# pumpspeed patch設置
+pumpspeed_patch = redfish_ns.model('PumpSpeedControlPatch', {
+    'pump_speed': fields.Integer(
+        required=True,
+        description='pump轉速百分比 (0–100)',
+        default=50,
+    ),
+    "pump_switch": fields.Boolean(
+        required=True,
+        description='pump switch',
+    ),
+})
+
 cdus_pumps_1={
     "@odata.type": "#Pump.v1_2_0.Pump",
     "Id": "1",
@@ -2609,8 +2649,8 @@ cdus_pumps_1={
     "SpeedControlPercent": {
         "SetPoint": 0,
         "AllowableMax": 100,
-        "AllowableMin": 0,
-        "ControlMode": "Automatic"
+        "AllowableMin": 25,
+        "ControlMode": "manual"
     },
     "Actions": {
         "#Pump.SetMode": {
@@ -2644,7 +2684,7 @@ cdus_pumps_2 = {
     "SpeedControlPercent": {
         "SetPoint": 0,
         "AllowableMax": 100,
-        "AllowableMin": 0,
+        "AllowableMin": 25,
         "ControlMode": "Automatic"
     },
     "Actions": {
@@ -2679,7 +2719,7 @@ cdus_pumps_3 = {
     "SpeedControlPercent": {
         "SetPoint": 0,
         "AllowableMax": 100,
-        "AllowableMin": 0,
+        "AllowableMin": 25,
         "ControlMode": "Automatic"
     },
     "Actions": {
@@ -3334,9 +3374,10 @@ class PrimaryCoolantConnectors1(Resource):
 class ThermalEquipmentCdus1Pumps(Resource):
     # @requires_auth
     @redfish_ns.doc("thermal_equipment_cdus_1_pumps")
-    def get(self):
-        
+    def get(self):    
         return cdus_pumps
+    
+#--------------------------pump1---------------------------------------- 
 @redfish_ns.route("/ThermalEquipment/CDUs/1/Pumps/1")
 class ThermalEquipmentCdus1Pumps1(Resource):
     # @requires_auth
@@ -3344,7 +3385,41 @@ class ThermalEquipmentCdus1Pumps1(Resource):
     def get(self):
         
         return cdus_pumps_1
+        
+    @requires_auth
+    @redfish_ns.expect(pumpspeed_patch, validate=True)
+    def patch(self):
+        body = request.get_json(force=True)
+        new_sp = body['pump_speed']
+        new_sw = body['pump_switch']
+        
+        # 驗證範圍
+        scp = cdus_pumps_1["SpeedControlPercent"]
+        if not (scp["AllowableMin"] <= new_sp <= scp["AllowableMax"]):
+            return {
+                "error": f"pump_speed 必須介於 {scp['AllowableMin']} 和 {scp['AllowableMax']}"
+            }, 400
 
+        # 轉發到內部控制 API
+        try:
+            r = requests.patch(
+                f"{CDU_BASE}/api/v1/cdu/control/pump1_speed",
+                json={"pump_speed": new_sp, "pump_switch": new_sw},
+                timeout=3
+            )
+            r.raise_for_status()
+        except requests.RequestException as e:
+            return {"error":"CDU 控制服務失敗","details":str(e)}, 502
+
+        # 更新內存資料
+        scp["SetPoint"] = new_sp
+        # pump_switch 控制 State
+        cdus_pumps_1["Status"]["State"] = "Enabled" if new_sw else "Disabled"
+
+        # 回傳整個 Pump 資源
+        return cdus_pumps_1, 200
+
+#--------------------------pump2---------------------------------------- 
 @redfish_ns.route("/ThermalEquipment/CDUs/1/Pumps/2")
 class ThermalEquipmentCdus1Pumps2(Resource):
     # @requires_auth
@@ -3352,7 +3427,42 @@ class ThermalEquipmentCdus1Pumps2(Resource):
     def get(self):
         
         return cdus_pumps_2
+        
+    @requires_auth
+    @redfish_ns.expect(pumpspeed_patch, validate=True)
+    def patch(self):
+        body = request.get_json(force=True)
+        new_sp = body['pump_speed']
+        new_sw = body['pump_switch']
+        
+        # 驗證範圍
+        scp = cdus_pumps_2["SpeedControlPercent"]
+        if not (scp["AllowableMin"] <= new_sp <= scp["AllowableMax"]):
+            return {
+                "error": f"pump_speed 必須介於 {scp['AllowableMin']} 和 {scp['AllowableMax']}"
+            }, 400
 
+        # 轉發到內部控制 API
+        try:
+            r = requests.patch(
+                f"{CDU_BASE}/api/v1/cdu/control/pump2_speed",
+                json={"pump_speed": new_sp, "pump_switch": new_sw},
+                timeout=3
+            )
+            r.raise_for_status()
+        except requests.RequestException as e:
+            return {"error":"CDU 控制服務失敗","details":str(e)}, 502
+
+        # 更新內存資料
+        scp["SetPoint"] = new_sp
+        # pump_switch 控制 State
+        cdus_pumps_2["Status"]["State"] = "Enabled" if new_sw else "Disabled"
+
+        # 回傳整個 Pump 資源
+        return cdus_pumps_2, 200
+
+
+#--------------------------pump3---------------------------------------- 
 @redfish_ns.route("/ThermalEquipment/CDUs/1/Pumps/3")
 class ThermalEquipmentCdus1Pumps3(Resource):
     # @requires_auth
@@ -3360,6 +3470,40 @@ class ThermalEquipmentCdus1Pumps3(Resource):
     def get(self):
         
         return cdus_pumps_3
+        
+    @requires_auth
+    @redfish_ns.expect(pumpspeed_patch, validate=True)
+    def patch(self):
+        body = request.get_json(force=True)
+        new_sp = body['pump_speed']
+        new_sw = body['pump_switch']
+        
+        # 驗證範圍
+        scp = cdus_pumps_3["SpeedControlPercent"]
+        if not (scp["AllowableMin"] <= new_sp <= scp["AllowableMax"]):
+            return {
+                "error": f"pump_speed 必須介於 {scp['AllowableMin']} 和 {scp['AllowableMax']}"
+            }, 400
+
+        # 轉發到內部控制 API
+        try:
+            r = requests.patch(
+                f"{CDU_BASE}/api/v1/cdu/control/pump3_speed",
+                json={"pump_speed": new_sp, "pump_switch": new_sw},
+                timeout=3
+            )
+            r.raise_for_status()
+        except requests.RequestException as e:
+            return {"error":"CDU 控制服務失敗","details":str(e)}, 502
+
+        # 更新內存資料
+        scp["SetPoint"] = new_sp
+        # pump_switch 控制 State
+        cdus_pumps_3["Status"]["State"] = "Enabled" if new_sw else "Disabled"
+
+        # 回傳整個 Pump 資源
+        return cdus_pumps_3, 200
+
     
     
 @redfish_ns.route("/ThermalEquipment/CDUs/1/Filters")
@@ -3597,8 +3741,8 @@ Fans_data = {
         "Name": "Fan Right 1",
         "PhysicalContext": "Chassis",
         "Status": {"State": "Enabled", "Health": "OK"},
-        # "FanSpeedPercent": {"Reading": 0, "SpeedRPM": 0},
-        # "FirmwareVersion": "1100",
+        "SpeedPercent": {"@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/1"},
+        # "FirmwareVersion": "@odata.id": "/redfish/v1/Chassis/1/ThermalSubsystem/Fans/1/1",
         # "ServiceHours": 3833.48,
         "Location": {"PartLocation": {"ServiceLabel": "Fan 2", "LocationType": "Bay"}},
         # "SpeedControlPercent": {
@@ -3615,7 +3759,7 @@ Fans_data = {
         "Name": "Fan Right 2",
         "PhysicalContext": "Chassis",
         "Status": {"State": "Enabled", "Health": "OK"},
-        # "FanSpeedPercent": {"Reading": 0, "SpeedRPM": 0},
+        "SpeedPercent": {"@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/2"},
         # "FirmwareVersion": "1100",
         # "ServiceHours": 3833.48,
         "Location": {"PartLocation": {"ServiceLabel": "Fan 2", "LocationType": "Bay"}},
@@ -3633,7 +3777,7 @@ Fans_data = {
         "Name": "Fan Right 3",
         "PhysicalContext": "Chassis",
         "Status": {"State": "Enabled", "Health": "OK"},
-        # "FanSpeedPercent": {"Reading": 0, "SpeedRPM": 0},
+        "SpeedPercent": {"@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/3"},
         # "FirmwareVersion": "1100",
         # "ServiceHours": 3833.48,
         "Location": {"PartLocation": {"ServiceLabel": "Fan 2", "LocationType": "Bay"}},
@@ -3651,7 +3795,7 @@ Fans_data = {
         "Name": "Fan Right 4",
         "PhysicalContext": "Chassis",
         "Status": {"State": "Enabled", "Health": "OK"},
-        # "FanSpeedPercent": {"Reading": 0, "SpeedRPM": 0},
+        "SpeedPercent": {"@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/4"},
         # "FirmwareVersion": "1100",
         # "ServiceHours": 3833.48,
         "Location": {"PartLocation": {"ServiceLabel": "Fan 2", "LocationType": "Bay"}},
@@ -3669,7 +3813,7 @@ Fans_data = {
         "Name": "Fan Left 1",
         "PhysicalContext": "Chassis",
         "Status": {"State": "Enabled", "Health": "OK"},
-        # "FanSpeedPercent": {"Reading": 0, "SpeedRPM": 0},
+        "SpeedPercent": {"@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/5"},
         # "FirmwareVersion": "1100",
         # "ServiceHours": 3833.48,
         "Location": {"PartLocation": {"ServiceLabel": "Fan 2", "LocationType": "Bay"}},
@@ -3687,7 +3831,7 @@ Fans_data = {
         "Name": "Fan Left 2",
         "PhysicalContext": "Chassis",
         "Status": {"State": "Enabled", "Health": "OK"},
-        # "FanSpeedPercent": {"Reading": 0, "SpeedRPM": 0},
+        "SpeedPercent": {"@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/6"},
         # "FirmwareVersion": "1100",
         # "ServiceHours": 3833.48,
         "Location": {"PartLocation": {"ServiceLabel": "Fan 2", "LocationType": "Bay"}},
@@ -3705,7 +3849,7 @@ Fans_data = {
         "Name": "Fan Left 3",
         "PhysicalContext": "Chassis",
         "Status": {"State": "Enabled", "Health": "OK"},
-        # "FanSpeedPercent": {"Reading": 0, "SpeedRPM": 0},
+        "SpeedPercent": {"@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/7"},
         # "FirmwareVersion": "1100",
         # "ServiceHours": 3833.48,
         "Location": {"PartLocation": {"ServiceLabel": "Fan 2", "LocationType": "Bay"}},
@@ -3723,7 +3867,7 @@ Fans_data = {
         "Name": "Fan Left 4",
         "PhysicalContext": "Chassis",
         "Status": {"State": "Enabled", "Health": "OK"},
-        # "FanSpeedPercent": {"Reading": 0, "SpeedRPM": 0},
+        "SpeedPercent": {"@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/8"},
         # "FirmwareVersion": "1100",
         # "ServiceHours": 3833.48,
         "Location": {"PartLocation": {"ServiceLabel": "Fan 2", "LocationType": "Bay"}},
@@ -3736,30 +3880,33 @@ Fans_data = {
     },
 }
 
-Sensors_data = {
-    "@odata.type": "#SensorCollection.SensorCollection",
-    "Name": "Sensor Collection",
-    "Members@odata.count": 11,
-    "Members": [
-        {"@odata.id": "/redfish/v1/Chassis/1/Sensors/PrimaryFlowLitersPerMinute"},
-        {"@odata.id": "/redfish/v1/Chassis/1/Sensors/PrimaryHeatRemovedkW"},
-        {"@odata.id": "/redfish/v1/Chassis/1/Sensors/PrimarySupplyTemperatureCelsius"},
-        {"@odata.id": "/redfish/v1/Chassis/1/Sensors/PrimaryReturnTemperatureCelsius"},
-        {"@odata.id": "/redfish/v1/Chassis/1/Sensors/PrimaryDeltaTemperatureCelsius"},
-        {"@odata.id": "/redfish/v1/Chassis/1/Sensors/PrimarySupplyPressurekPa"},
-        {"@odata.id": "/redfish/v1/Chassis/1/Sensors/PrimaryReturnPressurekPa"},
-        {"@odata.id": "/redfish/v1/Chassis/1/Sensors/PrimaryDeltaPressurekPa"},
-        {"@odata.id": "/redfish/v1/Chassis/1/Sensors/TemperatureCelsius"},
-        {"@odata.id": "/redfish/v1/Chassis/1/Sensors/DewPointCelsius"},
-        {"@odata.id": "/redfish/v1/Chassis/1/Sensors/HumidityPercent"},
-        {"@odata.id": "/redfish/v1/Chassis/1/Sensors/WaterPH"},
-        {"@odata.id": "/redfish/v1/Chassis/1/Sensors/Conductivity"},
-        {"@odata.id": "/redfish/v1/Chassis/1/Sensors/Turbidity"},
-        {"@odata.id": "/redfish/v1/Chassis/1/Sensors/PowerConsume"},
-    ],
-    "Oem": {},
-    "@odata.id": "/redfish/v1/Chassis/1/Sensors",
-}
+## 
+# move to rf_chassis_service.py
+##
+# sensor_collection_data = {
+#     "@odata.type": "#SensorCollection.SensorCollection",
+#     "Name": "Sensor Collection",
+#     "Members@odata.count": 11,
+#     "Members": [
+#         {"@odata.id": "/redfish/v1/Chassis/1/Sensors/PrimaryFlowLitersPerMinute"},
+#         {"@odata.id": "/redfish/v1/Chassis/1/Sensors/PrimaryHeatRemovedkW"},
+#         {"@odata.id": "/redfish/v1/Chassis/1/Sensors/PrimarySupplyTemperatureCelsius"},
+#         {"@odata.id": "/redfish/v1/Chassis/1/Sensors/PrimaryReturnTemperatureCelsius"},
+#         {"@odata.id": "/redfish/v1/Chassis/1/Sensors/PrimaryDeltaTemperatureCelsius"},
+#         {"@odata.id": "/redfish/v1/Chassis/1/Sensors/PrimarySupplyPressurekPa"},
+#         {"@odata.id": "/redfish/v1/Chassis/1/Sensors/PrimaryReturnPressurekPa"},
+#         {"@odata.id": "/redfish/v1/Chassis/1/Sensors/PrimaryDeltaPressurekPa"},
+#         {"@odata.id": "/redfish/v1/Chassis/1/Sensors/TemperatureCelsius"},
+#         {"@odata.id": "/redfish/v1/Chassis/1/Sensors/DewPointCelsius"},
+#         {"@odata.id": "/redfish/v1/Chassis/1/Sensors/HumidityPercent"},
+#         {"@odata.id": "/redfish/v1/Chassis/1/Sensors/WaterPH"},
+#         {"@odata.id": "/redfish/v1/Chassis/1/Sensors/Conductivity"},
+#         {"@odata.id": "/redfish/v1/Chassis/1/Sensors/Turbidity"},
+#         {"@odata.id": "/redfish/v1/Chassis/1/Sensors/PowerConsume"},
+#     ],
+#     "Oem": {},
+#     "@odata.id": "/redfish/v1/Chassis/1/Sensors",
+# }
 
 Sensors_data_all = {
     "PrimaryFlowLitersPerMinute": {
@@ -3887,6 +4034,78 @@ Sensors_data_all = {
         "Status": {"Health": "OK", "State": "Enabled"},
         "@odata.id": "/redfish/v1/Chassis/1/Sensors/PowerConsume",
     },
+    "Fan1": {
+        "@odata.type": "#Sensor.v1_1_0.Sensor",
+        "Id": "fan1",
+        "Name": "fan 1 Speed Sensor",
+        "Reading": get_ThermalSubsystem_value()["fan1_speed"],
+        "ReadingUnits": "rpm",
+        "Status": {"Health": "OK", "State": "Enabled"},
+        "@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/1",
+    },
+    "Fan2": {
+        "@odata.type": "#Sensor.v1_1_0.Sensor",
+        "Id": "fan2",
+        "Name": "fan 2 Speed Sensor",
+        "Reading": get_ThermalSubsystem_value()["fan2_speed"],
+        "ReadingUnits": "rpm",
+        "Status": {"Health": "OK", "State": "Enabled"},
+        "@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/2",
+    },
+    "Fan3": {
+        "@odata.type": "#Sensor.v1_1_0.Sensor",
+        "Id": "fan3",
+        "Name": "fan 3 Speed Sensor",
+        "Reading": get_ThermalSubsystem_value()["fan3_speed"],
+        "ReadingUnits": "rpm",
+        "Status": {"Health": "OK", "State": "Enabled"},
+        "@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/3",
+    },    
+    "Fan4": {
+        "@odata.type": "#Sensor.v1_1_0.Sensor",
+        "Id": "fan4",
+        "Name": "fan 4 Speed Sensor",
+        "Reading": get_ThermalSubsystem_value()["fan4_speed"],
+        "ReadingUnits": "rpm",
+        "Status": {"Health": "OK", "State": "Enabled"},
+        "@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/4",
+    },    
+    "Fan5": {
+        "@odata.type": "#Sensor.v1_1_0.Sensor",
+        "Id": "fan5",
+        "Name": "fan 5 Speed Sensor",
+        "Reading": get_ThermalSubsystem_value()["fan5_speed"],
+        "ReadingUnits": "rpm",
+        "Status": {"Health": "OK", "State": "Enabled"},
+        "@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/5",
+    },    
+    "Fan6": {
+        "@odata.type": "#Sensor.v1_1_0.Sensor",
+        "Id": "fan6",
+        "Name": "fan 6 Speed Sensor",
+        "Reading": get_ThermalSubsystem_value()["fan6_speed"],
+        "ReadingUnits": "rpm",
+        "Status": {"Health": "OK", "State": "Enabled"},
+        "@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/6",
+    },    
+    "Fan7": {
+        "@odata.type": "#Sensor.v1_1_0.Sensor",
+        "Id": "fan7",
+        "Name": "fan 7 Speed Sensor",
+        "Reading": get_ThermalSubsystem_value()["fan7_speed"],
+        "ReadingUnits": "rpm",
+        "Status": {"Health": "OK", "State": "Enabled"},
+        "@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/7",
+    },
+    "Fan8": {
+        "@odata.type": "#Sensor.v1_1_0.Sensor",
+        "Id": "fan8",
+        "Name": "fan 8 Speed Sensor",
+        "Reading": get_ThermalSubsystem_value()["fan8_speed"],
+        "ReadingUnits": "rpm",
+        "Status": {"Health": "OK", "State": "Enabled"},
+        "@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/8",
+    },
 }
 
 Controls_data = {
@@ -3937,6 +4156,28 @@ Controls_data_all = {
         "@odata.id": "/redfish/v1/Chassis/1/Controls/FansSpeedControl",
     },
 }
+
+# OperationMode patch設置
+OperationMode_patch = redfish_ns.model('OperationModePatch', {
+    'mode': fields.String(
+        required=True,
+        description='模式控制',
+        default='auto',   # 這裡設定預設值
+        example='auto',   # 也可加 example，讓 UI 顯示範例
+        enum=['auto', 'manual', 'stop']  # 如果有固定選項，也可以列出
+    ),
+})
+
+# fanspeed patch設置
+fanspeed_patch = redfish_ns.model('FanSpeedControlPatch', {
+    'fan_speed': fields.Integer(
+        required=True,
+        description='風扇轉速百分比 (0–100)',
+        min=0, max=100
+    ),
+})
+
+
 
 
 @redfish_ns.route("/Chassis")
@@ -3999,7 +4240,9 @@ class ThermalSubsystem_Fans(Resource):
 class ThermalSubsystem_Fans_1(Resource):
     @requires_auth
     def get(self):
-        return Fans_data["Fan1"]
+        rep = Fans_data["Fan1"]
+        
+        return  rep, 200
 
 
 @redfish_ns.route("/Chassis/1/ThermalSubsystem/Fans/2")
@@ -4051,117 +4294,177 @@ class ThermalSubsystem_Fans_8(Resource):
         return Fans_data["Fan8"]
 
 
-@redfish_ns.route("/Chassis/1/Sensors")
+@redfish_ns.route("/Chassis/<chassis_id>/Sensors")
 class Sensors(Resource):
     @requires_auth
-    def get(self):
-        return Sensors_data
+    def get(self, chassis_id):
+        chassis_service = RfChassisService()
+        return chassis_service.fetch_sensors_collection(chassis_id)
 
 
-@redfish_ns.route("/Chassis/1/Sensors/PrimaryFlowLitersPerMinute")
-class Sensors_PrimaryFlowLitersPerMinute(Resource):
+@redfish_ns.route("/Chassis/<chassis_id>/Sensors/<sensor_id>")
+class FetchSensorsById(Resource):
     @requires_auth
-    def get(self):
-        return Sensors_data_all["PrimaryFlowLitersPerMinute"]
+    def get(self, chassis_id, sensor_id):
+        chassis_service = RfChassisService()
+        return chassis_service.fetch_sensors_by_name(chassis_id, sensor_id)
+
+# @redfish_ns.route("/Chassis/<chassis_id>/Sensors/PrimaryFlowLitersPerMinute")
+# class Sensors_PrimaryFlowLitersPerMinute(Resource):
+#     @requires_auth
+#     def get(self, chassis_id):
+#         # to be continue
+#         # chassis_service = RfChassisService()
+#         # return chassis_service.fetch_sensors_by_name(chassis_id, "PrimaryFlowLitersPerMinute")
+
+#         return Sensors_data_all["PrimaryFlowLitersPerMinute"]
+
+# @redfish_ns.route("/Chassis/1/Sensors/PrimaryHeatRemovedkW")
+# class Sensors_PrimaryHeatRemovedkW(Resource):
+#     @requires_auth
+#     def get(self):
+#         return Sensors_data_all["PrimaryHeatRemovedkW"]
 
 
-@redfish_ns.route("/Chassis/1/Sensors/PrimaryHeatRemovedkW")
-class Sensors_PrimaryHeatRemovedkW(Resource):
-    @requires_auth
-    def get(self):
-        return Sensors_data_all["PrimaryHeatRemovedkW"]
+# @redfish_ns.route("/Chassis/1/Sensors/PrimarySupplyTemperatureCelsius")
+# class Sensors_PrimarySupplyTemperatureCelsius(Resource):
+#     @requires_auth
+#     def get(self):
+#         return Sensors_data_all["PrimarySupplyTemperatureCelsius"]
 
 
-@redfish_ns.route("/Chassis/1/Sensors/PrimarySupplyTemperatureCelsius")
-class Sensors_PrimarySupplyTemperatureCelsius(Resource):
-    @requires_auth
-    def get(self):
-        return Sensors_data_all["PrimarySupplyTemperatureCelsius"]
+# @redfish_ns.route("/Chassis/1/Sensors/PrimaryReturnTemperatureCelsius")
+# class Sensors_PrimaryReturnTemperatureCelsius(Resource):
+#     @requires_auth
+#     def get(self):
+#         return Sensors_data_all["PrimaryReturnTemperatureCelsius"]
 
 
-@redfish_ns.route("/Chassis/1/Sensors/PrimaryReturnTemperatureCelsius")
-class Sensors_PrimaryReturnTemperatureCelsius(Resource):
-    @requires_auth
-    def get(self):
-        return Sensors_data_all["PrimaryReturnTemperatureCelsius"]
+# @redfish_ns.route("/Chassis/1/Sensors/PrimaryDeltaTemperatureCelsius")
+# class Sensors_PrimaryDeltaTemperatureCelsius(Resource):
+#     @requires_auth
+#     def get(self):
+#         return Sensors_data_all["PrimaryDeltaTemperatureCelsius"]
 
 
-@redfish_ns.route("/Chassis/1/Sensors/PrimaryDeltaTemperatureCelsius")
-class Sensors_PrimaryDeltaTemperatureCelsius(Resource):
-    @requires_auth
-    def get(self):
-        return Sensors_data_all["PrimaryDeltaTemperatureCelsius"]
+# @redfish_ns.route("/Chassis/1/Sensors/PrimarySupplyPressurekPa")
+# class Sensors_PrimarySupplyPressurekPa(Resource):
+#     @requires_auth
+#     def get(self):
+#         return Sensors_data_all["PrimarySupplyPressurekPa"]
 
 
-@redfish_ns.route("/Chassis/1/Sensors/PrimarySupplyPressurekPa")
-class Sensors_PrimarySupplyPressurekPa(Resource):
-    @requires_auth
-    def get(self):
-        return Sensors_data_all["PrimarySupplyPressurekPa"]
+# @redfish_ns.route("/Chassis/1/Sensors/PrimaryReturnPressurekPa")
+# class Sensors_PrimaryReturnPressurekPa(Resource):
+#     @requires_auth
+#     def get(self):
+#         return Sensors_data_all["PrimaryReturnPressurekPa"]
 
 
-@redfish_ns.route("/Chassis/1/Sensors/PrimaryReturnPressurekPa")
-class Sensors_PrimaryReturnPressurekPa(Resource):
-    @requires_auth
-    def get(self):
-        return Sensors_data_all["PrimaryReturnPressurekPa"]
+# @redfish_ns.route("/Chassis/1/Sensors/PrimaryDeltaPressurekPa")
+# class Sensors_PrimaryDeltaPressurekPa(Resource):
+#     @requires_auth
+#     def get(self):
+#         return Sensors_data_all["PrimaryDeltaPressurekPa"]
 
 
-@redfish_ns.route("/Chassis/1/Sensors/PrimaryDeltaPressurekPa")
-class Sensors_PrimaryDeltaPressurekPa(Resource):
-    @requires_auth
-    def get(self):
-        return Sensors_data_all["PrimaryDeltaPressurekPa"]
+# @redfish_ns.route("/Chassis/1/Sensors/TemperatureCelsius")
+# class Sensors_TemperatureCelsius(Resource):
+#     @requires_auth
+#     def get(self):
+#         return Sensors_data_all["TemperatureCelsius"]
 
 
-@redfish_ns.route("/Chassis/1/Sensors/TemperatureCelsius")
-class Sensors_TemperatureCelsius(Resource):
-    @requires_auth
-    def get(self):
-        return Sensors_data_all["TemperatureCelsius"]
+# @redfish_ns.route("/Chassis/1/Sensors/DewPointCelsius")
+# class Sensors_DewPointCelsius(Resource):
+#     @requires_auth
+#     def get(self):
+#         return Sensors_data_all["DewPointCelsius"]
 
 
-@redfish_ns.route("/Chassis/1/Sensors/DewPointCelsius")
-class Sensors_DewPointCelsius(Resource):
-    @requires_auth
-    def get(self):
-        return Sensors_data_all["DewPointCelsius"]
+# @redfish_ns.route("/Chassis/1/Sensors/HumidityPercent")
+# class Sensors_HumidityPercent(Resource):
+#     @requires_auth
+#     def get(self):
+#         return Sensors_data_all["HumidityPercent"]
 
 
-@redfish_ns.route("/Chassis/1/Sensors/HumidityPercent")
-class Sensors_HumidityPercent(Resource):
-    @requires_auth
-    def get(self):
-        return Sensors_data_all["HumidityPercent"]
-
-
-@redfish_ns.route("/Chassis/1/Sensors/WaterPH")
-class Sensors_WaterPH(Resource):
-    @requires_auth
-    def get(self):
+# @redfish_ns.route("/Chassis/1/Sensors/WaterPH")
+# class Sensors_WaterPH(Resource):
+#     @requires_auth
+#     def get(self):
         
-        return Sensors_data_all["WaterPH"]
+#         return Sensors_data_all["WaterPH"]
 
 
-@redfish_ns.route("/Chassis/1/Sensors/Conductivity")
-class Sensors_Conductivity(Resource):
+# @redfish_ns.route("/Chassis/1/Sensors/Conductivity")
+# class Sensors_Conductivity(Resource):
+#     @requires_auth
+#     def get(self):
+#         return Sensors_data_all["Conductivity"]
+
+
+# @redfish_ns.route("/Chassis/1/Sensors/Turbidity")
+# class Sensors_Turbidity(Resource):
+#     @requires_auth
+#     def get(self):
+#         return Sensors_data_all["Turbidity"]
+
+
+# @redfish_ns.route("/Chassis/1/Sensors/PowerConsume")
+# class Sensors_PowerConsume(Resource):
+#     @requires_auth
+#     def get(self):
+#         return Sensors_data_all["PowerConsume"]
+
+@redfish_ns.route("/Chassis/1/Sensors/fan/1")
+class Sensors_Fan1(Resource):
     @requires_auth
     def get(self):
-        return Sensors_data_all["Conductivity"]
-
-
-@redfish_ns.route("/Chassis/1/Sensors/Turbidity")
-class Sensors_Turbidity(Resource):
+        return Sensors_data_all["Fan1"]    
+    
+@redfish_ns.route("/Chassis/1/Sensors/fan/2")
+class Sensors_Fan2(Resource):
     @requires_auth
     def get(self):
-        return Sensors_data_all["Turbidity"]
+        return Sensors_data_all["Fan2"]    
 
-
-@redfish_ns.route("/Chassis/1/Sensors/PowerConsume")
-class Sensors_PowerConsume(Resource):
+@redfish_ns.route("/Chassis/1/Sensors/fan/3")
+class Sensors_Fan3(Resource):
     @requires_auth
     def get(self):
-        return Sensors_data_all["PowerConsume"]
+        return Sensors_data_all["Fan3"]    
+
+@redfish_ns.route("/Chassis/1/Sensors/fan/4")
+class Sensors_Fan4(Resource):
+    @requires_auth
+    def get(self):
+        return Sensors_data_all["Fan4"]    
+
+@redfish_ns.route("/Chassis/1/Sensors/fan/5")
+class Sensors_Fan5(Resource):
+    @requires_auth
+    def get(self):
+        return Sensors_data_all["Fan5"]    
+
+@redfish_ns.route("/Chassis/1/Sensors/fan/6")
+class Sensors_Fan6(Resource):
+    @requires_auth
+    def get(self):
+        return Sensors_data_all["Fan6"]    
+
+@redfish_ns.route("/Chassis/1/Sensors/fan/7")
+class Sensors_Fan7(Resource):
+    @requires_auth
+    def get(self):
+        return Sensors_data_all["Fan7"]    
+
+@redfish_ns.route("/Chassis/1/Sensors/fan/8")
+class Sensors_Fan8(Resource):
+    @requires_auth
+    def get(self):
+        return Sensors_data_all["Fan8"]    
+    
 
 
 @redfish_ns.route("/Chassis/1/Controls")
@@ -4176,7 +4479,30 @@ class OperationMode(Resource):
     @requires_auth
     def get(self):
         return Controls_data_all["OperationMode"]
+    
+    @redfish_ns.expect(OperationMode_patch, validate=True)
+    @requires_auth
+    def patch(self):
+        payload = request.get_json(force=True)
+        new_sp = payload["mode"]
 
+        try:
+            r = requests.patch(
+                f"{CDU_BASE}/api/v1/cdu/status/op_mode",
+                json={"mode": new_sp},  
+                timeout=3
+            )
+            r.raise_for_status()
+        except requests.RequestException as e:
+            # 如果轉發失敗，就回 502 Bad Gateway
+            return {"error": "轉發到 CDU 控制服務失敗", "details": str(e)}, 502
+
+        # 內部服務回傳 OK，更新 Redfish 內存資料
+        Controls_data_all["PumpsSpeedControl"]["SetPoint"] = new_sp
+
+        # 回傳更新後的 Redfish Control 資源
+        return Controls_data_all["PumpsSpeedControl"], 200
+    
 
 @redfish_ns.route("/Chassis/1/Controls/PumpsSpeedControl")
 class PumpsSpeedControl(Resource):
@@ -4185,11 +4511,35 @@ class PumpsSpeedControl(Resource):
         return Controls_data_all["PumpsSpeedControl"]
 
 
+
 @redfish_ns.route("/Chassis/1/Controls/FansSpeedControl")
 class FansSpeedControl(Resource):
     @requires_auth
     def get(self):
         return Controls_data_all["FansSpeedControl"]
+    
+    @redfish_ns.expect(fanspeed_patch, validate=True)
+    @requires_auth
+    def patch(self):
+        payload = request.get_json(force=True)
+        new_sp = payload["fan_speed"]
+
+        try:
+            r = requests.patch(
+                f"{CDU_BASE}/api/v1/cdu/control/fan_speed",
+                json={"fan_speed": new_sp},  
+                timeout=3
+            )
+            r.raise_for_status()
+        except requests.RequestException as e:
+            # 如果轉發失敗，就回 502 Bad Gateway
+            return {"error": "轉發到 CDU 控制服務失敗", "details": str(e)}, 502
+
+        # 內部服務回傳 OK，更新 Redfish 內存資料
+        Controls_data_all["FansSpeedControl"]["SetPoint"] = new_sp
+
+        # 回傳更新後的 Redfish Control 資源
+        return Controls_data_all["FansSpeedControl"], 200
 
 
 # --------------------------------------------
@@ -4669,6 +5019,18 @@ api.add_namespace(redfish_ns)
 # 
 
 if __name__ == '__main__':
+    import sys
+    import os
+    dir_name = os.path.dirname(os.path.abspath(__file__))
+    sys.path.append(dir_name)
+
+    dotenv_path = os.path.join(dir_name, '.env')
+    cert_pem_path = os.path.join(dir_name, 'cert.pem')
+    key_pem_path = os.path.join(dir_name, 'key.pem')
+    
+    load_dotenv(dotenv_path)
+    # print("os.environ['ITG_REST_HOST']:", os.environ['ITG_REST_HOST'])
+
     # ssl_context=(憑證檔, 私鑰檔)
     app.run(host='0.0.0.0', port=5000,
-            ssl_context=('cert.pem', 'key.pem'))
+            ssl_context=(cert_pem_path, key_pem_path))
