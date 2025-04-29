@@ -3389,9 +3389,18 @@ class ThermalEquipmentCdus1Pumps1(Resource):
     # @requires_auth
     @redfish_ns.doc("thermal_equipment_cdus_1_pumps_1")
     def get(self):
-        pump_speed = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/control/pump_speed")["pump1_speed"]
+        pump_speed = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_speed")["pump1_speed"]
         cdus_pumps_1["PumpSpeedPercent"]["Reading"] = pump_speed
         cdus_pumps_1["PumpSpeedPercent"]["SpeedRPM"] = (pump_speed / pump_hight_speed) * 100
+        
+        state = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_state")["pump1_state"]
+        health = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_health")["pump1_health"]
+        service_hours = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_service_hours")["pump1_service_hours"]
+        if state == "Disable": state = "Disabled"
+        cdus_pumps_1["Status"]["State"] = state
+        cdus_pumps_1["Status"]["Health"] = health
+        cdus_pumps_1["ServiceHours"] = service_hours
+        
 
         return cdus_pumps_1
         
@@ -3401,6 +3410,9 @@ class ThermalEquipmentCdus1Pumps1(Resource):
         body = request.get_json(force=True)
         new_sp = body['pump_speed']
         new_sw = body['pump_switch']
+        
+        # 驗證模式
+        if Controls_data_all["OperationMode"]["ControlMode"] != "Manual": return "only Manual can setting"
         
         # 驗證範圍
         scp = cdus_pumps_1["SpeedControlPercent"]
@@ -3445,9 +3457,17 @@ class ThermalEquipmentCdus1Pumps2(Resource):
     # @requires_auth
     @redfish_ns.doc("thermal_equipment_cdus_1_pumps_2")
     def get(self):
-        pump_speed = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/control/pump_speed")["pump2_speed"]
+        pump_speed = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_speed")["pump2_speed"]
         cdus_pumps_2["PumpSpeedPercent"]["Reading"] = pump_speed
         cdus_pumps_2["PumpSpeedPercent"]["SpeedRPM"] = (pump_speed / pump_hight_speed) * 100
+        
+        state = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_state")["pump2_state"]
+        health = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_health")["pump2_health"]
+        service_hours = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_service_hours")["pump2_service_hours"]
+        if state == "Disable": state = "Disabled"
+        cdus_pumps_2["Status"]["State"] = state
+        cdus_pumps_2["Status"]["Health"] = health
+        cdus_pumps_2["ServiceHours"] = service_hours
         
         return cdus_pumps_2
         
@@ -3457,6 +3477,9 @@ class ThermalEquipmentCdus1Pumps2(Resource):
         body = request.get_json(force=True)
         new_sp = body['pump_speed']
         new_sw = body['pump_switch']
+        
+        # 驗證模式
+        if Controls_data_all["OperationMode"]["ControlMode"] != "Manual": return "only Manual can setting"
         
         # 驗證範圍
         scp = cdus_pumps_2["SpeedControlPercent"]
@@ -3503,9 +3526,17 @@ class ThermalEquipmentCdus1Pumps3(Resource):
     # @requires_auth
     @redfish_ns.doc("thermal_equipment_cdus_1_pumps_3")
     def get(self):
-        pump_speed = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/control/pump_speed")["pump3_speed"]
+        pump_speed = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_speed")["pump3_speed"]
         cdus_pumps_3["PumpSpeedPercent"]["Reading"] = pump_speed
         cdus_pumps_3["PumpSpeedPercent"]["SpeedRPM"] = (pump_speed / pump_hight_speed) * 100
+        
+        state = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_state")["pump3_state"]
+        health = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_health")["pump3_health"]
+        service_hours = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_service_hours")["pump3_service_hours"]
+        if state == "Disable": state = "Disabled"
+        cdus_pumps_3["Status"]["State"] = state
+        cdus_pumps_3["Status"]["Health"] = health
+        cdus_pumps_3["ServiceHours"] = service_hours
         
         return cdus_pumps_3
         
@@ -3515,6 +3546,9 @@ class ThermalEquipmentCdus1Pumps3(Resource):
         body = request.get_json(force=True)
         new_sp = body['pump_speed']
         new_sw = body['pump_switch']
+        
+        # 驗證模式
+        if Controls_data_all["OperationMode"]["ControlMode"] != "Manual": return "only Manual can setting"
         
         # 驗證範圍
         scp = cdus_pumps_3["SpeedControlPercent"]
@@ -3634,14 +3668,37 @@ class ManagersCDU(Resource):
         
         return managers_cdu_data
 
+#=========================================protocol暫存==================================================
+network_proto = {
+    "@odata.type": "#ManagerNetworkProtocol.v1_8_0.ManagerNetworkProtocol",
+    "Id": "NetworkProtocol",
+    "NTP": {
+        "NTPServers": ["time.google.com", "time1.google.com"]
+    }
+}
+#@redfish_ns.route("/Managers/CDU/NetworkProtocol")直接被取代了
 @redfish_ns.route("/Managers/CDU/NetworkProtocol")
 class ManagersCDUNetworkProtocol(Resource):
-    # @requires_auth
-    @redfish_ns.doc("managers_cdu_network_protocol")
+
+    @redfish_ns.doc("managers_cdu_network_protocol_get")
+    # 視需求決定要不要 requires_auth
     def get(self):
-        
-        return managers_cdu_network_protocoldata
-        
+        return network_proto
+
+    @redfish_ns.doc("managers_cdu_network_protocol_patch")
+    @requires_auth
+    def patch(self):
+        body = request.json or {}
+
+        # 只驗其中一個欄位就夠 validator 用
+        ntp = body.get("NTP", {})
+        if "NTPServers" in ntp:
+            network_proto["NTP"]["NTPServers"] = ntp["NTPServers"]
+
+        # Redfish 允許 200 (附帶新 resource) 或 204
+        return "", 204
+
+#=========================================protocol暫存==================================================
 @redfish_ns.route("/Managers/CDU/EthernetInterfaces")
 class ManagersCDUEthernetInterfaces(Resource):
     # @requires_auth
@@ -4199,11 +4256,6 @@ Controls_data_all = {
         "SetPointUnits": "%",
         "AllowableMax": 100,
         "AllowableMin": 25,
-        "oem": {
-            "pump1_speed": 50,
-            "pump2_speed": 50,
-            "pump3_speed": 50
-        },
         "@odata.id": "/redfish/v1/Chassis/1/Controls/PumpsSpeedControl",
     },
     "FansSpeedControl": {
@@ -4677,17 +4729,24 @@ class OperationMode(Resource):
 class PumpsSpeedControl(Resource):
     @requires_auth
     def get(self):
+        
+        pump_set_speed = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/op_mode")
+        Controls_data_all["PumpsSpeedControl"]["SetPoint"] = pump_set_speed["pump_speed"]
         # 回傳各 pump 速度
-        control_speed = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/control/pump_speed")
-        Controls_data_all["PumpsSpeedControl"]["oem"]["pump1_speed"] = control_speed["pump1_speed"]
-        Controls_data_all["PumpsSpeedControl"]["oem"]["pump2_speed"] = control_speed["pump2_speed"]
-        Controls_data_all["PumpsSpeedControl"]["oem"]["pump3_speed"] = control_speed["pump3_speed"]
+        # control_speed = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/control/pump_speed")
+        # Controls_data_all["PumpsSpeedControl"]["oem"]["pump1_speed"] = control_speed["pump1_speed"]
+        # Controls_data_all["PumpsSpeedControl"]["oem"]["pump2_speed"] = control_speed["pump2_speed"]
+        # Controls_data_all["PumpsSpeedControl"]["oem"]["pump3_speed"] = control_speed["pump3_speed"]
         return Controls_data_all["PumpsSpeedControl"]
     
     @requires_auth
     @redfish_ns.expect(pumpspeed_patch_all, validate=True)
     def patch(self):
         body = request.get_json(force=True)
+        
+        # 驗證模式
+        if Controls_data_all["OperationMode"]["ControlMode"] != "Manual": return "only Manual can setting"
+        
         new_sp = body['speed_set']
         new_sw1 = body['pump1_switch']
         new_sw2 = body['pump2_switch']
@@ -4758,6 +4817,9 @@ class FansSpeedControl(Resource):
     def patch(self):
         payload = request.get_json(force=True)
         new_sp = payload["fan_speed"]
+
+        # 驗證模式
+        if Controls_data_all["OperationMode"]["ControlMode"] != "Manual": return "only Manual can setting"
 
         try:
             r = requests.patch(
@@ -5120,11 +5182,45 @@ class SessionService(Resource):
     def get(self):
         return sessionservice_example_data
 
+#=========================================protocol暫存==================================================
+sessions = {}          # token ➜ username
+token_seed = 1000      # very simple token generator
+
 @redfish_ns.route("/SessionService/Sessions")
 class SessionServiceSessions(Resource):
+    # ---------- 建立 Session（不可要求現有認證） ----------
+    def post(self):
+        body = request.json or {}
+        usr = body.get("UserName")
+        pwd = body.get("Password")
+
+        # 這裡只做最陽春的帳密驗證
+        if not check_auth(usr, pwd):
+            return {"error": "Invalid credential"}, 401
+
+        global token_seed
+        token_seed += 1
+        token = f"token-{token_seed}"
+        sessions[token] = usr       # 記住誰登入
+
+        resp = Response(status=201)
+        resp.headers["X-Auth-Token"] = token
+        resp.headers["Location"]    = f"/redfish/v1/SessionService/Sessions/{token}"
+        resp.headers["Odata-Version"] = "4.0"
+        return resp
+
+    # ---------- 列表 Session（仍要認證） ----------
     @requires_auth
     def get(self):
-        return sessionservice_sessions_example_data
+        return {
+            "@odata.type": "#SessionCollection.SessionCollection",
+            "Members@odata.count": len(sessions),
+            "Members": [
+                {"@odata.id": f"/redfish/v1/SessionService/Sessions/{t}"}
+                for t in sessions
+            ]
+        }
+#=========================================protocol暫存==================================================
 
 #--------Telemetry
 TelemetryService_data = {
