@@ -3561,7 +3561,13 @@ def control():
                     inspection_data["start_btn"] = r2.registers[0]
             except Exception as e:
                 print(f"check version: {e}")
+            
+            ### 檢查目前FAN數量   
 
+            print(f'ver_switch["fan_count_switch"]:{ver_switch["fan_count_switch"]}')
+            fan_count_6 = bool(ver_switch["fan_count_switch"])
+            print(f'fan_count_6:{fan_count_6}')
+            
             try:
                 with ModbusTcpClient(host=modbus_host, port=modbus_port) as client:
                     leak = client.read_discrete_inputs(2, 2, unit=modbus_slave_id)
