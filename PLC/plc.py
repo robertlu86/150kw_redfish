@@ -478,6 +478,7 @@ inspection_data = {
 ver_switch = {
     "median_switch": False,
     "coolant_quality_meter_switch": False,
+    "fan_count":False
 }
 
 measured_data_mapping = {
@@ -2987,6 +2988,15 @@ def trigger_overload_from_oc_detection():
     if oc_detection["f2"]:
         overload_error["Fan_OverLoad2"] = True
 
+def check_fan_count():
+    ##確認前端選取之fan六個或四個
+    try:
+        with ModbusTcpClient(host=modbus_host, port=modbus_port) as client:
+            r = client.read_coils((8192 + 845), 1, unit=modbus_slave_id)
+            ver_switch["fan_count"] = r.bits[0]
+
+    except Exception as e:
+        print(f"fan count read: {e}")
 
 def check_mc():
     # print(f'bit_input_regs["Inv1_Error"]{bit_input_regs["Inv1_Error"]}')
@@ -3559,7 +3569,13 @@ def control():
                     inspection_data["start_btn"] = r2.registers[0]
             except Exception as e:
                 print(f"check version: {e}")
-
+            
+            ### 檢查目前FAN數量   
+            check_fan_count()
+            print(f'ver_switch["fan_count"]:{ver_switch["fan_count"]}')
+            fan_count_6 = bool(ver_switch["fan_count"])
+            print(f'fan_count_6:{fan_count_6}')
+            
             try:
                 with ModbusTcpClient(host=modbus_host, port=modbus_port) as client:
                     leak = client.read_discrete_inputs(2, 2, unit=modbus_slave_id)
