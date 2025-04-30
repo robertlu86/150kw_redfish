@@ -4442,15 +4442,15 @@ def read_modbus_data():
                                     )
                                     if (
                                         sensorData["err_log"]["error"][key].split()[0]
+                                        == "M300"
+                                        or sensorData["err_log"]["error"][key].split()[
+                                            0
+                                        ]
                                         == "M301"
                                         or sensorData["err_log"]["error"][key].split()[
                                             0
                                         ]
                                         == "M302"
-                                        or sensorData["err_log"]["error"][key].split()[
-                                            0
-                                        ]
-                                        == "M338"
                                     ):
                                         record_downtime_signal_off(
                                             sensorData["err_log"]["error"][key].split()[
