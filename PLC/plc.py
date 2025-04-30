@@ -2296,12 +2296,12 @@ def set_warning_registers(mode):
         check_level("Delay_power12v1", "power12v1", True)
         check_level("Delay_power12v2", "power12v2", True)
         check_both_warning(
-        "Thr_W_pH_L",
-        "Thr_W_pH_H",
-        "Thr_W_Rst_pH_L",
-        "Thr_W_Rst_pH_H",
-        "Delay_pH",
-        "W",
+            "Thr_W_pH_L",
+            "Thr_W_pH_H",
+            "Thr_W_Rst_pH_L",
+            "Thr_W_Rst_pH_H",
+            "Delay_pH",
+            "W",
         )
 
         check_both_warning(
@@ -4309,10 +4309,12 @@ def control():
 
                     if check_inverter(l1_key) and check_inverter(l2_key):
                         inv_to_run.append(top)
-                    elif not check_inverter(l1_key) and check_inverter(l2_key):
+                    if not check_inverter(l1_key) and check_inverter(l2_key):
                         inv_to_run.append(lowest1)
-                    elif check_inverter(l1_key) and not check_inverter(l2_key):
+                        inv_to_run.append(top)
+                    if check_inverter(l1_key) and not check_inverter(l2_key):
                         inv_to_run.append(lowest2)
+                        inv_to_run.append(top)
                     else:
                         inv_to_run.append(lowest1)
                         inv_to_run.append(lowest2)

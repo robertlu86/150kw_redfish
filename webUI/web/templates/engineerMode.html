@@ -398,7 +398,7 @@ block styles %}
                 </div>
             </div>
 
-            <div class="row">
+            <div class="row" id="pH_adjust_set">
                 <div class="col-4">
                     <p>pH (PH)</p>
                 </div>
@@ -410,7 +410,7 @@ block styles %}
                 </div>
             </div>
 
-            <div class="row">
+            <div class="row" id="cdct_adjust_set">
                 <div class="col-4">
                     <p>Conductivity (CON)</p>
                 </div>
@@ -422,7 +422,7 @@ block styles %}
                 </div>
             </div>
 
-            <div class="row">
+            <div class="row" id="tur_adjust_set">
                 <div class="col-4">
                     <p>Turbidity (Tur)</p>
                 </div>
@@ -1030,7 +1030,7 @@ block styles %}
             </div>
 
 
-            <div class="row">
+            <div class="row" id="pH_thrshd_set">
                 <div class="col-3">
                     <p>pH (PH):</p>
                 </div>
@@ -1072,7 +1072,7 @@ block styles %}
                 </div>
             </div>
 
-            <div class="row">
+            <div class="row" id="cdct_thrshd_set">
                 <div class="col-3">
                     <p>Conductivity (CON):</p>
                 </div>
@@ -1113,7 +1113,7 @@ block styles %}
                 </div>
             </div>
 
-            <div class="row">
+            <div class="row" id="tur_thrshd_set">
                 <div class="col-3">
                     <p>Turbidity (Tur):</p>
                 </div>
@@ -1552,7 +1552,7 @@ block styles %}
                     </div>
                 </div>
             </div>
-            <div class="row">
+            <div class="row" id="pH_comm_set">
                 <div class="col-3">
                     <p>[Communication] pH Sensor:</p>
                 </div>
@@ -1574,7 +1574,7 @@ block styles %}
                     </div>
                 </div>
             </div>
-            <div class="row">
+            <div class="row" id="cdct_comm_set">
                 <div class="col-3">
                     <p>[Communication] Conductivity Sensor:</p>
                 </div>
@@ -1597,7 +1597,7 @@ block styles %}
                 </div>
             </div>
 
-            <div class="row">
+            <div class="row" id="tur_comm_set">
                 <div class="col-3">
                     <p>[Communication] Turbidity Sensor:</p>
                 </div>
@@ -1773,7 +1773,7 @@ block styles %}
                     </div>
                 </div>
             </div>
-            <div class="row">
+            <div class="row" id="Fan4_comm_set">
                 <div class="col-3">
                     <p>[Communication] Fan 4:</p>
                 </div>
@@ -1796,7 +1796,7 @@ block styles %}
                 </div>
             </div>
             <div class="row">
-                <div class="col-3">
+                <div class="col-3" id="Fan5_name">
                     <p>[Communication] Fan 5:</p>
                 </div>
                 <div class="col-9 content_box">
@@ -1818,7 +1818,7 @@ block styles %}
                 </div>
             </div>
             <div class="row">
-                <div class="col-3">
+                <div class="col-3" id="Fan6_name">
                     <p>[Communication] Fan 6:</p>
                 </div>
                 <div class="col-9 content_box">
@@ -1840,7 +1840,7 @@ block styles %}
                 </div>
             </div>
             <div class="row">
-                <div class="col-3">
+                <div class="col-3" id="Fan7_name">
                     <p>[Communication] Fan 7:</p>
                 </div>
                 <div class="col-9 content_box">
@@ -1861,7 +1861,7 @@ block styles %}
                     </div>
                 </div>
             </div>
-            <div class="row">
+            <div class="row" id="Fan8_comm_set">
                 <div class="col-3">
                     <p>[Communication] Fan 8:</p>
                 </div>
@@ -3269,6 +3269,27 @@ block styles %}
                         }
                     }
                 }
+                /*if(ver_switch["fan_count_switch"] === true){
+                    $("#Fan4_comm_set, #Fan8_comm_set").hide();
+                    $("#Fan5_name").text("[Communication] Fan 4:");
+                    $("#Fan6_name").text("[Communication] Fan 5:");
+                    $("#Fan7_name").text("[Communication] Fan 6:");
+                }else{
+                    $("#Fan4_comm_set, #Fan8_comm_set").show();
+                    $("#Fan5_name").text("[Communication] Fan 5:");
+                    $("#Fan6_name").text("[Communication] Fan 6:");
+                    $("#Fan7_name").text("[Communication] Fan 7:");
+                }
+
+                if(ver_switch["coolant_quality_meter_switch"] === true){
+                    $("#pH_adjust_set, #cdct_adjust_set, #tur_adjust_set").show();
+                    $("#pH_thrshd_set, #cdct_thrshd_set, #tur_thrshd_set").show();
+                    $("#pH_comm_set, #cdct_comm_set, #tur_comm_set").show();
+                }else{
+                    $("#pH_adjust_set, #cdct_adjust_set, #tur_adjust_set").hide();
+                    $("#pH_thrshd_set, #cdct_thrshd_set, #tur_thrshd_set").hide();
+                    $("#pH_comm_set, #cdct_comm_set, #tur_comm_set").hide();
+                }*/
 
                 for (key in inspection_time) {
                     if (inspection_time.hasOwnProperty(key)) {
