@@ -96,7 +96,7 @@ thrshd = {}
 ctr_data = {}
 measure_data = {}
 system_data = {}
-
+fw_info = {}
 
 sensor_trap = {
     "CoolantSupplyTemperature": {"Warning": False, "Alert": False},
@@ -1551,15 +1551,21 @@ devices = {
 }
 
 physical_asset = {
+    "Name":"cdu",
     "FirmwareVersion": "0100",
     "Version": "N/A",
-    # "ProductionDate": "20240730",
-    "Manufacturer": "Supermicro",
-    "Model": "150kW",
+    "ProductionDate": "20240730",
+    "Manufacturer": "Nidec",
+    "Model": "150kw",
     "SerialNumber": "N/A",
     "PartNumber": "N/A",
-    # "AssetTag": "N/A",
-    "CDUStatus": "Good",
+    "AssetTag": "N/A",
+    # "CDUStatus": "Good",
+    "OperationMode": "Auto flow control",
+    
+    "LEDLight": "ON",
+    "CDUStatus": "ALERT : Check device status"
+
 }
 
 snmp_data = {
@@ -1836,7 +1842,7 @@ def set_fan(fan_list):
 
 
 def read_data_from_json():
-    global thrshd, ctr_data, measure_data
+    global thrshd, ctr_data, measure_data, fw_info
 
     with open(f"{web_path}/json/thrshd.json", "r") as file:
         thrshd = json.load(file)
@@ -1846,7 +1852,9 @@ def read_data_from_json():
 
     with open(f"{web_path}/json/measure_data.json", "r") as file:
         measure_data = json.load(file)
-
+        
+    with open(f"{web_path}/fw_info.json", "r") as file:
+        fw_info = json.load(file)
 
 def change_to_metric():
     read_data_from_json()
@@ -3426,10 +3434,23 @@ def devices_set_trap_enable():
 
 @scc_bp.route("/api/v1/physical_asset")
 @requires_auth
-def get():
+def get_physical_asset():
     """Get the physical asset information"""
+    
     return physical_asset
 
+@scc_bp.route("/api/v1/cdu")
+@requires_auth
+def get_fw_info():
+    """Get the cdu information"""
+    read_data_from_json()
+    physical_asset["Model"]= fw_info["Model"]
+    physical_asset["Version"]= fw_info["Version"]
+    physical_asset["SerialNumber"]= fw_info["SN"]
+    physical_asset["PartNumber"]= fw_info["PartNumber"]
+    physical_asset["OperationMode"]= ctr_data["value"]["opMod"]
+    
+    return physical_asset
 
 @scc_bp.route("/api/v1/download_logs/error/<date_range>")
 @requires_auth
