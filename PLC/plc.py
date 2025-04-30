@@ -3255,6 +3255,14 @@ def stop_fan():
             client.write_register((20480 + 7420), 0)
             client.write_register((20480 + 7460), 0)
             client.write_register((20480 + 7500), 0)
+            # client.write_coils((8192 + 850), [False])
+            # client.write_coils((8192 + 851), [False])
+            # client.write_coils((8192 + 852), [False])
+            # client.write_coils((8192 + 853), [False])
+            # client.write_coils((8192 + 854), [False])
+            # client.write_coils((8192 + 855), [False])
+            # client.write_coils((8192 + 856), [False])
+            # client.write_coils((8192 + 857), [False])
     except Exception as e:
         print(f"clear fan error:{e}")
 

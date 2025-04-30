@@ -3945,7 +3945,14 @@ def read_modbus_data():
                 fan6_v = fan6.registers[0] / 16000 * 100
                 fan7_v = fan7.registers[0] / 16000 * 100
                 fan8_v = fan8.registers[0] / 16000 * 100
-                
+                # journal_logger.info(fan1_v)
+                # journal_logger.info(fan2_v)
+                # journal_logger.info(fan3_v)
+                # journal_logger.info(fan4_v)
+                # journal_logger.info(fan5_v)
+                # journal_logger.info(fan6_v)
+                # journal_logger.info(fan7_v)
+                # journal_logger.info(fan8_v)
                 if not ctr_data["mc"]["resultMC1"] or not ctr_data["value"]["resultP1"]:
                     inv1_v = 0
 
