@@ -2,8 +2,13 @@
 這是Redfish的chassis service
 '''
 import os, re
-from mylib.models.sensor_model import SensorCollectionModel, SensorModel, StatusModel
+from mylib.models.sensor_model import (
+    SensorCollectionModel, 
+    SensorModel, 
+    StatusModel
+)
 from mylib.services.base_service import BaseService
+from mylib.models.power_supply_model import PowerSupplyModel, PowerSupplyCollectionModel
 
 class RfChassisService(BaseService):
 
@@ -98,6 +103,33 @@ class RfChassisService(BaseService):
         resp_json = m.model_dump(by_alias=True)
         del resp_json['chassis_id']
         return resp_json
+    
+    def fetch_PowerSubsystem_PowerSupplies(self, chassis_id: str, power_supply_id: str = None):
+        """
+        對應 /Chassis/1/PowerSubsystem/PowerSupplies (if `power_supply_id` is None)
+        對應 /Chassis/1/PowerSubsystem/PowerSupplies/{power_supply_id}
+        :param power_supply_id: str, ex: 1
+        :return: dict
+        """
+        ret_json = None
+        if power_supply_id is None:
+            m = PowerSupplyCollectionModel(chassis_id=chassis_id)
+            ret_json = m.model_dump(
+                        by_alias=True,
+                        include=PowerSupplyCollectionModel.model_fields.keys(),
+                        exclude_none=True
+                    )
+        else:
+            m = PowerSupplyModel(
+                chassis_id=chassis_id,
+                Id = power_supply_id,
+                Status = StatusModel(Health="OK", State="Enabled")
+            )
+            ret_json = m.model_dump(
+                        by_alias=True,
+                        include=PowerSupplyModel.model_fields.keys()
+                    )
+        return ret_json
 
     def _load_reading_info_by_sensor_id(self, sensor_id: str) -> str:
         """

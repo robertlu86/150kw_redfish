@@ -4343,25 +4343,34 @@ class PowerSubsystem(Resource):
         return PowerSubsystem_data
 
 
-@redfish_ns.route("/Chassis/1/PowerSubsystem/PowerSupplies")
+@redfish_ns.route("/Chassis/<chassis_id>/PowerSubsystem/PowerSupplies")
 class PowerSupplies(Resource):
     @requires_auth
-    def get(self):
-        return PowerSupplies_data
+    def get(self, chassis_id):
+        chassis_service = RfChassisService()
+        return chassis_service.fetch_PowerSubsystem_PowerSupplies(chassis_id)
 
 
-@redfish_ns.route("/Chassis/1/PowerSubsystem/PowerSupplies/1")
+@redfish_ns.route("/Chassis/<chassis_id>/PowerSubsystem/PowerSupplies/<power_supply_id>")
 class PowerSupplies1(Resource):
     @requires_auth
-    def get(self):
-        return PowerSupplies_data_1
+    def get(self, chassis_id, power_supply_id):
+        chassis_service = RfChassisService()
+        return chassis_service.fetch_PowerSubsystem_PowerSupplies(chassis_id, power_supply_id)
 
 
-@redfish_ns.route("/Chassis/1/PowerSubsystem/PowerSupplies/2")
-class PowerSupplies2(Resource):
-    @requires_auth
-    def get(self):
-        return PowerSupplies_data_2
+# @redfish_ns.route("/Chassis/1/PowerSubsystem/PowerSupplies/1")
+# class PowerSupplies1(Resource):
+#     @requires_auth
+#     def get(self):
+#         return PowerSupplies_data_1
+
+
+# @redfish_ns.route("/Chassis/1/PowerSubsystem/PowerSupplies/2")
+# class PowerSupplies2(Resource):
+#     @requires_auth
+#     def get(self):
+#         return PowerSupplies_data_2
 
 
 @redfish_ns.route("/Chassis/1/ThermalSubsystem")

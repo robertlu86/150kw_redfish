@@ -1554,17 +1554,17 @@ physical_asset = {
     "Name":"cdu",
     "FirmwareVersion": "0100",
     "Version": "N/A",
-    "ProductionDate": "20240730",
-    "Manufacturer": "Nidec",
+    # "ProductionDate": "20250430",
+    "Manufacturer": "Supermicro",
     "Model": "150kw",
     "SerialNumber": "N/A",
     "PartNumber": "N/A",
-    "AssetTag": "N/A",
+    # "AssetTag": "N/A",
     # "CDUStatus": "Good",
     "OperationMode": "Auto flow control",
     
-    "LEDLight": "ON",
-    "CDUStatus": "ALERT : Check device status"
+    # "LEDLight": "ON",
+    # "CDUStatus": "OK"
 
 }
 
