@@ -88,7 +88,7 @@ else:
         auth_bp,
         user_login_info,
     )
-
+# print(f"admin_password =  {os.getenv("ADMIN")}")
 app.register_blueprint(auth_bp)
 
 if onLinux:
@@ -6401,6 +6401,7 @@ def shutdown():
 @app.route("/upload_zip", methods=["GET", "POST"])
 @login_required
 def upload_zip():
+    admin_password =  os.getenv("ADMIN")
     if request.method == "POST":
         if "file" not in request.files:
             return jsonify({"status": "error", "message": "No file part"}), 400
@@ -6530,6 +6531,8 @@ def upload_zip():
 
 @app.route("/upload_zip_pc_both", methods=["POST"])
 def upload_zip_pc_both():
+    admin_password =  os.getenv("ADMIN")
+    
     if "file" not in request.files:
         return jsonify({"message": "No File Part"}), 400
 
@@ -6573,7 +6576,7 @@ def upload_zip_pc_both():
             try:
                 with open(full_file_path, "rb") as f:
                     files = {"file": (os.path.basename(file_path), f, "application/zip")}
-                    response = requests.post(target_url, files=files, auth=("admin", "Supermicro12729477"), verify=False)
+                    response = requests.post(target_url, files=files, auth=("admin", admin_password), verify=False)
 
                 upload_results[file_path] = {
                     "status": response.status_code,
