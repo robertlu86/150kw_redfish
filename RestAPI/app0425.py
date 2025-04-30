@@ -5394,5 +5394,6 @@ if __name__ == '__main__':
     # print("os.environ['ITG_REST_HOST']:", os.environ['ITG_REST_HOST'])
 
     # ssl_context=(憑證檔, 私鑰檔)
-    app.run(host='0.0.0.0', port=5000,
+    redfish_port = int(os.environ.get('ITG_REDFISH_API_PORT', "5000"))
+    app.run(host='0.0.0.0', port=redfish_port,
             ssl_context=(cert_pem_path, key_pem_path))
