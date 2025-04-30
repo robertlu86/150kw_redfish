@@ -2532,6 +2532,7 @@ CDUs_data_1 = {
 }
 
 PrimaryCoolantConnectors_data = {
+    "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/PrimaryCoolantConnectors",
     "@odata.type": "#CoolantConnectorCollection.CoolantConnectorCollection",
     "Name": "Primary (supply side) Cooling Loop Connection Collection",
     "Members@odata.count": 1,
@@ -2540,13 +2541,14 @@ PrimaryCoolantConnectors_data = {
             "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/PrimaryCoolantConnectors/1"
         }
     ],
-    "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/PrimaryCoolantConnectors"
 }
 
 PrimaryCoolantConnectors_data_1 ={
+    "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/PrimaryCoolantConnectors/1",
     "@odata.type": "#CoolantConnector.v1_1_0.CoolantConnector",
     "Id": "1",
     "Name": "Mains Input from Chiller",
+    "Description": "Primary input from facility chiller",
     "Status": {
         "Health": "OK",
         "State": "Enabled"
@@ -2590,7 +2592,7 @@ PrimaryCoolantConnectors_data_1 ={
         "Reading": 135.0
     },
     "Oem": {},
-    "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/PrimaryCoolantConnectors/1"
+    
 }
 
 cdus_pumps={
@@ -2626,6 +2628,7 @@ pumpspeed_patch = redfish_ns.model('PumpSpeedControlPatch', {
 })
 
 cdus_pumps_1={
+    "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Pumps/1",
     "@odata.type": "#Pump.v1_2_0.Pump",
     "Id": "1",
     "PumpType": "Liquid",
@@ -2657,10 +2660,11 @@ cdus_pumps_1={
             "target": "/redfish/v1/ThermalEquipment/CDUs/1/Pumps/1/Actions/Pump.SetMode"
         }
     },
-    "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Pumps/1"
+    
 }
 
 cdus_pumps_2 = {
+    "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Pumps/2",
     "@odata.type": "#Pump.v1_2_0.Pump",
     "Id": "2",
     "PumpType": "Liquid",
@@ -2692,10 +2696,11 @@ cdus_pumps_2 = {
             "target": "/redfish/v1/ThermalEquipment/CDUs/1/Pumps/2/Actions/Pump.SetMode"
         }
     },
-    "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Pumps/2"
+    
 }
 
 cdus_pumps_3 = {
+    "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Pumps/3",
     "@odata.type": "#Pump.v1_2_0.Pump",
     "Id": "3",
     "PumpType": "Liquid",
@@ -2727,7 +2732,7 @@ cdus_pumps_3 = {
             "target": "/redfish/v1/ThermalEquipment/CDUs/1/Pumps/3/Actions/Pump.SetMode"
         }
     },
-    "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Pumps/3"
+   
 }
 
 cdus_filters={
@@ -3378,12 +3383,25 @@ class ThermalEquipmentCdus1Pumps(Resource):
         return cdus_pumps
     
 #--------------------------pump1---------------------------------------- 
+pump_hight_speed = 1000
 @redfish_ns.route("/ThermalEquipment/CDUs/1/Pumps/1")
 class ThermalEquipmentCdus1Pumps1(Resource):
     # @requires_auth
     @redfish_ns.doc("thermal_equipment_cdus_1_pumps_1")
     def get(self):
+        pump_speed = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_speed")["pump1_speed"]
+        cdus_pumps_1["PumpSpeedPercent"]["Reading"] = pump_speed
+        cdus_pumps_1["PumpSpeedPercent"]["SpeedRPM"] = (pump_speed / pump_hight_speed) * 100
         
+        state = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_state")["pump1_state"]
+        health = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_health")["pump1_health"]
+        service_hours = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_service_hours")["pump1_service_hours"]
+        if state == "Disable": state = "Disabled"
+        cdus_pumps_1["Status"]["State"] = state
+        cdus_pumps_1["Status"]["Health"] = health
+        cdus_pumps_1["ServiceHours"] = service_hours
+        
+
         return cdus_pumps_1
         
     @requires_auth
@@ -3392,6 +3410,9 @@ class ThermalEquipmentCdus1Pumps1(Resource):
         body = request.get_json(force=True)
         new_sp = body['pump_speed']
         new_sw = body['pump_switch']
+        
+        # 驗證模式
+        if Controls_data_all["OperationMode"]["ControlMode"] != "Manual": return "only Manual can setting"
         
         # 驗證範圍
         scp = cdus_pumps_1["SpeedControlPercent"]
@@ -3436,6 +3457,17 @@ class ThermalEquipmentCdus1Pumps2(Resource):
     # @requires_auth
     @redfish_ns.doc("thermal_equipment_cdus_1_pumps_2")
     def get(self):
+        pump_speed = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_speed")["pump2_speed"]
+        cdus_pumps_2["PumpSpeedPercent"]["Reading"] = pump_speed
+        cdus_pumps_2["PumpSpeedPercent"]["SpeedRPM"] = (pump_speed / pump_hight_speed) * 100
+        
+        state = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_state")["pump2_state"]
+        health = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_health")["pump2_health"]
+        service_hours = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_service_hours")["pump2_service_hours"]
+        if state == "Disable": state = "Disabled"
+        cdus_pumps_2["Status"]["State"] = state
+        cdus_pumps_2["Status"]["Health"] = health
+        cdus_pumps_2["ServiceHours"] = service_hours
         
         return cdus_pumps_2
         
@@ -3445,6 +3477,9 @@ class ThermalEquipmentCdus1Pumps2(Resource):
         body = request.get_json(force=True)
         new_sp = body['pump_speed']
         new_sw = body['pump_switch']
+        
+        # 驗證模式
+        if Controls_data_all["OperationMode"]["ControlMode"] != "Manual": return "only Manual can setting"
         
         # 驗證範圍
         scp = cdus_pumps_2["SpeedControlPercent"]
@@ -3491,6 +3526,17 @@ class ThermalEquipmentCdus1Pumps3(Resource):
     # @requires_auth
     @redfish_ns.doc("thermal_equipment_cdus_1_pumps_3")
     def get(self):
+        pump_speed = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_speed")["pump3_speed"]
+        cdus_pumps_3["PumpSpeedPercent"]["Reading"] = pump_speed
+        cdus_pumps_3["PumpSpeedPercent"]["SpeedRPM"] = (pump_speed / pump_hight_speed) * 100
+        
+        state = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_state")["pump3_state"]
+        health = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_health")["pump3_health"]
+        service_hours = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_service_hours")["pump3_service_hours"]
+        if state == "Disable": state = "Disabled"
+        cdus_pumps_3["Status"]["State"] = state
+        cdus_pumps_3["Status"]["Health"] = health
+        cdus_pumps_3["ServiceHours"] = service_hours
         
         return cdus_pumps_3
         
@@ -3500,6 +3546,9 @@ class ThermalEquipmentCdus1Pumps3(Resource):
         body = request.get_json(force=True)
         new_sp = body['pump_speed']
         new_sw = body['pump_switch']
+        
+        # 驗證模式
+        if Controls_data_all["OperationMode"]["ControlMode"] != "Manual": return "only Manual can setting"
         
         # 驗證範圍
         scp = cdus_pumps_3["SpeedControlPercent"]
@@ -3619,14 +3668,37 @@ class ManagersCDU(Resource):
         
         return managers_cdu_data
 
+#=========================================protocol暫存==================================================
+network_proto = {
+    "@odata.type": "#ManagerNetworkProtocol.v1_8_0.ManagerNetworkProtocol",
+    "Id": "NetworkProtocol",
+    "NTP": {
+        "NTPServers": ["time.google.com", "time1.google.com"]
+    }
+}
+#@redfish_ns.route("/Managers/CDU/NetworkProtocol")直接被取代了
 @redfish_ns.route("/Managers/CDU/NetworkProtocol")
 class ManagersCDUNetworkProtocol(Resource):
-    # @requires_auth
-    @redfish_ns.doc("managers_cdu_network_protocol")
+
+    @redfish_ns.doc("managers_cdu_network_protocol_get")
+    # 視需求決定要不要 requires_auth
     def get(self):
-        
-        return managers_cdu_network_protocoldata
-        
+        return network_proto
+
+    @redfish_ns.doc("managers_cdu_network_protocol_patch")
+    @requires_auth
+    def patch(self):
+        body = request.json or {}
+
+        # 只驗其中一個欄位就夠 validator 用
+        ntp = body.get("NTP", {})
+        if "NTPServers" in ntp:
+            network_proto["NTP"]["NTPServers"] = ntp["NTPServers"]
+
+        # Redfish 允許 200 (附帶新 resource) 或 204
+        return "", 204
+
+#=========================================protocol暫存==================================================
 @redfish_ns.route("/Managers/CDU/EthernetInterfaces")
 class ManagersCDUEthernetInterfaces(Resource):
     # @requires_auth
@@ -4071,76 +4143,84 @@ Sensors_data_all = {
         "@odata.id": "/redfish/v1/Chassis/1/Sensors/PowerConsume",
     },
     "Fan1": {
+        "@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/1",
         "@odata.type": "#Sensor.v1_1_0.Sensor",
         "Id": "fan1",
         "Name": "fan 1 Speed Sensor",
         "Reading": 5,
         "ReadingUnits": "rpm",
+        "ControlMode": "Manual",
         "Status": {"Health": "OK", "State": "Enabled"},
-        "@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/1",
     },
     "Fan2": {
+        "@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/2",
         "@odata.type": "#Sensor.v1_1_0.Sensor",
         "Id": "fan2",
         "Name": "fan 2 Speed Sensor",
         "Reading": 0,
         "ReadingUnits": "rpm",
+        "ControlMode": "Manual",
         "Status": {"Health": "OK", "State": "Enabled"},
-        "@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/2",
     },
     "Fan3": {
+        "@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/3",
         "@odata.type": "#Sensor.v1_1_0.Sensor",
         "Id": "fan3",
         "Name": "fan 3 Speed Sensor",
         "Reading": 0,
         "ReadingUnits": "rpm",
+        "ControlMode": "Manual",
         "Status": {"Health": "OK", "State": "Enabled"},
-        "@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/3",
     },    
     "Fan4": {
+        "@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/4",
         "@odata.type": "#Sensor.v1_1_0.Sensor",
         "Id": "fan4",
         "Name": "fan 4 Speed Sensor",
         "Reading": 0,
         "ReadingUnits": "rpm",
+        "ControlMode": "Manual",
         "Status": {"Health": "OK", "State": "Enabled"},
-        "@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/4",
     },    
     "Fan5": {
+        "@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/5",
         "@odata.type": "#Sensor.v1_1_0.Sensor",
         "Id": "fan5",
         "Name": "fan 5 Speed Sensor",
         "Reading": 0,
         "ReadingUnits": "rpm",
+        "ControlMode": "Manual",
         "Status": {"Health": "OK", "State": "Enabled"},
-        "@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/5",
     },    
     "Fan6": {
+        "@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/6",
         "@odata.type": "#Sensor.v1_1_0.Sensor",
         "Id": "fan6",
         "Name": "fan 6 Speed Sensor",
         "Reading": 0,
         "ReadingUnits": "rpm",
+        "ControlMode": "Manual",
         "Status": {"Health": "OK", "State": "Enabled"},
-        "@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/6",
     },    
     "Fan7": {
+        "@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/7",
         "@odata.type": "#Sensor.v1_1_0.Sensor",
         "Id": "fan7",
         "Name": "fan 7 Speed Sensor",
         "Reading": 0,
         "ReadingUnits": "rpm",
+        "ControlMode": "Manual",
         "Status": {"Health": "OK", "State": "Enabled"},
-        "@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/7",
     },
     "Fan8": {
+        "@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/8",
         "@odata.type": "#Sensor.v1_1_0.Sensor",
         "Id": "fan8",
         "Name": "fan 8 Speed Sensor",
         "Reading": 0,
         "ReadingUnits": "rpm",
+        "ControlMode": "Manual",
         "Status": {"Health": "OK", "State": "Enabled"},
-        "@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/8",
     },
 }
 
@@ -4485,13 +4565,26 @@ class FetchSensorsById(Resource):
 class Sensors_Fan1(Resource):
     @requires_auth
     def get(self):
-        Sensors_data_all["Fan1"]["Reading"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/sensor_value")["fan1_speed"]     
+        fan_speed_enable = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/control/fan_speed")["fan_set"]
+        print(fan_speed_enable)
+        if fan_speed_enable == 0:
+            Sensors_data_all["Fan1"]["ControlMode"] = "Disabled"
+        else:
+            Sensors_data_all["Fan1"]["ControlMode"] = "Manual"
+        Sensors_data_all["Fan1"]["Reading"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/sensor_value")["fan1_speed"]   
+        
         return Sensors_data_all["Fan1"]    
     
 @redfish_ns.route("/Chassis/1/Sensors/fan/2")
 class Sensors_Fan2(Resource):
     @requires_auth
     def get(self):
+        fan_speed_enable = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/control/fan_speed")["fan_set"]
+        print(fan_speed_enable)
+        if fan_speed_enable == 0:
+            Sensors_data_all["Fan2"]["ControlMode"] = "Disabled"
+        else:
+            Sensors_data_all["Fan2"]["ControlMode"] = "Manual"
         Sensors_data_all["Fan2"]["Reading"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/sensor_value")["fan2_speed"]   
         return Sensors_data_all["Fan2"]    
 
@@ -4499,6 +4592,12 @@ class Sensors_Fan2(Resource):
 class Sensors_Fan3(Resource):
     @requires_auth
     def get(self):
+        fan_speed_enable = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/control/fan_speed")["fan_set"]
+        print(fan_speed_enable)
+        if fan_speed_enable == 0:
+            Sensors_data_all["Fan3"]["ControlMode"] = "Disabled"
+        else:
+            Sensors_data_all["Fan3"]["ControlMode"] = "Manual"
         Sensors_data_all["Fan3"]["Reading"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/sensor_value")["fan3_speed"]   
         return Sensors_data_all["Fan3"]    
 
@@ -4506,6 +4605,12 @@ class Sensors_Fan3(Resource):
 class Sensors_Fan4(Resource):
     @requires_auth
     def get(self):
+        fan_speed_enable = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/control/fan_speed")["fan_set"]
+        print(fan_speed_enable)
+        if fan_speed_enable == 0:
+            Sensors_data_all["Fan4"]["ControlMode"] = "Disabled"
+        else:
+            Sensors_data_all["Fan4"]["ControlMode"] = "Manual"
         Sensors_data_all["Fan4"]["Reading"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/sensor_value")["fan4_speed"]   
         return Sensors_data_all["Fan4"]    
 
@@ -4513,6 +4618,12 @@ class Sensors_Fan4(Resource):
 class Sensors_Fan5(Resource):
     @requires_auth
     def get(self):
+        fan_speed_enable = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/control/fan_speed")["fan_set"]
+        print(fan_speed_enable)
+        if fan_speed_enable == 0:
+            Sensors_data_all["Fan5"]["ControlMode"] = "Disabled"
+        else:
+            Sensors_data_all["Fan5"]["ControlMode"] = "Manual"
         Sensors_data_all["Fan5"]["Reading"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/sensor_value")["fan5_speed"]   
         return Sensors_data_all["Fan5"]    
 
@@ -4520,6 +4631,12 @@ class Sensors_Fan5(Resource):
 class Sensors_Fan6(Resource):
     @requires_auth
     def get(self):
+        fan_speed_enable = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/control/fan_speed")["fan_set"]
+        print(fan_speed_enable)
+        if fan_speed_enable == 0:
+            Sensors_data_all["Fan6"]["ControlMode"] = "Disabled"
+        else:
+            Sensors_data_all["Fan6"]["ControlMode"] = "Manual"
         Sensors_data_all["Fan6"]["Reading"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/sensor_value")["fan6_speed"]   
         return Sensors_data_all["Fan6"]    
 
@@ -4527,6 +4644,12 @@ class Sensors_Fan6(Resource):
 class Sensors_Fan7(Resource):
     @requires_auth
     def get(self):
+        fan_speed_enable = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/control/fan_speed")["fan_set"]
+        print(fan_speed_enable)
+        if fan_speed_enable == 0:
+            Sensors_data_all["Fan7"]["ControlMode"] = "Disabled"
+        else:
+            Sensors_data_all["Fan7"]["ControlMode"] = "Manual"
         Sensors_data_all["Fan7"]["Reading"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/sensor_value")["fan7_speed"]   
         return Sensors_data_all["Fan7"]    
 
@@ -4534,6 +4657,12 @@ class Sensors_Fan7(Resource):
 class Sensors_Fan8(Resource):
     @requires_auth
     def get(self):
+        fan_speed_enable = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/control/fan_speed")["fan_set"]
+        print(fan_speed_enable)
+        if fan_speed_enable == 0:
+            Sensors_data_all["Fan8"]["ControlMode"] = "Disabled"
+        else:
+            Sensors_data_all["Fan8"]["ControlMode"] = "Manual"
         Sensors_data_all["Fan8"]["Reading"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/sensor_value")["fan8_speed"]   
         return Sensors_data_all["Fan8"]    
     
@@ -4564,13 +4693,8 @@ class OperationMode(Resource):
         new_sp = payload["mode"]
         if new_sp == "Automatic": new_api_sp = "auto"
         if new_sp == "Manual": new_api_sp = "manual"
-        if new_sp == "Disabled": 
-            new_api_sp = "stop"
-            # pump 狀態
-            # cdus_pumps_1["Status"]["State"] = "Disabled"
-            # cdus_pumps_2["Status"]["State"] = "Disabled"
-            # cdus_pumps_3["Status"]["State"] = "Disabled"
-        
+        if new_sp == "Disabled": new_api_sp = "stop"
+
         try:
             r = requests.patch(
                 f"{CDU_BASE}/api/v1/cdu/status/op_mode",
@@ -4605,12 +4729,24 @@ class OperationMode(Resource):
 class PumpsSpeedControl(Resource):
     @requires_auth
     def get(self):
+        
+        pump_set_speed = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/op_mode")
+        Controls_data_all["PumpsSpeedControl"]["SetPoint"] = pump_set_speed["pump_speed"]
+        # 回傳各 pump 速度
+        # control_speed = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/control/pump_speed")
+        # Controls_data_all["PumpsSpeedControl"]["oem"]["pump1_speed"] = control_speed["pump1_speed"]
+        # Controls_data_all["PumpsSpeedControl"]["oem"]["pump2_speed"] = control_speed["pump2_speed"]
+        # Controls_data_all["PumpsSpeedControl"]["oem"]["pump3_speed"] = control_speed["pump3_speed"]
         return Controls_data_all["PumpsSpeedControl"]
     
     @requires_auth
     @redfish_ns.expect(pumpspeed_patch_all, validate=True)
     def patch(self):
         body = request.get_json(force=True)
+        
+        # 驗證模式
+        if Controls_data_all["OperationMode"]["ControlMode"] != "Manual": return "only Manual can setting"
+        
         new_sp = body['speed_set']
         new_sw1 = body['pump1_switch']
         new_sw2 = body['pump2_switch']
@@ -4673,6 +4809,7 @@ class PumpsSpeedControl(Resource):
 class FansSpeedControl(Resource):
     @requires_auth
     def get(self):
+        Controls_data_all["FansSpeedControl"]["SetPoint"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/control/fan_speed")["fan_set"]
         return Controls_data_all["FansSpeedControl"]
     
     @redfish_ns.expect(fanspeed_patch, validate=True)
@@ -4680,6 +4817,9 @@ class FansSpeedControl(Resource):
     def patch(self):
         payload = request.get_json(force=True)
         new_sp = payload["fan_speed"]
+
+        # 驗證模式
+        if Controls_data_all["OperationMode"]["ControlMode"] != "Manual": return "only Manual can setting"
 
         try:
             r = requests.patch(
@@ -4969,6 +5109,25 @@ class ActionsUpdateCduSimpleUpdatee(Resource):
     def get(self):
 
         return {"ok"}
+    # 要測試
+    def post(self):
+        ORIGIN_UPLOAD_API = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/control/fan_speed")
+        file = request.files.get("File")
+        if not file:
+            return {"error": "No file uploaded"}, 400
+        
+        
+        files = {"file": (file.filename, file.stream, file.mimetype)}
+        try:
+            r = requests.post(ORIGIN_UPLOAD_API, files=files, timeout=10)
+            r.raise_for_status()
+        except requests.HTTPError:
+            return r.json() if r.headers.get("Content-Type","").startswith("application/json") else {"error": r.text}, r.status_code
+        except requests.RequestException as e:
+            return {"error": "上傳失敗", "details": str(e)}, 502
+        
+        return "", 202
+        
     
 @redfish_ns.route("/UpdateService/FirmwareInventory/PC")
 class FirmwareInventoryPC(Resource):
@@ -5023,11 +5182,45 @@ class SessionService(Resource):
     def get(self):
         return sessionservice_example_data
 
+#=========================================protocol暫存==================================================
+sessions = {}          # token ➜ username
+token_seed = 1000      # very simple token generator
+
 @redfish_ns.route("/SessionService/Sessions")
 class SessionServiceSessions(Resource):
+    # ---------- 建立 Session（不可要求現有認證） ----------
+    def post(self):
+        body = request.json or {}
+        usr = body.get("UserName")
+        pwd = body.get("Password")
+
+        # 這裡只做最陽春的帳密驗證
+        if not check_auth(usr, pwd):
+            return {"error": "Invalid credential"}, 401
+
+        global token_seed
+        token_seed += 1
+        token = f"token-{token_seed}"
+        sessions[token] = usr       # 記住誰登入
+
+        resp = Response(status=201)
+        resp.headers["X-Auth-Token"] = token
+        resp.headers["Location"]    = f"/redfish/v1/SessionService/Sessions/{token}"
+        resp.headers["Odata-Version"] = "4.0"
+        return resp
+
+    # ---------- 列表 Session（仍要認證） ----------
     @requires_auth
     def get(self):
-        return sessionservice_sessions_example_data
+        return {
+            "@odata.type": "#SessionCollection.SessionCollection",
+            "Members@odata.count": len(sessions),
+            "Members": [
+                {"@odata.id": f"/redfish/v1/SessionService/Sessions/{t}"}
+                for t in sessions
+            ]
+        }
+#=========================================protocol暫存==================================================
 
 #--------Telemetry
 TelemetryService_data = {
