@@ -3617,16 +3617,23 @@ def control():
 
                 try:
                     with ModbusTcpClient(host=modbus_host, port=modbus_port) as client:
-                        r = client.read_coils((8192 + 800), 5)
+                        r = client.read_coils((8192 + 800), 6)
                         reset_current_btn["status"] = r.bits[0]
                         ver_switch["median_switch"] = r.bits[3]
                         ver_switch["coolant_quality_meter_switch"] = r.bits[4]
-
+                        ver_switch["fan_count_switch"] = r.bits[5]
+                        
                         r2 = client.read_holding_registers(900, 1)
                         inspection_data["start_btn"] = r2.registers[0]
                 except Exception as e:
                     print(f"check version: {e}")
+                
+                ### 檢查目前FAN數量   
 
+                print(f'ver_switch["fan_count_switch"]:{ver_switch["fan_count_switch"]}')
+                fan_count_6 = bool(ver_switch["fan_count_switch"])
+                print(f'fan_count_6:{fan_count_6}')
+                
                 try:
                     with ModbusTcpClient(host=modbus_host, port=modbus_port) as client:
                         leak = client.read_discrete_inputs(2, 2, unit=modbus_slave_id)
@@ -4340,10 +4347,12 @@ def control():
 
                         if check_inverter(l1_key) and check_inverter(l2_key):
                             inv_to_run.append(top)
-                        elif not check_inverter(l1_key) and check_inverter(l2_key):
+                        if not check_inverter(l1_key) and check_inverter(l2_key):
                             inv_to_run.append(lowest1)
-                        elif check_inverter(l1_key) and not check_inverter(l2_key):
+                            inv_to_run.append(top)
+                        if check_inverter(l1_key) and not check_inverter(l2_key):
                             inv_to_run.append(lowest2)
+                            inv_to_run.append(top)
                         else:
                             inv_to_run.append(lowest1)
                             inv_to_run.append(lowest2)

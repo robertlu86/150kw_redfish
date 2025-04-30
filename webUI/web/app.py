@@ -6599,13 +6599,15 @@ def upload_zip_pc_both():
 
 @app.route('/reboot-all', methods=['GET'])
 def reboot_all():
+    admin_password =  os.getenv("ADMIN")
+    
     second_pc = "http://192.168.3.101:5501/api/v1/reboot"
     first_pc = "http://192.168.3.100:5501/api/v1/reboot"
 
     results = {}
 
     try:
-        response2 = requests.get(second_pc, auth=("admin", "Supermicro12729477"), verify=False)
+        response2 = requests.get(second_pc, auth=("admin", admin_password), verify=False)
         results["second_pc"] = f"{response2.status_code}: {response2.text}"
     except Exception as e:
         results["second_pc"] = f"Error: {e}"
@@ -6614,7 +6616,7 @@ def reboot_all():
     time.sleep(5)
 
     try:
-        response1 = requests.get(first_pc, auth=("admin", "Supermicro12729477"), verify=False)
+        response1 = requests.get(first_pc, auth=("admin", admin_password), verify=False)
         results["first_pc"] = f"{response1.status_code}: {response1.text}"
     except Exception as e:
         results["first_pc"] = f"Error: {e}"
