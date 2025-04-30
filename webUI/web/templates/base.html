@@ -36,23 +36,25 @@
         }
 
         .navbar-brand img {
-            width: 120px; 
+            width: 120px;
             height: auto;
         }
 
-        @media(max-width: 1400px){
-            .nav-link{
-                font-size: 16px;    
+        @media(max-width: 1400px) {
+            .nav-link {
+                font-size: 16px;
             }
+
             .navbar-brand img {
                 width: 100px;
             }
         }
 
-        @media(max-width: 1000px){
-            .nav-link{
-                font-size: 14px;    
+        @media(max-width: 1000px) {
+            .nav-link {
+                font-size: 14px;
             }
+
             .navbar-brand img {
                 width: 80px;
             }
@@ -189,7 +191,7 @@
 
 <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light block">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#"><img src="/static/logo.png" alt="Logo"/></a>
+        <a class="navbar-brand" href="#"><img src="/static/logo.png" alt="Logo" /></a>
         {% if user == 'kiosk' %}
         <div class="data-unlock"></div>
         {% endif %}
@@ -224,8 +226,7 @@
                 </li>
                 {% if user != 'kiosk' %}
                 <li class="log-dropdown dropdown nav-logs">
-                    <a class="nav-link" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
-                        aria-expanded="true">
+                    <a class="nav-link" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="true">
                         Logs
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -282,7 +283,7 @@
         let animationFrame = null;
 
         //只在本機端顯示虛擬檢盤
-        if(window.location.hostname === "127.0.0.1"){
+        if (window.location.hostname === "127.0.0.1") {
             var aKeyboard = [
                 {
                     0: "-",
@@ -455,7 +456,7 @@
             }
         }
 
-        
+
         $(".nav-item").on("click", function () {
             $(".nav-item").removeClass("active");
             $(this).addClass("active");
@@ -750,33 +751,33 @@
                 console.error("Failed to fetch timeout:", error);
             },
         });
-        
 
-        if(window.location.hostname === "127.0.0.1"){
-            if (userType == "superuser" || userType == "admin") {
-            let timeoutLogoutSeconds = 600;
-            let timeoutLogout;
 
-            $(document).on(
-                "mousemove touchstart click keydown keyup",
-                resetTimerLogout
-            );
+        // if (window.location.hostname === "127.0.0.1") {
+        //     if (userType == "superuser" || userType == "admin") {
+        //         let timeoutLogoutSeconds = 600;
+        //         let timeoutLogout;
 
-            function resetTimerLogout() {
-                clearTimeout(timeoutLogout);
+        //         $(document).on(
+        //             "mousemove touchstart click keydown keyup",
+        //             resetTimerLogout
+        //         );
 
-                timeoutLogout = setTimeout(() => {
-                    logout();
-                }, timeoutLogoutSeconds * 1000);
-            }
+        //         function resetTimerLogout() {
+        //             clearTimeout(timeoutLogout);
 
-            function logout() {
-                window.location.href = "/?username=kiosk";
-            }
-            resetTimerLogout();
-        }
+        //             timeoutLogout = setTimeout(() => {
+        //                 logout();
+        //             }, timeoutLogoutSeconds * 1000);
+        //         }
 
-        }
+        //         function logout() {
+        //             window.location.href = "/?username=kiosk";
+        //         }
+        //         resetTimerLogout();
+        //     }
+
+        // }
 
         async function marquee_data() {
             while (true) {
