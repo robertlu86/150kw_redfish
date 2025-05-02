@@ -3600,9 +3600,9 @@ def control():
             
             ### 檢查目前FAN數量   
 
-            print(f'ver_switch["fan_count_switch"]:{ver_switch["fan_count_switch"]}')
+            # print(f'ver_switch["fan_count_switch"]:{ver_switch["fan_count_switch"]}')
             fan_count_6 = bool(ver_switch["fan_count_switch"])
-            print(f'fan_count_6:{fan_count_6}')
+            # print(f'fan_count_6:{fan_count_6}')
             
             try:
                 with ModbusTcpClient(host=modbus_host, port=modbus_port) as client:

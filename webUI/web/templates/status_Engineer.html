@@ -245,16 +245,12 @@ styles %}
     }
 
     tr:nth-of-type(even) {
-            background-color: rgba(0, 0, 0, 0.09);
-        }
+        background-color: rgba(0, 0, 0, 0.09);
+    }
 
     tr:nth-of-type(odd) {
         background-color: white;
     }
-
-    
-    
-
 </style>
 {% endblock %} {% block content %}
 <div class="container-fluid" style="margin-top: 100px; margin-bottom: 60px">
@@ -315,28 +311,28 @@ styles %}
             </div>
             <!-- fan 1-8 light 啟動時顯示 -->
             <div>
-                <div class="fans_light" id="fan_freq5_light" ></div>
+                <div class="fans_light" id="fan_freq5_light"></div>
             </div>
             <div>
-                <div class="fans_light" id="fan_freq4_light" ></div>
+                <div class="fans_light" id="fan_freq4_light"></div>
             </div>
             <div>
-                <div class="fans_light" id="fan_freq6_light" ></div>
+                <div class="fans_light" id="fan_freq6_light"></div>
             </div>
             <div>
-                <div class="fans_light" id="fan_freq3_light" ></div>
+                <div class="fans_light" id="fan_freq3_light"></div>
             </div>
             <div>
-                <div class="fans_light" id="fan_freq7_light" ></div>
+                <div class="fans_light" id="fan_freq7_light"></div>
             </div>
             <div>
-                <div class="fans_light" id="fan_freq2_light" ></div>
+                <div class="fans_light" id="fan_freq2_light"></div>
             </div>
             <div>
-                <div class="fans_light" id="fan_freq8_light" ></div>
+                <div class="fans_light" id="fan_freq8_light"></div>
             </div>
             <div>
-                <div class="fans_light" id="fan_freq1_light" ></div>
+                <div class="fans_light" id="fan_freq1_light"></div>
             </div>
             <!-- 顯示fan 1-8 數值框 -->
             <!--<div class="value_border" style="top: 275px; left:1250px">
@@ -568,13 +564,13 @@ styles %}
                         <td class="unit_temp" scope="row"></td>
                     </tr>
 
-                    <tr class = "pH_set">
+                    <tr class="pH_set">
                         <td class="tdCenterAlign" scope="row">pH (PH)</td>
                         <td id="pH_status" class="tdCenterAlign" scope="row"></td>
                         <td id="pH" scope="row"></td>
                         <td scope="row">pH</td>
                     </tr>
-                    <tr class = "cdct_set">
+                    <tr class="cdct_set">
                         <td class="tdCenterAlign" scope="row">
                             Conductivity (CON)
                         </td>
@@ -582,7 +578,7 @@ styles %}
                         <td id="cdct" scope="row"></td>
                         <td scope="row">µS/cm</td>
                     </tr>
-                    <tr class = "tbd_set">
+                    <tr class="tbd_set">
                         <td class="tdCenterAlign" scope="row">
                             Turbidity (Tur)
                         </td>
@@ -993,7 +989,7 @@ styles %}
                                 <td></td>
                             </tr>-->
 
-                    <tr class = "power12v_set">
+                    <tr class="power12v_set">
                         <td class="w-12 tdCenterAlign" scope="row">
                             12V Power Supply
                         </td>
@@ -1681,33 +1677,40 @@ styles %}
 
         function change_status_light(data) {
             let light_orange = [];
-            $(".status_light").css("background-color", "black");
+            $(".status_light").css("background-color", "green");
 
-            for (key in data["warning_notice"]) {
-                let w_value = data["warning_notice"][key];
-
-                if (w_value) {
-                    $(".status_light").css("background-color", "red");
-                }
+            if (data["cdu_status"] == "alert") {
+                $(".status_light").css("background-color", "red");
+            } else if (data["cdu_status"] == "warning") {
+                $(".status_light").css("background-color", "orange");
+            } else {
+                $(".status_light").css("background-color", "green");
             }
+            // for (key in data["warning_notice"]) {
+            //     let w_value = data["warning_notice"][key];
 
-            for (key in data["alert_notice"]) {
-                let a_value = data["alert_notice"][key];
+            //     if (w_value) {
+            //         $(".status_light").css("background-color", "red");
+            //     }
+            // }
 
-                if (a_value) {
-                    $(".status_light").css("background-color", "red");
-                }
-            }
+            // for (key in data["alert_notice"]) {
+            //     let a_value = data["alert_notice"][key];
 
-            for (key in data["error"]) {
-                let e_value = data["error"][key];
+            //     if (a_value) {
+            //         $(".status_light").css("background-color", "red");
+            //     }
+            // }
 
-                if (key != "ATS1") {
-                    if (e_value) {
-                        $(".status_light").css("background-color", "red");
-                    }
-                }
-            }
+            // for (key in data["error"]) {
+            //     let e_value = data["error"][key];
+
+            //     if (key != "ATS1") {
+            //         if (e_value) {
+            //             $(".status_light").css("background-color", "red");
+            //         }
+            //     }
+            // }
         }
 
         function change_fan_light(data) {
@@ -1724,16 +1727,16 @@ styles %}
             }
         }
         //版本切換
-        function change_version(ver_switch){
+        function change_version(ver_switch) {
             //////尚未取得正確位置/////////
-            if (ver_switch["fan_count_switch"] === true){
+            if (ver_switch["fan_count_switch"] === true) {
                 $("#fan_freq5_light").css({ top: "32.6%", left: "81.9%" });
                 $("#fan_freq3_light").css({ top: "32.6%", left: "86.25%" });
                 $("#fan_freq6_light").css({ top: "40%", left: "81.9%" });
                 $("#fan_freq2_light").css({ top: "40%", left: "86.25%" });
                 $("#fan_freq7_light").css({ top: "47.4%", left: "81.9%" });
                 $("#fan_freq1_light").css({ top: "47.4%", left: "86.25%" });
-            }else{
+            } else {
                 $("#fan_freq5_light").css({ top: "28.95%", left: "81.8%" });
                 $("#fan_freq4_light").css({ top: "28.9%", left: "86.25" });
                 $("#fan_freq6_light").css({ top: "36.25%", left: "81.8%" });
@@ -1744,7 +1747,7 @@ styles %}
                 $("#fan_freq1_light").css({ top: "50.8%", left: "86.25%" });
             }
 
-            if(ver_switch["coolant_quality_meter_switch"] === true && ver_switch["fan_count_switch"] === true){
+            if (ver_switch["coolant_quality_meter_switch"] === true && ver_switch["fan_count_switch"] === true) {
                 $(".pH_set, .cdct_set, .tbd_set, .power12v_set").hide();
                 $("#pH_image_set, #cdct_image_set, #tbd_image_set").hide();
                 $("#machine").attr("src", "../static/images/side car_with_six_fan_0325_no_coolant_quarity_meter.png");
@@ -1755,7 +1758,7 @@ styles %}
                 $("#Fan7_name").text("Fan Speed6");
                 $("#Fan_group1").text("Fan 1-3 MC");
                 $("#Fan_group2").text("Fan 4-6 MC");
-            }else if(ver_switch["coolant_quality_meter_switch"] === false && ver_switch["fan_count_switch"] === true){
+            } else if (ver_switch["coolant_quality_meter_switch"] === false && ver_switch["fan_count_switch"] === true) {
                 $(".pH_set, .cdct_set, .tbd_set, .power12v_set").show();
                 $("#pH_image_set, #cdct_image_set, #tbd_image_set").show();
                 $("#machine").attr("src", "../static/images/side car_with_six_fan_0325.png");
@@ -1765,7 +1768,7 @@ styles %}
                 $("#Fan7_name").text("Fan Speed6");
                 $("#Fan_group1").text("Fan 1-3 MC");
                 $("#Fan_group2").text("Fan 4-6 MC");
-            }else if(ver_switch["coolant_quality_meter_switch"] === true && ver_switch["fan_count_switch"] === false){
+            } else if (ver_switch["coolant_quality_meter_switch"] === true && ver_switch["fan_count_switch"] === false) {
                 $(".pH_set, .cdct_set, .tbd_set, .power12v_set").hide();
                 $("#pH_image_set, #cdct_image_set, #tbd_image_set").hide();
                 $("#machine").attr("src", "../static/images/full_picture.jpg");
@@ -1775,7 +1778,7 @@ styles %}
                 $("#Fan7_name").text("Fan Speed6");
                 $("#Fan_group1").text("Fan 1-3 MC");
                 $("#Fan_group2").text("Fan 4-6 MC");
-            }else if(ver_switch["coolant_quality_meter_switch"] === false && ver_switch["fan_count_switch"] === false){
+            } else if (ver_switch["coolant_quality_meter_switch"] === false && ver_switch["fan_count_switch"] === false) {
                 $(".pH_set, .cdct_set, .tbd_set, .power12v_set").show();
                 $("#pH_image_set, #cdct_image_set, #tbd_image_set").show();
                 $("#machine").attr("src", "../static/images/full_picture.jpg");
@@ -1787,7 +1790,7 @@ styles %}
                 $("#Fan_group2").text("Fan 5-8 MC");
             }
         }
-        
+
         function updateRowStripes() {
             $("table").each(function () {  // 遍歷每個 table
                 var table = $(this);
@@ -1836,7 +1839,7 @@ styles %}
             let isAnyFanOn = Object.keys(data["value"])
                 .filter(key => key.startsWith("fan") && key.endsWith("check"))
                 .some(key => data["value"][key]);
-                
+
             return isAnyFanOn
         }
 
@@ -1853,7 +1856,7 @@ styles %}
 
                     ///////////暫時測試用///////////
                     change_fan_light(data)
-                    
+
                     for (let i = 1; i <= 8; i++) {
                         if (data["value"][`fan${i}_check`]) {
                             let value = data["value"][`resultFan`];

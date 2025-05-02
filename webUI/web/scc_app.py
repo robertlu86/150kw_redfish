@@ -1564,7 +1564,7 @@ physical_asset = {
     "OperationMode": "Auto flow control",
     
     # "LEDLight": "ON",
-    # "CDUStatus": "OK"
+    "CDUStatus": "OK"
 
 }
 
@@ -3449,6 +3449,7 @@ def get_fw_info():
     physical_asset["SerialNumber"]= fw_info["SN"]
     physical_asset["PartNumber"]= fw_info["PartNumber"]
     physical_asset["OperationMode"]= ctr_data["value"]["opMod"]
+    physical_asset["CDUStatus"] = g.sensorData["cdu_status"]
     
     return physical_asset
 

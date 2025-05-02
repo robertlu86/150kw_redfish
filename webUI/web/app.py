@@ -684,6 +684,7 @@ sensorData = {
         "fan_mc1": False,
         "fan_mc2": False,
     },
+    "cdu_status": False ,
 }
 
 ctr_data = {
@@ -2160,6 +2161,29 @@ def check_warning_status():
         else:
             sensorData["alert_notice"][base_key] = False
 
+def check_cdu_status():
+    cdu_status = "ok"
+
+    # 優先處理 alert 和 error（最高優先權）
+    for key in sensorData["error"]:
+        if sensorData["error"][key]:
+            cdu_status = "alert"
+            break  # 已達最高優先，直接跳出
+
+    if cdu_status != "alert":
+        for key in sensorData["alert_notice"]:
+            if sensorData["alert_notice"][key]:
+                cdu_status = "alert"
+                break
+
+    # 再處理 warning（中優先權）
+    if cdu_status != "alert":
+        for key in sensorData["warning_notice"]:
+            if sensorData["warning_notice"][key]:
+                cdu_status = "warning"
+                break
+
+    sensorData["cdu_status"] = cdu_status
 
 def parse_nmcli_output(outputs, network_set, is_ipv6=False):
     for output in outputs:
@@ -4460,7 +4484,8 @@ def read_modbus_data():
                                         )
                                 previous_error_states[key] = current_state
                             error_count = 0
-
+            ###檢查全部status是否有任何warning, alert, error
+            check_cdu_status()  
         except Exception as e:
             print(f"read error issue:{e}")
 
