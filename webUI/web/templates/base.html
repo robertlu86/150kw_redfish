@@ -520,101 +520,108 @@
         });
 
         function change_light(data, version) {
-            let v2 = !version['function_switch']
+            // let v2 = !version['function_switch']
             $(".color_light").css("background-color", "green");
 
-            for (key in data["warning_notice"]) {
-                let w_value = data["warning_notice"][key];
-
-                if (
-                    !data["collapse"]["temp_spare"] &&
-                    key === "temp_clntSplySpr"
-                ) {
-                    continue;
-                }
-
-                if (
-                    !data["collapse"]["p2_spare"] &&
-                    key === "prsr_clntRtnSpr"
-                ) {
-                    continue;
-                }
-
-                if (
-                    !data["collapse"]["prsr_spare"] &&
-                    key === "prsr_clntSplySpr"
-                ) {
-                    continue;
-                }
-
-                if (!v2) {
-                    if (key == "prsr_clntRtnSpr") {
-                        continue
-                    }
-                }
-
-                if (w_value) {
-                    $(".color_light").css("background-color", "orange");
-                }
+            if (data["cdu_status"] == "alert") {
+                $(".color_light").css("background-color", "red");
+            } else if (data["cdu_status"] == "warning") {
+                $(".color_light").css("background-color", "orange");
+            } else {
+                $(".color_light").css("background-color", "green");
             }
+            // for (key in data["warning_notice"]) {
+            //     let w_value = data["warning_notice"][key];
 
-            for (key in data["alert_notice"]) {
-                let a_value = data["alert_notice"][key];
+            //     if (
+            //         !data["collapse"]["temp_spare"] &&
+            //         key === "temp_clntSplySpr"
+            //     ) {
+            //         continue;
+            //     }
 
-                if (
-                    !data["collapse"]["temp_spare"] &&
-                    key === "temp_clntSplySpr"
-                ) {
-                    continue;
-                }
+            //     if (
+            //         !data["collapse"]["p2_spare"] &&
+            //         key === "prsr_clntRtnSpr"
+            //     ) {
+            //         continue;
+            //     }
 
-                if (
-                    !data["collapse"]["prsr_spare"] &&
-                    key === "prsr_clntSplySpr"
-                ) {
-                    continue;
-                }
+            //     if (
+            //         !data["collapse"]["prsr_spare"] &&
+            //         key === "prsr_clntSplySpr"
+            //     ) {
+            //         continue;
+            //     }
 
-                if (!v2) {
-                    if (key == "prsr_clntRtnSpr") {
-                        continue
-                    }
-                }
+            //     if (!v2) {
+            //         if (key == "prsr_clntRtnSpr") {
+            //             continue
+            //         }
+            //     }
 
-                if (a_value) {
-                    $(".color_light").css("background-color", "red");
-                }
-            }
+            //     if (w_value) {
+            //         $(".color_light").css("background-color", "orange");
+            //     }
+            // }
 
-            for (key in data["error"]) {
-                let e_value = data["error"][key];
+            // for (key in data["alert_notice"]) {
+            //     let a_value = data["alert_notice"][key];
 
-                if (
-                    !data["collapse"]["temp_spare"] &&
-                    key === "TempClntSplySpr_broken"
-                ) {
-                    continue;
-                }
+            //     if (
+            //         !data["collapse"]["temp_spare"] &&
+            //         key === "temp_clntSplySpr"
+            //     ) {
+            //         continue;
+            //     }
 
-                if (
-                    !data["collapse"]["prsr_spare"] &&
-                    key === "PrsrClntSplySpr_broken"
-                ) {
-                    continue;
-                }
+            //     if (
+            //         !data["collapse"]["prsr_spare"] &&
+            //         key === "prsr_clntSplySpr"
+            //     ) {
+            //         continue;
+            //     }
 
-                if (!v2) {
-                    if (["PrsrClntRtnSpr_broken", "level1_error", "level2_error", "power1_error", "power2_error"].includes(key)) {
-                        continue;
-                    }
-                }
+            //     if (!v2) {
+            //         if (key == "prsr_clntRtnSpr") {
+            //             continue
+            //         }
+            //     }
 
-                if (key != "ATS1") {
-                    if (e_value) {
-                        $(".color_light").css("background-color", "red");
-                    }
-                }
-            }
+            //     if (a_value) {
+            //         $(".color_light").css("background-color", "red");
+            //     }
+            // }
+
+            // for (key in data["error"]) {
+            //     let e_value = data["error"][key];
+
+            //     if (
+            //         !data["collapse"]["temp_spare"] &&
+            //         key === "TempClntSplySpr_broken"
+            //     ) {
+            //         continue;
+            //     }
+
+            //     if (
+            //         !data["collapse"]["prsr_spare"] &&
+            //         key === "PrsrClntSplySpr_broken"
+            //     ) {
+            //         continue;
+            //     }
+
+            //     if (!v2) {
+            //         if (["PrsrClntRtnSpr_broken", "level1_error", "level2_error", "power1_error", "power2_error"].includes(key)) {
+            //             continue;
+            //         }
+            //     }
+
+            //     if (key != "ATS1") {
+            //         if (e_value) {
+            //             $(".color_light").css("background-color", "red");
+            //         }
+            //     }
+            // }
         }
 
         async function get_change_light_data() {
