@@ -88,7 +88,7 @@ else:
         auth_bp,
         user_login_info,
     )
-
+# print(f"admin_password =  {os.getenv("ADMIN")}")
 app.register_blueprint(auth_bp)
 
 if onLinux:
@@ -3945,7 +3945,14 @@ def read_modbus_data():
                 fan6_v = fan6.registers[0] / 16000 * 100
                 fan7_v = fan7.registers[0] / 16000 * 100
                 fan8_v = fan8.registers[0] / 16000 * 100
-                
+                # journal_logger.info(fan1_v)
+                # journal_logger.info(fan2_v)
+                # journal_logger.info(fan3_v)
+                # journal_logger.info(fan4_v)
+                # journal_logger.info(fan5_v)
+                # journal_logger.info(fan6_v)
+                # journal_logger.info(fan7_v)
+                # journal_logger.info(fan8_v)
                 if not ctr_data["mc"]["resultMC1"] or not ctr_data["value"]["resultP1"]:
                     inv1_v = 0
 
@@ -4435,15 +4442,15 @@ def read_modbus_data():
                                     )
                                     if (
                                         sensorData["err_log"]["error"][key].split()[0]
+                                        == "M300"
+                                        or sensorData["err_log"]["error"][key].split()[
+                                            0
+                                        ]
                                         == "M301"
                                         or sensorData["err_log"]["error"][key].split()[
                                             0
                                         ]
                                         == "M302"
-                                        or sensorData["err_log"]["error"][key].split()[
-                                            0
-                                        ]
-                                        == "M338"
                                     ):
                                         record_downtime_signal_off(
                                             sensorData["err_log"]["error"][key].split()[
@@ -6394,6 +6401,7 @@ def shutdown():
 @app.route("/upload_zip", methods=["GET", "POST"])
 @login_required
 def upload_zip():
+    admin_password =  os.getenv("ADMIN")
     if request.method == "POST":
         if "file" not in request.files:
             return jsonify({"status": "error", "message": "No file part"}), 400
@@ -6523,6 +6531,8 @@ def upload_zip():
 
 @app.route("/upload_zip_pc_both", methods=["POST"])
 def upload_zip_pc_both():
+    admin_password =  os.getenv("ADMIN")
+    
     if "file" not in request.files:
         return jsonify({"message": "No File Part"}), 400
 
@@ -6566,7 +6576,7 @@ def upload_zip_pc_both():
             try:
                 with open(full_file_path, "rb") as f:
                     files = {"file": (os.path.basename(file_path), f, "application/zip")}
-                    response = requests.post(target_url, files=files, auth=("admin", "Supermicro12729477"), verify=False)
+                    response = requests.post(target_url, files=files, auth=("admin", admin_password), verify=False)
 
                 upload_results[file_path] = {
                     "status": response.status_code,
@@ -6589,13 +6599,15 @@ def upload_zip_pc_both():
 
 @app.route('/reboot-all', methods=['GET'])
 def reboot_all():
+    admin_password =  os.getenv("ADMIN")
+    
     second_pc = "http://192.168.3.101:5501/api/v1/reboot"
     first_pc = "http://192.168.3.100:5501/api/v1/reboot"
 
     results = {}
 
     try:
-        response2 = requests.get(second_pc, auth=("admin", "Supermicro12729477"), verify=False)
+        response2 = requests.get(second_pc, auth=("admin", admin_password), verify=False)
         results["second_pc"] = f"{response2.status_code}: {response2.text}"
     except Exception as e:
         results["second_pc"] = f"Error: {e}"
@@ -6604,7 +6616,7 @@ def reboot_all():
     time.sleep(5)
 
     try:
-        response1 = requests.get(first_pc, auth=("admin", "Supermicro12729477"), verify=False)
+        response1 = requests.get(first_pc, auth=("admin", admin_password), verify=False)
         results["first_pc"] = f"{response1.status_code}: {response1.text}"
     except Exception as e:
         results["first_pc"] = f"Error: {e}"

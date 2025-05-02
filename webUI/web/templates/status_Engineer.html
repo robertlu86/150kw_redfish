@@ -261,7 +261,7 @@ styles %}
     <div class="pic_1920 detail scrollable-image-container">
         <div class="image">
             <div class="image_machine_container">
-                <img class="machine" src="../static/images/full_picture.jpg" alt="設備" loading="eager" />
+                <img class="machine" id="machine" src="../static/images/full_picture.jpg" alt="設備" loading="eager" />
             </div>
             <!-- 顯示TDp數值框 -->
             <div class="value_border" id="dew_point_image_set" style="top: 4%; left:13.5%">
@@ -315,28 +315,28 @@ styles %}
             </div>
             <!-- fan 1-8 light 啟動時顯示 -->
             <div>
-                <div class="fans_light" id="fan_freq5_light" style="top:28.95%; left: 81.8%"></div>
+                <div class="fans_light" id="fan_freq5_light" ></div>
             </div>
             <div>
-                <div class="fans_light" id="fan_freq4_light" style="top:28.9%; left: 86.25%"></div>
+                <div class="fans_light" id="fan_freq4_light" ></div>
             </div>
             <div>
-                <div class="fans_light" id="fan_freq6_light" style="top:36.25%; left: 81.8%"></div>
+                <div class="fans_light" id="fan_freq6_light" ></div>
             </div>
             <div>
-                <div class="fans_light" id="fan_freq3_light" style="top:36.2%; left: 86.25%"></div>
+                <div class="fans_light" id="fan_freq3_light" ></div>
             </div>
             <div>
-                <div class="fans_light" id="fan_freq7_light" style="top:43.5%; left: 81.8%"></div>
+                <div class="fans_light" id="fan_freq7_light" ></div>
             </div>
             <div>
-                <div class="fans_light" id="fan_freq2_light" style="top:43.5%; left: 86.25%"></div>
+                <div class="fans_light" id="fan_freq2_light" ></div>
             </div>
             <div>
-                <div class="fans_light" id="fan_freq8_light" style="top:50.8%; left: 81.8%"></div>
+                <div class="fans_light" id="fan_freq8_light" ></div>
             </div>
             <div>
-                <div class="fans_light" id="fan_freq1_light" style="top:50.8%; left: 86.25%"></div>
+                <div class="fans_light" id="fan_freq1_light" ></div>
             </div>
             <!-- 顯示fan 1-8 數值框 -->
             <!--<div class="value_border" style="top: 275px; left:1250px">
@@ -753,31 +753,31 @@ styles %}
                         <td class="tdCenterAlign" id="fan_freq3"></td>
                         <td>%</td>
                     </tr>
-                    <tr>
+                    <tr id="Fan4_set">
                         <td class="tdCenterAlign">Fan Speed 4</td>
                         <td class="tdCenterAlign" id="fan_freq4_status"></td>
                         <td class="tdCenterAlign" id="fan_freq4"></td>
                         <td>%</td>
                     </tr>
                     <tr>
-                        <td class="tdCenterAlign">Fan Speed 5</td>
+                        <td class="tdCenterAlign" id="Fan5_name">Fan Speed 5</td>
                         <td class="tdCenterAlign" id="fan_freq5_status"></td>
                         <td class="tdCenterAlign" id="fan_freq5"></td>
                         <td>%</td>
                     </tr>
                     <tr>
-                        <td class="tdCenterAlign">Fan Speed 6</td>
+                        <td class="tdCenterAlign" id="Fan6_name">Fan Speed 6</td>
                         <td class="tdCenterAlign" id="fan_freq6_status"></td>
                         <td class="tdCenterAlign" id="fan_freq6"></td>
                         <td>%</td>
                     </tr>
                     <tr>
-                        <td class="tdCenterAlign">Fan Speed 7</td>
+                        <td class="tdCenterAlign" id="Fan7_name">Fan Speed 7</td>
                         <td class="tdCenterAlign" id="fan_freq7_status"></td>
                         <td class="tdCenterAlign" id="fan_freq7"></td>
                         <td>%</td>
                     </tr>
-                    <tr>
+                    <tr id="Fan8_set">
                         <td class="tdCenterAlign">Fan Speed 8</td>
                         <td class="tdCenterAlign" id="fan_freq8_status"></td>
                         <td class="tdCenterAlign" id="fan_freq8"></td>
@@ -901,13 +901,13 @@ styles %}
                         <td></td>
                     </tr>
                     <tr>
-                        <td class="w-12 tdCenterAlign" scope="row">Fan 1-4 MC</td>
+                        <td class="w-12 tdCenterAlign" scope="row" id="Fan_group1">Fan 1-4 MC</td>
                         <td id="fan_mc1" class="w-12 tdCenterAlign" scope="row"></td>
                         <td scope="row"></td>
                         <td></td>
                     </tr>
                     <tr>
-                        <td class="w-12 tdCenterAlign" scope="row">Fan 5-8 MC</td>
+                        <td class="w-12 tdCenterAlign" scope="row" id="Fan_group2">Fan 5-8 MC</td>
                         <td id="fan_mc2" class="w-12 tdCenterAlign" scope="row"></td>
                         <td scope="row"></td>
                         <td></td>
@@ -1723,19 +1723,71 @@ styles %}
                 }
             }
         }
-        //水質計切換版本Status頁面
-        function change_coolant_quality_meter_version(ver_switch){
-            if(ver_switch === true){
+        //版本切換
+        function change_version(ver_switch){
+            //////尚未取得正確位置/////////
+            if (ver_switch["fan_count_switch"] === true){
+                $("#fan_freq5_light").css({ top: "32.6%", left: "81.9%" });
+                $("#fan_freq3_light").css({ top: "32.6%", left: "86.25%" });
+                $("#fan_freq6_light").css({ top: "40%", left: "81.9%" });
+                $("#fan_freq2_light").css({ top: "40%", left: "86.25%" });
+                $("#fan_freq7_light").css({ top: "47.4%", left: "81.9%" });
+                $("#fan_freq1_light").css({ top: "47.4%", left: "86.25%" });
+            }else{
+                $("#fan_freq5_light").css({ top: "28.95%", left: "81.8%" });
+                $("#fan_freq4_light").css({ top: "28.9%", left: "86.25" });
+                $("#fan_freq6_light").css({ top: "36.25%", left: "81.8%" });
+                $("#fan_freq3_light").css({ top: "36.2%", left: "86.25%" });
+                $("#fan_freq7_light").css({ top: "43.5%", left: "81.8%" });
+                $("#fan_freq2_light").css({ top: "43.5%", left: "86.25%" });
+                $("#fan_freq8_light").css({ top: "50.8%", left: "81.8%" });
+                $("#fan_freq1_light").css({ top: "50.8%", left: "86.25%" });
+            }
+
+            if(ver_switch["coolant_quality_meter_switch"] === true && ver_switch["fan_count_switch"] === true){
                 $(".pH_set, .cdct_set, .tbd_set, .power12v_set").hide();
                 $("#pH_image_set, #cdct_image_set, #tbd_image_set").hide();
-                $(".machine").attr("src", "../static/images/full_picture.jpg")
-            }else{
+                $("#machine").attr("src", "../static/images/side car_with_six_fan_0325_no_coolant_quarity_meter.png");
+
+                $("#Fan4_set, #Fan8_set").hide();
+                $("#Fan5_name").text("Fan Speed4");
+                $("#Fan6_name").text("Fan Speed5");
+                $("#Fan7_name").text("Fan Speed6");
+                $("#Fan_group1").text("Fan 1-3 MC");
+                $("#Fan_group2").text("Fan 4-6 MC");
+            }else if(ver_switch["coolant_quality_meter_switch"] === false && ver_switch["fan_count_switch"] === true){
                 $(".pH_set, .cdct_set, .tbd_set, .power12v_set").show();
                 $("#pH_image_set, #cdct_image_set, #tbd_image_set").show();
-                $(".machine").attr("src", "../static/images/full_picture.jpg")
+                $("#machine").attr("src", "../static/images/side car_with_six_fan_0325.png");
+                $("#Fan4_set, #Fan8_set").hide();
+                $("#Fan5_name").text("Fan Speed4");
+                $("#Fan6_name").text("Fan Speed5");
+                $("#Fan7_name").text("Fan Speed6");
+                $("#Fan_group1").text("Fan 1-3 MC");
+                $("#Fan_group2").text("Fan 4-6 MC");
+            }else if(ver_switch["coolant_quality_meter_switch"] === true && ver_switch["fan_count_switch"] === false){
+                $(".pH_set, .cdct_set, .tbd_set, .power12v_set").hide();
+                $("#pH_image_set, #cdct_image_set, #tbd_image_set").hide();
+                $("#machine").attr("src", "../static/images/full_picture.jpg");
+                $("#Fan4_set, #Fan8_set").show();
+                $("#Fan5_name").text("Fan Speed4");
+                $("#Fan6_name").text("Fan Speed5");
+                $("#Fan7_name").text("Fan Speed6");
+                $("#Fan_group1").text("Fan 1-3 MC");
+                $("#Fan_group2").text("Fan 4-6 MC");
+            }else if(ver_switch["coolant_quality_meter_switch"] === false && ver_switch["fan_count_switch"] === false){
+                $(".pH_set, .cdct_set, .tbd_set, .power12v_set").show();
+                $("#pH_image_set, #cdct_image_set, #tbd_image_set").show();
+                $("#machine").attr("src", "../static/images/full_picture.jpg");
+                $("#Fan4_set, #Fan8_set").show();
+                $("#Fan5_name").text("Fan Speed5");
+                $("#Fan6_name").text("Fan Speed6");
+                $("#Fan7_name").text("Fan Speed7");
+                $("#Fan_group1").text("Fan 1-4 MC");
+                $("#Fan_group2").text("Fan 5-8 MC");
             }
         }
-
+        
         function updateRowStripes() {
             $("table").each(function () {  // 遍歷每個 table
                 var table = $(this);
@@ -1763,7 +1815,7 @@ styles %}
                         timeout: 10000,
                         dataType: "json",
                     });
-                    change_coolant_quality_meter_version(ver_switch["coolant_quality_meter_switch"]);
+                    change_version(ver_switch);
                     current_data(data);
                     change_status_light(data);
                     updateRowStripes();

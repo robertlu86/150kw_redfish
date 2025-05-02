@@ -4573,25 +4573,34 @@ class PowerSubsystem(Resource):
         return PowerSubsystem_data
 
 
-@redfish_ns.route("/Chassis/1/PowerSubsystem/PowerSupplies")
+@redfish_ns.route("/Chassis/<chassis_id>/PowerSubsystem/PowerSupplies")
 class PowerSupplies(Resource):
     @requires_auth
-    def get(self):
-        return PowerSupplies_data
+    def get(self, chassis_id):
+        chassis_service = RfChassisService()
+        return chassis_service.fetch_PowerSubsystem_PowerSupplies(chassis_id)
 
 
-@redfish_ns.route("/Chassis/1/PowerSubsystem/PowerSupplies/1")
+@redfish_ns.route("/Chassis/<chassis_id>/PowerSubsystem/PowerSupplies/<power_supply_id>")
 class PowerSupplies1(Resource):
     @requires_auth
-    def get(self):
-        return PowerSupplies_data_1
+    def get(self, chassis_id, power_supply_id):
+        chassis_service = RfChassisService()
+        return chassis_service.fetch_PowerSubsystem_PowerSupplies(chassis_id, power_supply_id)
 
 
-@redfish_ns.route("/Chassis/1/PowerSubsystem/PowerSupplies/2")
-class PowerSupplies2(Resource):
-    @requires_auth
-    def get(self):
-        return PowerSupplies_data_2
+# @redfish_ns.route("/Chassis/1/PowerSubsystem/PowerSupplies/1")
+# class PowerSupplies1(Resource):
+#     @requires_auth
+#     def get(self):
+#         return PowerSupplies_data_1
+
+
+# @redfish_ns.route("/Chassis/1/PowerSubsystem/PowerSupplies/2")
+# class PowerSupplies2(Resource):
+#     @requires_auth
+#     def get(self):
+#         return PowerSupplies_data_2
 
 
 @redfish_ns.route("/Chassis/1/ThermalSubsystem")
@@ -5683,5 +5692,6 @@ if __name__ == '__main__':
     # print("os.environ['ITG_REST_HOST']:", os.environ['ITG_REST_HOST'])
 
     # ssl_context=(憑證檔, 私鑰檔)
-    app.run(host='0.0.0.0', port=5000,
+    redfish_port = int(os.environ.get('ITG_REDFISH_API_PORT', "5000"))
+    app.run(host='0.0.0.0', port=redfish_port,
             ssl_context=(cert_pem_path, key_pem_path))

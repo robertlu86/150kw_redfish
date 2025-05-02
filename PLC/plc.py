@@ -2296,12 +2296,12 @@ def set_warning_registers(mode):
         check_level("Delay_power12v1", "power12v1", True)
         check_level("Delay_power12v2", "power12v2", True)
         check_both_warning(
-        "Thr_W_pH_L",
-        "Thr_W_pH_H",
-        "Thr_W_Rst_pH_L",
-        "Thr_W_Rst_pH_H",
-        "Delay_pH",
-        "W",
+            "Thr_W_pH_L",
+            "Thr_W_pH_H",
+            "Thr_W_Rst_pH_L",
+            "Thr_W_Rst_pH_H",
+            "Delay_pH",
+            "W",
         )
 
         check_both_warning(
@@ -2372,8 +2372,46 @@ def set_warning_registers(mode):
     ###切換水質計開關邏輯 結束
         
         
+    ###切換fan count邏輯
+    if ver_switch["fan_count_switch"]:
+        check_communication("Fan1Com", "Delay_Fan1Com_Communication", True)
+        check_communication("Fan2Com", "Delay_Fan2Com_Communication", True)
+        check_communication("Fan3Com", "Delay_Fan3Com_Communication", True)
+
+        check_communication("Fan5Com", "Delay_Fan5Com_Communication", True)
+        check_communication("Fan6Com", "Delay_Fan6Com_Communication", True)
+        check_communication("Fan7Com", "Delay_Fan7Com_Communication", True)
+
+        
+        check_input("Delay_fan1_error", "fan1_error", True)
+        check_input("Delay_fan2_error", "fan2_error", True)
+        check_input("Delay_fan3_error", "fan3_error", True)
+
+        check_input("Delay_fan5_error", "fan5_error", True)
+        check_input("Delay_fan6_error", "fan6_error", True)
+        check_input("Delay_fan7_error", "fan7_error", True)
         
         
+    else:
+        warning_data['error']["Fan1Com_communication"] = False
+        warning_data['error']["Fan2Com_communication"] = False
+        warning_data['error']["Fan3Com_communication"] = False
+        warning_data['error']["Fan4Com_communication"] = False
+        warning_data['error']["Fan5Com_communication"] = False
+        warning_data['error']["Fan6Com_communication"] = False
+        warning_data['error']["Fan7Com_communication"] = False
+        warning_data['error']["Fan8Com_communication"] = False
+        check_input("Delay_fan1_error", "fan1_error", True)
+        check_input("Delay_fan2_error", "fan2_error", True)
+        check_input("Delay_fan3_error", "fan3_error", True)
+        check_input("Delay_fan4_error", "fan4_error", True)
+        check_input("Delay_fan5_error", "fan5_error", True)
+        check_input("Delay_fan6_error", "fan6_error", True)
+        check_input("Delay_fan7_error", "fan7_error", True)
+        check_input("Delay_fan8_error", "fan8_error", True)
+    ###切換fan count邏輯 結束
+    
+    
     check_communication("Inv1_Freq", "Delay_Inverter1_Communication", True)
     check_communication("Inv2_Freq", "Delay_Inverter2_Communication", True)
     check_communication("Inv3_Freq", "Delay_Inverter3_Communication", True)
@@ -2387,17 +2425,6 @@ def set_warning_registers(mode):
     check_communication("inst_power", "Delay_Power_Meter_Communication", True)
     check_communication("average_current", "Delay_average_current_Communication", True)
     
-    ######測試用#####
-    # check_communication("Fan1Com", "Delay_Fan1Com_Communication", True)
-    # check_communication("Fan2Com", "Delay_Fan2Com_Communication", True)
-    # check_communication("Fan3Com", "Delay_Fan3Com_Communication", True)
-    # check_communication("Fan4Com", "Delay_Fan4Com_Communication", True)
-    # check_communication("Fan5Com", "Delay_Fan5Com_Communication", True)
-    # check_communication("Fan6Com", "Delay_Fan6Com_Communication", True)
-    # check_communication("Fan7Com", "Delay_Fan7Com_Communication", True)
-    # check_communication("Fan8Com", "Delay_Fan8Com_Communication", True)
-    ######測試用結束#####
-
 
     ### 先隱藏不顯示
     # check_level("Delay_level1", "level1", True)
@@ -2409,14 +2436,14 @@ def set_warning_registers(mode):
 
     check_input("Delay_leakage1_leak", "leakage1_leak", True)
     check_input("Delay_leakage1_broken", "leakage1_broken", True)
-    check_input("Delay_fan1_error", "fan1_error", True)
-    check_input("Delay_fan2_error", "fan2_error", True)
-    check_input("Delay_fan3_error", "fan3_error", True)
-    check_input("Delay_fan4_error", "fan4_error", True)
-    check_input("Delay_fan5_error", "fan5_error", True)
-    check_input("Delay_fan6_error", "fan6_error", True)
-    check_input("Delay_fan7_error", "fan7_error", True)
-    check_input("Delay_fan8_error", "fan8_error", True)
+    # check_input("Delay_fan1_error", "fan1_error", True)
+    # check_input("Delay_fan2_error", "fan2_error", True)
+    # check_input("Delay_fan3_error", "fan3_error", True)
+    # check_input("Delay_fan4_error", "fan4_error", True)
+    # check_input("Delay_fan5_error", "fan5_error", True)
+    # check_input("Delay_fan6_error", "fan6_error", True)
+    # check_input("Delay_fan7_error", "fan7_error", True)
+    # check_input("Delay_fan8_error", "fan8_error", True)
     check_input("Delay_main_mc_error", "main_mc_error", False)
     check_input("Delay_Inv1_Error", "Inv1_Error", True)
     check_input("Delay_Inv2_Error", "Inv2_Error", True)
@@ -2435,6 +2462,7 @@ def set_warning_registers(mode):
     check_overload_error("Delay_Inv1_OverLoad")
     check_overload_error("Delay_Inv2_OverLoad")
     check_overload_error("Delay_Inv3_OverLoad")
+    
     check_overload_error("Delay_Fan_OverLoad1")
     check_overload_error("Delay_Fan_OverLoad2")
 
@@ -3227,6 +3255,14 @@ def stop_fan():
             client.write_register((20480 + 7420), 0)
             client.write_register((20480 + 7460), 0)
             client.write_register((20480 + 7500), 0)
+            # client.write_coils((8192 + 850), [False])
+            # client.write_coils((8192 + 851), [False])
+            # client.write_coils((8192 + 852), [False])
+            # client.write_coils((8192 + 853), [False])
+            # client.write_coils((8192 + 854), [False])
+            # client.write_coils((8192 + 855), [False])
+            # client.write_coils((8192 + 856), [False])
+            # client.write_coils((8192 + 857), [False])
     except Exception as e:
         print(f"clear fan error:{e}")
 
@@ -4281,10 +4317,12 @@ def control():
 
                     if check_inverter(l1_key) and check_inverter(l2_key):
                         inv_to_run.append(top)
-                    elif not check_inverter(l1_key) and check_inverter(l2_key):
+                    if not check_inverter(l1_key) and check_inverter(l2_key):
                         inv_to_run.append(lowest1)
-                    elif check_inverter(l1_key) and not check_inverter(l2_key):
+                        inv_to_run.append(top)
+                    if check_inverter(l1_key) and not check_inverter(l2_key):
                         inv_to_run.append(lowest2)
+                        inv_to_run.append(top)
                     else:
                         inv_to_run.append(lowest1)
                         inv_to_run.append(lowest2)
