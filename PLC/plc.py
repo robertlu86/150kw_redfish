@@ -2383,13 +2383,13 @@ def set_warning_registers(mode):
         check_communication("Fan7Com", "Delay_Fan7Com_Communication", True)
 
         
-        check_input("Delay_fan1_error", "fan1_error", True)
-        check_input("Delay_fan2_error", "fan2_error", True)
-        check_input("Delay_fan3_error", "fan3_error", True)
+        check_input("Delay_fan1_error", "fan1_error", False)
+        check_input("Delay_fan2_error", "fan2_error", False)
+        check_input("Delay_fan3_error", "fan3_error", False)
 
-        check_input("Delay_fan5_error", "fan5_error", True)
-        check_input("Delay_fan6_error", "fan6_error", True)
-        check_input("Delay_fan7_error", "fan7_error", True)
+        check_input("Delay_fan5_error", "fan5_error", False)
+        check_input("Delay_fan6_error", "fan6_error", False)
+        check_input("Delay_fan7_error", "fan7_error", False)
         
         
     else:
@@ -2401,14 +2401,14 @@ def set_warning_registers(mode):
         warning_data['error']["Fan6Com_communication"] = False
         warning_data['error']["Fan7Com_communication"] = False
         warning_data['error']["Fan8Com_communication"] = False
-        check_input("Delay_fan1_error", "fan1_error", True)
-        check_input("Delay_fan2_error", "fan2_error", True)
-        check_input("Delay_fan3_error", "fan3_error", True)
-        check_input("Delay_fan4_error", "fan4_error", True)
-        check_input("Delay_fan5_error", "fan5_error", True)
-        check_input("Delay_fan6_error", "fan6_error", True)
-        check_input("Delay_fan7_error", "fan7_error", True)
-        check_input("Delay_fan8_error", "fan8_error", True)
+        check_input("Delay_fan1_error", "fan1_error", False)
+        check_input("Delay_fan2_error", "fan2_error", False)
+        check_input("Delay_fan3_error", "fan3_error", False)
+        check_input("Delay_fan4_error", "fan4_error", False)
+        check_input("Delay_fan5_error", "fan5_error", False)
+        check_input("Delay_fan6_error", "fan6_error", False)
+        check_input("Delay_fan7_error", "fan7_error", False)
+        check_input("Delay_fan8_error", "fan8_error", False)
     ###切換fan count邏輯 結束
     
     
