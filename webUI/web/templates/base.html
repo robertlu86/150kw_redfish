@@ -624,6 +624,8 @@
             // }
         }
 
+        window.sharedData = {};  // 宣告全域物件
+
         async function get_change_light_data() {
             while (true) {
                 try {
@@ -640,7 +642,9 @@
                         timeout: 10000,
                         dataType: "json",
                     });
-
+                    ///將get_data傳到全域, 讓其他html也可以使用
+                    window.sharedData.data = data;
+                    window.sharedData.version = version;
                     change_light(data, version);
 
                     if (data["error"]["PLC"]) {
@@ -653,7 +657,7 @@
                     console.error("AJAX request failed:", error);
                 }
 
-                await new Promise((resolve) => setTimeout(resolve, 5000));
+                await new Promise((resolve) => setTimeout(resolve, 3000));
             }
         }
 

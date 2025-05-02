@@ -1804,23 +1804,27 @@ styles %}
         async function fetch_get_data() {
             while (true) {
                 try {
-                    const data = await $.ajax({
-                        url: "/get_data",
-                        method: "GET",
-                        loader: false,
-                        timeout: 10000,
-                        dataType: "json",
-                    });
-                    const ver_switch = await $.ajax({
-                        url: "/get_data_version",
-                        method: "GET",
-                        loader: false,
-                        timeout: 10000,
-                        dataType: "json",
-                    });
-                    change_version(ver_switch);
-                    current_data(data);
-                    change_status_light(data);
+                    // const data = await $.ajax({
+                    //     url: "/get_data",
+                    //     method: "GET",
+                    //     loader: false,
+                    //     timeout: 10000,
+                    //     dataType: "json",
+                    // });
+                    // const ver_switch = await $.ajax({
+                    //     url: "/get_data_version",
+                    //     method: "GET",
+                    //     loader: false,
+                    //     timeout: 10000,
+                    //     dataType: "json",
+                    // });
+
+                    //透過全域抓取base.html的數值
+                    const currentData = window.sharedData.data;
+                    const currentVersion = window.sharedData.version;
+                    change_version(currentVersion);
+                    current_data(currentData);
+                    change_status_light(currentData);
                     updateRowStripes();
                 } catch (xhr) {
                     console.error(

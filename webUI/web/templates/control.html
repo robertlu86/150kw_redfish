@@ -1214,12 +1214,15 @@ styles %}
         async function fetchData() {
             while (true) {
                 try {
-                    const data = await $.ajax({
-                        url: "/get_data",
-                        method: "GET",
-                        timeout: 10000,
-                        loader: false,
-                    });
+                    //// 測試直接從base.html抓取get_data資料////
+                    
+                    // const data = await $.ajax({
+                    //     url: "/get_data",
+                    //     method: "GET",
+                    //     timeout: 10000,
+                    //     loader: false,
+                    // });
+                    const data = window.sharedData.data;
                     /// 如果Inverter 1~3有error 便不能開 
                     for (let i = 1; i <= 3; i++) {  // pump  從 1 到 3
                         if (data["error"][`Inv${i}_Error`] || data["error"][`Inv${i}_OverLoad`]) {
