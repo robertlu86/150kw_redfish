@@ -4037,14 +4037,14 @@ def read_modbus_data():
                 ctr_data["inv"]["inv1"] = inv1_v >= 25
                 ctr_data["inv"]["inv2"] = inv2_v >= 25
                 ctr_data["inv"]["inv3"] = inv3_v >= 25
-                ctr_data["inv"]["fan1"] = fan1_v >= 25
-                ctr_data["inv"]["fan2"] = fan2_v >= 25
-                ctr_data["inv"]["fan3"] = fan3_v >= 25
-                ctr_data["inv"]["fan4"] = fan4_v >= 25
-                ctr_data["inv"]["fan5"] = fan5_v >= 25
-                ctr_data["inv"]["fan6"] = fan6_v >= 25
-                ctr_data["inv"]["fan7"] = fan7_v >= 25
-                ctr_data["inv"]["fan8"] = fan8_v >= 25
+                ctr_data["inv"]["fan1"] = fan1_v >= 0
+                ctr_data["inv"]["fan2"] = fan2_v >= 0
+                ctr_data["inv"]["fan3"] = fan3_v >= 0
+                ctr_data["inv"]["fan4"] = fan4_v >= 0
+                ctr_data["inv"]["fan5"] = fan5_v >= 0
+                ctr_data["inv"]["fan6"] = fan6_v >= 0
+                ctr_data["inv"]["fan7"] = fan7_v >= 0
+                ctr_data["inv"]["fan8"] = fan8_v >= 0
         except Exception as e:
             print(f"read inv_en error:{e}")
 

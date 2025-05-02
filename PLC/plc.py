@@ -4367,7 +4367,8 @@ def control():
                 change_back_mode = mode
             elif mode == "inspection":
                 read_flow_time = 15
-                pump_open_time = 10
+                pump_open_time = 20
+                fan_open_time = 20          
                 error_check_time = 18
                 overload_index = {
                     "Inv": [1, 2, 3],
@@ -4680,13 +4681,13 @@ def control():
                         if inspection_data["step"] == 4:
                             
                             ###測fan
-                            print(f"4. 開啟 Fan 的 inv/mc: {pump_open_time} 秒")
+                            print(f"4. 開啟 Fan 的 inv/mc: {fan_open_time} 秒")
                             bit_output_regs["mc_fan1"]=True
                             bit_output_regs["mc_fan2"]=True
                             for i in range(1, 9):
                                 change_progress(f"fan{i}_speed", "standby")
                                 
-                            speed = translate_fan_speed(50)
+                            speed = translate_fan_speed(30)
                             set_f1(speed)
                             set_f2(speed)
                             set_f3(speed)
@@ -4744,7 +4745,7 @@ def control():
                                 inspection_data["end_time"]
                                 - inspection_data["mid_time"]
                             )
-                            if diff >= pump_open_time:
+                            if diff >= fan_open_time:
                                 inspection_data["step"] += 1
                                 inspection_data["mid_time"] = inspection_data[
                                     "end_time"
@@ -4838,7 +4839,9 @@ def control():
                                     # print(f"max_{fan_id}: {max_value}")
 
                                     # 判斷範圍
-                                    inspection_data["result"][speed_key] = not (55 > max_value > 45)
+                                    ###RPM判斷範圍30% 為1245  1452~1037
+                                    # inspection_data["result"][speed_key] = not (50 > max_value > 45)
+                                    inspection_data["result"][speed_key] = not (1452 > max_value > 1037)
                                     write_measured_data(30 + (i*2-1), max_value)
                                     change_progress(speed_key, "finish")
                                     
@@ -5793,7 +5796,7 @@ def rtu_thread():
 
                 for i, unit in enumerate(fan_units, start=1):
                     try:
-                        r = client.read_holding_registers(1, 1, unit=unit)
+                        r = client.read_input_registers(53293, 1, unit=unit)
                         ###fan speed freq
                         raw_485_data[f"Fan{i}Com"] = r.registers[0]
                         raw_485_comm[f"Fan{i}Com"] = False

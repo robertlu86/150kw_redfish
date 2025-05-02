@@ -2224,11 +2224,11 @@ styles %}
 
                 fan = parseFloat(fan);
 
-                if (fan > 100 || (fan !== 0 && fan < 20)) {
+                if (fan > 100 || (fan !== 0 && fan < 0)) {
                     const range = fan > 100 ? "Over Range" : "Under Range";
                     Swal.fire({
                         title: range,
-                        html: "Fan Speed invalid input.<br>The accepted setting range is 20-100",
+                        html: "Fan Speed invalid input.<br>The accepted setting range is 0-100",
                         icon: "error",
                         confirmButtonText: "OK",
                     });
