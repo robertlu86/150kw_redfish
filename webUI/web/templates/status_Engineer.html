@@ -1877,17 +1877,38 @@ styles %}
                     ///////////暫時測試用///////////
                     change_fan_light(data)
                     const currentVersion = window.sharedData.version;
+                    const currentData = window.sharedData.data;
                     // console.log(`currentVersion${currentVersion["fan_count_switch"]}`);
 
                     if (currentVersion["fan_count_switch"] === false) {
-
-                        for (let i = 1; i <= 8; i++) {
-                            if (data["value"][`fan${i}_check`]) {
-                                let value = data["value"][`resultFan`];
-                                $(`#fan_freq${i}`).text(value.toFixed(0));
-                            } else {
-                                $(`#fan_freq${i}`).text(0);
-
+                        if(currentData["error"]["Fan_OverLoad1"] === false){
+                            for (let i = 1; i <= 4; i++) {
+                                if(currentData["error"][`Fan${i}_Com`] === false && 
+                                    currentData["error"][`fan${i}_error`] === false
+                                ){
+                                    if (data["value"][`fan${i}_check`]) {
+                                        let value = data["value"][`resultFan`];
+                                        $(`#fan_freq${i}`).text(value.toFixed(0));
+                                    } else {
+                                        $(`#fan_freq${i}`).text(0);
+                                    }
+                                }
+                            
+                            }
+                        }
+                        if(currentData["error"]["Fan_OverLoad2"] === false){
+                            for (let i = 5; i <= 8; i++) {
+                                if(currentData["error"][`Fan${i}_Com`] === false && 
+                                    currentData["error"][`fan${i}_error`] === false
+                                ){
+                                    if (data["value"][`fan${i}_check`]) {
+                                        let value = data["value"][`resultFan`];
+                                        $(`#fan_freq${i}`).text(value.toFixed(0));
+                                    } else {
+                                        $(`#fan_freq${i}`).text(0);
+                                    }
+                                }
+                            
                             }
                         }
                     }
