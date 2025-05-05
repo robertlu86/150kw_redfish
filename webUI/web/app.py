@@ -4037,14 +4037,14 @@ def read_modbus_data():
                 ctr_data["inv"]["inv1"] = inv1_v >= 25
                 ctr_data["inv"]["inv2"] = inv2_v >= 25
                 ctr_data["inv"]["inv3"] = inv3_v >= 25
-                ctr_data["inv"]["fan1"] = fan1_v >= 0
-                ctr_data["inv"]["fan2"] = fan2_v >= 0
-                ctr_data["inv"]["fan3"] = fan3_v >= 0
-                ctr_data["inv"]["fan4"] = fan4_v >= 0
-                ctr_data["inv"]["fan5"] = fan5_v >= 0
-                ctr_data["inv"]["fan6"] = fan6_v >= 0
-                ctr_data["inv"]["fan7"] = fan7_v >= 0
-                ctr_data["inv"]["fan8"] = fan8_v >= 0
+                ctr_data["inv"]["fan1"] = fan1_v >= 2
+                ctr_data["inv"]["fan2"] = fan2_v >= 2
+                ctr_data["inv"]["fan3"] = fan3_v >= 2
+                ctr_data["inv"]["fan4"] = fan4_v >= 2
+                ctr_data["inv"]["fan5"] = fan5_v >= 2
+                ctr_data["inv"]["fan6"] = fan6_v >= 2
+                ctr_data["inv"]["fan7"] = fan7_v >= 2
+                ctr_data["inv"]["fan8"] = fan8_v >= 2
         except Exception as e:
             print(f"read inv_en error:{e}")
 
@@ -4137,7 +4137,7 @@ def read_modbus_data():
         if not any(v for k, v in ctr_data["inv"].items() if k.startswith("inv")):
             ctr_data["value"]["resultPS"] = 0
   ########寫入resultFan 
-        fan_inv_addresses = {"fan1": 7020, "fan2": 7060, "fan3": 7100,"fan4":7140, "fan5":7380, "fan6":7400, "fan7":7460, "fan8":7500}
+        fan_inv_addresses = {"fan1": 7020, "fan2": 7060, "fan3": 7100,"fan4":7140, "fan5":7380, "fan6":7420, "fan7":7460, "fan8":7500}
   
         for k, v in ctr_data["inv"].items():
             if k.startswith("fan"):
@@ -5124,22 +5124,22 @@ def set_operation_mode():
 
             set_p_check([p1, p2, p3])
             set_f_check([f1, f2, f3, f4, f5, f6, f7, f8])
-            ### 如果設定值為0, 設定1% 160
+            ### 如果設定值為0, 設定2% 320
             if fan == 0:
-                ### 將傳給PLC的速度設成1
-                set_fan_reg(1)
-                set_fan1(160)
-                set_fan2(160)
+                ### 將傳給PLC的速度設成2
+                set_fan_reg(2)
+                set_fan1(320)
+                set_fan2(320)
             else:
                 set_fan_reg(float(fan))
 
                 if fan_ol1:
                     flag4 = True
-                    set_fan1(160)
+                    set_fan1(320)
 
                 if fan_ol2:
                     flag5 = True
-                    set_fan2(160)
+                    set_fan2(320)
 
                 if not flag4:
                     final_fan = translate_fan_speed(fan)
