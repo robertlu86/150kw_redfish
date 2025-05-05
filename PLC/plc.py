@@ -3212,10 +3212,10 @@ def clear_fan_group1_speed():
         with ModbusTcpClient(
             host=modbus_host, port=modbus_port, unit=modbus_slave_id
         ) as client:
-            client.write_register((20480 + 7020), 160)
-            client.write_register((20480 + 7060), 160)
-            client.write_register((20480 + 7100), 160)
-            client.write_register((20480 + 7140), 160)
+            client.write_register((20480 + 7020), 320)
+            client.write_register((20480 + 7060), 320)
+            client.write_register((20480 + 7100), 320)
+            client.write_register((20480 + 7140), 320)
             client.write_coils((8192 + 850), [False])
             client.write_coils((8192 + 851), [False])
             client.write_coils((8192 + 852), [False])
@@ -3230,10 +3230,10 @@ def clear_fan_group2_speed():
         with ModbusTcpClient(
             host=modbus_host, port=modbus_port, unit=modbus_slave_id
         ) as client:
-            client.write_register((20480 + 7380), 160)
-            client.write_register((20480 + 7420), 160)
-            client.write_register((20480 + 7460), 160)
-            client.write_register((20480 + 7500), 160)
+            client.write_register((20480 + 7380), 320)
+            client.write_register((20480 + 7420), 320)
+            client.write_register((20480 + 7460), 320)
+            client.write_register((20480 + 7500), 320)
             client.write_coils((8192 + 854), [False])
             client.write_coils((8192 + 855), [False])
             client.write_coils((8192 + 856), [False])
@@ -3248,14 +3248,14 @@ def stop_fan():
             host=modbus_host, port=modbus_port, unit=modbus_slave_id
         ) as client:
             ###寫入一伏特
-            client.write_register((20480 + 7020), 160)
-            client.write_register((20480 + 7060), 160)
-            client.write_register((20480 + 7100), 160)
-            client.write_register((20480 + 7140), 160)
-            client.write_register((20480 + 7380), 160)
-            client.write_register((20480 + 7420), 160)
-            client.write_register((20480 + 7460), 160)
-            client.write_register((20480 + 7500), 160)
+            client.write_register((20480 + 7020), 320)
+            client.write_register((20480 + 7060), 320)
+            client.write_register((20480 + 7100), 320)
+            client.write_register((20480 + 7140), 320)
+            client.write_register((20480 + 7380), 320)
+            client.write_register((20480 + 7420), 320)
+            client.write_register((20480 + 7460), 320)
+            client.write_register((20480 + 7500), 320)
             # client.write_coils((8192 + 850), [False])
             # client.write_coils((8192 + 851), [False])
             # client.write_coils((8192 + 852), [False])
@@ -4229,33 +4229,33 @@ def control():
                     if word_regs["fan_speed"] > 0:
                         fs = translate_fan_speed(word_regs["fan_speed"])
                         ### 如果轉換後大於0  
-                        ### 等於0的話給 1 % = 160 , 以避免風扇全速轉
+                        ### 等於0的話給 2 % = 320 , 以避免風扇全速轉
                         # print(f'fs:{fs}')
                         if fs > 0:
-                            set_f1(fs if word_regs["f1_check"] else 160)
-                            set_f2(fs if word_regs["f2_check"] else 160)
-                            set_f3(fs if word_regs["f3_check"] else 160)
-                            set_f4(fs if word_regs["f4_check"] else 160)
+                            set_f1(fs if word_regs["f1_check"] else 320)
+                            set_f2(fs if word_regs["f2_check"] else 320)
+                            set_f3(fs if word_regs["f3_check"] else 320)
+                            set_f4(fs if word_regs["f4_check"] else 320)
                     else:
-                        set_f1(160)
-                        set_f2(160)
-                        set_f3(160)
-                        set_f4(160)
+                        set_f1(320)
+                        set_f2(320)
+                        set_f3(320)
+                        set_f4(320)
 
                 if not flag5:
                     if word_regs["fan_speed"] > 0:
                         fs = translate_fan_speed(word_regs["fan_speed"])
                         ### 如果轉換後大於0
                         if fs > 0:
-                            set_f5(fs if word_regs["f5_check"] else 160)
-                            set_f6(fs if word_regs["f6_check"] else 160)
-                            set_f7(fs if word_regs["f7_check"] else 160)
-                            set_f8(fs if word_regs["f8_check"] else 160)
+                            set_f5(fs if word_regs["f5_check"] else 320)
+                            set_f6(fs if word_regs["f6_check"] else 320)
+                            set_f7(fs if word_regs["f7_check"] else 320)
+                            set_f8(fs if word_regs["f8_check"] else 320)
                     else:
-                        set_f5(160)
-                        set_f6(160)
-                        set_f7(160)
-                        set_f8(160)
+                        set_f5(320)
+                        set_f6(320)
+                        set_f7(320)
+                        set_f8(320)
 
                 mode_last = mode
                 change_back_mode = mode
