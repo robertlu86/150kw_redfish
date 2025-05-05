@@ -144,8 +144,8 @@ styles %}
     }
 
     tr:nth-of-type(even) {
-            background-color: rgba(0, 0, 0, 0.09);
-        }
+        background-color: rgba(0, 0, 0, 0.09);
+    }
 
     tr:nth-of-type(odd) {
         background-color: white;
@@ -173,31 +173,31 @@ styles %}
     </div>
 
     <!-- <div class="inspection_time title" data-label="Set Inspection Time (sec)">
-        <div class="data-before-trigger"></div>
-        <div class="content">
-            <div class="row">
-                <div class="col-4">
-                    <p>Duration for inspecting Pump Speed:</p>
+            <div class="data-before-trigger"></div>
+            <div class="content">
+                <div class="row">
+                    <div class="col-4">
+                        <p>Duration for inspecting Pump Speed:</p>
+                    </div>
+                    <div class="col-2">
+                        <input id="pump_open_time" class="form-control keyboard_onlyNumber" type="text" placeholder="" />
+                    </div>
                 </div>
-                <div class="col-2">
-                    <input id="pump_open_time" class="form-control keyboard_onlyNumber" type="text" placeholder="" />
+                <div class="row">
+                    <div class="col-4"></div>
+                    <div class="col-4">
+                        <button id="inspection_time_apply" class="btn btn-outline-success"
+                            style="margin-right: 10px; margin-top: 20px">
+                            Apply
+                        </button>
+                        <button id="inspection_time_cancel" class="btn btn-outline-success"
+                            style="margin-right: 10px; margin-top: 20px">
+                            Cancel
+                        </button>
+                    </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-4"></div>
-                <div class="col-4">
-                    <button id="inspection_time_apply" class="btn btn-outline-success"
-                        style="margin-right: 10px; margin-top: 20px">
-                        Apply
-                    </button>
-                    <button id="inspection_time_cancel" class="btn btn-outline-success"
-                        style="margin-right: 10px; margin-top: 20px">
-                        Cancel
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div> -->
+        </div> -->
 
     <!-- 檢測結果 -->
     <div class="inspection_result title" data-label="Control Status Inspection Result">
@@ -209,7 +209,8 @@ styles %}
                         <th class="w20 tdCenterAlign"></th>
                         <th class="w16 tdCenterAlign">Status</th>
                         <th class="w16 tdCenterAlign">Result</th>
-                        <th class="w16 tdCenterAlign">Current Value</th>
+                        <!-- <th class="w16 tdCenterAlign">Current Value</th> -->
+                        <th class="w16 tdCenterAlign">Expect Value</th>
                         <th class="w16 tdCenterAlign">Measured Value</th>
                         <th class="w16 tdCenterAlign">Unit</th>
                     </tr>
@@ -223,7 +224,8 @@ styles %}
                         <td class="w16 tdCenterAlign" id="p1_speed_result">
                             *
                         </td>
-                        <td class="w16 tdCenterAlign" id="p1_speed_stat"></td>
+                        <!-- <td class="w16 tdCenterAlign" id="p1_speed_stat"></td> -->
+                        <td class="w16 tdCenterAlign">45 ~ 55</td>
                         <td class="w16 tdCenterAlign" id="p1_speed_measure"></td>
                         <td class="w16 tdCenterAlign">%</td>
                     </tr>
@@ -235,7 +237,9 @@ styles %}
                         <td class="w16 tdCenterAlign" id="p2_speed_result">
                             *
                         </td>
-                        <td class="w16 tdCenterAlign" id="p2_speed_stat"></td>
+                        <!-- <td class="w16 tdCenterAlign" id="p2_speed_stat"></td> -->
+                        <td class="w16 tdCenterAlign">45 ~ 55</td>
+
                         <td class="w16 tdCenterAlign" id="p2_speed_measure"></td>
                         <td class="w16 tdCenterAlign">%</td>
                     </tr>
@@ -247,7 +251,9 @@ styles %}
                         <td class="w16 tdCenterAlign" id="p3_speed_result">
                             *
                         </td>
-                        <td class="w16 tdCenterAlign" id="p3_speed_stat"></td>
+                        <!-- <td class="w16 tdCenterAlign" id="p3_speed_stat"></td> -->
+                        <td class="w16 tdCenterAlign">45 ~ 55</td>
+
                         <td class="w16 tdCenterAlign" id="p3_speed_measure"></td>
                         <td class="w16 tdCenterAlign">%</td>
                     </tr>
@@ -257,7 +263,8 @@ styles %}
                         </td>
                         <td class="w16 tdCenterAlign" id="f1_status">*</td>
                         <td class="w16 tdCenterAlign" id="f1_result">*</td>
-                        <td class="w16 tdCenterAlign" id="f1_stat"></td>
+                        <!-- <td class="w16 tdCenterAlign" id="f1_stat"></td> -->
+                        <td class="w16 tdCenterAlign">-</td>
                         <td class="w16 tdCenterAlign" id="f1_measure"></td>
                         <td class="w16 tdCenterAlign unit_flow">-</td>
                     </tr>
@@ -269,9 +276,11 @@ styles %}
                         <td class="w16 tdCenterAlign" id="fan1_speed_result">
                             *
                         </td>
-                        <td class="w16 tdCenterAlign" id="fan1_speed_stat"></td>
+                        <!-- <td class="w16 tdCenterAlign" id="fan1_speed_stat"></td> -->
+                        <td class="w16 tdCenterAlign">1037 ~ 1452</td>
+
                         <td class="w16 tdCenterAlign" id="fan1_speed_measure"></td>
-                        <td class="w16 tdCenterAlign">%</td>
+                        <td class="w16 tdCenterAlign">RPM</td>
                     </tr>
                     <tr>
                         <td class="w20 tdCenterAlign">Fan2</td>
@@ -281,9 +290,11 @@ styles %}
                         <td class="w16 tdCenterAlign" id="fan2_speed_result">
                             *
                         </td>
-                        <td class="w16 tdCenterAlign" id="fan2_speed_stat"></td>
+                        <!-- <td class="w16 tdCenterAlign" id="fan2_speed_stat"></td> -->
+                        <td class="w16 tdCenterAlign">1037 ~ 1452</td>
+
                         <td class="w16 tdCenterAlign" id="fan2_speed_measure"></td>
-                        <td class="w16 tdCenterAlign">%</td>
+                        <td class="w16 tdCenterAlign">RPM</td>
                     </tr>
                     <tr>
                         <td class="w20 tdCenterAlign">Fan3</td>
@@ -293,9 +304,11 @@ styles %}
                         <td class="w16 tdCenterAlign" id="fan3_speed_result">
                             *
                         </td>
-                        <td class="w16 tdCenterAlign" id="fan3_speed_stat"></td>
+                        <!-- <td class="w16 tdCenterAlign" id="fan3_speed_stat"></td> -->
+                        <td class="w16 tdCenterAlign">1037 ~ 1452</td>
+
                         <td class="w16 tdCenterAlign" id="fan3_speed_measure"></td>
-                        <td class="w16 tdCenterAlign">%</td>
+                        <td class="w16 tdCenterAlign">RPM</td>
                     </tr>
                     <tr class="Fan8_version">
                         <td class="w20 tdCenterAlign">Fan4</td>
@@ -305,9 +318,11 @@ styles %}
                         <td class="w16 tdCenterAlign" id="fan4_speed_result">
                             *
                         </td>
-                        <td class="w16 tdCenterAlign" id="fan4_speed_stat"></td>
+                        <!-- <td class="w16 tdCenterAlign" id="fan4_speed_stat"></td> -->
+                        <td class="w16 tdCenterAlign">1037 ~ 1452</td>
+
                         <td class="w16 tdCenterAlign" id="fan4_speed_measure"></td>
-                        <td class="w16 tdCenterAlign">%</td>
+                        <td class="w16 tdCenterAlign">RPM</td>
                     </tr>
                     <tr>
                         <td class="w20 tdCenterAlign Fan5_name">Fan5</td>
@@ -317,9 +332,11 @@ styles %}
                         <td class="w16 tdCenterAlign" id="fan5_speed_result">
                             *
                         </td>
-                        <td class="w16 tdCenterAlign" id="fan5_speed_stat"></td>
+                        <!-- <td class="w16 tdCenterAlign" id="fan5_speed_stat"></td> -->
+                        <td class="w16 tdCenterAlign">1037 ~ 1452</td>
+
                         <td class="w16 tdCenterAlign" id="fan5_speed_measure"></td>
-                        <td class="w16 tdCenterAlign">%</td>
+                        <td class="w16 tdCenterAlign">RPM</td>
                     </tr>
                     <tr>
                         <td class="w20 tdCenterAlign Fan6_name">Fan6</td>
@@ -329,11 +346,13 @@ styles %}
                         <td class="w16 tdCenterAlign" id="fan6_speed_result">
                             *
                         </td>
-                        <td class="w16 tdCenterAlign" id="fan6_speed_stat">
+                        <!-- <td class="w16 tdCenterAlign" id="fan6_speed_stat">
                             *
-                        </td>
+                        </td> -->
+                        <td class="w16 tdCenterAlign">1037 ~ 1452</td>
+
                         <td class="w16 tdCenterAlign" id="fan6_speed_measure"></td>
-                        <td class="w16 tdCenterAlign">%</td>
+                        <td class="w16 tdCenterAlign">RPM</td>
                     </tr>
                     <tr>
                         <td class="w20 tdCenterAlign Fan7_name">Fan7</td>
@@ -343,9 +362,11 @@ styles %}
                         <td class="w16 tdCenterAlign" id="fan7_speed_result">
                             *
                         </td>
-                        <td class="w16 tdCenterAlign" id="fan7_speed_stat"></td>
+                        
+                        <!-- <td class="w16 tdCenterAlign" id="fan7_speed_stat"></td> -->
+                        <td class="w16 tdCenterAlign">1037 ~ 1452</td>
                         <td class="w16 tdCenterAlign" id="fan7_speed_measure"></td>
-                        <td class="w16 tdCenterAlign">%</td>
+                        <td class="w16 tdCenterAlign">RPM</td>
                     </tr>
                     <tr class="Fan8_version">
                         <td class="w20 tdCenterAlign">Fan8</td>
@@ -355,42 +376,44 @@ styles %}
                         <td class="w16 tdCenterAlign" id="fan8_speed_result">
                             *
                         </td>
-                        <td class="w16 tdCenterAlign" id="fan8_speed_stat"></td>
+                        <!-- <td class="w16 tdCenterAlign" id="fan8_speed_stat"></td> -->
+                        <td class="w16 tdCenterAlign">1037 ~ 1452</td>
+
                         <td class="w16 tdCenterAlign" id="fan8_speed_measure"></td>
-                        <td class="w16 tdCenterAlign">%</td>
+                        <td class="w16 tdCenterAlign">RPM</td>
                     </tr>
                     <!--
-                    <tr>
-                        <td class="w20 tdCenterAlign">
-                            Coolant Level 1
-                        </td>
-                        <td class="w16 tdCenterAlign" id="level1_status">*</td>
-                        <td class="w16 tdCenterAlign" id="level1_result">*</td>
-                        <td class="w16 tdCenterAlign"></td>
-                        <td class="w16 tdCenterAlign"></td>
-                        <td class="w16 tdCenterAlign "></td>
-                    </tr>
-                    <tr>
-                        <td class="w20 tdCenterAlign">
-                            Coolant Level 2
-                        </td>
-                        <td class="w16 tdCenterAlign" id="level2_status">*</td>
-                        <td class="w16 tdCenterAlign" id="level2_result">*</td>
-                        <td class="w16 tdCenterAlign"></td>
-                        <td class="w16 tdCenterAlign"></td>
-                        <td class="w16 tdCenterAlign "></td>
-                    </tr>
-                    <tr>
-                        <td class="w20 tdCenterAlign">
-                            Coolant Level 3
-                        </td>
-                        <td class="w16 tdCenterAlign" id="level3_status">*</td>
-                        <td class="w16 tdCenterAlign" id="level3_result">*</td>
-                        <td class="w16 tdCenterAlign"></td>
-                        <td class="w16 tdCenterAlign"></td>
-                        <td class="w16 tdCenterAlign"></td>
-                    </tr>
-                -->
+                        <tr>
+                            <td class="w20 tdCenterAlign">
+                                Coolant Level 1
+                            </td>
+                            <td class="w16 tdCenterAlign" id="level1_status">*</td>
+                            <td class="w16 tdCenterAlign" id="level1_result">*</td>
+                            <td class="w16 tdCenterAlign"></td>
+                            <td class="w16 tdCenterAlign"></td>
+                            <td class="w16 tdCenterAlign "></td>
+                        </tr>
+                        <tr>
+                            <td class="w20 tdCenterAlign">
+                                Coolant Level 2
+                            </td>
+                            <td class="w16 tdCenterAlign" id="level2_status">*</td>
+                            <td class="w16 tdCenterAlign" id="level2_result">*</td>
+                            <td class="w16 tdCenterAlign"></td>
+                            <td class="w16 tdCenterAlign"></td>
+                            <td class="w16 tdCenterAlign "></td>
+                        </tr>
+                        <tr>
+                            <td class="w20 tdCenterAlign">
+                                Coolant Level 3
+                            </td>
+                            <td class="w16 tdCenterAlign" id="level3_status">*</td>
+                            <td class="w16 tdCenterAlign" id="level3_result">*</td>
+                            <td class="w16 tdCenterAlign"></td>
+                            <td class="w16 tdCenterAlign"></td>
+                            <td class="w16 tdCenterAlign"></td>
+                        </tr>
+                    -->
                     <tr>
                         <td class="w20 tdCenterAlign">
                             24V Power Supply 1
@@ -424,7 +447,7 @@ styles %}
                         <td class="w16 tdCenterAlign"></td>
                     </tr>
 
-                    <tr class="no_coolant_quality_meter_switch" >
+                    <tr class="no_coolant_quality_meter_switch">
                         <td class="w20 tdCenterAlign">
                             12V Power Supply 2
                         </td>
@@ -434,7 +457,7 @@ styles %}
                         <td class="w16 tdCenterAlign"></td>
                         <td class="w16 tdCenterAlign"></td>
                     </tr>
-                
+
                 </tbody>
             </table>
         </div>
@@ -510,7 +533,7 @@ styles %}
                         <td class="w16 tdCenterAlign" id="Temp_ClntRtnSpare_broken_measure"></td>
                         <td class="w16 tdCenterAlign unit_temp"></td>
                     </tr>
-                    
+
                     <tr>
                         <td class="w20 tdCenterAlign">
                             Coolant Supply Pressure (P1)
@@ -684,19 +707,19 @@ styles %}
                         <td class="w16 tdCenterAlign"></td>
                     </tr>
                     <!--
-                    <tr class="f1_485">
-                        <td class="w20 tdCenterAlign">Coolant Flow Meter</td>
-                        <td class="w16 tdCenterAlign" id="coolant_flow_rate_com_status">
-                            *
-                        </td>
-                        <td class="w16 tdCenterAlign" id="coolant_flow_rate_com_result">
-                            *
-                        </td>
-                        <td class="w16 tdCenterAlign"></td>
-                        <td class="w16 tdCenterAlign"></td>
-                        <td class="w16 tdCenterAlign"></td>
-                    </tr>
-                    -->
+                        <tr class="f1_485">
+                            <td class="w20 tdCenterAlign">Coolant Flow Meter</td>
+                            <td class="w16 tdCenterAlign" id="coolant_flow_rate_com_status">
+                                *
+                            </td>
+                            <td class="w16 tdCenterAlign" id="coolant_flow_rate_com_result">
+                                *
+                            </td>
+                            <td class="w16 tdCenterAlign"></td>
+                            <td class="w16 tdCenterAlign"></td>
+                            <td class="w16 tdCenterAlign"></td>
+                        </tr>
+                        -->
                     <tr class="no_coolant_quality_meter_switch">
                         <td class="w20 tdCenterAlign">Conductivity Sensor</td>
                         <td class="w16 tdCenterAlign" id="conductivity_com_status">
@@ -924,7 +947,7 @@ styles %}
                         <td class="w16 tdCenterAlign"></td>
                     </tr>
 
-                    
+
                     <tr>
                         <td class="w20 tdCenterAlign" id="Fan_group1">Fan1-4 MC</td>
                         <td class="w16 tdCenterAlign" id="Fan_OverLoad1_status">
@@ -1009,7 +1032,7 @@ styles %}
                         <td class="w16 tdCenterAlign"></td>
                     </tr>
 
-                    
+
                     <tr>
                         <td class="w20 tdCenterAlign">Fan1</td>
                         <td class="w16 tdCenterAlign" id="fan1_error_status">
@@ -1059,7 +1082,7 @@ styles %}
                         <td class="w16 tdCenterAlign"></td>
                         <td class="w16 tdCenterAlign"></td>
                         <td class="w16 tdCenterAlign"></td>
-                    </tr>   
+                    </tr>
                     <tr>
                         <td class="w20 tdCenterAlign Fan5_name">Fan5</td>
                         <td class="w16 tdCenterAlign" id="fan5_error_status">
@@ -1145,7 +1168,7 @@ styles %}
             "data-before",
             "Error Status Inspection Result ▼"
         );
-        
+
         let userType = "{{user}}";
         let time = "";
 
@@ -1221,10 +1244,10 @@ styles %}
                             if (value == 1) {
                                 element_result.style.color = "red";
                                 element_result.innerText = "NG";
-                            }else if(value == 3){
+                            } else if (value == 3) {
                                 element_result.style.color = "red";
                                 element_result.innerText = "OverLoad";
-                            }else if(value == 0){
+                            } else if (value == 0) {
                                 element_result.style.color = "black";
                                 element_result.innerText = "OK";
                             }
@@ -1354,14 +1377,14 @@ styles %}
         fetch_data_version();
 
         function check_version(ver_switch) {
-            if(ver_switch["fan_count_switch"] === true){
+            if (ver_switch["fan_count_switch"] === true) {
                 $(".Fan8_version").hide();
                 $(".Fan5_name").text("Fan4");
                 $(".Fan6_name").text("Fan5");
                 $(".Fan7_name").text("Fan6");
                 $("#Fan_group1").text("Fan1-3 MC");
                 $("#Fan_group2").text("Fan4-6 MC");
-            }else{
+            } else {
                 $(".Fan8_version").show();
                 $(".Fan5_name").text("Fan5");
                 $(".Fan6_name").text("Fan5");
@@ -1369,9 +1392,9 @@ styles %}
                 $("#Fan_group1").text("Fan1-4 MC");
                 $("#Fan_group2").text("Fan5-8 MC");
             }
-            if(ver_switch["coolant_quality_meter_switch"] === true){
+            if (ver_switch["coolant_quality_meter_switch"] === true) {
                 $(".no_coolant_quality_meter_switch").hide();
-            }else{
+            } else {
                 $(".no_coolant_quality_meter_switch").show();
             }
         }
@@ -1542,8 +1565,8 @@ styles %}
                         let unit = $(this).find("td").eq(5).text().trim();
 
                         let rowNum = i + 2;
-                        console.log({i, item});
-                        
+                        console.log({ i, item });
+
                         /// 更改下載csv檔的每個欄位title
 
                         if (i >= 12 && i < 23) {
@@ -1554,7 +1577,7 @@ styles %}
                             r2 += `Overload Status: ${item},${status},${result},${value},${unit}\n`;
                         } else if (i >= 47 && i < 58) {
                             r2 += `Error Status: ${item},${status},${result},${value},${unit}\n`;
-                        }else  {
+                        } else {
                             r2 += `${item},${status},${result},${value},${unit}\n`;
                         }
                     });
@@ -1583,40 +1606,40 @@ styles %}
             //     });
             //     return;
             // } else {
-                $.ajax({
-                    url: "/get_data_control",
-                    method: "GET",
-                    dataType: "json",
-                    success: function (data) {
-                        let value_section = data["value"];
-                        let mode = value_section["resultMode"];
+            $.ajax({
+                url: "/get_data_control",
+                method: "GET",
+                dataType: "json",
+                success: function (data) {
+                    let value_section = data["value"];
+                    let mode = value_section["resultMode"];
 
-                        if (mode != "Inspection") {
-                            Swal.fire({
-                                title: "info",
-                                text: 'Please Set Mode to "Inspection" First.',
-                                icon: "info",
-                                confirmButtonText: "OK",
-                            }).then(() => {
-                                window.location.href = "/control";
-                            });
-                        } else {
-                            $.ajax({
-                                url: "/start_inspect",
-                                method: "POST",
-                                dataType: "json",
-                                success: function (response) {
-                                    Swal.fire({
-                                        title: "Success",
-                                        text: response.message,
-                                        icon: "success",
-                                        confirmButtonText: "OK",
-                                    });
-                                },
-                            });
-                        }
-                    },
-                });
+                    if (mode != "Inspection") {
+                        Swal.fire({
+                            title: "info",
+                            text: 'Please Set Mode to "Inspection" First.',
+                            icon: "info",
+                            confirmButtonText: "OK",
+                        }).then(() => {
+                            window.location.href = "/control";
+                        });
+                    } else {
+                        $.ajax({
+                            url: "/start_inspect",
+                            method: "POST",
+                            dataType: "json",
+                            success: function (response) {
+                                Swal.fire({
+                                    title: "Success",
+                                    text: response.message,
+                                    icon: "success",
+                                    confirmButtonText: "OK",
+                                });
+                            },
+                        });
+                    }
+                },
+            });
             // }
         });
 
