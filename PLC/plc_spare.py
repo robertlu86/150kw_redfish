@@ -17,6 +17,7 @@ from pymodbus.constants import Endian
 from concurrent_log_handler import ConcurrentTimedRotatingFileHandler
 
 
+
 if platform.system() == "Linux":
     project_root = os.path.dirname(os.getcwd())
     env_path = os.path.join(project_root, "webUI/web/.env")
@@ -477,6 +478,7 @@ inspection_data = {
 ver_switch = {
     "median_switch": False,
     "coolant_quality_meter_switch": False,
+    "fan_count_switch": False
 }
 
 measured_data_mapping = {
@@ -2294,12 +2296,12 @@ def set_warning_registers(mode):
         check_level("Delay_power12v1", "power12v1", True)
         check_level("Delay_power12v2", "power12v2", True)
         check_both_warning(
-        "Thr_W_pH_L",
-        "Thr_W_pH_H",
-        "Thr_W_Rst_pH_L",
-        "Thr_W_Rst_pH_H",
-        "Delay_pH",
-        "W",
+            "Thr_W_pH_L",
+            "Thr_W_pH_H",
+            "Thr_W_Rst_pH_L",
+            "Thr_W_Rst_pH_H",
+            "Delay_pH",
+            "W",
         )
 
         check_both_warning(
@@ -2370,8 +2372,46 @@ def set_warning_registers(mode):
     ###切換水質計開關邏輯 結束
         
         
+    ###切換fan count邏輯
+    if ver_switch["fan_count_switch"]:
+        check_communication("Fan1Com", "Delay_Fan1Com_Communication", True)
+        check_communication("Fan2Com", "Delay_Fan2Com_Communication", True)
+        check_communication("Fan3Com", "Delay_Fan3Com_Communication", True)
+
+        check_communication("Fan5Com", "Delay_Fan5Com_Communication", True)
+        check_communication("Fan6Com", "Delay_Fan6Com_Communication", True)
+        check_communication("Fan7Com", "Delay_Fan7Com_Communication", True)
+
+        
+        check_input("Delay_fan1_error", "fan1_error", False)
+        check_input("Delay_fan2_error", "fan2_error", False)
+        check_input("Delay_fan3_error", "fan3_error", False)
+
+        check_input("Delay_fan5_error", "fan5_error", False)
+        check_input("Delay_fan6_error", "fan6_error", False)
+        check_input("Delay_fan7_error", "fan7_error", False)
         
         
+    else:
+        warning_data['error']["Fan1Com_communication"] = False
+        warning_data['error']["Fan2Com_communication"] = False
+        warning_data['error']["Fan3Com_communication"] = False
+        warning_data['error']["Fan4Com_communication"] = False
+        warning_data['error']["Fan5Com_communication"] = False
+        warning_data['error']["Fan6Com_communication"] = False
+        warning_data['error']["Fan7Com_communication"] = False
+        warning_data['error']["Fan8Com_communication"] = False
+        check_input("Delay_fan1_error", "fan1_error", False)
+        check_input("Delay_fan2_error", "fan2_error", False)
+        check_input("Delay_fan3_error", "fan3_error", False)
+        check_input("Delay_fan4_error", "fan4_error", False)
+        check_input("Delay_fan5_error", "fan5_error", False)
+        check_input("Delay_fan6_error", "fan6_error", False)
+        check_input("Delay_fan7_error", "fan7_error", False)
+        check_input("Delay_fan8_error", "fan8_error", False)
+    ###切換fan count邏輯 結束
+    
+    
     check_communication("Inv1_Freq", "Delay_Inverter1_Communication", True)
     check_communication("Inv2_Freq", "Delay_Inverter2_Communication", True)
     check_communication("Inv3_Freq", "Delay_Inverter3_Communication", True)
@@ -2385,17 +2425,6 @@ def set_warning_registers(mode):
     check_communication("inst_power", "Delay_Power_Meter_Communication", True)
     check_communication("average_current", "Delay_average_current_Communication", True)
     
-    ######測試用#####
-    # check_communication("Fan1Com", "Delay_Fan1Com_Communication", True)
-    # check_communication("Fan2Com", "Delay_Fan2Com_Communication", True)
-    # check_communication("Fan3Com", "Delay_Fan3Com_Communication", True)
-    # check_communication("Fan4Com", "Delay_Fan4Com_Communication", True)
-    # check_communication("Fan5Com", "Delay_Fan5Com_Communication", True)
-    # check_communication("Fan6Com", "Delay_Fan6Com_Communication", True)
-    # check_communication("Fan7Com", "Delay_Fan7Com_Communication", True)
-    # check_communication("Fan8Com", "Delay_Fan8Com_Communication", True)
-    ######測試用結束#####
-
 
     ### 先隱藏不顯示
     # check_level("Delay_level1", "level1", True)
@@ -2407,14 +2436,14 @@ def set_warning_registers(mode):
 
     check_input("Delay_leakage1_leak", "leakage1_leak", True)
     check_input("Delay_leakage1_broken", "leakage1_broken", True)
-    check_input("Delay_fan1_error", "fan1_error", True)
-    check_input("Delay_fan2_error", "fan2_error", True)
-    check_input("Delay_fan3_error", "fan3_error", True)
-    check_input("Delay_fan4_error", "fan4_error", True)
-    check_input("Delay_fan5_error", "fan5_error", True)
-    check_input("Delay_fan6_error", "fan6_error", True)
-    check_input("Delay_fan7_error", "fan7_error", True)
-    check_input("Delay_fan8_error", "fan8_error", True)
+    # check_input("Delay_fan1_error", "fan1_error", True)
+    # check_input("Delay_fan2_error", "fan2_error", True)
+    # check_input("Delay_fan3_error", "fan3_error", True)
+    # check_input("Delay_fan4_error", "fan4_error", True)
+    # check_input("Delay_fan5_error", "fan5_error", True)
+    # check_input("Delay_fan6_error", "fan6_error", True)
+    # check_input("Delay_fan7_error", "fan7_error", True)
+    # check_input("Delay_fan8_error", "fan8_error", True)
     check_input("Delay_main_mc_error", "main_mc_error", False)
     check_input("Delay_Inv1_Error", "Inv1_Error", True)
     check_input("Delay_Inv2_Error", "Inv2_Error", True)
@@ -2433,6 +2462,7 @@ def set_warning_registers(mode):
     check_overload_error("Delay_Inv1_OverLoad")
     check_overload_error("Delay_Inv2_OverLoad")
     check_overload_error("Delay_Inv3_OverLoad")
+    
     check_overload_error("Delay_Fan_OverLoad1")
     check_overload_error("Delay_Fan_OverLoad2")
 
@@ -3182,10 +3212,10 @@ def clear_fan_group1_speed():
         with ModbusTcpClient(
             host=modbus_host, port=modbus_port, unit=modbus_slave_id
         ) as client:
-            client.write_register((20480 + 7020), 0)
-            client.write_register((20480 + 7060), 0)
-            client.write_register((20480 + 7100), 0)
-            client.write_register((20480 + 7140), 0)
+            client.write_register((20480 + 7020), 320)
+            client.write_register((20480 + 7060), 320)
+            client.write_register((20480 + 7100), 320)
+            client.write_register((20480 + 7140), 320)
             client.write_coils((8192 + 850), [False])
             client.write_coils((8192 + 851), [False])
             client.write_coils((8192 + 852), [False])
@@ -3200,10 +3230,10 @@ def clear_fan_group2_speed():
         with ModbusTcpClient(
             host=modbus_host, port=modbus_port, unit=modbus_slave_id
         ) as client:
-            client.write_register((20480 + 7380), 0)
-            client.write_register((20480 + 7420), 0)
-            client.write_register((20480 + 7460), 0)
-            client.write_register((20480 + 7500), 0)
+            client.write_register((20480 + 7380), 320)
+            client.write_register((20480 + 7420), 320)
+            client.write_register((20480 + 7460), 320)
+            client.write_register((20480 + 7500), 320)
             client.write_coils((8192 + 854), [False])
             client.write_coils((8192 + 855), [False])
             client.write_coils((8192 + 856), [False])
@@ -3217,14 +3247,23 @@ def stop_fan():
         with ModbusTcpClient(
             host=modbus_host, port=modbus_port, unit=modbus_slave_id
         ) as client:
-            client.write_register((20480 + 7020), 0)
-            client.write_register((20480 + 7060), 0)
-            client.write_register((20480 + 7100), 0)
-            client.write_register((20480 + 7140), 0)
-            client.write_register((20480 + 7380), 0)
-            client.write_register((20480 + 7420), 0)
-            client.write_register((20480 + 7460), 0)
-            client.write_register((20480 + 7500), 0)
+            ###寫入一伏特
+            client.write_register((20480 + 7020), 320)
+            client.write_register((20480 + 7060), 320)
+            client.write_register((20480 + 7100), 320)
+            client.write_register((20480 + 7140), 320)
+            client.write_register((20480 + 7380), 320)
+            client.write_register((20480 + 7420), 320)
+            client.write_register((20480 + 7460), 320)
+            client.write_register((20480 + 7500), 320)
+            # client.write_coils((8192 + 850), [False])
+            # client.write_coils((8192 + 851), [False])
+            # client.write_coils((8192 + 852), [False])
+            # client.write_coils((8192 + 853), [False])
+            # client.write_coils((8192 + 854), [False])
+            # client.write_coils((8192 + 855), [False])
+            # client.write_coils((8192 + 856), [False])
+            # client.write_coils((8192 + 857), [False])
     except Exception as e:
         print(f"clear fan error:{e}")
 
@@ -3583,6 +3622,7 @@ def control():
 
         if change_to_server2:
             ### 與PLC相同 開始 (要tab一次)
+        
             try:
                 restart_server["start"] = time.time()
                 server_error["start"] = time.time()
@@ -3630,9 +3670,9 @@ def control():
                 
                 ### 檢查目前FAN數量   
 
-                print(f'ver_switch["fan_count_switch"]:{ver_switch["fan_count_switch"]}')
+                # print(f'ver_switch["fan_count_switch"]:{ver_switch["fan_count_switch"]}')
                 fan_count_6 = bool(ver_switch["fan_count_switch"])
-                print(f'fan_count_6:{fan_count_6}')
+                # print(f'fan_count_6:{fan_count_6}')
                 
                 try:
                     with ModbusTcpClient(host=modbus_host, port=modbus_port) as client:
@@ -4047,12 +4087,20 @@ def control():
                         # print(f'bit_output_regs["mc_fan1"]:{bit_output_regs["mc_fan1"]}')
                         for i in range(1, 5):
                             key = f"fan_freq{i}"
-                            all_sensors_dict[key] = serial_sensor_value[key] 
+                            all_sensors_dict[key] = (
+                                ##轉速100%, RPM為4150
+                                ### 將RPM 轉為 %
+                                serial_sensor_value[key] / 4150 * 100
+                                )
                             if not bit_output_regs["mc_fan1"]:
                                 all_sensors_dict[key] = 0
                         for i in range(5, 9):
                             key = f"fan_freq{i}"
-                            all_sensors_dict[key] = serial_sensor_value[key] 
+                            all_sensors_dict[key] = (
+                                ##轉速100%, RPM為4150
+                                ### 將RPM 轉為 %
+                                serial_sensor_value[key] / 4150 * 100
+                                )
                             if not bit_output_regs["mc_fan2"]:
                                 all_sensors_dict[key] = 0
                                 
@@ -4096,9 +4144,9 @@ def control():
                 except Exception as e:
                     print(f"change to imperial error: {e}")
                     
-                # journal_logger.info(f'serial_sensor_value:{serial_sensor_value}')
+                journal_logger.info(f'serial_sensor_value:{serial_sensor_value}')
 
-                # print(f'all_sensors_dict:{all_sensors_dict}')
+                journal_logger.info(f'all_sensors_dict:{all_sensors_dict}')
                 ###將all_sensor寫進D5000
                 registers = []
                 for key in all_sensors_dict.keys():
@@ -4254,34 +4302,37 @@ def control():
                             set_pump3_speed(0)
 
                     if not flag4:
+                        # print(f'word_regs["fan_speed"]:{word_regs["fan_speed"]}')
                         if word_regs["fan_speed"] > 0:
                             fs = translate_fan_speed(word_regs["fan_speed"])
-                            ### 如果轉換後大於0
-                            if fs >= 0:
-                                set_f1(fs if word_regs["f1_check"] else 0)
-                                set_f2(fs if word_regs["f2_check"] else 0)
-                                set_f3(fs if word_regs["f3_check"] else 0)
-                                set_f4(fs if word_regs["f4_check"] else 0)
+                            ### 如果轉換後大於0  
+                            ### 等於0的話給 2 % = 320 , 以避免風扇全速轉
+                            # print(f'fs:{fs}')
+                            if fs > 0:
+                                set_f1(fs if word_regs["f1_check"] else 320)
+                                set_f2(fs if word_regs["f2_check"] else 320)
+                                set_f3(fs if word_regs["f3_check"] else 320)
+                                set_f4(fs if word_regs["f4_check"] else 320)
                         else:
-                            set_f1(0)
-                            set_f2(0)
-                            set_f3(0)
-                            set_f4(0)
+                            set_f1(320)
+                            set_f2(320)
+                            set_f3(320)
+                            set_f4(320)
 
                     if not flag5:
                         if word_regs["fan_speed"] > 0:
                             fs = translate_fan_speed(word_regs["fan_speed"])
                             ### 如果轉換後大於0
-                            if fs >= 0:
-                                set_f5(fs if word_regs["f5_check"] else 0)
-                                set_f6(fs if word_regs["f6_check"] else 0)
-                                set_f7(fs if word_regs["f7_check"] else 0)
-                                set_f8(fs if word_regs["f8_check"] else 0)
+                            if fs > 0:
+                                set_f5(fs if word_regs["f5_check"] else 320)
+                                set_f6(fs if word_regs["f6_check"] else 320)
+                                set_f7(fs if word_regs["f7_check"] else 320)
+                                set_f8(fs if word_regs["f8_check"] else 320)
                         else:
-                            set_f5(0)
-                            set_f6(0)
-                            set_f7(0)
-                            set_f8(0)
+                            set_f5(320)
+                            set_f6(320)
+                            set_f7(320)
+                            set_f8(320)
 
                     mode_last = mode
                     change_back_mode = mode
@@ -4397,7 +4448,8 @@ def control():
                     change_back_mode = mode
                 elif mode == "inspection":
                     read_flow_time = 15
-                    pump_open_time = 10
+                    pump_open_time = 20
+                    fan_open_time = 20        
                     error_check_time = 18
                     overload_index = {
                         "Inv": [1, 2, 3],
@@ -4710,13 +4762,13 @@ def control():
                             if inspection_data["step"] == 4:
                                 
                                 ###測fan
-                                print(f"4. 開啟 Fan 的 inv/mc: {pump_open_time} 秒")
+                                print(f"4. 開啟 Fan 的 inv/mc: {fan_open_time} 秒")
                                 bit_output_regs["mc_fan1"]=True
                                 bit_output_regs["mc_fan2"]=True
                                 for i in range(1, 9):
                                     change_progress(f"fan{i}_speed", "standby")
                                     
-                                speed = translate_fan_speed(50)
+                                speed = translate_fan_speed(30)
                                 set_f1(speed)
                                 set_f2(speed)
                                 set_f3(speed)
@@ -4774,7 +4826,7 @@ def control():
                                     inspection_data["end_time"]
                                     - inspection_data["mid_time"]
                                 )
-                                if diff >= pump_open_time:
+                                if diff >= fan_open_time:
                                     inspection_data["step"] += 1
                                     inspection_data["mid_time"] = inspection_data[
                                         "end_time"
@@ -4868,7 +4920,9 @@ def control():
                                         # print(f"max_{fan_id}: {max_value}")
 
                                         # 判斷範圍
-                                        inspection_data["result"][speed_key] = not (55 > max_value > 45)
+                                        ###RPM判斷範圍30% 為1245  1452~1037
+                                        # inspection_data["result"][speed_key] = not (50 > max_value > 45)
+                                        inspection_data["result"][speed_key] = not (1452 > max_value > 1037)
                                         write_measured_data(30 + (i*2-1), max_value)
                                         change_progress(speed_key, "finish")
                                         
@@ -4958,9 +5012,10 @@ def control():
                                             j += 1
 
                                         if "Flow_" in key:
+                                            # journal_logger.info(f'serial_sensor_value')
                                             flow_check = (
-                                                serial_sensor_value[raw_key] < 1000
-                                                or serial_sensor_value[key] > 20000
+                                                sensor_raw[raw_key] < 1000
+                                                or sensor_raw[raw_key] > 20000
                                             )
                                             inspection_data["result"][key] = flow_check
                                             change_progress(key, "finish")
@@ -5766,7 +5821,7 @@ def rtu_thread():
 
                     for i, unit in enumerate(fan_units, start=1):
                         try:
-                            r = client.read_holding_registers(1, 1, unit=unit)
+                            r = client.read_input_registers(53293, 1, unit=unit)
                             ###fan speed freq
                             raw_485_data[f"Fan{i}Com"] = r.registers[0]
                             raw_485_comm[f"Fan{i}Com"] = False

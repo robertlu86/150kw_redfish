@@ -4018,12 +4018,20 @@ def control():
                     # print(f'bit_output_regs["mc_fan1"]:{bit_output_regs["mc_fan1"]}')
                     for i in range(1, 5):
                         key = f"fan_freq{i}"
-                        all_sensors_dict[key] = serial_sensor_value[key] 
+                        all_sensors_dict[key] = (
+                            ##轉速100%, RPM為4150
+                            ### 將RPM 轉為 %
+                            serial_sensor_value[key] / 4150 * 100
+                            )
                         if not bit_output_regs["mc_fan1"]:
                             all_sensors_dict[key] = 0
                     for i in range(5, 9):
                         key = f"fan_freq{i}"
-                        all_sensors_dict[key] = serial_sensor_value[key] 
+                        all_sensors_dict[key] = (
+                            ##轉速100%, RPM為4150
+                            ### 將RPM 轉為 %
+                            serial_sensor_value[key] / 4150 * 100
+                            )
                         if not bit_output_regs["mc_fan2"]:
                             all_sensors_dict[key] = 0
                             
