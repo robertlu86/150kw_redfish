@@ -5121,20 +5121,20 @@ def set_operation_mode():
 
             set_p_check([p1, p2, p3])
             set_f_check([f1, f2, f3, f4, f5, f6, f7, f8])
-
+            ### 如果設定值為0, 設定1% 160
             if fan == 0:
-                set_fan1(0)
-                set_fan2(0)
+                set_fan1(160)
+                set_fan2(160)
             else:
                 set_fan_reg(float(fan))
 
                 if fan_ol1:
                     flag4 = True
-                    set_fan1(0)
+                    set_fan1(160)
 
                 if fan_ol2:
                     flag5 = True
-                    set_fan2(0)
+                    set_fan2(160)
 
                 if not flag4:
                     final_fan = translate_fan_speed(fan)
