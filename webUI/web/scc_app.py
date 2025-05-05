@@ -15,7 +15,7 @@ from io import BytesIO
 
 # 第三方套件
 import pyzipper
-from dotenv import load_dotenv
+from dotenv import load_dotenv, set_key
 from concurrent_log_handler import ConcurrentTimedRotatingFileHandler
 from flask import (
     Flask, Blueprint, Response, g, jsonify, request, send_file
@@ -73,7 +73,16 @@ oplog_handler.setFormatter(formatter)
 op_logger = logging.getLogger("custom")
 op_logger.setLevel(logging.INFO)
 op_logger.addHandler(oplog_handler)
-
+# if onLinux:
+#     from web.auth import (
+#         USER_DATA,
+#         User,
+#     )
+# else:
+#     from auth import (
+#         USER_DATA,
+#         User,
+#     )
 
 class User(UserMixin):
     def __init__(self, user_id):
@@ -3748,7 +3757,7 @@ def snmp_setting():
 
 
 @scc_bp.route("/api/v1/get_snmp_setting")
-@requires_auth
+
 def get_snmp_setting():
     """Get SNMP Setting"""
     with open(f"{snmp_path}/snmp/snmp.json", "r") as file:
@@ -3757,6 +3766,42 @@ def get_snmp_setting():
 
     return jsonify(snmp_data)
 
+
+# @scc_bp.route("/api/v1/update_password", methods=["POST"])
+# @requires_auth
+# def update_password():
+
+#     password = request.json["password"]
+#     last_pwd = request.json["last_pwd"]
+#     passwordcfm = request.json["passwordcfm"]
+
+#     if passwordcfm != password:
+#         return jsonify(
+#             {"status": "error", "message": "Passwords do not match. Please re-enter."}
+#         )
+
+#     if not all([password, last_pwd, passwordcfm]):
+#         return jsonify(
+#             {
+#                 "status": "error",
+#                 "message": "Please fill out all password fields",
+#             }
+#         )
+
+#     if last_pwd != USER_DATA["admin"]:
+#         return jsonify(
+#             {
+#                 "status": "error",
+#                 "message": "Last password is incorrect",
+#             }
+#         )
+
+#     USER_DATA["admin"] = password
+
+#     set_key(f"{web_path}/.env", "ADMIN", USER_DATA["admin"])
+#     os.chmod(f"{web_path}/.env", 0o666)
+#     op_logger.info("User password updated successfully")
+#     return jsonify({"status": "success", "message": "Password Updated Successfully"})
 
 def get_scc_data():
     while True:
