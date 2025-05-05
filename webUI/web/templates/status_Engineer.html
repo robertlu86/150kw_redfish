@@ -1783,6 +1783,10 @@ styles %}
                 $("#machine").attr("src", "../static/images/side car_with_six_fan_0325_no_coolant_quarity_meter.png");
             } else if (ver_switch["coolant_quality_meter_switch"] === false && ver_switch["fan_count_switch"] === true) {
                 $("#machine").attr("src", "../static/images/side car_with_six_fan_0325.png");
+            } else if (ver_switch["coolant_quality_meter_switch"] === false && ver_switch["fan_count_switch"] === false) {
+                $("#machine").attr("src", "../static/images/side full_picture.jpg");
+            } else if (ver_switch["coolant_quality_meter_switch"] === true && ver_switch["fan_count_switch"] === false) {
+                $("#machine").attr("src", "../static/images/side full_picture.jpg");
             }
         }
 
