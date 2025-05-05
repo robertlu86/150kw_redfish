@@ -1369,14 +1369,8 @@ styles %}
                         timeout: 10000,
                         loader: false,
                     });
-                    const ver_switch = await $.ajax({
-                            url: "/get_data_version",
-                            method: "GET",
-                            loader: false,
-                            timeout: 10000,
-                            dataType: "json",
-                        });
-                    fan_count_version(ver_switch["fan_count_switch"])
+                    const currentVersion = window.sharedData.version;
+                    fan_count_version(currentVersion["fan_count_switch"]);
                     shared_data(data);
                 } catch (error) {
                     console.error("Error fetching data:", error);
