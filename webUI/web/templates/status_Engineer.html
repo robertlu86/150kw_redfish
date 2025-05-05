@@ -1739,7 +1739,17 @@ styles %}
                 $("#fan_freq2_light").css({ top: "40%", left: "86.25%" });
                 $("#fan_freq7_light").css({ top: "47.4%", left: "81.9%" });
                 $("#fan_freq1_light").css({ top: "47.4%", left: "86.25%" });
-            } else {
+
+                $("#Fan4_set, #Fan8_set").hide();
+                $("#Fan5_name").text("Fan Speed 4");
+                $("#Fan6_name").text("Fan Speed 5");
+                $("#Fan7_name").text("Fan Speed 6");
+                $("#Fan_group1").text("Fan 1-3 MC");
+                $("#Fan_group2").text("Fan 4-6 MC");
+
+                $(".fan_speed_unit").text("%");
+
+            } else if (ver_switch["fan_count_switch"] === false) {
                 $("#fan_freq5_light").css({ top: "28.95%", left: "81.8%" });
                 $("#fan_freq4_light").css({ top: "28.9%", left: "86.25" });
                 $("#fan_freq6_light").css({ top: "36.25%", left: "81.8%" });
@@ -1748,62 +1758,35 @@ styles %}
                 $("#fan_freq2_light").css({ top: "43.5%", left: "86.25%" });
                 $("#fan_freq8_light").css({ top: "50.8%", left: "81.8%" });
                 $("#fan_freq1_light").css({ top: "50.8%", left: "86.25%" });
+
+                $("#Fan4_set, #Fan8_set").show();
+                $("#Fan5_name").text("Fan Speed 5");
+                $("#Fan6_name").text("Fan Speed 6");
+                $("#Fan7_name").text("Fan Speed 7");
+                $("#Fan_group1").text("Fan 1-4 MC");
+                $("#Fan_group2").text("Fan 5-8 MC");
+
+                $(".fan_speed_unit").text("%");
             }
 
+            if (ver_switch["coolant_quality_meter_switch"] === true) {
+                $(".pH_set, .cdct_set, .tbd_set, .power12v_set").hide();
+                $("#pH_image_set, #cdct_image_set, #tbd_image_set").hide();
+            } else if (ver_switch["coolant_quality_meter_switch"] === false) {
+                $(".pH_set, .cdct_set, .tbd_set, .power12v_set").show();
+                $("#pH_image_set, #cdct_image_set, #tbd_image_set").show();
+            }
+
+
+            ///更改首頁大圖
             if (ver_switch["coolant_quality_meter_switch"] === true && ver_switch["fan_count_switch"] === true) {
-                $(".pH_set, .cdct_set, .tbd_set, .power12v_set").hide();
-                $("#pH_image_set, #cdct_image_set, #tbd_image_set").hide();
                 $("#machine").attr("src", "../static/images/side car_with_six_fan_0325_no_coolant_quarity_meter.png");
-
-                $("#Fan4_set, #Fan8_set").hide();
-                $("#Fan5_name").text("Fan Speed4");
-                $("#Fan6_name").text("Fan Speed5");
-                $("#Fan7_name").text("Fan Speed6");
-                $("#Fan_group1").text("Fan 1-3 MC");
-                $("#Fan_group2").text("Fan 4-6 MC");
-
-                $(".fan_speed_unit").text("%");
-
-
             } else if (ver_switch["coolant_quality_meter_switch"] === false && ver_switch["fan_count_switch"] === true) {
-                $(".pH_set, .cdct_set, .tbd_set, .power12v_set").show();
-                $("#pH_image_set, #cdct_image_set, #tbd_image_set").show();
                 $("#machine").attr("src", "../static/images/side car_with_six_fan_0325.png");
-                $("#Fan4_set, #Fan8_set").hide();
-                $("#Fan5_name").text("Fan Speed4");
-                $("#Fan6_name").text("Fan Speed5");
-                $("#Fan7_name").text("Fan Speed6");
-                $("#Fan_group1").text("Fan 1-3 MC");
-                $("#Fan_group2").text("Fan 4-6 MC");
-
-                $(".fan_speed_unit").text("%");
-
-            } else if (ver_switch["coolant_quality_meter_switch"] === true && ver_switch["fan_count_switch"] === false) {
-                $(".pH_set, .cdct_set, .tbd_set, .power12v_set").hide();
-                $("#pH_image_set, #cdct_image_set, #tbd_image_set").hide();
-                $("#machine").attr("src", "../static/images/full_picture.jpg");
-                $("#Fan4_set, #Fan8_set").show();
-                $("#Fan5_name").text("Fan Speed5");
-                $("#Fan6_name").text("Fan Speed6");
-                $("#Fan7_name").text("Fan Speed7");
-                $("#Fan_group1").text("Fan 1-4 MC");
-                $("#Fan_group2").text("Fan 5-8 MC");
-
-                $(".fan_speed_unit").text("%");
-
             } else if (ver_switch["coolant_quality_meter_switch"] === false && ver_switch["fan_count_switch"] === false) {
-                $(".pH_set, .cdct_set, .tbd_set, .power12v_set").show();
-                $("#pH_image_set, #cdct_image_set, #tbd_image_set").show();
-                $("#machine").attr("src", "../static/images/full_picture.jpg");
-                $("#Fan4_set, #Fan8_set").show();
-                $("#Fan5_name").text("Fan Speed5");
-                $("#Fan6_name").text("Fan Speed6");
-                $("#Fan7_name").text("Fan Speed7");
-                $("#Fan_group1").text("Fan 1-4 MC");
-                $("#Fan_group2").text("Fan 5-8 MC");
-
-                $(".fan_speed_unit").text("%");
-
+                $("#machine").attr("src", "../static/images/side full_picture.jpg");
+            } else if (ver_switch["coolant_quality_meter_switch"] === true && ver_switch["fan_count_switch"] === false) {
+                $("#machine").attr("src", "../static/images/side full_picture.jpg");
             }
         }
 
