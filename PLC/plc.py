@@ -4225,11 +4225,13 @@ def control():
                         set_pump3_speed(0)
 
                 if not flag4:
+                    # print(f'word_regs["fan_speed"]:{word_regs["fan_speed"]}')
                     if word_regs["fan_speed"] > 0:
                         fs = translate_fan_speed(word_regs["fan_speed"])
                         ### 如果轉換後大於0  
                         ### 等於0的話給 1 % = 160 , 以避免風扇全速轉
-                        if fs >= 0:
+                        # print(f'fs:{fs}')
+                        if fs > 0:
                             set_f1(fs if word_regs["f1_check"] else 160)
                             set_f2(fs if word_regs["f2_check"] else 160)
                             set_f3(fs if word_regs["f3_check"] else 160)
@@ -4244,7 +4246,7 @@ def control():
                     if word_regs["fan_speed"] > 0:
                         fs = translate_fan_speed(word_regs["fan_speed"])
                         ### 如果轉換後大於0
-                        if fs >= 0:
+                        if fs > 0:
                             set_f5(fs if word_regs["f5_check"] else 160)
                             set_f6(fs if word_regs["f6_check"] else 160)
                             set_f7(fs if word_regs["f7_check"] else 160)
