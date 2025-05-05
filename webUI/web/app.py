@@ -4153,6 +4153,9 @@ def read_modbus_data():
                             ### 轉換 freq
                             fs = r.registers[0]
                             fs = fs / 16000 * 100
+                            # print(f'fs:{fs}')
+                            if fs < 5:
+                                fs = 0
                             ctr_data["value"]["resultFan"] = round(fs)
                             break
                     except Exception as e:
@@ -5123,6 +5126,8 @@ def set_operation_mode():
             set_f_check([f1, f2, f3, f4, f5, f6, f7, f8])
             ### 如果設定值為0, 設定1% 160
             if fan == 0:
+                ### 將傳給PLC的速度設成1
+                set_fan_reg(1)
                 set_fan1(160)
                 set_fan2(160)
             else:
