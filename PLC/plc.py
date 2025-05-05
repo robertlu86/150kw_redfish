@@ -4075,9 +4075,9 @@ def control():
             except Exception as e:
                 print(f"change to imperial error: {e}")
                 
-            journal_logger.info(f'serial_sensor_value:{serial_sensor_value}')
+            # journal_logger.info(f'serial_sensor_value:{serial_sensor_value}')
 
-            journal_logger.info(f'all_sensors_dict:{all_sensors_dict}')
+            # journal_logger.info(f'all_sensors_dict:{all_sensors_dict}')
             ###將all_sensor寫進D5000
             registers = []
             for key in all_sensors_dict.keys():
@@ -4659,8 +4659,8 @@ def control():
                             write_measured_data(7, max_f1)
                             print(f"F1 結果：{max_f1}")
 
-                            inspection_data["result"]["f1"] = all(
-                                inspection_data["result"]["f1"]
+                            inspection_data["result"]["f1"] = not(
+                                136 > max_f1 > 100
                             )
 
                             change_progress("f1", "finish")
@@ -4853,7 +4853,7 @@ def control():
                                     # 判斷範圍
                                     ###RPM判斷範圍30% 為1245  1452~1037
                                     # inspection_data["result"][speed_key] = not (50 > max_value > 45)
-                                    inspection_data["result"][speed_key] = not (1452 > max_value > 1037)
+                                    inspection_data["result"][speed_key] = not (35 > max_value > 25)
                                     write_measured_data(30 + (i*2-1), max_value)
                                     change_progress(speed_key, "finish")
                                     
@@ -5657,7 +5657,7 @@ def control():
             print(f"only pc1: {e}")
 
 
-duration = 0.1
+duration = 0
 
 
 def rtu_thread():
@@ -5806,6 +5806,7 @@ def rtu_thread():
                     time.sleep(duration)
 
                 fan_units = [16, 17, 18, 19, 12, 13, 14, 15]
+                # fan_units = [13, 14, 12, 19, 18, 16, 17, 15]
 
                 for i, unit in enumerate(fan_units, start=1):
                     try:
@@ -5861,8 +5862,8 @@ def rtu_thread():
 
                 time.sleep(duration)
 
-                journal_logger.info(f"485 數據：{raw_485_data}")
-                journal_logger.info(f"485 通訊：{raw_485_comm}")
+                # journal_logger.info(f"485 數據：{raw_485_data}")
+                # journal_logger.info(f"485 通訊：{raw_485_comm}")
             except Exception as e:
                 print(f"enclosed: {e}")
             ### 複製進plc_spare 結束
