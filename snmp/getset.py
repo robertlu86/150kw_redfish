@@ -712,7 +712,7 @@ def trap(trap_bool_lists, check_switch):
                     elif level1_reg <= index < level2_reg:
                         if data_details["sensor_value_data"][a_name]["Alert"]:
                             # messages(oid, warning_alert_list[i][j])
-                            if check_switch and ["pH", "Conductivity", "Turbidity"].includes(a_name):
+                            if check_switch and (a_name == "pH" or a_name == "Conductivity" or a_name == "Turbidity"):
                                 continue
                             
                             send_snmp_trap(
@@ -799,7 +799,7 @@ def Mbus_get():
                             trap_bool_lists[i]
                             for i in [0, 1, 5, 6, 8, 9, 10, 11, 15, 16]
                         ]
-                        trap(error_section)
+                        trap(error_section, check_switch)
                 cnt = 0
             except Exception as e:
                 print(f"trap list error: {e}")
