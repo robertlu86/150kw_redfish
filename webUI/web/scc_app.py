@@ -26,10 +26,16 @@ from pymodbus.constants import Endian
 from pymodbus.payload import BinaryPayloadDecoder
 
 
-USERNAME = "admin"
-
-PASSWORD = os.getenv("ADMIN")
 load_dotenv()
+# USERNAME = "admin"
+
+# PASSWORD = os.getenv("ADMIN")
+
+# 使用者與對應密碼（從環境變數讀取）
+USER_CREDENTIALS = {
+    "admin": os.getenv("ADMIN"),
+    "superuser": os.getenv("SUPERUSER"),
+}
 
 if platform.system() == "Linux":
     onLinux = True
@@ -1736,7 +1742,8 @@ def is_valid_ip(ip):
 
 def check_auth(username, password):
     """檢查是否為有效的用戶名和密碼"""
-    return username == USERNAME and password == PASSWORD
+    # return username == USERNAME and password == PASSWORD
+    return username in USER_CREDENTIALS and password == USER_CREDENTIALS[username]
 
 
 def authenticate():
