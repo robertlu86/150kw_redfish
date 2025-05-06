@@ -7488,6 +7488,19 @@ def delete_downtime_signal_records():
         return jsonify({"status": "fail", "message": "No records found to delete."})
 
 
+# @app.route("/mc_power_off", methods=["POST"])
+# @login_required
+# def mc_power_off():
+#     try:
+#         with ModbusTcpClient(
+#             host=modbus_host, port=modbus_port, unit=modbus_slave_id
+#         ) as client:
+#             client.write_coils((8192 + 840), [False])
+#     except Exception as e:
+#         print(f"mc power off error:{e}")
+#         return retry_modbus((8192 + 840), [False], "coil")
+
+
 @app.route("/mc_setting", methods=["POST"])
 @login_required
 def mc_setting():

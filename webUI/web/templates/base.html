@@ -167,6 +167,7 @@
             width: 100%;
         }
 
+        .overload_error,
         .plc_disconnect {
             border-radius: 5px;
             color: red;
@@ -266,6 +267,9 @@
 <div style="display: flex; justify-content: center">
     <div class="plc_disconnect">PLC Connection Error</div>
 </div>
+<!--<div style="display: flex; justify-content: center">
+    <div class="overload_error"></div>
+</div>-->
 {% block content %} {% endblock %}
 <script>
     jQuery(document).ready(function () {
@@ -642,6 +646,39 @@
 
         window.sharedData = {};  // 宣告全域物件
 
+        /*function check_overload_and_error(data) {
+            const $overloadDiv = $('.overload_error');
+            const overloadKeys = ["Inv1_OverLoad", "Inv2_OverLoad", "Inv3_OverLoad"];
+            const errorKeys = ["Inv1_Error", "Inv2_Error", "Inv3_Error"];
+            let displayText = '';
+
+            // 優先顯示過載訊息
+            let finalMessage = [];
+
+            for (let i = 1; i <= 3; i++) {
+                const overloadKey = `Inv${i}_OverLoad`;
+                const errorKey = `Inv${i}_Error`;
+
+                const overload = data.error[overloadKey];
+                const error = data.error[errorKey];
+
+                if (overload) {
+                    // 如果有過載，顯示過載訊息
+                    finalMessage.push(`Inv${i} OverLoad`);
+                } else if (error) {
+                    // 如果只有錯誤，顯示錯誤訊息
+                    finalMessage.push(`Inv${i} Error`);
+                }
+            }
+
+            // 如果有任何訊息，顯示
+            if (finalMessage.length > 0) {
+                $overloadDiv.text(finalMessage.join(', ')).show();
+            } else {
+                $overloadDiv.hide();  // 如果沒有過載或錯誤，隱藏 div
+            }
+        }*/
+
         async function get_change_light_data() {
             while (true) {
                 try {
@@ -662,13 +699,13 @@
                     window.sharedData.data = data;
                     window.sharedData.version = version;
                     change_light(data, version);
-
+                    
                     if (data["error"]["PLC"]) {
                         $(".plc_disconnect").show();
                     } else {
                         $(".plc_disconnect").hide();
                     }
-
+                    //check_overload_and_error(data);
                 } catch (error) {
                     console.error("AJAX request failed:", error);
                 }
