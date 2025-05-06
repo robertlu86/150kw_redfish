@@ -1215,7 +1215,7 @@ styles %}
             while (true) {
                 try {
                     //// 測試直接從base.html抓取get_data資料////
-                    
+
                     // const data = await $.ajax({
                     //     url: "/get_data",
                     //     method: "GET",
@@ -1338,9 +1338,9 @@ styles %}
                 console.error("Error fetching data:", error);
             },
         });
-        
-        function fan_count_version(ver_switch){
-            if(ver_switch === true){
+
+        function fan_count_version(ver_switch) {
+            if (ver_switch === true) {
                 $("#Fan4_set, #Fan8_set, #Fan4_run_time_set, #Fan8_run_time_set").hide();
                 $("#fan4_check, #fan8_check").prop("checked", false);
                 $("#Fan5_name").text("Fan4:");
@@ -1349,7 +1349,7 @@ styles %}
                 $("#Fan5_run_name_set").text("Fan4 Running Time:");
                 $("#Fan6_run_name_set").text("Fan5 Running Time:");
                 $("#Fan7_run_name_set").text("Fan6 Running Time:");
-            }else{
+            } else {
                 $("#Fan4_set, #Fan8_set, #Fan4_run_time_set, #Fan8_run_time_set").show();
                 $("#Fan5_name").text("Fan5:");
                 $("#Fan6_name").text("Fan6:");
@@ -1391,7 +1391,7 @@ styles %}
             inspect_action = data["inspect_action"];
             oc_issue = data["downtime_error"]["oc_issue"];
             f1_issue = data["downtime_error"]["f1_issue"];
-            
+
 
             for (let i = 1; i <= 3; i++) {  // pump  從 1 到 3
                 if (data["mc"][`mc${i}_sw`]) {
@@ -1950,31 +1950,80 @@ styles %}
                 data: formData,
                 processData: false,
                 contentType: false,
+                // success: function (response) {
+                //     clearInterval(interval);
+                //     progressBar.css("width", "100%");
+                //     progressText.text("100% upload successfully");
+                //     Swal.fire({
+                //         title: "Success",
+                //         text: "Upload Completed, system will reboot...",
+                //         icon: "success",
+                //         showConfirmButton: false,
+                //         timer: 5000, // 5 秒後自動關閉
+                //         didOpen: () => {
+                //             // SweetAlert 開啟後呼叫 reboot API
+                //             $.ajax({
+                //                 url: "/reboot-all",
+                //                 type: "GET",
+                //                 success: function (res) {
+                //                     console.log("Reboot triggered:", res);
+                //                 },
+                //                 error: function (xhr) {
+                //                     console.error("Failed to reboot:", xhr);
+                //                 }
+                //             });
+                //         }
+                //     });
+                // },
                 success: function (response) {
                     clearInterval(interval);
                     progressBar.css("width", "100%");
-                    progressText.text("100% upload successfully");
-                    Swal.fire({
-                        title: "Success",
-                        text: "Upload Completed, system will reboot...",
-                        icon: "success",
-                        showConfirmButton: false,
-                        timer: 5000, // 5 秒後自動關閉
-                        didOpen: () => {
-                            // SweetAlert 開啟後呼叫 reboot API
-                            $.ajax({
-                                url: "/reboot-all",
-                                type: "GET",
-                                success: function (res) {
-                                    console.log("Reboot triggered:", res);
-                                },
-                                error: function (xhr) {
-                                    console.error("Failed to reboot:", xhr);
-                                }
-                            });
+
+                    const results = response.results || {};
+                    let allSuccess = true;
+                    let errorDetails = "";
+
+                    for (const [filename, result] of Object.entries(results)) {
+                        if (result.status !== 200) {
+                            allSuccess = false;
+                            errorDetails += `${filename}: ${result.error || result.response || result.status}\n`;
                         }
-                    });
+                    }
+
+                    if (allSuccess) {
+                        progressText.text("100% upload successfully");
+
+                        Swal.fire({
+                            title: "Success",
+                            text: "Upload Completed, system will reboot...",
+                            icon: "success",
+                            showConfirmButton: false,
+                            timer: 5000,
+                            didOpen: () => {
+                                $.ajax({
+                                    url: "/reboot-all",
+                                    type: "GET",
+                                    success: function (res) {
+                                        console.log("Reboot triggered:", res);
+                                    },
+                                    error: function (xhr) {
+                                        console.error("Failed to reboot:", xhr);
+                                    }
+                                });
+                            }
+                        });
+                    } else {
+                        progressText.text("Upload completed with errors");
+
+                        Swal.fire({
+                            title: "Partial Failure",
+                            text: "Some devices failed to update:\n" + errorDetails,
+                            icon: "warning",
+                            confirmButtonText: "OK"
+                        });
+                    }
                 },
+
                 error: function (xhr) {
                     clearInterval(interval);
                     progressContainer.hide();

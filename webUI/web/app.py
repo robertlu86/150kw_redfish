@@ -6431,7 +6431,6 @@ def shutdown():
 @app.route("/upload_zip", methods=["GET", "POST"])
 @login_required
 def upload_zip():
-    admin_password =  os.getenv("ADMIN")
     if request.method == "POST":
         if "file" not in request.files:
             return jsonify({"status": "error", "message": "No file part"}), 400
@@ -6561,7 +6560,7 @@ def upload_zip():
 
 @app.route("/upload_zip_pc_both", methods=["POST"])
 def upload_zip_pc_both():
-    admin_password =  os.getenv("ADMIN")
+    superuser_password =  os.getenv("SUPERUSER")
     
     if "file" not in request.files:
         return jsonify({"message": "No File Part"}), 400
@@ -6606,7 +6605,7 @@ def upload_zip_pc_both():
             try:
                 with open(full_file_path, "rb") as f:
                     files = {"file": (os.path.basename(file_path), f, "application/zip")}
-                    response = requests.post(target_url, files=files, auth=("admin", admin_password), verify=False)
+                    response = requests.post(target_url, files=files, auth=("superuser", superuser_password), verify=False)
 
                 upload_results[file_path] = {
                     "status": response.status_code,
@@ -6629,7 +6628,7 @@ def upload_zip_pc_both():
 
 @app.route('/reboot-all', methods=['GET'])
 def reboot_all():
-    admin_password =  os.getenv("ADMIN")
+    superuser_password =  os.getenv("SUPERUSER")
     
     second_pc = "http://192.168.3.101:5501/api/v1/reboot"
     first_pc = "http://192.168.3.100:5501/api/v1/reboot"
@@ -6637,7 +6636,7 @@ def reboot_all():
     results = {}
 
     try:
-        response2 = requests.get(second_pc, auth=("admin", admin_password), verify=False)
+        response2 = requests.get(second_pc, auth=("superuser", superuser_password), verify=False)
         results["second_pc"] = f"{response2.status_code}: {response2.text}"
     except Exception as e:
         results["second_pc"] = f"Error: {e}"
@@ -6646,7 +6645,7 @@ def reboot_all():
     time.sleep(5)
 
     try:
-        response1 = requests.get(first_pc, auth=("admin", admin_password), verify=False)
+        response1 = requests.get(first_pc, auth=("superuser", superuser_password), verify=False)
         results["first_pc"] = f"{response1.status_code}: {response1.text}"
     except Exception as e:
         results["first_pc"] = f"Error: {e}"
