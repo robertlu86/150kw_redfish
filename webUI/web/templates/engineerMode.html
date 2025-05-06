@@ -2848,6 +2848,52 @@ block styles %}
         </div>
     </div>
 
+    <div class="auto_setting title" data-default="collapsed" data-label="Auto Mode Redundant Sensor Broken Setting">
+        <div class="data-before-trigger"></div>
+        <div class="content">
+
+
+            <div class="row">
+                <div class="col-4">
+                    <p>Pump Speed when Pressure Sensor Broken:</p>
+                </div>
+                <div class="col-2">
+                    <input id="auto_broken_pressure" class="form-control keyboard_onlyNumber" type="text" placeholder="" />
+                </div>
+                <div class="col-2">%</div>
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <p>
+                        Pump Speed when Temperature Sensor Broken:
+                    </p>
+                </div>
+                <div class="col-2">
+                    <input id="auto_broken_temperature" class="form-control keyboard_onlyNumber" type="text" placeholder="" />
+                </div>
+                <div class="col-2">%</div>
+            </div>
+            <div class="row button_box">
+                <div class="col-4"></div>
+                <div class="col-8 btn_box">
+                    <div>
+                        <button id="auto_setting_apply" class="btn btn-outline-success" style="margin-right: 10px; margin-top: 20px">
+                            Apply
+                        </button>
+                        <button id="auto_setting_cancel" class="btn btn-outline-success" style="margin-right: 10px; margin-top: 20px">
+                            Cancel
+                        </button>
+                    </div>
+
+                    <!-- <div>
+                        <button id="resetAuto" class="btn btn-outline-success" type="submit" style="margin-right: 10px; margin-top: 20px">
+                            Restore to Factory Default
+                        </button>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+    </div>
     {% endif %}
 
     <div class="screen_setting title" data-default="collapsed" data-label="Status Indicator Setting">
@@ -3183,6 +3229,14 @@ block styles %}
             "data-before",
             "Status Indicator Setting ▲"
         );
+        jQuery(".auto_setting").attr(
+            "data-before",
+            "Auto Mode Redundant Sensor Broken Setting ▲"
+        );
+        jQuery(".auto_setting").attr(
+            "data-before",
+            "Auto Mode Redundant Sensor Broken Setting ▲"
+        );
         jQuery(".rack_setting").attr("data-before", "Rack Enable Setting ▲");
         jQuery(".switch_version").attr("data-before", "Switch Version ▲");
 
@@ -3303,11 +3357,8 @@ block styles %}
 
                 for (key in auto_setting) {
                     if (auto_setting.hasOwnProperty(key)) {
-                        $("#auto_water").val(auto_setting["auto_water"]);
-                        $("#auto_pump").val(auto_setting["auto_pump"]);
-                        $("#auto_dew_point").val(
-                            auto_setting["auto_dew_point"]
-                        );
+                        $("#auto_broken_temperature").val(auto_setting["auto_broken_temperature"]);
+                        $("#auto_broken_pressure").val(auto_setting["auto_broken_pressure"]);
                     }
                 }
 
@@ -3966,11 +4017,11 @@ block styles %}
         });
 
         $("#auto_setting_apply").click(function () {
-            let auto_water = Number($("#auto_water").val());
-            let auto_pump = Number($("#auto_pump").val());
-            let auto_dew_point = Number($("#auto_dew_point").val());
+            let auto_broken_temperature = Number($("#auto_broken_temperature").val());
+            let auto_broken_pressure = Number($("#auto_broken_pressure").val());
 
-            if (!Number.isInteger(auto_water) || !Number.isInteger(auto_pump)) {
+
+            if (!Number.isInteger(auto_broken_temperature) || !Number.isInteger(auto_broken_pressure)) {
                 Swal.fire({
                     title: "Error",
                     text: "Please Enter Integers Only",
@@ -3982,12 +4033,10 @@ block styles %}
             }
 
             if (
-                auto_water > 100 ||
-                auto_water < 0 ||
-                auto_pump > 100 ||
-                auto_pump < 0 ||
-                auto_dew_point > 100 ||
-                auto_dew_point < 0
+                auto_broken_temperature > 100 ||
+                auto_broken_temperature < 0 ||
+                auto_broken_pressure > 100 ||
+                auto_broken_pressure < 0
             ) {
                 Swal.fire({
                     title: "Error",
@@ -4002,9 +4051,9 @@ block styles %}
                 type: "POST",
                 url: "/auto_setting_apply",
                 data: JSON.stringify({
-                    auto_water: auto_water,
-                    auto_pump: auto_pump,
-                    auto_dew_point: auto_dew_point,
+                    auto_broken_temperature: auto_broken_temperature,
+                    auto_broken_pressure: auto_broken_pressure,
+
                 }),
                 success: function (response) {
                     Swal.fire({
@@ -4029,11 +4078,8 @@ block styles %}
 
                     for (key in auto_setting) {
                         if (auto_setting.hasOwnProperty(key)) {
-                            $("#auto_water").val(auto_setting["auto_water"]);
-                            $("#auto_pump").val(auto_setting["auto_pump"]);
-                            $("#auto_dew_point").val(
-                                auto_setting["auto_dew_point"]
-                            );
+                            $("#auto_broken_temperature").val(auto_setting["auto_broken_temperature"]);
+                            $("#auto_broken_pressure").val(auto_setting["auto_broken_pressure"]);
                         }
                     }
                 },
@@ -4719,7 +4765,7 @@ block styles %}
             } else {
                 coolant_quality_meter_switch = false;
             }
-            
+
             if (fan_count_switch == "old") {
                 fan_count_switch = true;
             } else {
