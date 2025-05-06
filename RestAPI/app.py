@@ -61,7 +61,7 @@ modbus_port = 502
 modbus_slave_id = 1
 
 op_mode = {"mode": "stop"}
-pump_speed_set = {"pump1_speed": 0, "pump2_speed": 0, "pump3_speed": 0}
+pump_speed_set = {"pump_speed": 0, "pump1_speed": 0, "pump2_speed": 0, "pump3_speed": 0}
 fan_speed_set = {
     "fan1_speed": 0,
     "fan2_speed": 0,
@@ -1276,6 +1276,7 @@ class PumpSpeed(Resource):
 
         try:
             data = read_ctr_data()
+            pump_speed_set["pump_speed"] =  data["value"]["pump_speed"]
             pump_speed_set["pump1_speed"] = (
                 data["value"]["resultPS"] if data["value"]["resultP1"] else 0
             )
