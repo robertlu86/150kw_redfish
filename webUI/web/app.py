@@ -6569,9 +6569,9 @@ def upload_zip_pc_both():
 
     if file.filename == "":
         return jsonify({"message": "No File Selected"}), 400
-
-    if file.filename != "upload.zip":
-        return jsonify({"message": "Please upload correct file name"}), 400
+    ### 取消zip檔名限制
+    # if file.filename != "upload.zip":
+    #     return jsonify({"message": "Please upload correct file name"}), 400
 
     if not file.filename.endswith(".zip"):
         return jsonify({"message": "Wrong File Type"}), 400
@@ -6585,10 +6585,42 @@ def upload_zip_pc_both():
     file.save(local_zip_path)
 
     # 解壓縮 ZIP
+    # try:
+    #     with zipfile.ZipFile(local_zip_path, "r") as zip_ref:
+    #         zip_ref.extractall(temp_dir)
+    # except zipfile.BadZipFile:
+    #     return jsonify({"message": "Invalid ZIP file"}), 400
+    zip_password = "Itgs50848614"
     try:
-        with zipfile.ZipFile(local_zip_path, "r") as zip_ref:
+        with pyzipper.AESZipFile(local_zip_path, "r", encryption=pyzipper.WZ_AES) as zip_ref:
+
+            # 檢查每個檔案是否加密
+            if not any(info.flag_bits & 0x1 for info in zip_ref.infolist()):
+                os.remove(local_zip_path)  # 清理未通過檢查的 zip
+                return jsonify({"message": "ZIP file must be password-protected"}), 400
+
+            zip_ref.setpassword(zip_password.encode())
+
+            try:
+                namelist = zip_ref.namelist()
+                if not namelist:
+                    os.remove(local_zip_path)
+                    return jsonify({"status": "error", "message": "ZIP file is empty"}), 400
+
+                # 嘗試讀取第一個檔案驗證密碼
+                zip_ref.read(namelist[0])
+            except RuntimeError:
+                os.remove(local_zip_path)
+                return jsonify({"status": "error", "message": "Invalid password"}), 400
+                
             zip_ref.extractall(temp_dir)
-    except zipfile.BadZipFile:
+
+    except RuntimeError:
+        os.remove(local_zip_path)
+        return jsonify({"message": "Wrong password or corrupt zip"}), 400
+
+    except pyzipper.BadZipFile:
+        os.remove(local_zip_path)
         return jsonify({"message": "Invalid ZIP file"}), 400
 
     # 定義目標 API 端點
