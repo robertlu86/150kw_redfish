@@ -2427,9 +2427,9 @@ def set_warning_registers(mode):
     
 
     ### 先隱藏不顯示
-    # check_level("Delay_level1", "level1", True)
-    # check_level("Delay_level2", "level2", True)
-    # check_level("Delay_level3", "level3", True)
+    check_level("Delay_level1", "level1", True)
+    check_level("Delay_level2", "level2", True)
+    check_level("Delay_level3", "level3", True)
     check_level("Delay_power24v1", "power24v1", True)
     check_level("Delay_power24v2", "power24v2", True)
 
@@ -5627,6 +5627,7 @@ def control():
                 time.sleep(1)
             except Exception as e:
                 print(f"TCP Client Error: {e}")
+                
             ### 與PLC相同 結束
             try:
                 if restart_server["stage"] == 1:
@@ -5689,6 +5690,7 @@ def rtu_thread():
 
             if change_to_server2:
             ### 與PLC相同 開始 (要tab一次)
+            
                 try:
                     # journal_logger.info(f'start first')
                     if not client.connect():
@@ -5878,6 +5880,7 @@ def rtu_thread():
                     # journal_logger.info(f"485 通訊：{raw_485_comm}")
                 except Exception as e:
                     print(f"enclosed: {e}")
+                    
             ### 與PLC相同 結束
 
     except Exception as e:
