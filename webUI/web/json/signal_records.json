@@ -1,104 +1,164 @@
 [
     {
+        "signal_name": "M363",
+        "on_time": "2025-05-06 16:19:47",
+        "off_time": null,
+        "signal_value": "M363 PLC Communication Broken Error"
+    },
+    {
+        "signal_name": "M363",
+        "on_time": "2025-05-06 16:19:41",
+        "off_time": "2025-05-06 16:19:47",
+        "signal_value": "M363 PLC Communication Broken Error"
+    },
+    {
+        "signal_name": "M363",
+        "on_time": "2025-05-06 16:17:01",
+        "off_time": "2025-05-06 16:19:38",
+        "signal_value": "M363 PLC Communication Broken Error"
+    },
+    {
+        "signal_name": "M363",
+        "on_time": "2025-05-06 16:15:45",
+        "off_time": "2025-05-06 16:17:00",
+        "signal_value": "M363 PLC Communication Broken Error"
+    },
+    {
+        "signal_name": "M363",
+        "on_time": "2025-05-06 16:13:43",
+        "off_time": "2025-05-06 16:15:42",
+        "signal_value": "M363 PLC Communication Broken Error"
+    },
+    {
+        "signal_name": "M363",
+        "on_time": "2025-05-06 16:13:18",
+        "off_time": "2025-05-06 16:13:42",
+        "signal_value": "M363 PLC Communication Broken Error"
+    },
+    {
+        "signal_name": "M363",
+        "on_time": "2025-05-06 16:12:47",
+        "off_time": "2025-05-06 16:13:17",
+        "signal_value": "M363 PLC Communication Broken Error"
+    },
+    {
+        "signal_name": "M363",
+        "on_time": "2025-05-06 16:11:37",
+        "off_time": "2025-05-06 16:12:47",
+        "signal_value": "M363 PLC Communication Broken Error"
+    },
+    {
+        "signal_name": "M363",
+        "on_time": "2025-05-06 16:11:28",
+        "off_time": "2025-05-06 16:11:36",
+        "signal_value": "M363 PLC Communication Broken Error"
+    },
+    {
+        "signal_name": "M363",
+        "on_time": "2025-05-06 11:52:31",
+        "off_time": "2025-05-06 16:11:27",
+        "signal_value": "M363 PLC Communication Broken Error"
+    },
+    {
         "signal_name": "M308",
         "on_time": "2025-04-29 11:16:37",
-        "off_time": null,
+        "off_time": "2025-05-06 11:52:28",
         "signal_value": "M308 Factory Power Status"
     },
     {
         "signal_name": "M309",
         "on_time": "2025-04-29 11:16:37",
-        "off_time": null,
+        "off_time": "2025-05-06 11:52:28",
         "signal_value": "M309 Inverter1 Communication Error"
     },
     {
         "signal_name": "M310",
         "on_time": "2025-04-29 11:16:37",
-        "off_time": null,
+        "off_time": "2025-05-06 11:52:28",
         "signal_value": "M310 Inverter2 Communication Error"
     },
     {
         "signal_name": "M311",
         "on_time": "2025-04-29 11:16:37",
-        "off_time": null,
+        "off_time": "2025-05-06 11:52:28",
         "signal_value": "M311 Inverter3 Communication Error"
     },
     {
         "signal_name": "M335",
         "on_time": "2025-04-29 11:16:37",
-        "off_time": null,
+        "off_time": "2025-05-06 11:52:28",
         "signal_value": "M335 Coolant Supply Pressure (P1) Broken Error"
     },
     {
         "signal_name": "M336",
         "on_time": "2025-04-29 11:16:37",
-        "off_time": null,
+        "off_time": "2025-05-06 11:52:28",
         "signal_value": "M336 Coolant Supply Pressure Spare (P1sp) Broken Error"
     },
     {
         "signal_name": "M337",
         "on_time": "2025-04-29 11:16:37",
-        "off_time": null,
+        "off_time": "2025-05-06 11:52:28",
         "signal_value": "M337 Coolant Return Pressure (P2) Broken Error"
     },
     {
         "signal_name": "M338",
         "on_time": "2025-04-29 11:16:37",
-        "off_time": null,
+        "off_time": "2025-05-06 11:52:28",
         "signal_value": "M338 Coolant Return Pressure Spare (P2sp) Broken Error"
     },
     {
         "signal_name": "M339",
         "on_time": "2025-04-29 11:16:37",
-        "off_time": null,
+        "off_time": "2025-05-06 11:52:28",
         "signal_value": "M339 Filter Inlet Pressure (P3) Broken Error"
     },
     {
         "signal_name": "M340",
         "on_time": "2025-04-29 11:16:37",
-        "off_time": null,
+        "off_time": "2025-05-06 11:52:28",
         "signal_value": "M340 Filter Outlet Pressure (P4) Broken Error"
     },
     {
         "signal_name": "M341",
         "on_time": "2025-04-29 11:16:37",
-        "off_time": null,
+        "off_time": "2025-05-06 11:52:28",
         "signal_value": "M341 Coolant Flow Rate (F1) Broken Error"
     },
     {
         "signal_name": "M343",
         "on_time": "2025-04-29 11:16:37",
-        "off_time": null,
+        "off_time": "2025-05-06 11:52:28",
         "signal_value": "M343 PC2 Error"
     },
     {
         "signal_name": "M349",
         "on_time": "2025-04-29 11:16:37",
-        "off_time": null,
+        "off_time": "2025-05-06 11:52:28",
         "signal_value": "M349 24V Power Supply 1 Error"
     },
     {
         "signal_name": "M350",
         "on_time": "2025-04-29 11:16:37",
-        "off_time": null,
+        "off_time": "2025-05-06 11:52:28",
         "signal_value": "M350 24V Power Supply 2 Error"
     },
     {
         "signal_name": "M351",
         "on_time": "2025-04-29 11:16:37",
-        "off_time": null,
+        "off_time": "2025-05-06 11:52:28",
         "signal_value": "M351 12V Power Supply 1 Error"
     },
     {
         "signal_name": "M352",
         "on_time": "2025-04-29 11:16:37",
-        "off_time": null,
+        "off_time": "2025-05-06 11:52:28",
         "signal_value": "M352 12V Power Supply 2 Error"
     },
     {
         "signal_name": "M353",
         "on_time": "2025-04-29 11:16:37",
-        "off_time": null,
+        "off_time": "2025-05-06 11:52:28",
         "signal_value": "M353 Main MC Status Error"
     },
     {
@@ -2938,65 +2998,5 @@
         "on_time": "2025-04-01 20:08:01",
         "off_time": "2025-04-01 20:08:24",
         "signal_value": "M316 pH (PH) Sensor Communication Error"
-    },
-    {
-        "signal_name": "M317",
-        "on_time": "2025-04-01 20:08:01",
-        "off_time": "2025-04-01 20:08:24",
-        "signal_value": "M317 Conductivity (CON) Sensor Communication Error"
-    },
-    {
-        "signal_name": "M318",
-        "on_time": "2025-04-01 20:08:01",
-        "off_time": "2025-04-01 20:08:24",
-        "signal_value": "M318 Turbidity (Tur) Sensor Communication Error"
-    },
-    {
-        "signal_name": "M319",
-        "on_time": "2025-04-01 20:08:01",
-        "off_time": "2025-04-01 20:08:24",
-        "signal_value": "M319 ATS 1 Communication Error"
-    },
-    {
-        "signal_name": "M320",
-        "on_time": "2025-04-01 20:08:01",
-        "off_time": "2025-04-01 20:08:24",
-        "signal_value": "M320 ATS 2 Communication Error"
-    },
-    {
-        "signal_name": "M321",
-        "on_time": "2025-04-01 20:08:01",
-        "off_time": "2025-04-01 20:08:24",
-        "signal_value": "M321 Power Meter Communication Error"
-    },
-    {
-        "signal_name": "M322",
-        "on_time": "2025-04-01 20:08:01",
-        "off_time": "2025-04-01 20:08:24",
-        "signal_value": "M322 Average Current Communication Error"
-    },
-    {
-        "signal_name": "M323",
-        "on_time": "2025-04-01 20:08:01",
-        "off_time": "2025-04-01 20:08:24",
-        "signal_value": "M323 Fan 1 Communication Error"
-    },
-    {
-        "signal_name": "M324",
-        "on_time": "2025-04-01 20:08:01",
-        "off_time": "2025-04-01 20:08:24",
-        "signal_value": "M324 Fan 2 Communication Error"
-    },
-    {
-        "signal_name": "M325",
-        "on_time": "2025-04-01 20:08:01",
-        "off_time": "2025-04-01 20:08:24",
-        "signal_value": "M325 Fan 3 Communication Error"
-    },
-    {
-        "signal_name": "M326",
-        "on_time": "2025-04-01 20:08:01",
-        "off_time": "2025-04-01 20:08:24",
-        "signal_value": "M326 Fan 4 Communication Error"
     }
 ]
