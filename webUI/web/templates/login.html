@@ -186,7 +186,7 @@
       <input type="text" id="username" class="swal2-input keyboard_text" data-kioskboard-specialcharacters="true"  placeholder="Username">
       <div class="password-box">
       <input type="password" id="password" class="swal2-input keyboard_text" data-kioskboard-specialcharacters="true"  placeholder="Password">
-        <button type="button" id="togglePassword" class="toggle-password"><i class="fas fa-eye"></i></button>
+        <button type="button" id="togglePassword" class="toggle-password"><i class="fas fa-eye-slash"></i></button>
       </div>
       <div id="autoFill">login</div>
       <div id="autoFill_micro">login</div>
@@ -310,28 +310,28 @@
                 
             }
 
-            $(document).on("click", "#autoFill", function () {
-                Swal.getPopup().querySelector("#username").value =
-                    "superuser";
-                Swal.getPopup().querySelector("#password").value =
-                    "Kaori35319185";
-            });
+         // $(document).on("click", "#autoFill", function () {
+            //     Swal.getPopup().querySelector("#username").value =
+            //         "superuser";
+            //     Swal.getPopup().querySelector("#password").value =
+            //         "Kaori35319185";
+            // });
 
-            $(document).on("click", "#autoFill_micro", function () {
-                Swal.getPopup().querySelector("#username").value = "admin";
-                Swal.getPopup().querySelector("#password").value =
-                    "Supermicro12729477";
-            });
+            // $(document).on("click", "#autoFill_micro", function () {
+            //     Swal.getPopup().querySelector("#username").value = "admin";
+            //     Swal.getPopup().querySelector("#password").value =
+            //         "Supermicro12729477";
+            // });
 
-            $(document).on("click", "#autoFill_user", function () {
-                Swal.getPopup().querySelector("#username").value = "user";
-                Swal.getPopup().querySelector("#password").value = "0000";
-            });
+            // $(document).on("click", "#autoFill_user", function () {
+            //     Swal.getPopup().querySelector("#username").value = "user";
+            //     Swal.getPopup().querySelector("#password").value = "0000";
+            // });
 
-            $(document).on("click", "#autoFill_kiosk", function () {
-                Swal.getPopup().querySelector("#username").value = "kiosk";
-                Swal.getPopup().querySelector("#password").value = "0000";
-            });
+            // $(document).on("click", "#autoFill_kiosk", function () {
+            //     Swal.getPopup().querySelector("#username").value = "kiosk";
+            //     Swal.getPopup().querySelector("#password").value = "0000";
+            // });
 
             $("#logoutBtn").click(function () {
                 $.get("/logout", function (response) {

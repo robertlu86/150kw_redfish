@@ -199,4 +199,8 @@ def init_data():
 
 init_data()
 
-StartTcpServer(context, address=("0.0.0.0", 502))
+try:
+    StartTcpServer(context, address=("0.0.0.0", 502))
+    
+except KeyboardInterrupt:
+    print("結束運行")

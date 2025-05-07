@@ -36,23 +36,25 @@
         }
 
         .navbar-brand img {
-            width: 120px; 
+            width: 120px;
             height: auto;
         }
 
-        @media(max-width: 1400px){
-            .nav-link{
-                font-size: 16px;    
+        @media(max-width: 1400px) {
+            .nav-link {
+                font-size: 16px;
             }
+
             .navbar-brand img {
                 width: 100px;
             }
         }
 
-        @media(max-width: 1000px){
-            .nav-link{
-                font-size: 14px;    
+        @media(max-width: 1000px) {
+            .nav-link {
+                font-size: 14px;
             }
+
             .navbar-brand img {
                 width: 80px;
             }
@@ -165,6 +167,7 @@
             width: 100%;
         }
 
+        .overload_error,
         .plc_disconnect {
             border-radius: 5px;
             color: red;
@@ -189,7 +192,7 @@
 
 <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light block">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#"><img src="/static/logo.png" alt="Logo"/></a>
+        <a class="navbar-brand" href="#"><img src="/static/logo.png" alt="Logo" /></a>
         {% if user == 'kiosk' %}
         <div class="data-unlock"></div>
         {% endif %}
@@ -224,8 +227,7 @@
                 </li>
                 {% if user != 'kiosk' %}
                 <li class="log-dropdown dropdown nav-logs">
-                    <a class="nav-link" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
-                        aria-expanded="true">
+                    <a class="nav-link" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="true">
                         Logs
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -265,6 +267,9 @@
 <div style="display: flex; justify-content: center">
     <div class="plc_disconnect">PLC Connection Error</div>
 </div>
+<!--<div style="display: flex; justify-content: center">
+    <div class="overload_error"></div>
+</div>-->
 {% block content %} {% endblock %}
 <script>
     jQuery(document).ready(function () {
@@ -282,7 +287,7 @@
         let animationFrame = null;
 
         //只在本機端顯示虛擬檢盤
-        if(window.location.hostname === "127.0.0.1"){
+        if (window.location.hostname === "127.0.0.1") {
             var aKeyboard = [
                 {
                     0: "-",
@@ -295,6 +300,14 @@
                 },
             ];
             var ipv6Keyboard = [
+                {
+                    0: "A",
+                    1: "B",
+                    2: "C",
+                    3: "D",
+                    4: "E",
+                    5: "F",
+                },
                 {
                     0: ":",
                     1: ".",
@@ -355,6 +368,14 @@
                 },
             ];
             var ipv6Keyboard = [
+                {
+                    0: "A",
+                    1: "B",
+                    2: "C",
+                    3: "D",
+                    4: "E",
+                    5: "F",
+                },
                 {
                     0: ":",
                     1: ".",
@@ -455,7 +476,7 @@
             }
         }
 
-        
+
         $(".nav-item").on("click", function () {
             $(".nav-item").removeClass("active");
             $(this).addClass("active");
@@ -519,102 +540,144 @@
         });
 
         function change_light(data, version) {
-            let v2 = !version['function_switch']
+            // let v2 = !version['function_switch']
             $(".color_light").css("background-color", "green");
 
-            for (key in data["warning_notice"]) {
-                let w_value = data["warning_notice"][key];
-
-                if (
-                    !data["collapse"]["temp_spare"] &&
-                    key === "temp_clntSplySpr"
-                ) {
-                    continue;
-                }
-
-                if (
-                    !data["collapse"]["p2_spare"] &&
-                    key === "prsr_clntRtnSpr"
-                ) {
-                    continue;
-                }
-
-                if (
-                    !data["collapse"]["prsr_spare"] &&
-                    key === "prsr_clntSplySpr"
-                ) {
-                    continue;
-                }
-
-                if (!v2) {
-                    if (key == "prsr_clntRtnSpr") {
-                        continue
-                    }
-                }
-
-                if (w_value) {
-                    $(".color_light").css("background-color", "orange");
-                }
+            if (data["cdu_status"] == "alert") {
+                $(".color_light").css("background-color", "red");
+            } else if (data["cdu_status"] == "warning") {
+                $(".color_light").css("background-color", "orange");
+            } else {
+                $(".color_light").css("background-color", "green");
             }
+            // for (key in data["warning_notice"]) {
+            //     let w_value = data["warning_notice"][key];
 
-            for (key in data["alert_notice"]) {
-                let a_value = data["alert_notice"][key];
+            //     if (
+            //         !data["collapse"]["temp_spare"] &&
+            //         key === "temp_clntSplySpr"
+            //     ) {
+            //         continue;
+            //     }
 
-                if (
-                    !data["collapse"]["temp_spare"] &&
-                    key === "temp_clntSplySpr"
-                ) {
-                    continue;
-                }
+            //     if (
+            //         !data["collapse"]["p2_spare"] &&
+            //         key === "prsr_clntRtnSpr"
+            //     ) {
+            //         continue;
+            //     }
 
-                if (
-                    !data["collapse"]["prsr_spare"] &&
-                    key === "prsr_clntSplySpr"
-                ) {
-                    continue;
-                }
+            //     if (
+            //         !data["collapse"]["prsr_spare"] &&
+            //         key === "prsr_clntSplySpr"
+            //     ) {
+            //         continue;
+            //     }
 
-                if (!v2) {
-                    if (key == "prsr_clntRtnSpr") {
-                        continue
-                    }
-                }
+            //     if (!v2) {
+            //         if (key == "prsr_clntRtnSpr") {
+            //             continue
+            //         }
+            //     }
 
-                if (a_value) {
-                    $(".color_light").css("background-color", "red");
-                }
-            }
+            //     if (w_value) {
+            //         $(".color_light").css("background-color", "orange");
+            //     }
+            // }
 
-            for (key in data["error"]) {
-                let e_value = data["error"][key];
+            // for (key in data["alert_notice"]) {
+            //     let a_value = data["alert_notice"][key];
 
-                if (
-                    !data["collapse"]["temp_spare"] &&
-                    key === "TempClntSplySpr_broken"
-                ) {
-                    continue;
-                }
+            //     if (
+            //         !data["collapse"]["temp_spare"] &&
+            //         key === "temp_clntSplySpr"
+            //     ) {
+            //         continue;
+            //     }
 
-                if (
-                    !data["collapse"]["prsr_spare"] &&
-                    key === "PrsrClntSplySpr_broken"
-                ) {
-                    continue;
-                }
+            //     if (
+            //         !data["collapse"]["prsr_spare"] &&
+            //         key === "prsr_clntSplySpr"
+            //     ) {
+            //         continue;
+            //     }
 
-                if (!v2) {
-                    if (["PrsrClntRtnSpr_broken", "level1_error", "level2_error", "power1_error", "power2_error"].includes(key)) {
-                        continue;
-                    }
-                }
+            //     if (!v2) {
+            //         if (key == "prsr_clntRtnSpr") {
+            //             continue
+            //         }
+            //     }
 
-                if (key != "ATS1") {
-                    if (e_value) {
-                        $(".color_light").css("background-color", "red");
-                    }
-                }
-            }
+            //     if (a_value) {
+            //         $(".color_light").css("background-color", "red");
+            //     }
+            // }
+
+            // for (key in data["error"]) {
+            //     let e_value = data["error"][key];
+
+            //     if (
+            //         !data["collapse"]["temp_spare"] &&
+            //         key === "TempClntSplySpr_broken"
+            //     ) {
+            //         continue;
+            //     }
+
+            //     if (
+            //         !data["collapse"]["prsr_spare"] &&
+            //         key === "PrsrClntSplySpr_broken"
+            //     ) {
+            //         continue;
+            //     }
+
+            //     if (!v2) {
+            //         if (["PrsrClntRtnSpr_broken", "level1_error", "level2_error", "power1_error", "power2_error"].includes(key)) {
+            //             continue;
+            //         }
+            //     }
+
+            //     if (key != "ATS1") {
+            //         if (e_value) {
+            //             $(".color_light").css("background-color", "red");
+            //         }
+            //     }
+            // }
         }
+
+        window.sharedData = {};  // 宣告全域物件
+
+        /*function check_overload_and_error(data) {
+            const $overloadDiv = $('.overload_error');
+            const overloadKeys = ["Inv1_OverLoad", "Inv2_OverLoad", "Inv3_OverLoad"];
+            const errorKeys = ["Inv1_Error", "Inv2_Error", "Inv3_Error"];
+            let displayText = '';
+
+            // 優先顯示過載訊息
+            let finalMessage = [];
+
+            for (let i = 1; i <= 3; i++) {
+                const overloadKey = `Inv${i}_OverLoad`;
+                const errorKey = `Inv${i}_Error`;
+
+                const overload = data.error[overloadKey];
+                const error = data.error[errorKey];
+
+                if (overload) {
+                    // 如果有過載，顯示過載訊息
+                    finalMessage.push(`Inv${i} OverLoad`);
+                } else if (error) {
+                    // 如果只有錯誤，顯示錯誤訊息
+                    finalMessage.push(`Inv${i} Error`);
+                }
+            }
+
+            // 如果有任何訊息，顯示
+            if (finalMessage.length > 0) {
+                $overloadDiv.text(finalMessage.join(', ')).show();
+            } else {
+                $overloadDiv.hide();  // 如果沒有過載或錯誤，隱藏 div
+            }
+        }*/
 
         async function get_change_light_data() {
             while (true) {
@@ -632,20 +695,22 @@
                         timeout: 10000,
                         dataType: "json",
                     });
-
+                    ///將get_data傳到全域, 讓其他html也可以使用
+                    window.sharedData.data = data;
+                    window.sharedData.version = version;
                     change_light(data, version);
-
+                    
                     if (data["error"]["PLC"]) {
                         $(".plc_disconnect").show();
                     } else {
                         $(".plc_disconnect").hide();
                     }
-
+                    //check_overload_and_error(data);
                 } catch (error) {
                     console.error("AJAX request failed:", error);
                 }
 
-                await new Promise((resolve) => setTimeout(resolve, 5000));
+                await new Promise((resolve) => setTimeout(resolve, 3000));
             }
         }
 
@@ -750,28 +815,33 @@
                 console.error("Failed to fetch timeout:", error);
             },
         });
-        if (userType == "superuser" || userType == "admin") {
-            let timeoutLogoutSeconds = 600;
-            let timeoutLogout;
 
-            $(document).on(
-                "mousemove touchstart click keydown keyup",
-                resetTimerLogout
-            );
 
-            function resetTimerLogout() {
-                clearTimeout(timeoutLogout);
+        // if (window.location.hostname === "127.0.0.1") {
+        //     if (userType == "superuser" || userType == "admin") {
+        //         let timeoutLogoutSeconds = 600;
+        //         let timeoutLogout;
 
-                timeoutLogout = setTimeout(() => {
-                    logout();
-                }, timeoutLogoutSeconds * 1000);
-            }
+        //         $(document).on(
+        //             "mousemove touchstart click keydown keyup",
+        //             resetTimerLogout
+        //         );
 
-            function logout() {
-                window.location.href = "/?username=kiosk";
-            }
-            resetTimerLogout();
-        }
+        //         function resetTimerLogout() {
+        //             clearTimeout(timeoutLogout);
+
+        //             timeoutLogout = setTimeout(() => {
+        //                 logout();
+        //             }, timeoutLogoutSeconds * 1000);
+        //         }
+
+        //         function logout() {
+        //             window.location.href = "/?username=kiosk";
+        //         }
+        //         resetTimerLogout();
+        //     }
+
+        // }
 
         async function marquee_data() {
             while (true) {

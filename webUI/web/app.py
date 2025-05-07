@@ -88,7 +88,7 @@ else:
         auth_bp,
         user_login_info,
     )
-
+# print(f"admin_password =  {os.getenv("ADMIN")}")
 app.register_blueprint(auth_bp)
 
 if onLinux:
@@ -684,6 +684,7 @@ sensorData = {
         "fan_mc1": False,
         "fan_mc2": False,
     },
+    "cdu_status": False ,
 }
 
 ctr_data = {
@@ -1900,6 +1901,7 @@ pid_order = {
         "kd_time_temp",
     ],
 }
+auto_setting = {"auto_broken_temperature": 0, "auto_broken_pressure": 0}
 
 system_data = {
     "value": {
@@ -2160,6 +2162,29 @@ def check_warning_status():
         else:
             sensorData["alert_notice"][base_key] = False
 
+def check_cdu_status():
+    cdu_status = "ok"
+
+    # 優先處理 alert 和 error（最高優先權）
+    for key in sensorData["error"]:
+        if sensorData["error"][key]:
+            cdu_status = "alert"
+            break  # 已達最高優先，直接跳出
+
+    if cdu_status != "alert":
+        for key in sensorData["alert_notice"]:
+            if sensorData["alert_notice"][key]:
+                cdu_status = "alert"
+                break
+
+    # 再處理 warning（中優先權）
+    if cdu_status != "alert":
+        for key in sensorData["warning_notice"]:
+            if sensorData["warning_notice"][key]:
+                cdu_status = "warning"
+                break
+
+    sensorData["cdu_status"] = cdu_status
 
 def parse_nmcli_output(outputs, network_set, is_ipv6=False):
     for output in outputs:
@@ -3945,7 +3970,14 @@ def read_modbus_data():
                 fan6_v = fan6.registers[0] / 16000 * 100
                 fan7_v = fan7.registers[0] / 16000 * 100
                 fan8_v = fan8.registers[0] / 16000 * 100
-                
+                # journal_logger.info(fan1_v)
+                # journal_logger.info(fan2_v)
+                # journal_logger.info(fan3_v)
+                # journal_logger.info(fan4_v)
+                # journal_logger.info(fan5_v)
+                # journal_logger.info(fan6_v)
+                # journal_logger.info(fan7_v)
+                # journal_logger.info(fan8_v)
                 if not ctr_data["mc"]["resultMC1"] or not ctr_data["value"]["resultP1"]:
                     inv1_v = 0
 
@@ -4006,14 +4038,14 @@ def read_modbus_data():
                 ctr_data["inv"]["inv1"] = inv1_v >= 25
                 ctr_data["inv"]["inv2"] = inv2_v >= 25
                 ctr_data["inv"]["inv3"] = inv3_v >= 25
-                ctr_data["inv"]["fan1"] = fan1_v >= 25
-                ctr_data["inv"]["fan2"] = fan2_v >= 25
-                ctr_data["inv"]["fan3"] = fan3_v >= 25
-                ctr_data["inv"]["fan4"] = fan4_v >= 25
-                ctr_data["inv"]["fan5"] = fan5_v >= 25
-                ctr_data["inv"]["fan6"] = fan6_v >= 25
-                ctr_data["inv"]["fan7"] = fan7_v >= 25
-                ctr_data["inv"]["fan8"] = fan8_v >= 25
+                ctr_data["inv"]["fan1"] = fan1_v >= 2
+                ctr_data["inv"]["fan2"] = fan2_v >= 2
+                ctr_data["inv"]["fan3"] = fan3_v >= 2
+                ctr_data["inv"]["fan4"] = fan4_v >= 2
+                ctr_data["inv"]["fan5"] = fan5_v >= 2
+                ctr_data["inv"]["fan6"] = fan6_v >= 2
+                ctr_data["inv"]["fan7"] = fan7_v >= 2
+                ctr_data["inv"]["fan8"] = fan8_v >= 2
         except Exception as e:
             print(f"read inv_en error:{e}")
 
@@ -4106,7 +4138,7 @@ def read_modbus_data():
         if not any(v for k, v in ctr_data["inv"].items() if k.startswith("inv")):
             ctr_data["value"]["resultPS"] = 0
   ########寫入resultFan 
-        fan_inv_addresses = {"fan1": 7020, "fan2": 7060, "fan3": 7100,"fan4":7140, "fan5":7380, "fan6":7400, "fan7":7460, "fan8":7500}
+        fan_inv_addresses = {"fan1": 7020, "fan2": 7060, "fan3": 7100,"fan4":7140, "fan5":7380, "fan6":7420, "fan7":7460, "fan8":7500}
   
         for k, v in ctr_data["inv"].items():
             if k.startswith("fan"):
@@ -4122,6 +4154,9 @@ def read_modbus_data():
                             ### 轉換 freq
                             fs = r.registers[0]
                             fs = fs / 16000 * 100
+                            # print(f'fs:{fs}')
+                            if fs < 5:
+                                fs = 0
                             ctr_data["value"]["resultFan"] = round(fs)
                             break
                     except Exception as e:
@@ -4435,15 +4470,15 @@ def read_modbus_data():
                                     )
                                     if (
                                         sensorData["err_log"]["error"][key].split()[0]
+                                        == "M300"
+                                        or sensorData["err_log"]["error"][key].split()[
+                                            0
+                                        ]
                                         == "M301"
                                         or sensorData["err_log"]["error"][key].split()[
                                             0
                                         ]
                                         == "M302"
-                                        or sensorData["err_log"]["error"][key].split()[
-                                            0
-                                        ]
-                                        == "M338"
                                     ):
                                         record_downtime_signal_off(
                                             sensorData["err_log"]["error"][key].split()[
@@ -4453,7 +4488,8 @@ def read_modbus_data():
                                         )
                                 previous_error_states[key] = current_state
                             error_count = 0
-
+            ###檢查全部status是否有任何warning, alert, error
+            check_cdu_status()  
         except Exception as e:
             print(f"read error issue:{e}")
 
@@ -4556,6 +4592,17 @@ def read_modbus_data():
                         y += 1
             except Exception as e:
                 print(f"read pid pressure error:{e}")
+                flag = True
+            try:
+                with ModbusTcpClient(
+                    host=modbus_host, port=modbus_port, unit=modbus_slave_id
+                ) as client:
+                    r = client.read_holding_registers(960, 2, unit=modbus_slave_id)
+
+                    auto_setting["auto_broken_temperature"] = r.registers[0]
+                    auto_setting["auto_broken_pressure"] = r.registers[1]
+            except Exception as e:
+                print(f"read auto setting error:{e}")
                 flag = True
 
             try:
@@ -4867,6 +4914,7 @@ def get_data_engineerMode():
             "pid_temp": pid_setting["temperature"],
             "inspection_time": inspection_time,
             "visibility": ctr_data["rack_visibility"],
+            "auto_setting": auto_setting,
             "ver_switch": ver_switch,
         }
     )
@@ -5089,20 +5137,22 @@ def set_operation_mode():
 
             set_p_check([p1, p2, p3])
             set_f_check([f1, f2, f3, f4, f5, f6, f7, f8])
-
+            ### 如果設定值為0, 設定2% 320
             if fan == 0:
-                set_fan1(0)
-                set_fan2(0)
+                ### 將傳給PLC的速度設成2
+                set_fan_reg(2)
+                set_fan1(320)
+                set_fan2(320)
             else:
                 set_fan_reg(float(fan))
 
                 if fan_ol1:
                     flag4 = True
-                    set_fan1(0)
+                    set_fan1(320)
 
                 if fan_ol2:
                     flag5 = True
-                    set_fan2(0)
+                    set_fan2(320)
 
                 if not flag4:
                     final_fan = translate_fan_speed(fan)
@@ -6523,6 +6573,8 @@ def upload_zip():
 
 @app.route("/upload_zip_pc_both", methods=["POST"])
 def upload_zip_pc_both():
+    superuser_password =  os.getenv("SUPERUSER")
+    
     if "file" not in request.files:
         return jsonify({"message": "No File Part"}), 400
 
@@ -6530,9 +6582,9 @@ def upload_zip_pc_both():
 
     if file.filename == "":
         return jsonify({"message": "No File Selected"}), 400
-
-    if file.filename != "upload.zip":
-        return jsonify({"message": "Please upload correct file name"}), 400
+    ### 取消zip檔名限制
+    # if file.filename != "upload.zip":
+    #     return jsonify({"message": "Please upload correct file name"}), 400
 
     if not file.filename.endswith(".zip"):
         return jsonify({"message": "Wrong File Type"}), 400
@@ -6546,10 +6598,42 @@ def upload_zip_pc_both():
     file.save(local_zip_path)
 
     # 解壓縮 ZIP
+    # try:
+    #     with zipfile.ZipFile(local_zip_path, "r") as zip_ref:
+    #         zip_ref.extractall(temp_dir)
+    # except zipfile.BadZipFile:
+    #     return jsonify({"message": "Invalid ZIP file"}), 400
+    zip_password = "Itgs50848614"
     try:
-        with zipfile.ZipFile(local_zip_path, "r") as zip_ref:
+        with pyzipper.AESZipFile(local_zip_path, "r", encryption=pyzipper.WZ_AES) as zip_ref:
+
+            # 檢查每個檔案是否加密
+            if not any(info.flag_bits & 0x1 for info in zip_ref.infolist()):
+                os.remove(local_zip_path)  # 清理未通過檢查的 zip
+                return jsonify({"message": "ZIP file must be password-protected"}), 400
+
+            zip_ref.setpassword(zip_password.encode())
+
+            try:
+                namelist = zip_ref.namelist()
+                if not namelist:
+                    os.remove(local_zip_path)
+                    return jsonify({"status": "error", "message": "ZIP file is empty"}), 400
+
+                # 嘗試讀取第一個檔案驗證密碼
+                zip_ref.read(namelist[0])
+            except RuntimeError:
+                os.remove(local_zip_path)
+                return jsonify({"status": "error", "message": "Invalid password"}), 400
+                
             zip_ref.extractall(temp_dir)
-    except zipfile.BadZipFile:
+
+    except RuntimeError:
+        os.remove(local_zip_path)
+        return jsonify({"message": "Wrong password or corrupt zip"}), 400
+
+    except pyzipper.BadZipFile:
+        os.remove(local_zip_path)
         return jsonify({"message": "Invalid ZIP file"}), 400
 
     # 定義目標 API 端點
@@ -6566,7 +6650,7 @@ def upload_zip_pc_both():
             try:
                 with open(full_file_path, "rb") as f:
                     files = {"file": (os.path.basename(file_path), f, "application/zip")}
-                    response = requests.post(target_url, files=files, auth=("admin", "Supermicro12729477"), verify=False)
+                    response = requests.post(target_url, files=files, auth=("superuser", superuser_password), verify=False)
 
                 upload_results[file_path] = {
                     "status": response.status_code,
@@ -6589,13 +6673,15 @@ def upload_zip_pc_both():
 
 @app.route('/reboot-all', methods=['GET'])
 def reboot_all():
+    superuser_password =  os.getenv("SUPERUSER")
+    
     second_pc = "http://192.168.3.101:5501/api/v1/reboot"
     first_pc = "http://192.168.3.100:5501/api/v1/reboot"
 
     results = {}
 
     try:
-        response2 = requests.get(second_pc, auth=("admin", "Supermicro12729477"), verify=False)
+        response2 = requests.get(second_pc, auth=("superuser", superuser_password), verify=False)
         results["second_pc"] = f"{response2.status_code}: {response2.text}"
     except Exception as e:
         results["second_pc"] = f"Error: {e}"
@@ -6604,7 +6690,7 @@ def reboot_all():
     time.sleep(5)
 
     try:
-        response1 = requests.get(first_pc, auth=("admin", "Supermicro12729477"), verify=False)
+        response1 = requests.get(first_pc, auth=("superuser", superuser_password), verify=False)
         results["first_pc"] = f"{response1.status_code}: {response1.text}"
     except Exception as e:
         results["first_pc"] = f"Error: {e}"
@@ -7003,6 +7089,27 @@ def cancel_inspect():
         return retry_modbus_2reg(900, 2, 973, 2)
     op_logger.info("Cancel Inspection")
     return jsonify(message="Cancel Inspection")
+
+@app.route("/auto_setting_apply", methods=["POST"])
+def auto_setting_apply():
+    data = request.get_json("data")
+    auto_broken_temperature = data["auto_broken_temperature"]
+    auto_broken_pressure = data["auto_broken_pressure"]
+
+
+    try:
+        with ModbusTcpClient(
+            host=modbus_host, port=modbus_port, unit=modbus_slave_id
+        ) as client:
+            client.write_register(960, int(auto_broken_temperature))
+            client.write_register(961, int(auto_broken_pressure))
+
+
+    except Exception as e:
+        print(f"auto setting:{e}")
+ 
+    op_logger.info(f"Update Auto Setting Successfully. {data}")
+    return jsonify(message="Update Auto Setting Successfully")
 
 
 @app.route("/resetAdjust", methods=["POST"])
@@ -7445,6 +7552,19 @@ def delete_downtime_signal_records():
         )
     else:
         return jsonify({"status": "fail", "message": "No records found to delete."})
+
+
+# @app.route("/mc_power_off", methods=["POST"])
+# @login_required
+# def mc_power_off():
+#     try:
+#         with ModbusTcpClient(
+#             host=modbus_host, port=modbus_port, unit=modbus_slave_id
+#         ) as client:
+#             client.write_coils((8192 + 840), [False])
+#     except Exception as e:
+#         print(f"mc power off error:{e}")
+#         return retry_modbus((8192 + 840), [False], "coil")
 
 
 @app.route("/mc_setting", methods=["POST"])

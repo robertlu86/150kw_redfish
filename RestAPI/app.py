@@ -20,6 +20,7 @@ import requests
 
 log_path = os.path.dirname(os.getcwd())
 json_path = f"{log_path}/webUI/web/json"
+web_path = f"{log_path}/webUI/web"
 
 app = Flask(__name__)
 api = Api(app, version="0.6.6", title="CDU API", description="API for CDU system")
@@ -61,7 +62,7 @@ modbus_port = 502
 modbus_slave_id = 1
 
 op_mode = {"mode": "stop"}
-pump_speed_set = {"pump1_speed": 0, "pump2_speed": 0, "pump3_speed": 0}
+pump_speed_set = {"pump_speed": 0, "pump1_speed": 0, "pump2_speed": 0, "pump3_speed": 0}
 fan_speed_set = {
     "fan1_speed": 0,
     "fan2_speed": 0,
@@ -431,6 +432,23 @@ sensor_thrshd = {
     "Thr_A_Rst_AverageCurrent_H": 0,
 }
 
+
+physical_asset = {
+    "Name": "cdu",
+    "FirmwareVersion": "0100",
+    "Version": "N/A",
+    # "ProductionDate": "20250430",
+    "Manufacturer": "Supermicro",
+    "Model": "150kw",
+    "SerialNumber": "N/A",
+    "PartNumber": "N/A",
+    # "AssetTag": "N/A",
+    # "CDUStatus": "Good",
+    "OperationMode": "Auto flow control",
+    # "LEDLight": "ON",
+    "CDUStatus": "OK",
+}
+
 fan_speed_model = default_ns.model(
     "FanSpeed",
     {
@@ -792,9 +810,9 @@ def set_fan_speed():
                 fan_speed = cvt_registers_to_float(read_data.registers[0], read_data.registers[1])
                 fan_switch_result["fan_speed"] = fan_speed
             else: 
-                if not 25 <= fan_speed <= 100:
+                if not (15 <= fan_speed <= 100 or fan_speed == 0):
                     return False, {
-                        "message": "Invalid fan speed. The fan speed must be within the range of 25 to 100."
+                        "message": "Invalid fan speed. Accepted values are 15-100 or 0."
                     }  
                    
                 set_fan(fan_speed)
@@ -890,7 +908,7 @@ def cvt_registers_to_float(reg1, reg2):
 
 
 def read_data_from_json():
-    global thrshd, ctr_data, measure_data
+    global thrshd, ctr_data, measure_data, fw_info, sensor_data
 
     with open(f"{json_path}/thrshd.json", "r") as file:
         thrshd = json.load(file)
@@ -901,6 +919,11 @@ def read_data_from_json():
     with open(f"{json_path}/measure_data.json", "r") as file:
         measure_data = json.load(file)
 
+    with open(f"{web_path}/fw_info.json", "r") as file:
+        fw_info = json.load(file)
+        
+    with open(f"{json_path}/sensor_data.json", "r") as file:
+        sensor_data = json.load(file)
 
 def change_to_metric():
     read_data_from_json()
@@ -1165,6 +1188,20 @@ def plc_error():
 def invalid_type():
     return {"message": "Invalid input type"}, 400
 
+@default_ns.route("/cdu")
+class CDU(Resource):
+    @default_ns.doc("get_cdu_information")
+    def get(self):
+        """Get the cdu information"""
+        read_data_from_json()
+        physical_asset["Model"] = fw_info["Model"]
+        physical_asset["Version"] = fw_info["Version"]
+        physical_asset["SerialNumber"] = fw_info["SN"]
+        physical_asset["PartNumber"] = fw_info["PartNumber"]
+        physical_asset["OperationMode"] = ctr_data["value"]["opMod"]
+        physical_asset["CDUStatus"] = sensor_data["cdu_status"]
+
+        return physical_asset
 # set fan speed
 @default_ns.route("/cdu/control/fan_speed")
 class FanSpeed(Resource):
@@ -1200,9 +1237,9 @@ class FanSpeed(Resource):
                     {"message": "Fan speed can only be adjusted in manual mode."},
                 ), 400
 
-            if not 0 <= fan <= 100:
+            if not (15 <= fan <= 100 or fan == 0):
                 return {
-                    "message": "Invalid fan speed. The fan speed must be within the range of 0 to 100."
+                    "message": "Invalid fan speed. Accepted values are 15-100 or 0."
                 }, 400
             elif fan_error1 or fan_error2:
                 word = ""
@@ -1276,6 +1313,7 @@ class PumpSpeed(Resource):
 
         try:
             data = read_ctr_data()
+            pump_speed_set["pump_speed"] =  data["value"]["pump_speed"]
             pump_speed_set["pump1_speed"] = (
                 data["value"]["resultPS"] if data["value"]["resultP1"] else 0
             )
@@ -1561,7 +1599,7 @@ class PumpSwapTime(Resource):
         if current_mode in ["Stop", "Manual"]:
             return False, ("Pump swap time can only be adjusted in auto mode.", 400)
         else:
-            success, result = set_pump_swap_time(new_time)
+            success, result = set_pump_swap_time()
 
         if  success:
             op_logger.info(f"Pump swap time updated successfully. {result}")
@@ -1583,6 +1621,7 @@ class TempSet(Resource):
         try:
             ctr = read_ctr_data()
             current_mode = ctr["value"]["resultMode"]
+            temp = api.payload["temp_set"]
             # current_mode = "auto"
             if not isinstance(temp, int):
                 return False, "Invalid type. Temperature must be integer."
@@ -1591,8 +1630,8 @@ class TempSet(Resource):
                 return False, "Temperature can only be adjusted in auto mode."
             
             else:
-                temp = api.payload["temp_set"]
                 success, result = set_temperature()
+                temp_set["temp_set"] = temp
 
             if success:
                 op_logger.info(f"Temperature updated successfully.{temp_set}")
@@ -1970,15 +2009,15 @@ class ErrorMessages(Resource):
                 "M105": "prsr_clntSplySpare_high",
                 "M106": "prsr_clntRtn_high",
                 "M107": "prsr_clntRtnSpare_high",
-                "M108": "Prsr_FltIn_low",
-                "M109": "Prsr_FltIn_high",
-                "M110": "Prsr_FltOut_high",
+                "M108": "prsr_fltIn_low",
+                "M109": "prsr_fltIn_high",
+                "M110": "prsr_fltOut_high",
                 "M111": "clnt_flow_low",
-                "M112": "Ambient_Temp_low",
-                "M113": "Ambient_Temp_high",
-                "M114": "Relative_Humid_low",
-                "M115": "Relative_Humid_high",
-                "M116": "Dew_Point_low",
+                "M112": "ambient_temp_low",
+                "M113": "ambient_temp_high",
+                "M114": "relative_humid_low",
+                "M115": "relative_humid_high",
+                "M116": "dew_point_low",
                 "M117": "pH_low",
                 "M118": "pH_high",
                 "M119": "cdct_low",
@@ -1990,7 +2029,7 @@ class ErrorMessages(Resource):
 
             for msg_key, sensor_key in key_mapping.items():
                 messages["warning"][msg_key][1] = sensor["warning"][sensor_key]
-
+            
             key_mapping = {
                 "M200": "temp_clntSply_high",
                 "M201": "temp_clntSplySpare_high",
@@ -2000,15 +2039,15 @@ class ErrorMessages(Resource):
                 "M205": "prsr_clntSplySpare_high",
                 "M206": "prsr_clntRtn_high",
                 "M207": "prsr_clntRtnSpare_high",
-                "M208": "Prsr_FltIn_low",
-                "M209": "Prsr_FltIn_high",
-                "M210": "Prsr_FltOut_high",
+                "M208": "prsr_fltIn_low",
+                "M209": "prsr_fltIn_high",
+                "M210": "prsr_fltOut_high",
                 "M211": "clnt_flow_low",
-                "M212": "Ambient_Temp_low",
-                "M213": "Ambient_Temp_high",
-                "M214": "Relative_Humid_low",
-                "M215": "Relative_Humid_high",
-                "M216": "Dew_Point_low",
+                "M212": "ambient_temp_low",
+                "M213": "ambient_temp_high",
+                "M214": "relative_humid_low",
+                "M215": "relative_humid_high",
+                "M216": "dew_point_low",
                 "M217": "pH_low",
                 "M218": "pH_high",
                 "M219": "cdct_low",
@@ -2034,7 +2073,7 @@ class ErrorMessages(Resource):
                 "M309": "Inv1_Com",
                 "M310": "Inv2_Com",
                 "M311": "Inv3_Com",
-                "M312": "Clnt_Flow_Com",
+                # "M312": "Clnt_Flow_Com",
                 "M313": "Ambient_Temp_Com",
                 "M314": "Relative_Humid_Com",
                 "M315": "Dew_Point_Com",

@@ -15,7 +15,7 @@ from io import BytesIO
 
 # 第三方套件
 import pyzipper
-from dotenv import load_dotenv
+from dotenv import load_dotenv, set_key
 from concurrent_log_handler import ConcurrentTimedRotatingFileHandler
 from flask import (
     Flask, Blueprint, Response, g, jsonify, request, send_file
@@ -26,10 +26,16 @@ from pymodbus.constants import Endian
 from pymodbus.payload import BinaryPayloadDecoder
 
 
-USERNAME = "admin"
-
-PASSWORD = os.getenv("ADMIN")
 load_dotenv()
+# USERNAME = "admin"
+
+# PASSWORD = os.getenv("ADMIN")
+
+# 使用者與對應密碼（從環境變數讀取）
+USER_CREDENTIALS = {
+    "admin": os.getenv("ADMIN"),
+    "superuser": os.getenv("SUPERUSER"),
+}
 
 if platform.system() == "Linux":
     onLinux = True
@@ -73,7 +79,16 @@ oplog_handler.setFormatter(formatter)
 op_logger = logging.getLogger("custom")
 op_logger.setLevel(logging.INFO)
 op_logger.addHandler(oplog_handler)
-
+# if onLinux:
+#     from web.auth import (
+#         USER_DATA,
+#         User,
+#     )
+# else:
+#     from auth import (
+#         USER_DATA,
+#         User,
+#     )
 
 class User(UserMixin):
     def __init__(self, user_id):
@@ -96,7 +111,7 @@ thrshd = {}
 ctr_data = {}
 measure_data = {}
 system_data = {}
-
+fw_info = {}
 
 sensor_trap = {
     "CoolantSupplyTemperature": {"Warning": False, "Alert": False},
@@ -1551,15 +1566,21 @@ devices = {
 }
 
 physical_asset = {
+    "Name":"cdu",
     "FirmwareVersion": "0100",
     "Version": "N/A",
-    # "ProductionDate": "20240730",
+    # "ProductionDate": "20250430",
     "Manufacturer": "Supermicro",
-    "Model": "150kW",
+    "Model": "150kw",
     "SerialNumber": "N/A",
     "PartNumber": "N/A",
     # "AssetTag": "N/A",
-    "CDUStatus": "Good",
+    # "CDUStatus": "Good",
+    "OperationMode": "Auto flow control",
+    
+    # "LEDLight": "ON",
+    "CDUStatus": "OK"
+
 }
 
 snmp_data = {
@@ -1721,7 +1742,8 @@ def is_valid_ip(ip):
 
 def check_auth(username, password):
     """檢查是否為有效的用戶名和密碼"""
-    return username == USERNAME and password == PASSWORD
+    # return username == USERNAME and password == PASSWORD
+    return username in USER_CREDENTIALS and password == USER_CREDENTIALS[username]
 
 
 def authenticate():
@@ -1836,7 +1858,7 @@ def set_fan(fan_list):
 
 
 def read_data_from_json():
-    global thrshd, ctr_data, measure_data
+    global thrshd, ctr_data, measure_data, fw_info
 
     with open(f"{web_path}/json/thrshd.json", "r") as file:
         thrshd = json.load(file)
@@ -1846,7 +1868,9 @@ def read_data_from_json():
 
     with open(f"{web_path}/json/measure_data.json", "r") as file:
         measure_data = json.load(file)
-
+        
+    with open(f"{web_path}/fw_info.json", "r") as file:
+        fw_info = json.load(file)
 
 def change_to_metric():
     read_data_from_json()
@@ -3426,10 +3450,24 @@ def devices_set_trap_enable():
 
 @scc_bp.route("/api/v1/physical_asset")
 @requires_auth
-def get():
+def get_physical_asset():
     """Get the physical asset information"""
+    
     return physical_asset
 
+@scc_bp.route("/api/v1/cdu")
+@requires_auth
+def get_fw_info():
+    """Get the cdu information"""
+    read_data_from_json()
+    physical_asset["Model"]= fw_info["Model"]
+    physical_asset["Version"]= fw_info["Version"]
+    physical_asset["SerialNumber"]= fw_info["SN"]
+    physical_asset["PartNumber"]= fw_info["PartNumber"]
+    physical_asset["OperationMode"]= ctr_data["value"]["opMod"]
+    physical_asset["CDUStatus"] = g.sensorData["cdu_status"]
+    
+    return physical_asset
 
 @scc_bp.route("/api/v1/download_logs/error/<date_range>")
 @requires_auth
@@ -3726,7 +3764,7 @@ def snmp_setting():
 
 
 @scc_bp.route("/api/v1/get_snmp_setting")
-@requires_auth
+
 def get_snmp_setting():
     """Get SNMP Setting"""
     with open(f"{snmp_path}/snmp/snmp.json", "r") as file:
@@ -3735,6 +3773,42 @@ def get_snmp_setting():
 
     return jsonify(snmp_data)
 
+
+# @scc_bp.route("/api/v1/update_password", methods=["POST"])
+# @requires_auth
+# def update_password():
+
+#     password = request.json["password"]
+#     last_pwd = request.json["last_pwd"]
+#     passwordcfm = request.json["passwordcfm"]
+
+#     if passwordcfm != password:
+#         return jsonify(
+#             {"status": "error", "message": "Passwords do not match. Please re-enter."}
+#         )
+
+#     if not all([password, last_pwd, passwordcfm]):
+#         return jsonify(
+#             {
+#                 "status": "error",
+#                 "message": "Please fill out all password fields",
+#             }
+#         )
+
+#     if last_pwd != USER_DATA["admin"]:
+#         return jsonify(
+#             {
+#                 "status": "error",
+#                 "message": "Last password is incorrect",
+#             }
+#         )
+
+#     USER_DATA["admin"] = password
+
+#     set_key(f"{web_path}/.env", "ADMIN", USER_DATA["admin"])
+#     os.chmod(f"{web_path}/.env", 0o666)
+#     op_logger.info("User password updated successfully")
+#     return jsonify({"status": "success", "message": "Password Updated Successfully"})
 
 def get_scc_data():
     while True:

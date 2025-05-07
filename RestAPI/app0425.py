@@ -40,6 +40,8 @@ def load_raw_from_api(
 # curl資料
 CDU_BASE = "http://192.168.3.137:5001"
 
+# 全域 Mode 變數
+mode_all = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/op_mode")["mode"]
 
 
 
@@ -2424,25 +2426,40 @@ Sensors_data = {
 }
 
 ThermalEquipment_data= {
+    "@odata.id": "/redfish/v1/ThermalEquipment",
     "@odata.type": "#ThermalEquipment.v1_0_0.ThermalEquipment",
+    "@odata.context": "/redfish/v1/$metadata#ThermalEquipmentCollection.ThermalEquipmentCollection",
+    
     "Name": "Thermal Equipment",
     "Id": "ThermalEquipment",
+    "Description": "列出所有熱管理設備",
+    
     "CDUs": {
         "@odata.id": "/redfish/v1/ThermalEquipment/CDUs"   
     },
-    "@odata.id": "/redfish/v1/ThermalEquipment"
 }
 CDUs_data = {
+    "@odata.id": "/redfish/v1/ThermalEquipment/CDUs",
     "@odata.type": "#CoolingUnitCollection.CoolingUnitCollection",
+     "@odata.context": "/redfish/v1/$metadata#CoolingUnitCollection.CoolingUnitCollection",
+     
     "Name": "CDU Collection",
+    "Description": "中控分配單元（CDU）集合",
+    
     "Members@odata.count": 1,
     "Members": [{"@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1"}],
-    "@odata.id": "/redfish/v1/ThermalEquipment/CDUs"
+    "Oem": {}
 }
 CDUs_data_1 = {
+    "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1",
     "@odata.type": "#CoolingUnit.v1_1_0.CoolingUnit",
+    "@odata.context": "/redfish/v1/$metadata#CoolingUnit.v1_1_0.CoolingUnit",
+    
     "Name": "#1 Cooling Distribution Unit",
     "Id": "1",
+    "Description": "第一台冷卻分配單元，用於機箱液冷散熱",
+    
+    # 資訊
     "Manufacturer": "Supermicro",
     "Model": "CoolingUnit",
     # "UUID": "00000000-0000-0000-0000-e45f013e98f8",
@@ -2451,12 +2468,16 @@ CDUs_data_1 = {
     "FirmwareVersion": "1.0.0",
     "Version": "test_1",
     "ProductionDate": "2024-10-05T00:00:00Z",
+    
     "Status": {
         "State": "Enabled",
         "Health": "OK"
     },
+    
     "CoolingCapacityWatts": 100,
     "EquipmentType": "CDU",
+    
+    # 底下服務
     "Filters": {
         "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Filters"
     },
@@ -2469,14 +2490,16 @@ CDUs_data_1 = {
     "Pumps": {
         "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Pumps"
     },
+    "LeakDetection": {
+        "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/LeakDetection"
+    },
+    # 液冷劑參數    
     "Coolant": {
         "CoolantType": "Water",
         "DensityKgPerCubicMeter": 1000,
         "SpecificHeatkJoulesPerKgK": 4180
     },
-    "LeakDetection": {
-        "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/LeakDetection"
-    },
+    # 泵冗餘示例
     "PumpRedundancy": [
         {
             "RedundancyType": "NPlusM",
@@ -2513,9 +2536,7 @@ CDUs_data_1 = {
             ]
         }
     },
-    # "Oem": {
-    #     "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Oem"
-    # },
+    
     "Links": {
         "Chassis": [
             {
@@ -2528,7 +2549,7 @@ CDUs_data_1 = {
             }
         ]
     },
-    "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1"
+    "Oem": {}
 }
 
 PrimaryCoolantConnectors_data = {
@@ -2596,6 +2617,7 @@ PrimaryCoolantConnectors_data_1 ={
 }
 
 cdus_pumps={
+    "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Pumps",
     "@odata.type": "#PumpCollection.PumpCollection",
     "Name": "Cooling Pump Collection",
     "Members@odata.count": 3,
@@ -2610,7 +2632,6 @@ cdus_pumps={
             "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Pumps/3"
         }
     ],
-    "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Pumps"
 }
 
 # -------------------------------------
@@ -2771,28 +2792,35 @@ cdus_filters_1 = {
 }
 
 environment_metrics = {
+    "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/EnvironmentMetrics",
     "@odata.type": "#EnvironmentMetrics.v1_3_2.EnvironmentMetrics",
+    "@odata.context": "/redfish/v1/$metadata#EnvironmentMetrics.v1_3_2.EnvironmentMetrics",
+    
     "Id": "EnvironmentMetrics",
     "Name": "CDU Environment Metrics",
-    # "AbsoluteHumidity": {
-    #     "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/AbsoluteHumidity",
-    #     "Reading": 11.46
-    # },
+    "Description":    "冷卻分配單元環境感測指標",
+
+    # 溫度（Celsius）
     "TemperatureCelsius": {
         "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/TemperatureCelsius",
         "Reading": 19.81
     },
+    # 露點（Celsius）
     "DewPointCelsius": {
         "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/DewPointCelsius",
         "Reading": 13.53
     },
+    # 相對濕度（百分比）
     "HumidityPercent": {
         "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/HumidityPercent",
         "Reading": 67.11
     },
-    "Oem": {
+    # 絕對濕度（克／立方米)
+    "AbsoluteHumidity": {
+        "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/AbsoluteHumidity",
+        "Reading": 11.46
     },
-    "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/EnvironmentMetrics"
+    "Oem": {},
 }
 
 reservoirs = {
@@ -2827,10 +2855,13 @@ reservoirs_1 = {
 }
 
 root_data={
+    "@odata.id": "/redfish/v1/",
     "@odata.type": "#ServiceRoot.v1_17_0.ServiceRoot",
     "Id": "RootService",
     "Name": "Redfish Service",
     "RedfishVersion": "1.14.0",
+    "Vendor": "Supermicro",
+    "ServiceIdentification": "ServiceRoot",
     "UUID": "00000000-0000-0000-0000-e45f013e98f8",
     "ProtocolFeaturesSupported": {
         "FilterQuery": False,
@@ -2845,76 +2876,73 @@ root_data={
             "MaxLevels": 3
         }
     },
-    "ThermalEquipment": {
-        "@odata.id": "/redfish/v1/ThermalEquipment"
-    },
-    "Managers": {
-        "@odata.id": "/redfish/v1/Managers"
-    },
-    "Chassis": {
-        "@odata.id": "/redfish/v1/Chassis"
-    },
-    "SessionService": {
-        "@odata.id": "/redfish/v1/SessionService"
-    },
-    "AccountService": {
-        "@odata.id": "/redfish/v1/AccountService"
-    },
-    # "EventService": {
-    #     "@odata.id": "/redfish/v1/EventService"
-    # },
-    # "CertificateService": {
-    #     "@odata.id": "/redfish/v1/CertificateService"
-    # },
-    "TelemetryService": {
-        "@odata.id": "/redfish/v1/TelemetryService"
-    },
-    "UpdateService": {
-    "@odata.id": "/redfish/v1/UpdateService"
-    },
-    # "MessageRegistry": {
-    #     "@odata.id": "/redfish/v1/Registries"
-    # },
+    # 支援的服務
+    "ThermalEquipment": {"@odata.id": "/redfish/v1/ThermalEquipment"},
+    "Managers": {"@odata.id": "/redfish/v1/Managers"},
+    "Chassis": {"@odata.id": "/redfish/v1/Chassis"},
+    "SessionService": {"@odata.id": "/redfish/v1/SessionService"},
+    "AccountService": {"@odata.id": "/redfish/v1/AccountService"},
+    # "EventService": {"@odata.id": "/redfish/v1/EventService"},
+    # "CertificateService": {"@odata.id": "/redfish/v1/CertificateService"},
+    "TelemetryService": {"@odata.id": "/redfish/v1/TelemetryService"},
+    "UpdateService": {"@odata.id": "/redfish/v1/UpdateService"},
+    # "MessageRegistry": {"@odata.id": "/redfish/v1/Registries"},
     "Links": {
         "Sessions": {
             "@odata.id": "/redfish/v1/SessionService/Sessions"
         }
     },
-    "ServiceIdentification": "ServiceRoot",
-    "Vendor": "Supermicro",
-    "@odata.id": "/redfish/v1/"
+    # 廠商擴充自訂屬性
+    "Oem": {}
 }
 
 managers_data = {
+    "@odata.id": "/redfish/v1/Managers",
     "@odata.type": "#ManagerCollection.ManagerCollection",
+    "@odata.context": "/redfish/v1/$metadata#ManagerCollection.ManagerCollection",
+    
     "Name": "Manager Collection",
+    "Description":    "所有管理控制器（Manager）資源的集合",
+    
     "Members@odata.count": 1,
     "Members": [
         {
             "@odata.id": "/redfish/v1/Managers/CDU"
         }
     ],
-    "Oem": {
-    },
-    "@odata.id": "/redfish/v1/Managers"
+    "Oem": {},
 }
 
 managers_cdu_data =    {
+    "@odata.id": "/redfish/v1/Managers/CDU",
     "@odata.type": "#Manager.v1_15_0.Manager",
+    "@odata.context": "/redfish/v1/$metadata#Manager.v1_15_0.Manager",
+    
     "Id": "CDU",
     "Name": "CDU Network Interface Module",
+    "Description": "冷卻分配單元管理模組",
+    
     "ManagerType": "ManagementController",
-    "ServiceEntryPointUUID": "92384634-2938-2342-8820-489239905423",
+    
     "UUID": "00000000-0000-0000-0000-e45f013e98f8",
+    "ServiceEntryPointUUID": "92384634-2938-2342-8820-489239905423",
+    
+    # 製造商與韌體資訊
     "Model": "Joo Janta 200",
+    "FirmwareVersion": "1502",
+    
+    # 時間與時區
     "DateTime": "2025/02/21T06:02:08Z", # 有規範怎麼寫
     "DateTimeLocalOffset": "+00:00", # 有規範怎麼寫
     "LastResetTime": "2025-01-24T07:08:48Z",
+    
+    # 自動夏令時間（DST）設定
     "AutoDSTEnabled": False,
     "AutoDSTEnabled@Redfish.AllowableValues": [
         "False"
     ],
-    "TimeZoneName": "test_1",
+    # 時區名稱，以及可選列表
+    "TimeZoneName": "Taipei Standard Time",
     "TimeZoneName@Redfish.AllowableValues": [
     "(UTC+00:00) Coordinated Universal Time",
     "(UTC+00:00) Dublin, Edinburgh, Lisbon, London",
@@ -3056,26 +3084,38 @@ managers_cdu_data =    {
         "(UTC-11:00) Coordinated Universal Time-11",
         "(UTC-12:00) International Date Line West"
     ],
+    # 服務與連線狀態
     "Status": {
         "State": "Enabled",
         "Health": "Critical"
     },
     "PowerState": "On",
+    # 可支援的串流方式
     "SerialConsole": {
         "ServiceEnabled": False
     },
-    "FirmwareVersion": "1502",
-    "ServiceIdentification": None,
+    "ServiceIdentification": "ServiceRoot",
+    
     "NetworkProtocol": {
         "@odata.id": "/redfish/v1/Managers/CDU/NetworkProtocol"
     },
     "EthernetInterfaces": {
         "@odata.id": "/redfish/v1/Managers/CDU/EthernetInterfaces"
     },
+    
     "Links": {
         "Oem": {
         }
     },
+    
+    # 允許 client 用 PATCH 修改的屬性
+    "@Redfish.WriteableProperties": [
+        "DateTime",
+        "DateTimeLocalOffset",
+        "AutoDSTEnabled",
+        "TimeZoneName"
+    ],
+    
     "Actions": {
         "#Manager.ResetToDefaults": {
             "target": "/redfish/v1/Managers/CDU/Actions/Manager.ResetToDefaults",
@@ -3093,15 +3133,9 @@ managers_cdu_data =    {
                 "GracefulRestart"
             ]
         },
-        "Oem": {
-        }
+        "Oem": {}
     },
-    # "Oem": {
-    #     "Supermicro": {
-    #         "@odata.id": "/redfish/v1/Managers/CDU/Oem/Supermicro"
-    #     }
-    # },
-    "@odata.id": "/redfish/v1/Managers/CDU"
+    "Oem": {}
 }
 
 
@@ -3164,27 +3198,34 @@ managers_cdu_network_protocoldata ={
 
 
 ethernet_interfaces_data = {
+    "@odata.id": "/redfish/v1/Managers/CDU/EthernetInterfaces",
     "@odata.type": "#EthernetInterfaceCollection.EthernetInterfaceCollection",
+    "@odata.context": "/redfish/v1/$metadata#EthernetInterfaceCollection.EthernetInterfaceCollection",
     "Name": "Ethernet Network Interface Collection",
+    "Description": "CDU 管理控制器包含的網路介面集合",
     "Members@odata.count": 1,
     "Members": [
         {
             "@odata.id": "/redfish/v1/Managers/CDU/EthernetInterfaces/Main"
         }
     ],
-    "Oem": {
-    },
-    "@odata.id": "/redfish/v1/Managers/CDU/EthernetInterfaces"
+    "Oem": {},
 }
 
 ethernet_interfaces_main_data ={
+    "@odata.id": "/redfish/v1/Managers/CDU/EthernetInterfaces/Main",
     "@odata.type": "#EthernetInterface.v1_8_0.EthernetInterface",
+    "@odata.context": "/redfish/v1/$metadata#EthernetInterface.v1_8_0.EthernetInterface",
+    
     "Id": "Main",
     "Name": "Manager Ethernet Interface",
+    "Description": "CDU 管理控制器主要網路介面",
+    
     "Status": {
         "State": "Enabled",
         "Health": "OK"
     },
+    
     "LinkStatus": "LinkUp",
     "InterfaceEnabled": True,
     "PermanentMACAddress": "e4-5f-01-3e-98-f8",
@@ -3193,13 +3234,27 @@ ethernet_interfaces_main_data ={
     "AutoNeg": True,
     "FullDuplex": True,
     "MTUSize": 1500,
+    
+    # 可由 client 修改的欄位
+    "@Redfish.WriteableProperties": [
+        "InterfaceEnabled",
+        "MTUSize",
+        "HostName",
+        "FQDN",
+        "VLAN",
+        "IPv4Addresses",
+        "IPv6StaticAddresses"
+    ],
+    
     "HostName": "aaaa",
     "FQDN": None,
-    "MaxIPv6StaticAddresses": 1,
+
+    # VLAN 設定
     "VLAN": {
         "VLANEnable": False,
         "VLANId": None
     },
+    # IPv4 位址清單
     "IPv4Addresses": [
         {
             "Address": "10.163.65.58",
@@ -3210,6 +3265,9 @@ ethernet_interfaces_main_data ={
             }
         }
     ],
+    
+    "MaxIPv6StaticAddresses": 1,
+    # IPv6 位址清單
     "IPv6AddressPolicyTable": [
         {
             "Prefix": "::1/128",
@@ -3217,9 +3275,11 @@ ethernet_interfaces_main_data ={
             "Label": 0
         }
     ],
-    "IPv6StaticAddresses": [
-    ],
+    # IPv6 靜態位址
+    "IPv6StaticAddresses": [],
+    # IPv6 預設閘道（若無則為 null）
     "IPv6DefaultGateway": None,
+    # IPv6 位址優先權表
     "IPv6Addresses": [
         {
             "Address": "fe80::e65f:1ff:fe3e:98f8",
@@ -3230,13 +3290,15 @@ ethernet_interfaces_main_data ={
             }
         }
     ],
+    
+    # DNS 伺服器
     "NameServers": [
         "aaaa.dmtf.org"
     ],
-    "Oem": {
-    },
-    "@odata.id": "/redfish/v1/Managers/CDU/EthernetInterfaces/Main"
+    
+    "Oem": {},
 }
+
 redfish_data ={
     "v1": "/redfish/v1/"
 }
@@ -3319,19 +3381,7 @@ class metadata(Resource):
             status=200,
             mimetype='application/xml; charset=utf-8'
         )
-   
-
-# @redfish_ns.route("/redfish")
-# class redfish(Resource):
-#     def get(self):
-#         return "redfish"
     
-# @redfish_ns.route("/redfish/v1")
-# class redfishv1(Resource):
-#     def get(self):
-#         return redfish_data
-    
-  
 # --------------------------------------------
 # thermal equipment
 # -------------------------------------------- 
@@ -3389,9 +3439,18 @@ class ThermalEquipmentCdus1Pumps1(Resource):
     # @requires_auth
     @redfish_ns.doc("thermal_equipment_cdus_1_pumps_1")
     def get(self):
-        pump_speed = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/control/pump_speed")["pump1_speed"]
+        pump_speed = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_speed")["pump1_speed"]
         cdus_pumps_1["PumpSpeedPercent"]["Reading"] = pump_speed
         cdus_pumps_1["PumpSpeedPercent"]["SpeedRPM"] = (pump_speed / pump_hight_speed) * 100
+        
+        state = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_state")["pump1_state"]
+        health = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_health")["pump1_health"]
+        service_hours = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_service_hours")["pump1_service_hours"]
+        if state == "Disable": state = "Disabled"
+        cdus_pumps_1["Status"]["State"] = state
+        cdus_pumps_1["Status"]["Health"] = health
+        cdus_pumps_1["ServiceHours"] = service_hours
+        
 
         return cdus_pumps_1
         
@@ -3401,6 +3460,9 @@ class ThermalEquipmentCdus1Pumps1(Resource):
         body = request.get_json(force=True)
         new_sp = body['pump_speed']
         new_sw = body['pump_switch']
+        
+        # 驗證模式
+        if Controls_data_all["OperationMode"]["ControlMode"] != "Manual": return "only Manual can setting"
         
         # 驗證範圍
         scp = cdus_pumps_1["SpeedControlPercent"]
@@ -3445,9 +3507,17 @@ class ThermalEquipmentCdus1Pumps2(Resource):
     # @requires_auth
     @redfish_ns.doc("thermal_equipment_cdus_1_pumps_2")
     def get(self):
-        pump_speed = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/control/pump_speed")["pump2_speed"]
+        pump_speed = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_speed")["pump2_speed"]
         cdus_pumps_2["PumpSpeedPercent"]["Reading"] = pump_speed
         cdus_pumps_2["PumpSpeedPercent"]["SpeedRPM"] = (pump_speed / pump_hight_speed) * 100
+        
+        state = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_state")["pump2_state"]
+        health = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_health")["pump2_health"]
+        service_hours = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_service_hours")["pump2_service_hours"]
+        if state == "Disable": state = "Disabled"
+        cdus_pumps_2["Status"]["State"] = state
+        cdus_pumps_2["Status"]["Health"] = health
+        cdus_pumps_2["ServiceHours"] = service_hours
         
         return cdus_pumps_2
         
@@ -3457,6 +3527,9 @@ class ThermalEquipmentCdus1Pumps2(Resource):
         body = request.get_json(force=True)
         new_sp = body['pump_speed']
         new_sw = body['pump_switch']
+        
+        # 驗證模式
+        if Controls_data_all["OperationMode"]["ControlMode"] != "Manual": return "only Manual can setting"
         
         # 驗證範圍
         scp = cdus_pumps_2["SpeedControlPercent"]
@@ -3503,9 +3576,17 @@ class ThermalEquipmentCdus1Pumps3(Resource):
     # @requires_auth
     @redfish_ns.doc("thermal_equipment_cdus_1_pumps_3")
     def get(self):
-        pump_speed = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/control/pump_speed")["pump3_speed"]
+        pump_speed = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_speed")["pump3_speed"]
         cdus_pumps_3["PumpSpeedPercent"]["Reading"] = pump_speed
         cdus_pumps_3["PumpSpeedPercent"]["SpeedRPM"] = (pump_speed / pump_hight_speed) * 100
+        
+        state = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_state")["pump3_state"]
+        health = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_health")["pump3_health"]
+        service_hours = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_service_hours")["pump3_service_hours"]
+        if state == "Disable": state = "Disabled"
+        cdus_pumps_3["Status"]["State"] = state
+        cdus_pumps_3["Status"]["Health"] = health
+        cdus_pumps_3["ServiceHours"] = service_hours
         
         return cdus_pumps_3
         
@@ -3515,6 +3596,9 @@ class ThermalEquipmentCdus1Pumps3(Resource):
         body = request.get_json(force=True)
         new_sp = body['pump_speed']
         new_sw = body['pump_switch']
+        
+        # 驗證模式
+        if Controls_data_all["OperationMode"]["ControlMode"] != "Manual": return "only Manual can setting"
         
         # 驗證範圍
         scp = cdus_pumps_3["SpeedControlPercent"]
@@ -3634,14 +3718,45 @@ class ManagersCDU(Resource):
         
         return managers_cdu_data
 
+#=========================================protocol暫存==================================================
+network_proto = {
+    "@odata.id": "/redfish/v1/Managers/CDU/NetworkProtocol",
+    "@odata.type": "#ManagerNetworkProtocol.v1_8_0.ManagerNetworkProtocol",
+    "@odata.context": "/redfish/v1/$metadata#ManagerNetworkProtocol.v1_8_0.ManagerNetworkProtocol",
+    
+    "Name": "Manager Network Protocol",
+    "Id": "NetworkProtocol",
+    "Description": "CDU 管理介面網路協定設定",
+    
+    "NTP": {
+        "NTPServers": ["time.google.com", "time1.google.com"]
+    },
+
+    "Oem": {}
+}
+#@redfish_ns.route("/Managers/CDU/NetworkProtocol")直接被取代了
 @redfish_ns.route("/Managers/CDU/NetworkProtocol")
 class ManagersCDUNetworkProtocol(Resource):
-    # @requires_auth
-    @redfish_ns.doc("managers_cdu_network_protocol")
+
+    @redfish_ns.doc("managers_cdu_network_protocol_get")
+    # 視需求決定要不要 requires_auth
     def get(self):
-        
-        return managers_cdu_network_protocoldata
-        
+        return network_proto
+
+    @redfish_ns.doc("managers_cdu_network_protocol_patch")
+    @requires_auth
+    def patch(self):
+        body = request.json or {}
+
+        # 只驗其中一個欄位就夠 validator 用
+        ntp = body.get("NTP", {})
+        if "NTPServers" in ntp:
+            network_proto["NTP"]["NTPServers"] = ntp["NTPServers"]
+
+        # Redfish 允許 200 (附帶新 resource) 或 204
+        return "", 204
+
+#=========================================protocol暫存==================================================
 @redfish_ns.route("/Managers/CDU/EthernetInterfaces")
 class ManagersCDUEthernetInterfaces(Resource):
     # @requires_auth
@@ -3665,93 +3780,147 @@ class ManagersCDUEthernetInterfacesMain(Resource):
 # chassis
 # -------------------------------------------- 
 Chassis_data = {
+    "@odata.id": "/redfish/v1/Chassis",
     "@odata.type": "#ChassisCollection.ChassisCollection",
+    "@odata.context": "/redfish/v1/$metadata#ChassisCollection.ChassisCollection",
     "Name": "Chassis Collection",
     "Members@odata.count": 1,
     "Members": [{"@odata.id": "/redfish/v1/Chassis/1"}],
-    "@odata.id": "/redfish/v1/Chassis",
+    "Description": "A collection of all chassis resources",
+    "Oem": {}
 }
 
 Chassis_data_1 = {
-    "@odata.type": "#Chassis.v1_25_2.Chassis",
+    "@odata.id": "/redfish/v1/Chassis/1",
+    "@odata.type": "#Chassis.v1_26_0.Chassis",
+    "@odata.context":  "/redfish/v1/$metadata#Chassis.v1_26_0.Chassis",
+    
     "Id": "1",
     "Name": "Catfish System Chassis",
+    "Description": "Main rack-mount chassis for Catfish System",
+    # 標準硬體資訊
     "ChassisType": "RackMount",
     "Manufacturer": "Supermicro",
     "Model": "YellowCat1000",
     "SerialNumber": "24701 011001",
     "PartNumber": "test_1",
     "AssetTag": "CATFISHASSETTAG",
-    "LocationIndicatorActive": True,
+    "UUID": "00000000-0000-0000-0000-e45f013e98f8",
+    
+    # 狀態與指示燈
     "PowerState": "On",
-    "Status": {"State": "Enabled", "Health": "OK"},
+    "IndicatorLED": "Lit",  # Off/Lit/Blinking
+    "LocationIndicatorActive": True,
+    "Status": {
+        "State": "Enabled", 
+        "Health": "OK"
+    },
+    
+    # 各子系統連結
     "PowerSubsystem": {"@odata.id": "/redfish/v1/Chassis/1/PowerSubsystem"},
     "ThermalSubsystem": {"@odata.id": "/redfish/v1/Chassis/1/ThermalSubsystem"},
-    "EnvironmentMetrics": {
-        "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/EnvironmentMetrics"
-    },
+    "EnvironmentMetrics": {"@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/EnvironmentMetrics"},
+    
+    # 感測器/控制集合
     "Sensors": {"@odata.id": "/redfish/v1/Chassis/1/Sensors"},
+    "Controls": {"@odata.id": "/redfish/v1/Chassis/1/Controls"},
+    
+    # OEM 擴充
     "Oem": {
         "LeakDetection": {"@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/LeakDetection"},
         "Pumps": {"@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Pumps"},
         "PrimaryCoolantConnectors": {"@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/PrimaryCoolantConnectors"},
         "Reservoirs": {"@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Reservoirs"},
     },
-    # "LeakDetection": {"@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/LeakDetection"},
-    # "Pumps": {"@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Pumps"},
-    # "PrimaryCoolantConnectors": {
-    #     "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/PrimaryCoolantConnectors"
-    # },
-    # "SecondaryCoolantConnectors": {
-    #     "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/SecondaryCoolantConnectors"
-    # },
-    # "Reservoirs": {"@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Reservoirs"},
-    "Controls": {"@odata.id": "/redfish/v1/Chassis/1/Controls"},
+    # Links 關聯
     "Links": {
         "ManagedBy": [{"@odata.id": "/redfish/v1/Managers/CDU"}],
         "CoolingUnits": [{"@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1"}],
     },
-    "@Redfish.WriteableProperties": ["LocationIndicatorActive"],
-    "@odata.id": "/redfish/v1/Chassis/1",
+    "@Redfish.WriteableProperties": [
+        "LocationIndicatorActive",
+        "IndicatorLED"
+    ],
+    
 }
 
 PowerSubsystem_data = {
     "@odata.id": "/redfish/v1/Chassis/1/PowerSubsystem",
     "@odata.type": "#PowerSubsystem.v1_1_2.PowerSubsystem",
+    "@odata.context": "/redfish/v1/$metadata#PowerSubsystem.v1_1_2.PowerSubsystem",
+    
     "Id": "PowerSubsystem",
     "Name": "Chassis Power Subsystem",
+    "Description":   "Chassis Power Subsystem",
+    
+    "Status": {
+        "State": "Enabled", 
+        "Health": "OK"
+    },
+    
+    # 整個子系統的額定最大功率
     "CapacityWatts": 92.0,
+    
+    # 本次與下游元件協商分配與請求的功率
+    "Allocation": {
+        "AllocatedWatts": 80.0,
+        "RequestedWatts": 90.0
+    },
+    
+    # 與各個電源模組的關聯
     "PowerSupplies": {
         "@odata.id": "/redfish/v1/Chassis/1/PowerSubsystem/PowerSupplies"
     },
-    "Status": {"State": "Enabled", "Health": "OK"},
+    
+    "Oem": {}
 }
 
 PowerSupplies_data = {
     "@odata.id": "/redfish/v1/Chassis/1/PowerSubsystem/PowerSupplies",
     "@odata.type": "#PowerSupplyCollection.PowerSupplyCollection",
+    "@odata.context": "/redfish/v1/$metadata#PowerSupplyCollection.PowerSupplyCollection",
+    "Description":    "Chassis power module collection",
     "Name": "Power Supply Collection",
     "Members@odata.count": 2,
     "Members": [
         {"@odata.id": "/redfish/v1/Chassis/1/PowerSubsystem/PowerSupplies/1"},
         {"@odata.id": "/redfish/v1/Chassis/1/PowerSubsystem/PowerSupplies/2"},
     ],
+    "Oem": {}
 }
 
 PowerSupplies_data_1 = {
+    "@odata.id": "/redfish/v1/Chassis/1/PowerSubsystem/PowerSupplies/1",
     "@odata.type": "#PowerSupply.v1_6_0.PowerSupply",
+    "@odata.context": "/redfish/v1/$metadata#PowerSupply.v1_6_0.PowerSupply",
+    
     "Id": "1",
     "Name": "System Power Control",
-    "Status": {"State": "Enabled", "Health": "OK"},
-    "@odata.id": "/redfish/v1/Chassis/1/PowerSubsystem/PowerSupplies/1",
+    "Description": "Primary AC Power Supply Unit",  
+    
+    "Status": {
+        "State":  "Enabled",
+        "Health": "OK"
+    },
+
+    "Oem": {}
 }
 
 PowerSupplies_data_2 = {
+    "@odata.id": "/redfish/v1/Chassis/1/PowerSubsystem/PowerSupplies/2",
     "@odata.type": "#PowerSupply.v1_6_0.PowerSupply",
+    "@odata.context": "/redfish/v1/$metadata#PowerSupply.v1_6_0.PowerSupply",
+    
     "Id": "2",
     "Name": "System Power Control",
-    "Status": {"State": "Enabled", "Health": "OK"},
-    "@odata.id": "/redfish/v1/Chassis/1/PowerSubsystem/PowerSupplies/2",
+    "Description": "Primary AC Power Supply Unit",  
+    
+    "Status": {
+        "State":  "Enabled",
+        "Health": "OK"
+    },
+
+    "Oem": {}
 }
 
 ThermalSubsystem_data = {
@@ -3785,148 +3954,244 @@ ThermalSubsystem_Fans_data = {
 
 Fans_data = {
     "Fan1": {
-        "@odata.type": "#Fan.v1_5_0.Fan",
         "@odata.id": "/redfish/v1/Chassis/1/ThermalSubsystem/Fans/1",
+        "@odata.type": "#Fan.v1_5_0.Fan",
+        "@odata.context": "/redfish/v1/$metadata#Fan.v1_5_0.Fan",
+        
         "Id": "1",
         "Name": "Fan Right 1",
+        "Description": "Fan Right 1",
         "PhysicalContext": "Chassis",
-        "Status": {"State": "Enabled", "Health": "OK"},
+        # 風扇資訊
+        "PartNumber": "PN-FAN-100",
+        "SerialNumber": "SN12345678", 
+        "Manufacturer": "Supermicro",
+        "Model": "FAN-42",
+        "SparePartNumber": "SPN-FAN-100",
+        
+        # "Coolant.ServiceHours": 3833.48,
+        "Status": {
+            "State": "Enabled", 
+            "Health": "OK"
+        },
         "SpeedPercent": {"@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/1"},
-        # "FirmwareVersion": "@odata.id": "/redfish/v1/Chassis/1/ThermalSubsystem/Fans/1/1",
-        # "ServiceHours": 3833.48,
-        "Location": {"PartLocation": {"ServiceLabel": "Fan 2", "LocationType": "Bay"}},
-        # "SpeedControlPercent": {
-        #     "SetPoint": 44,
-        #     "AllowableMax": 100,
-        #     "AllowableMin": 0,
-        #     "ControlMode": "Disabled",
-        # },
+        "Location": {
+            "PartLocation": {
+                "ServiceLabel": "Fan Bay 1", 
+                "LocationType": "Bay"
+            }
+        },
+        "Oem": {}
     },
     "Fan2": {
-        "@odata.type": "#Fan.v1_5_0.Fan",
         "@odata.id": "/redfish/v1/Chassis/1/ThermalSubsystem/Fans/2",
+        "@odata.type": "#Fan.v1_5_0.Fan",
+        "@odata.context": "/redfish/v1/$metadata#Fan.v1_5_0.Fan",
+        
         "Id": "2",
         "Name": "Fan Right 2",
+        "Description": "Fan Right 2",
         "PhysicalContext": "Chassis",
-        "Status": {"State": "Enabled", "Health": "OK"},
+        # 風扇資訊
+        "PartNumber": "PN-FAN-100",
+        "SerialNumber": "SN12345678", 
+        "Manufacturer": "Supermicro",
+        "Model": "FAN-42",
+        "SparePartNumber": "SPN-FAN-100",
+        
+        # "Coolant.ServiceHours": 3833.48,
+        "Status": {
+            "State": "Enabled", 
+            "Health": "OK"
+        },
         "SpeedPercent": {"@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/2"},
-        # "FirmwareVersion": "1100",
-        # "ServiceHours": 3833.48,
-        "Location": {"PartLocation": {"ServiceLabel": "Fan 2", "LocationType": "Bay"}},
-        # "SpeedControlPercent": {
-        #     "SetPoint": 44,
-        #     "AllowableMax": 100,
-        #     "AllowableMin": 0,
-        #     "ControlMode": "Disabled",
-        # },
+        "Location": {
+            "PartLocation": {
+                "ServiceLabel": "Fan Bay 2", 
+                "LocationType": "Bay"
+            }
+        },
+        "Oem": {}
     },
     "Fan3": {
-        "@odata.type": "#Fan.v1_5_0.Fan",
         "@odata.id": "/redfish/v1/Chassis/1/ThermalSubsystem/Fans/3",
+        "@odata.type": "#Fan.v1_5_0.Fan",
+        "@odata.context": "/redfish/v1/$metadata#Fan.v1_5_0.Fan",
+        
         "Id": "3",
         "Name": "Fan Right 3",
+        "Description": "Fan Right 3",
         "PhysicalContext": "Chassis",
-        "Status": {"State": "Enabled", "Health": "OK"},
+        # 風扇資訊
+        "PartNumber": "PN-FAN-100",
+        "SerialNumber": "SN12345678", 
+        "Manufacturer": "Supermicro",
+        "Model": "FAN-42",
+        "SparePartNumber": "SPN-FAN-100",
+        
+        # "Coolant.ServiceHours": 3833.48,
+        "Status": {
+            "State": "Enabled", 
+            "Health": "OK"
+        },
         "SpeedPercent": {"@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/3"},
-        # "FirmwareVersion": "1100",
-        # "ServiceHours": 3833.48,
-        "Location": {"PartLocation": {"ServiceLabel": "Fan 2", "LocationType": "Bay"}},
-        # "SpeedControlPercent": {
-        #     "SetPoint": 44,
-        #     "AllowableMax": 100,
-        #     "AllowableMin": 0,
-        #     "ControlMode": "Disabled",
-        # },
+        "Location": {
+            "PartLocation": {
+                "ServiceLabel": "Fan Bay 3", 
+                "LocationType": "Bay"
+            }
+        },
+        "Oem": {}
     },
     "Fan4": {
-        "@odata.type": "#Fan.v1_5_0.Fan",
         "@odata.id": "/redfish/v1/Chassis/1/ThermalSubsystem/Fans/4",
+        "@odata.type": "#Fan.v1_5_0.Fan",
+        "@odata.context": "/redfish/v1/$metadata#Fan.v1_5_0.Fan",
+        
         "Id": "4",
         "Name": "Fan Right 4",
+        "Description": "Fan Right 4",
         "PhysicalContext": "Chassis",
-        "Status": {"State": "Enabled", "Health": "OK"},
+        # 風扇資訊
+        "PartNumber": "PN-FAN-100",
+        "SerialNumber": "SN12345678", 
+        "Manufacturer": "Supermicro",
+        "Model": "FAN-42",
+        "SparePartNumber": "SPN-FAN-100",
+        
+        # "Coolant.ServiceHours": 3833.48,
+        "Status": {
+            "State": "Enabled", 
+            "Health": "OK"
+        },
         "SpeedPercent": {"@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/4"},
-        # "FirmwareVersion": "1100",
-        # "ServiceHours": 3833.48,
-        "Location": {"PartLocation": {"ServiceLabel": "Fan 2", "LocationType": "Bay"}},
-        # "SpeedControlPercent": {
-        #     "SetPoint": 44,
-        #     "AllowableMax": 100,
-        #     "AllowableMin": 0,
-        #     "ControlMode": "Disabled",
-        # },
+        "Location": {
+            "PartLocation": {
+                "ServiceLabel": "Fan Bay 4", 
+                "LocationType": "Bay"
+            }
+        },
+        "Oem": {}
     },
     "Fan5": {
-        "@odata.type": "#Fan.v1_5_0.Fan",
         "@odata.id": "/redfish/v1/Chassis/1/ThermalSubsystem/Fans/5",
+        "@odata.type": "#Fan.v1_5_0.Fan",
+        "@odata.context": "/redfish/v1/$metadata#Fan.v1_5_0.Fan",
+        
         "Id": "5",
-        "Name": "Fan Left 1",
+        "Name": "Fan Right 5",
+        "Description": "Fan Right 5",
         "PhysicalContext": "Chassis",
-        "Status": {"State": "Enabled", "Health": "OK"},
+        # 風扇資訊
+        "PartNumber": "PN-FAN-100",
+        "SerialNumber": "SN12345678", 
+        "Manufacturer": "Supermicro",
+        "Model": "FAN-42",
+        "SparePartNumber": "SPN-FAN-100",
+        
+        # "Coolant.ServiceHours": 3833.48,
+        "Status": {
+            "State": "Enabled", 
+            "Health": "OK"
+        },
         "SpeedPercent": {"@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/5"},
-        # "FirmwareVersion": "1100",
-        # "ServiceHours": 3833.48,
-        "Location": {"PartLocation": {"ServiceLabel": "Fan 2", "LocationType": "Bay"}},
-        # "SpeedControlPercent": {
-        #     "SetPoint": 44,
-        #     "AllowableMax": 100,
-        #     "AllowableMin": 0,
-        #     "ControlMode": "Disabled",
-        # },
+        "Location": {
+            "PartLocation": {
+                "ServiceLabel": "Fan Bay 5", 
+                "LocationType": "Bay"
+            }
+        },
+        "Oem": {}
     },
     "Fan6": {
-        "@odata.type": "#Fan.v1_5_0.Fan",
         "@odata.id": "/redfish/v1/Chassis/1/ThermalSubsystem/Fans/6",
+        "@odata.type": "#Fan.v1_5_0.Fan",
+        "@odata.context": "/redfish/v1/$metadata#Fan.v1_5_0.Fan",
+        
         "Id": "6",
-        "Name": "Fan Left 2",
+        "Name": "Fan Right 6",
+        "Description": "Fan Right 6",
         "PhysicalContext": "Chassis",
-        "Status": {"State": "Enabled", "Health": "OK"},
+        # 風扇資訊
+        "PartNumber": "PN-FAN-100",
+        "SerialNumber": "SN12345678", 
+        "Manufacturer": "Supermicro",
+        "Model": "FAN-42",
+        "SparePartNumber": "SPN-FAN-100",
+        
+        # "Coolant.ServiceHours": 3833.48,
+        "Status": {
+            "State": "Enabled", 
+            "Health": "OK"
+        },
         "SpeedPercent": {"@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/6"},
-        # "FirmwareVersion": "1100",
-        # "ServiceHours": 3833.48,
-        "Location": {"PartLocation": {"ServiceLabel": "Fan 2", "LocationType": "Bay"}},
-        # "SpeedControlPercent": {
-        #     "SetPoint": 44,
-        #     "AllowableMax": 100,
-        #     "AllowableMin": 0,
-        #     "ControlMode": "Disabled",
-        # },
+        "Location": {
+            "PartLocation": {
+                "ServiceLabel": "Fan Bay 6", 
+                "LocationType": "Bay"
+            }
+        },
+        "Oem": {}
     },
     "Fan7": {
-        "@odata.type": "#Fan.v1_5_0.Fan",
         "@odata.id": "/redfish/v1/Chassis/1/ThermalSubsystem/Fans/7",
+        "@odata.type": "#Fan.v1_5_0.Fan",
+        "@odata.context": "/redfish/v1/$metadata#Fan.v1_5_0.Fan",
+        
         "Id": "7",
-        "Name": "Fan Left 3",
+        "Name": "Fan Right 7",
+        "Description": "Fan Right 7",
         "PhysicalContext": "Chassis",
-        "Status": {"State": "Enabled", "Health": "OK"},
+        # 風扇資訊
+        "PartNumber": "PN-FAN-100",
+        "SerialNumber": "SN12345678", 
+        "Manufacturer": "Supermicro",
+        "Model": "FAN-42",
+        "SparePartNumber": "SPN-FAN-100",
+        
+        # "Coolant.ServiceHours": 3833.48,
+        "Status": {
+            "State": "Enabled", 
+            "Health": "OK"
+        },
         "SpeedPercent": {"@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/7"},
-        # "FirmwareVersion": "1100",
-        # "ServiceHours": 3833.48,
-        "Location": {"PartLocation": {"ServiceLabel": "Fan 2", "LocationType": "Bay"}},
-        # "SpeedControlPercent": {
-        #     "SetPoint": 44,
-        #     "AllowableMax": 100,
-        #     "AllowableMin": 0,
-        #     "ControlMode": "Disabled",
-        # },
+        "Location": {
+            "PartLocation": {
+                "ServiceLabel": "Fan Bay 7", 
+                "LocationType": "Bay"
+            }
+        },
+        "Oem": {}
     },
     "Fan8": {
-        "@odata.type": "#Fan.v1_5_0.Fan",
         "@odata.id": "/redfish/v1/Chassis/1/ThermalSubsystem/Fans/8",
+        "@odata.type": "#Fan.v1_5_0.Fan",
+        "@odata.context": "/redfish/v1/$metadata#Fan.v1_5_0.Fan",
+        
         "Id": "8",
-        "Name": "Fan Left 4",
+        "Name": "Fan Right 8",
+        "Description": "Fan Right 8",
         "PhysicalContext": "Chassis",
-        "Status": {"State": "Enabled", "Health": "OK"},
+        # 風扇資訊
+        "PartNumber": "PN-FAN-100",
+        "SerialNumber": "SN12345678", 
+        "Manufacturer": "Supermicro",
+        "Model": "FAN-42",
+        "SparePartNumber": "SPN-FAN-100",
+        
+        # "Coolant.ServiceHours": 3833.48,
+        "Status": {
+            "State": "Enabled", 
+            "Health": "OK"
+        },
         "SpeedPercent": {"@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/8"},
-        # "FirmwareVersion": "1100",
-        # "ServiceHours": 3833.48,
-        "Location": {"PartLocation": {"ServiceLabel": "Fan 2", "LocationType": "Bay"}},
-        # "SpeedControlPercent": {
-        #     "SetPoint": 44,
-        #     "AllowableMax": 100,
-        #     "AllowableMin": 0,
-        #     "ControlMode": "Disabled",
-        # },
+        "Location": {
+            "PartLocation": {
+                "ServiceLabel": "Fan Bay 8", 
+                "LocationType": "Bay"
+            }
+        },
+        "Oem": {}
     },
 }
 
@@ -4082,114 +4347,136 @@ Sensors_data_all = {
         "Name": "PowerConsume",
         "Reading": 7.0,
         "ReadingUnits": "kW",
-        "Status": {"Health": "OK", "State": "Enabled"},
+        "Status": {"State": "Enabled", "Health": "OK"},
         "@odata.id": "/redfish/v1/Chassis/1/Sensors/PowerConsume",
     },
     "Fan1": {
         "@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/1",
         "@odata.type": "#Sensor.v1_1_0.Sensor",
+        "@odata.context": "/redfish/v1/$metadata#Sensor.v1_1_0.Sensor",
         "Id": "fan1",
         "Name": "fan 1 Speed Sensor",
+        "SetPoint" : 35,
         "Reading": 5,
         "ReadingUnits": "rpm",
         "ControlMode": "Manual",
-        "Status": {"Health": "OK", "State": "Enabled"},
+        "Status": {"State": "Enabled", "Health": "OK"},
     },
     "Fan2": {
         "@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/2",
         "@odata.type": "#Sensor.v1_1_0.Sensor",
+        "@odata.context": "/redfish/v1/$metadata#Sensor.v1_1_0.Sensor",
         "Id": "fan2",
         "Name": "fan 2 Speed Sensor",
+        "SetPoint" : 35,
         "Reading": 0,
         "ReadingUnits": "rpm",
         "ControlMode": "Manual",
-        "Status": {"Health": "OK", "State": "Enabled"},
+        "Status": {"State": "Enabled", "Health": "OK"},
     },
     "Fan3": {
         "@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/3",
         "@odata.type": "#Sensor.v1_1_0.Sensor",
+        "@odata.context": "/redfish/v1/$metadata#Sensor.v1_1_0.Sensor",
         "Id": "fan3",
         "Name": "fan 3 Speed Sensor",
+        "SetPoint" : 35,
         "Reading": 0,
         "ReadingUnits": "rpm",
         "ControlMode": "Manual",
-        "Status": {"Health": "OK", "State": "Enabled"},
+        "Status": {"State": "Enabled", "Health": "OK"},
     },    
     "Fan4": {
         "@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/4",
         "@odata.type": "#Sensor.v1_1_0.Sensor",
+        "@odata.context": "/redfish/v1/$metadata#Sensor.v1_1_0.Sensor",
         "Id": "fan4",
         "Name": "fan 4 Speed Sensor",
+        "SetPoint" : 35,
         "Reading": 0,
         "ReadingUnits": "rpm",
         "ControlMode": "Manual",
-        "Status": {"Health": "OK", "State": "Enabled"},
+        "Status": {"State": "Enabled", "Health": "OK"},
     },    
     "Fan5": {
         "@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/5",
         "@odata.type": "#Sensor.v1_1_0.Sensor",
+        "@odata.context": "/redfish/v1/$metadata#Sensor.v1_1_0.Sensor",
         "Id": "fan5",
         "Name": "fan 5 Speed Sensor",
+        "SetPoint" : 35,
         "Reading": 0,
         "ReadingUnits": "rpm",
         "ControlMode": "Manual",
-        "Status": {"Health": "OK", "State": "Enabled"},
+        "Status": {"State": "Enabled", "Health": "OK"},
     },    
     "Fan6": {
         "@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/6",
         "@odata.type": "#Sensor.v1_1_0.Sensor",
+        "@odata.context": "/redfish/v1/$metadata#Sensor.v1_1_0.Sensor",
         "Id": "fan6",
         "Name": "fan 6 Speed Sensor",
+        "SetPoint" : 35,
         "Reading": 0,
         "ReadingUnits": "rpm",
         "ControlMode": "Manual",
-        "Status": {"Health": "OK", "State": "Enabled"},
+        "Status": {"State": "Enabled", "Health": "OK"},
     },    
     "Fan7": {
         "@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/7",
         "@odata.type": "#Sensor.v1_1_0.Sensor",
+        "@odata.context": "/redfish/v1/$metadata#Sensor.v1_1_0.Sensor",
         "Id": "fan7",
         "Name": "fan 7 Speed Sensor",
+        "SetPoint" : 35,
         "Reading": 0,
         "ReadingUnits": "rpm",
         "ControlMode": "Manual",
-        "Status": {"Health": "OK", "State": "Enabled"},
+        "Status": {"State": "Enabled", "Health": "OK"},
     },
     "Fan8": {
         "@odata.id": "/redfish/v1/Chassis/1/Sensors/fan/8",
         "@odata.type": "#Sensor.v1_1_0.Sensor",
+        "@odata.context": "/redfish/v1/$metadata#Sensor.v1_1_0.Sensor",
         "Id": "fan8",
         "Name": "fan 8 Speed Sensor",
+        "SetPoint" : 35,
         "Reading": 0,
         "ReadingUnits": "rpm",
         "ControlMode": "Manual",
-        "Status": {"Health": "OK", "State": "Enabled"},
+        "Status": {"State": "Enabled", "Health": "OK"},
     },
 }
 
 Controls_data = {
+    "@odata.id": "/redfish/v1/Chassis/1/Controls",
     "@odata.type": "#ControlCollection.ControlCollection",
+    "@odata.context": "/redfish/v1/$metadata#ControlCollection.ControlCollection",
     "Name": "Control Collection",
+    "Description": "Contains all control interfaces for issuing commands",
     "Members@odata.count": 3,
     "Members": [
         {"@odata.id": "/redfish/v1/Chassis/1/Controls/OperationMode"},
         {"@odata.id": "/redfish/v1/Chassis/1/Controls/PumpsSpeedControl"},
         {"@odata.id": "/redfish/v1/Chassis/1/Controls/FansSpeedControl"},
     ],
-    "@odata.id": "/redfish/v1/Chassis/1/Controls",
+    "Oem": {}
 }
 
 Controls_data_all = {
     "OperationMode": {
+        "@odata.id": "/redfish/v1/Chassis/1/Controls/OperationMode",
         "@odata.type": "#Control.v1_5_1.Control",
+        "@odata.context": "/redfish/v1/$metadata#Control.v1_5_1.Control",
         "Id": "OperationMode",
         "Name": "OperationMode",
         "PhysicalContext": "Chassis",
         "ControlMode": "Automatic",
-        "@odata.id": "/redfish/v1/Chassis/1/Controls/OperationMode",
     },
     "PumpsSpeedControl": {
+        "@odata.id": "/redfish/v1/Chassis/1/Controls/PumpsSpeedControl",
         "@odata.type": "#Control.v1_5_1.Control",
+        "@odata.context": "/redfish/v1/$metadata#Control.v1_5_1.Control",
         "Id": "PumpsSpeedControl",
         "Name": "PumpsSpeed",
         "PhysicalContext": "Chassis",
@@ -4199,15 +4486,11 @@ Controls_data_all = {
         "SetPointUnits": "%",
         "AllowableMax": 100,
         "AllowableMin": 25,
-        "oem": {
-            "pump1_speed": 50,
-            "pump2_speed": 50,
-            "pump3_speed": 50
-        },
-        "@odata.id": "/redfish/v1/Chassis/1/Controls/PumpsSpeedControl",
     },
     "FansSpeedControl": {
+        "@odata.id": "/redfish/v1/Chassis/1/Controls/FansSpeedControl",
         "@odata.type": "#Control.v1_5_1.Control",
+        "@odata.context": "/redfish/v1/$metadata#Control.v1_5_1.Control",
         "Id": "FansSpeedControl",
         "Name": "FansSpeed",
         "PhysicalContext": "Chassis",
@@ -4216,8 +4499,7 @@ Controls_data_all = {
         "SetPoint": 35,
         "SetPointUnits": "%",
         "AllowableMax": 100,
-        "AllowableMin": 0,
-        "@odata.id": "/redfish/v1/Chassis/1/Controls/FansSpeedControl",
+        "AllowableMin": 0, 
     },
 }
 
@@ -4225,9 +4507,9 @@ Controls_data_all = {
 OperationMode_patch = redfish_ns.model('OperationModePatch', {
     'mode': fields.String(
         required=True,
-        description='模式控制',
-        default='Automatic',   # 這裡設定預設值
-        example='Automatic',   # 也可加 example，讓 UI 顯示範例
+        description='Setting Mode',
+        default='Manual',   # 這裡設定預設值
+        example='Manual',   # 也可加 example，讓 UI 顯示範例
         enum=['Automatic', 'Manual', 'Disabled', 'Override']  # 如果有固定選項，也可以列出
     ),
 })
@@ -4523,12 +4805,14 @@ class Sensors_Fan1(Resource):
     @requires_auth
     def get(self):
         fan_speed_enable = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/control/fan_speed")["fan_set"]
-        print(fan_speed_enable)
+        fan_speed_value = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/fan_speed")["fan1_speed"]
+        
         if fan_speed_enable == 0:
             Sensors_data_all["Fan1"]["ControlMode"] = "Disabled"
         else:
             Sensors_data_all["Fan1"]["ControlMode"] = "Manual"
-        Sensors_data_all["Fan1"]["Reading"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/sensor_value")["fan1_speed"]   
+        Sensors_data_all["Fan1"]["SetPoint"] = fan_speed_enable  
+        Sensors_data_all["Fan1"]["Reading"] = fan_speed_value
         
         return Sensors_data_all["Fan1"]    
     
@@ -4537,12 +4821,15 @@ class Sensors_Fan2(Resource):
     @requires_auth
     def get(self):
         fan_speed_enable = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/control/fan_speed")["fan_set"]
-        print(fan_speed_enable)
+        fan_speed_value = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/fan_speed")["fan2_speed"]
+        
         if fan_speed_enable == 0:
             Sensors_data_all["Fan2"]["ControlMode"] = "Disabled"
         else:
             Sensors_data_all["Fan2"]["ControlMode"] = "Manual"
-        Sensors_data_all["Fan2"]["Reading"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/sensor_value")["fan2_speed"]   
+        Sensors_data_all["Fan2"]["SetPoint"] = fan_speed_enable  
+        Sensors_data_all["Fan2"]["Reading"] = fan_speed_value
+        
         return Sensors_data_all["Fan2"]    
 
 @redfish_ns.route("/Chassis/1/Sensors/fan/3")
@@ -4550,12 +4837,15 @@ class Sensors_Fan3(Resource):
     @requires_auth
     def get(self):
         fan_speed_enable = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/control/fan_speed")["fan_set"]
-        print(fan_speed_enable)
+        fan_speed_value = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/fan_speed")["fan3_speed"]
+        
         if fan_speed_enable == 0:
             Sensors_data_all["Fan3"]["ControlMode"] = "Disabled"
         else:
             Sensors_data_all["Fan3"]["ControlMode"] = "Manual"
-        Sensors_data_all["Fan3"]["Reading"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/sensor_value")["fan3_speed"]   
+        Sensors_data_all["Fan3"]["SetPoint"] = fan_speed_enable  
+        Sensors_data_all["Fan3"]["Reading"] = fan_speed_value
+        
         return Sensors_data_all["Fan3"]    
 
 @redfish_ns.route("/Chassis/1/Sensors/fan/4")
@@ -4563,12 +4853,15 @@ class Sensors_Fan4(Resource):
     @requires_auth
     def get(self):
         fan_speed_enable = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/control/fan_speed")["fan_set"]
-        print(fan_speed_enable)
+        fan_speed_value = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/fan_speed")["fan4_speed"]
+        
         if fan_speed_enable == 0:
             Sensors_data_all["Fan4"]["ControlMode"] = "Disabled"
         else:
             Sensors_data_all["Fan4"]["ControlMode"] = "Manual"
-        Sensors_data_all["Fan4"]["Reading"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/sensor_value")["fan4_speed"]   
+        Sensors_data_all["Fan4"]["SetPoint"] = fan_speed_enable  
+        Sensors_data_all["Fan4"]["Reading"] = fan_speed_value
+        
         return Sensors_data_all["Fan4"]    
 
 @redfish_ns.route("/Chassis/1/Sensors/fan/5")
@@ -4576,12 +4869,15 @@ class Sensors_Fan5(Resource):
     @requires_auth
     def get(self):
         fan_speed_enable = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/control/fan_speed")["fan_set"]
-        print(fan_speed_enable)
+        fan_speed_value = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/fan_speed")["fan5_speed"]
+        
         if fan_speed_enable == 0:
             Sensors_data_all["Fan5"]["ControlMode"] = "Disabled"
         else:
             Sensors_data_all["Fan5"]["ControlMode"] = "Manual"
-        Sensors_data_all["Fan5"]["Reading"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/sensor_value")["fan5_speed"]   
+        Sensors_data_all["Fan5"]["SetPoint"] = fan_speed_enable  
+        Sensors_data_all["Fan5"]["Reading"] = fan_speed_value
+        
         return Sensors_data_all["Fan5"]    
 
 @redfish_ns.route("/Chassis/1/Sensors/fan/6")
@@ -4589,12 +4885,15 @@ class Sensors_Fan6(Resource):
     @requires_auth
     def get(self):
         fan_speed_enable = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/control/fan_speed")["fan_set"]
-        print(fan_speed_enable)
+        fan_speed_value = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/fan_speed")["fan6_speed"]
+        
         if fan_speed_enable == 0:
             Sensors_data_all["Fan6"]["ControlMode"] = "Disabled"
         else:
             Sensors_data_all["Fan6"]["ControlMode"] = "Manual"
-        Sensors_data_all["Fan6"]["Reading"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/sensor_value")["fan6_speed"]   
+        Sensors_data_all["Fan6"]["SetPoint"] = fan_speed_enable  
+        Sensors_data_all["Fan6"]["Reading"] = fan_speed_value
+        
         return Sensors_data_all["Fan6"]    
 
 @redfish_ns.route("/Chassis/1/Sensors/fan/7")
@@ -4602,12 +4901,15 @@ class Sensors_Fan7(Resource):
     @requires_auth
     def get(self):
         fan_speed_enable = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/control/fan_speed")["fan_set"]
-        print(fan_speed_enable)
+        fan_speed_value = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/fan_speed")["fan7_speed"]
+        
         if fan_speed_enable == 0:
             Sensors_data_all["Fan7"]["ControlMode"] = "Disabled"
         else:
             Sensors_data_all["Fan7"]["ControlMode"] = "Manual"
-        Sensors_data_all["Fan7"]["Reading"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/sensor_value")["fan7_speed"]   
+        Sensors_data_all["Fan7"]["SetPoint"] = fan_speed_enable  
+        Sensors_data_all["Fan7"]["Reading"] = fan_speed_value
+        
         return Sensors_data_all["Fan7"]    
 
 @redfish_ns.route("/Chassis/1/Sensors/fan/8")
@@ -4615,12 +4917,15 @@ class Sensors_Fan8(Resource):
     @requires_auth
     def get(self):
         fan_speed_enable = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/control/fan_speed")["fan_set"]
-        print(fan_speed_enable)
+        fan_speed_value = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/fan_speed")["fan8_speed"]
+        
         if fan_speed_enable == 0:
             Sensors_data_all["Fan8"]["ControlMode"] = "Disabled"
         else:
             Sensors_data_all["Fan8"]["ControlMode"] = "Manual"
-        Sensors_data_all["Fan8"]["Reading"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/sensor_value")["fan8_speed"]   
+        Sensors_data_all["Fan8"]["SetPoint"] = fan_speed_enable  
+        Sensors_data_all["Fan8"]["Reading"] = fan_speed_value
+        
         return Sensors_data_all["Fan8"]    
     
 
@@ -4636,26 +4941,36 @@ class Controls(Resource):
 class OperationMode(Resource):
     @requires_auth
     def get(self):
-        rep_operation = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/op_mode")["mode"]
-        if rep_operation == "auto": new_rep_operation = "Automatic"
-        if rep_operation == "manual": new_rep_operation = "Manual"
-        if rep_operation == "stop": new_rep_operation = "Disabled"
-        Controls_data_all["OperationMode"]["ControlMode"] = new_rep_operation
-        return Controls_data_all["OperationMode"]
+        raw = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/op_mode")["mode"]
+        mapping = {
+            "auto":     "Automatic",
+            "manual":   "Manual",
+            "stop":     "Disabled",
+            "override": "Override"
+        }
+        ctrl = mapping.get(raw, Controls_data_all["OperationMode"]["ControlMode"])
+        Controls_data_all["OperationMode"]["ControlMode"] = ctrl
+        return Controls_data_all["OperationMode"], 200
     
     @redfish_ns.expect(OperationMode_patch, validate=True)
     @requires_auth
     def patch(self):
+        global mode_all
         payload = request.get_json(force=True)
-        new_sp = payload["mode"]
-        if new_sp == "Automatic": new_api_sp = "auto"
-        if new_sp == "Manual": new_api_sp = "manual"
-        if new_sp == "Disabled": new_api_sp = "stop"
-
+        new_mode  = payload["mode"]
+        inv = {
+            "Automatic": "auto",
+            "Manual":    "manual",
+            "Disabled":  "stop",
+            "Override":  "override"
+        }
+        
+        api_payload = inv[new_mode]
+        print(api_payload)
         try:
             r = requests.patch(
                 f"{CDU_BASE}/api/v1/cdu/status/op_mode",
-                json={"mode": new_api_sp},  
+                json={"mode": api_payload},  
                 timeout=3
             )
             r.raise_for_status()
@@ -4675,8 +4990,7 @@ class OperationMode(Resource):
             }, 502
 
         # 內部服務回傳 OK，更新 Redfish 內存資料
-        Controls_data_all["OperationMode"]["ControlMode"] = new_sp
-        print(Controls_data_all["OperationMode"]["ControlMode"])
+        Controls_data_all["OperationMode"]["ControlMode"] = new_mode
 
         # 回傳更新後的 Redfish Control 資源
         return Controls_data_all["OperationMode"], 200
@@ -4686,17 +5000,24 @@ class OperationMode(Resource):
 class PumpsSpeedControl(Resource):
     @requires_auth
     def get(self):
+        
+        pump_set_speed = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/op_mode")
+        Controls_data_all["PumpsSpeedControl"]["SetPoint"] = pump_set_speed["pump_speed"]
         # 回傳各 pump 速度
-        control_speed = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/control/pump_speed")
-        Controls_data_all["PumpsSpeedControl"]["oem"]["pump1_speed"] = control_speed["pump1_speed"]
-        Controls_data_all["PumpsSpeedControl"]["oem"]["pump2_speed"] = control_speed["pump2_speed"]
-        Controls_data_all["PumpsSpeedControl"]["oem"]["pump3_speed"] = control_speed["pump3_speed"]
+        # control_speed = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/control/pump_speed")
+        # Controls_data_all["PumpsSpeedControl"]["oem"]["pump1_speed"] = control_speed["pump1_speed"]
+        # Controls_data_all["PumpsSpeedControl"]["oem"]["pump2_speed"] = control_speed["pump2_speed"]
+        # Controls_data_all["PumpsSpeedControl"]["oem"]["pump3_speed"] = control_speed["pump3_speed"]
         return Controls_data_all["PumpsSpeedControl"]
     
     @requires_auth
     @redfish_ns.expect(pumpspeed_patch_all, validate=True)
     def patch(self):
         body = request.get_json(force=True)
+        
+        # 驗證模式
+        if Controls_data_all["OperationMode"]["ControlMode"] != "Manual": return "only Manual can setting"
+        
         new_sp = body['speed_set']
         new_sw1 = body['pump1_switch']
         new_sw2 = body['pump2_switch']
@@ -4760,13 +5081,17 @@ class FansSpeedControl(Resource):
     @requires_auth
     def get(self):
         Controls_data_all["FansSpeedControl"]["SetPoint"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/control/fan_speed")["fan_set"]
-        return Controls_data_all["FansSpeedControl"]
+        return Controls_data_all["FansSpeedControl"], 200
     
     @redfish_ns.expect(fanspeed_patch, validate=True)
     @requires_auth
     def patch(self):
         payload = request.get_json(force=True)
         new_sp = payload["fan_speed"]
+
+        # 驗證模式
+        if Controls_data_all["OperationMode"]["ControlMode"] != "Manual": 
+            return {"error": "Only Manual mode can set fan speed"}, 405
 
         try:
             r = requests.patch(
@@ -4839,6 +5164,7 @@ Accounts_data = {
 }
 
 Accounts_1_data = {
+    "@odata.id": "/redfish/v1/AccountService/Accounts/1",
     "@odata.type": "#ManagerAccount.v1_7_0.ManagerAccount",
     "Id": "1",
     "Name": "UserAccount",
@@ -4855,8 +5181,7 @@ Accounts_1_data = {
         "Role": {
             "@odata.id": "/redfish/v1/AccountService/Roles/Administrator"
         }
-    },
-    "@odata.id": "/redfish/v1/AccountService/Accounts/1"    
+    },   
 }
 
 Roles_data = {
@@ -4878,6 +5203,7 @@ Roles_Administrator_data = {
     "Id": "Administrator",
     "Name": "Administrator Role",
     "RoleId": "Administrator",  # 權限
+    "IsPredefined": True,
     "AssignedPrivileges": [
         "ConfigureManager",
         "Login",
@@ -4894,6 +5220,7 @@ Roles_Operator_data = {
     "Id": "Operator",
     "Name": "Operator Role",
     "RoleId": "Operator",
+    "IsPredefined": True,
     "AssignedPrivileges": [
         "Login",
         "ConfigureComponents",
@@ -4909,6 +5236,7 @@ Roles_ReadOnly_data = {
     "Id": "ReadOnly",
     "Name": "ReadOnly Role",
     "RoleId": "ReadOnly",
+    "IsPredefined": True,
     "AssignedPrivileges": [
         "Login",
         "ConfigureSelf"
@@ -5058,7 +5386,7 @@ class ActionsUpdateCduSimpleUpdatee(Resource):
         return {"ok"}
     # 要測試
     def post(self):
-        ORIGIN_UPLOAD_API = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/control/fan_speed")
+        ORIGIN_UPLOAD_API = load_raw_from_api(f"{CDU_BASE}/api/v1/upldate/firmware")
         file = request.files.get("File")
         if not file:
             return {"error": "No file uploaded"}, 400
@@ -5099,29 +5427,46 @@ Uris:
 (Note1) https://docs.google.com/spreadsheets/d/1xZgYleg7HzWnugL_JKGC-6ATSXQK4KvR/edit?gid=1880258646#gid=1880258646
 """
 sessionservice_example_data = {
+    "@odata.id": "/redfish/v1/SessionService",
     "@odata.type": "#SessionService.v1_1_8.SessionService",
+    "@odata.context": "/redfish/v1/$metadata#SessionService.v1_1_8.SessionService",
+    
     "Id": "SessionService",
     "Name": "Session Service",
     "Description": "Session Service",
+    
     "Status": {
         "State": "Enabled",
         "Health": "OK"
     },
+     # 如果不使用 Session Auth，可設 False；true 表示開放新 Session 建立
     "ServiceEnabled": False, # we use basic auth, not session auth
+    
+     # 閒置多長時間後自動失效
     "SessionTimeout": 86400,
+    
+    # 指向所有 Session 的集合
     "Sessions": {
         "@odata.id": "/redfish/v1/SessionService/Sessions"
     },
-    "@odata.id": "/redfish/v1/SessionService"
+    
+    # v1_1_0 之後必須有 Actions，至少留給 OEM 擴充
+    "Actions": {
+        "Oem": {}
+    },
+
+    # OEM 擴充保留欄位
+    "Oem": {}
+    
 }
-sessionservice_sessions_example_data = {
-    "@odata.type": "#SessionCollection.SessionCollection",
-    "Name": "Session Collection",
-    "Members@odata.count": 0,
-    "Members": [
-    ],
-    "@odata.id": "/redfish/v1/SessionService/Sessions"
-}
+# sessionservice_sessions_example_data = {
+#     "@odata.type": "#SessionCollection.SessionCollection",
+#     "Name": "Session Collection",
+#     "Members@odata.count": 0,
+#     "Members": [
+#     ],
+#     "@odata.id": "/redfish/v1/SessionService/Sessions"
+# }
 
 @redfish_ns.route("/SessionService")
 class SessionService(Resource):
@@ -5129,18 +5474,58 @@ class SessionService(Resource):
     def get(self):
         return sessionservice_example_data
 
+#=========================================protocol暫存==================================================
+sessions = {}          # token ➜ username
+token_seed = 1000      # very simple token generator
+
 @redfish_ns.route("/SessionService/Sessions")
 class SessionServiceSessions(Resource):
+    # ---------- 建立 Session（不可要求現有認證） ----------
+    def post(self):
+        body = request.json or {}
+        usr = body.get("UserName")
+        pwd = body.get("Password")
+
+        # 這裡只做最陽春的帳密驗證
+        if not check_auth(usr, pwd):
+            return {"error": "Invalid credential"}, 401
+
+        global token_seed
+        token_seed += 1
+        token = f"token-{token_seed}"
+        sessions[token] = usr       # 記住誰登入
+
+        resp = Response(status=201)
+        resp.headers["X-Auth-Token"] = token
+        resp.headers["Location"]    = f"/redfish/v1/SessionService/Sessions/{token}"
+        resp.headers["Odata-Version"] = "4.0"
+        return resp
+
+    # ---------- 列表 Session（仍要認證） ----------
     @requires_auth
     def get(self):
-        return sessionservice_sessions_example_data
+        return {
+            "@odata.id": "/redfish/v1/SessionService/Sessions",
+            "@odata.type": "#SessionCollection.SessionCollection",
+            "Name": "Session Collection",
+            "Members@odata.count": len(sessions),
+            "Members": [
+                {"@odata.id": f"/redfish/v1/SessionService/Sessions/{t}"}
+                for t in sessions
+            ]
+        }
+#=========================================protocol暫存==================================================
 
 #--------Telemetry
 TelemetryService_data = {
     "@odata.id": "/redfish/v1/TelemetryService",
     "@odata.type": "#TelemetryService.TelemetryService",
+    "@odata.context": "/redfish/v1/$metadata#TelemetryService.v1_3_4.TelemetryService",
+    
     "Id": "TelemetryService",
     "Name": "CDU Telemetry Service",
+    "Description": "Telemetry 服務，用於蒐集並匯報冷卻分配單元的度量資料",
+    "Oem": {}
     # "ServiceEnabled": True,
     # "MetricReportDefinitions": {
     #     "@odata.id": "/redfish/v1/TelemetryService/MetricReportDefinitions"

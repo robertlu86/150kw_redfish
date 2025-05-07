@@ -1,1182 +1,1182 @@
 {% extends "base.html" %} {% block title %} Status {% endblock %} {% block
-    styles %}
-    
-    <style type="text/css">
-        .box {
-            border: 2px solid #69b4ff;
-            border-radius: 4px;
-            margin: 2em 0;
-            padding: 20px;
-            position: relative;
-        }
-    
-        .box::before {
-            background-color: #fff;
-            color: #69b4ff;
-            content: attr(data-before);
-            font-weight: bold;
-            left: 1em;
-            padding: 0 0.5em;
-            position: absolute;
-            top: -1em;
-        }
-    
-        .cduStatus,
-        .pumpValve,
-        .fanValve,
-        .mcInfo,
-        .evStatus,
-        .deviceStatus,
-        .sensor,
-        .communication,
-        .brokenStatus,
-        .rack_setting,
-        .showcase,
-        .switch_version,
-        .cduInfo {
-            border: 2px solid #008000;
-    
-            border-radius: 10px;
-            margin: 2em 0;
-            padding: 20px;
-            position: relative;
-        }
-    
-        .cduStatus::before,
-        .pumpValve::before,
-        .evStatus::before,
-        .deviceStatus::before,
-        .sensor::before,
-        .communication::before,
-        .brokenStatus::before,
-        .rack_setting::before,
-        .showcase::before,
-        .switch_version::before,
-        .cduInfo::before,
-        .fanValve::before,
-        .mcInfo::before {
-            background-color: #fff;
-            color: #000000;
-            content: attr(data-before);
-            font-weight: bold;
-            left: 1em;
-            padding: 0 0.5em;
-            position: absolute;
-            top: -1em;
-        }
-    
-        .tdCenterAlign {
-            text-align: center;
-        }
-    
-        .navbar .navbar-nav .nav-link:hover {
-            background-color: #778899;
-            color: #fff;
-        }
-    
-        .nav-status {
-            background-color: #008000 !important;
-            color: #fff !important;
-        }
-    
-        .hidden {
-            display: none;
-        }
-    
-        .row_sticky {
-            position: sticky;
-            top: 90px;
-            background-color: white;
-            padding: 10px 0px;
-            z-index: 99;
-        }
-    
-        .title.collapsed .content {
-            display: none;
-        }
-    
-        .data-before-trigger {
-            position: absolute;
-            top: -14px;
-            left: 21px;
-            width: 355px;
-            height: 22px;
-            cursor: pointer;
-        }
-    
-        .title::before {
-            content: attr(data-before);
-        }
-    
-        td {
-            text-align: center;
-        }
-    
-        .detail {
-            display: flex;
-            justify-content: center;
-            padding-bottom: 20px;
-        }
-    
-        .scrollable-image-container {
-            width: 100%;
-            overflow-x: auto;
-        }
-    
-        .scrollable-image-container .image {
-            max-width: 100%;
-            width: auto;
-            height: auto;
-        }
-    
-        /*.image_machine_container{
-                    width: 1700px; 
-                    height: 900px;
-                }*/
-    
-        .machine {
-            max-width: 100%;
-            width: 100%;
-            border: 2px solid black;
-        }
-    
+styles %}
+
+<style type="text/css">
+    .box {
+        border: 2px solid #69b4ff;
+        border-radius: 4px;
+        margin: 2em 0;
+        padding: 20px;
+        position: relative;
+    }
+
+    .box::before {
+        background-color: #fff;
+        color: #69b4ff;
+        content: attr(data-before);
+        font-weight: bold;
+        left: 1em;
+        padding: 0 0.5em;
+        position: absolute;
+        top: -1em;
+    }
+
+    .cduStatus,
+    .pumpValve,
+    .fanValve,
+    .mcInfo,
+    .evStatus,
+    .deviceStatus,
+    .sensor,
+    .communication,
+    .brokenStatus,
+    .rack_setting,
+    .showcase,
+    .switch_version,
+    .cduInfo {
+        border: 2px solid #008000;
+
+        border-radius: 10px;
+        margin: 2em 0;
+        padding: 20px;
+        position: relative;
+    }
+
+    .cduStatus::before,
+    .pumpValve::before,
+    .evStatus::before,
+    .deviceStatus::before,
+    .sensor::before,
+    .communication::before,
+    .brokenStatus::before,
+    .rack_setting::before,
+    .showcase::before,
+    .switch_version::before,
+    .cduInfo::before,
+    .fanValve::before,
+    .mcInfo::before {
+        background-color: #fff;
+        color: #000000;
+        content: attr(data-before);
+        font-weight: bold;
+        left: 1em;
+        padding: 0 0.5em;
+        position: absolute;
+        top: -1em;
+    }
+
+    .tdCenterAlign {
+        text-align: center;
+    }
+
+    .navbar .navbar-nav .nav-link:hover {
+        background-color: #778899;
+        color: #fff;
+    }
+
+    .nav-status {
+        background-color: #008000 !important;
+        color: #fff !important;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .row_sticky {
+        position: sticky;
+        top: 90px;
+        background-color: white;
+        padding: 10px 0px;
+        z-index: 99;
+    }
+
+    .title.collapsed .content {
+        display: none;
+    }
+
+    .data-before-trigger {
+        position: absolute;
+        top: -14px;
+        left: 21px;
+        width: 355px;
+        height: 22px;
+        cursor: pointer;
+    }
+
+    .title::before {
+        content: attr(data-before);
+    }
+
+    td {
+        text-align: center;
+    }
+
+    .detail {
+        display: flex;
+        justify-content: center;
+        padding-bottom: 20px;
+    }
+
+    .scrollable-image-container {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .scrollable-image-container .image {
+        max-width: 100%;
+        width: auto;
+        height: auto;
+    }
+
+    /*.image_machine_container{
+                                width: 1700px; 
+                                height: 900px;
+                            }*/
+
+    .machine {
+        max-width: 100%;
+        width: 100%;
+        border: 2px solid black;
+    }
+
+    .value_border {
+        position: absolute;
+        border: 2px solid green;
+        border-radius: 5px;
+        height: 25px;
+        width: 78px;
+        font-size: 14px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+        justify-content: center;
+        padding: 2px;
+        gap: 3px;
+    }
+
+    .unit_block {
+        font-size: 16px;
+        font-weight: 500;
+        position: absolute;
+        left: 86%;
+        top: 1%;
+        padding: 5px;
+        display: flex;
+        text-align: center;
+        width: 230px;
+    }
+
+    .image {
+        position: relative;
+    }
+
+    .status_light {
+        background-color: black;
+        border-radius: 10px;
+        width: 15px;
+        height: 15px;
+        position: absolute;
+        top: 50%;
+        left: 40%;
+        transform: translateY(-50%);
+    }
+
+    .fans_light {
+        background-color: transparent;
+        border-radius: 50px;
+        width: 30px;
+        height: 30px;
+        position: absolute;
+        transform: translateY(-50%);
+        opacity: 0.6;
+
+    }
+
+    @media screen and (max-width: 1400px) {
         .value_border {
-            position: absolute;
-            border: 2px solid green;
-            border-radius: 5px;
-            height: 25px;
-            width: 78px;
-            font-size: 14px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            white-space: nowrap;
-            justify-content: center;
-            padding: 2px;
-            gap: 3px;
+            height: 20px;
+            width: 60px;
+            font-size: 12px;
         }
-    
+
         .unit_block {
-            font-size: 16px;
+            font-size: 12px;
             font-weight: 500;
-            position: absolute;
-            left: 86%;
-            top: 1%;
             padding: 5px;
             display: flex;
             text-align: center;
-            width: 230px;
+            width: 160px;
         }
-    
-        .image {
-            position: relative;
-        }
-    
-        .status_light {
-            background-color: black;
-            border-radius: 10px;
-            width: 15px;
-            height: 15px;
-            position: absolute;
-            top: 50%;
-            left: 40%;
-            transform: translateY(-50%);
-        }
-    
+
         .fans_light {
             background-color: transparent;
             border-radius: 50px;
-            width: 30px;
-            height: 30px;
+            width: 20px;
+            height: 20px;
             position: absolute;
-            transform: translateY(-50%);
-            opacity: 0.6;
-    
         }
-    
-        @media screen and (max-width: 1400px) {
-            .value_border {
-                height: 20px;
-                width: 60px;
-                font-size: 12px;
-            }
-    
-            .unit_block {
-                font-size: 12px;
-                font-weight: 500;
-                padding: 5px;
-                display: flex;
-                text-align: center;
-                width: 160px;
-            }
-    
-            .fans_light {
-                background-color: transparent;
-                border-radius: 50px;
-                width: 20px;
-                height: 20px;
-                position: absolute;
-            }
+    }
+
+    @media screen and (max-width: 1200px) {
+        .value_border {
+            height: 20px;
+            width: 50px;
+            font-size: 10px;
         }
-    
-        @media screen and (max-width: 1200px) {
-            .value_border {
-                height: 20px;
-                width: 50px;
-                font-size: 10px;
-            }
-    
-            .unit_block {
-                font-size: 12px;
-                font-weight: 500;
-                padding: 5px;
-                display: flex;
-                text-align: center;
-                width: 160px;
-            }
-    
-            .fans_light {
-                background-color: transparent;
-                border-radius: 50px;
-                width: 18px;
-                height: 18px;
-                position: absolute;
-            }
-    
-            tr:nth-of-type(even) {
-                background-color: rgba(0, 0, 0, 0.09);
-            }
-    
-    
-            tr:nth-of-type(odd) {
-                background-color: white;
-            }
-    
+
+        .unit_block {
+            font-size: 12px;
+            font-weight: 500;
+            padding: 5px;
+            display: flex;
+            text-align: center;
+            width: 160px;
         }
-    </style>
-    {% endblock %} {% block content %}
-    <div class="container-fluid" style="margin-top: 100px; margin-bottom: 60px">
-        <div class="pic_1920 detail scrollable-image-container">
-            <div class="image">
-                <div class="image_machine_container">
-                    <img class="machine" src="../static/images/full_picture.jpg" alt="設備" loading="eager" />
-                </div>
-                <!-- 顯示TDp數值框 -->
-                <div class="value_border" style="top: 4%; left:13.5%">
-                    <span class="dew_point_image" id="dew_point_image">-</span>
-                    <span class="unit_temp image"></span>
-                </div>
-                <!-- 顯示Ta數值框 -->
-                <div class="value_border" style="top: 8.4%; left:13.5%">
-                    <span class="ambient_temp_image" id="ambient_temp_image">-</span>
-                    <span class="unit_temp image"></span>
-                </div>
-                <!-- 顯示T1數值框 -->
-                <div class="value_border" style="top: 21.5%; left:18.5%">
-                    <span class="temp_clntSply_image" id="temp_clntSply_image">-</span>
-                    <span class="unit_temp image"></span>
-                </div>
-                <!-- 顯示P1數值框 -->
-                <div class="value_border" style="top: 21.5%; left:28%">
-                    <span class="prsr_clntSply_image" id="prsr_clntSply_image">-</span>
-                    <span class="unit_pressure image"></span>
-                </div>
-                <!-- 顯示PD數值框 -->
-                <div class="value_border" style="top: 29%; left:28%">
-                    <span class="prsr_diff_image" id="prsr_diff_image">-</span>
-                    <span class="unit_pressure image"></span>
-                </div>
-                <!-- 顯示Tur數值框 -->
-                <div class="value_border" style="top: 44%; left:48%">
-                    <span class="tbd_image" id="tbd_image">-</span>
-                    <span class="Tur_unit" id="Tur_unit">NTU</span>
-                </div>
-                <!-- 顯示CON數值框 -->
-                <div class="value_border" style="top: 44%; left:53.4%">
-                    <span class="cdct_image" id="cdct_image">-</span>
-                    <span class="CON_unit" id="CON_unit">μS/cm</span>
-                </div>
-                <!-- 顯示PH數值框 -->
-                <div class="value_border" style="top: 44%; left:58.8%">
-                    <span class="pH_image" id="pH_image">-</span>
-                    <span class="pH_unit" id="pH_unit">pH</span>
-                </div>
-                <!-- 顯示Heat Capacity數值框 -->
-                <div class="value_border" style="top: 42%; left:73.2%">
-                    <span class="heat_capacity_image" id="heat_capacity_image">-</span>
-                    <span>kW</span>
-                </div>
-                <!-- 顯示fan speed 數值框 -->
-                <div class="value_border" style="top:20%; left:76.5%">
-                    <span class="fan_freq_image" id="fan_freq_image">-</span>
-                    <span class="fan_unit">%</span>
-                </div>
-                <!-- fan 1-8 啟動時顯示 -->
-                <div>
-                    <div class="fans_light" id="fan_freq5_light" style="top:28.95%; left: 81.8%"></div>
-                </div>
-                <div>
-                    <div class="fans_light" id="fan_freq4_light" style="top:28.9%; left: 86.25%"></div>
-                </div>
-                <div>
-                    <div class="fans_light" id="fan_freq6_light" style="top:36.25%; left: 81.8%"></div>
-                </div>
-                <div>
-                    <div class="fans_light" id="fan_freq3_light" style="top:36.2%; left: 86.25%"></div>
-                </div>
-                <div>
-                    <div class="fans_light" id="fan_freq7_light" style="top:43.5%; left: 81.8%"></div>
-                </div>
-                <div>
-                    <div class="fans_light" id="fan_freq2_light" style="top:43.5%; left: 86.25%"></div>
-                </div>
-                <div>
-                    <div class="fans_light" id="fan_freq8_light" style="top:50.8%; left: 81.8%"></div>
-                </div>
-                <div>
-                    <div class="fans_light" id="fan_freq1_light" style="top:50.8%; left: 86.25%"></div>
-                </div>
-                <!-- 顯示fan 1-8 數值框 -->
-                <!--<div class="value_border" style="top: 275px; left:1250px">
-                            <span class="fan_freq_image" id="fan_freq1_image">-</span>
-                            <span class="fan_unit">%</span>
-                        </div>
-                        <div class="value_border" style="top: 315px; left:1250px">
-                            <span class="fan_freq_image" id="fan_freq2_image">-</span>
-                            <span class="fan_unit">%</span>
-                        </div>
-                        <div class="value_border" style="top: 355px; left:1250px">
-                            <span class="fan_freq_image" id="fan_freq3_image">-</span>
-                            <span class="fan_unit">%</span>
-                        </div>
-                        <div class="value_border" style="top: 395px; left:1250px">
-                            <span class="fan_freq_image" id="fan_freq4_image">-</span>
-                            <span class="fan_unit">%</span>
-                        </div>
-                        <div class="value_border" style="top: 275px; left:1560px">
-                            <span class="fan_freq_image" id="fan_freq5_image">-</span>
-                            <span class="fan_unit">%</span>
-                        </div>
-                        <div class="value_border" style="top: 315px; left:1560px">
-                            <span class="fan_freq_image" id="fan_freq6_image">-</span>
-                            <span class="fan_unit">%</span>
-                        </div>
-                        <div class="value_border" style="top: 355px; left:1560px">
-                            <span class="fan_freq_image" id="fan_freq7_image">-</span>
-                            <span class="fan_unit">%</span>
-                        </div>
-                        <div class="value_border" style="top: 395px; left:1560px">
-                            <span class="fan_freq_image" id="fan_freq8_image">-</span>
-                            <span class="fan_unit">%</span>
-                        </div>-->
-    
-                <!-- 顯示T2數值框 -->
-                <div class="value_border" style="top: 77.5%; left:9.2%">
-                    <span class="temp_clntRtn_image" id="temp_clntRtn_image">-</span>
-                    <span class="unit_temp image"></span>
-                </div>
-                <!-- 顯示P2數值框 -->
-                <div class="value_border" style="top: 77.5%; left:16.2%">
-                    <span class="prsr_clntRtn_image" id="prsr_clntRtn_image">-</span>
-                    <span class="unit_pressure image"></span>
-                </div>
-                <!-- 顯示Pump1數值框 -->
-                <div class="value_border" style="top: 60%; left:36.7%">
-                    <span class="inv1_freq_image" id="inv1_freq_image">-</span>
-                    <span class="inv_unit" id="inv1_unit">%</span>
-                </div>
-                <!-- 顯示Pump2數值框 -->
-                <div class="value_border" style="top: 77.5%; left:36.7%">
-                    <span class="inv2_freq_image" id="inv2_freq_image">-</span>
-                    <span class="inv_unit" id="inv1_unit">%</span>
-                </div>
-                <!-- 顯示Pump3數值框 -->
-                <div class="value_border" style="top: 94%; left:36.7%">
-                    <span class="inv3_freq_image" id="inv3_freq_image">-</span>
-                    <span class="inv_unit" id="inv1_unit">%</span>
-                </div>
-                <!-- 顯示P3數值框 -->
-                <div class="value_border" style="top: 77.5%; left:56.4%">
-                    <!-- <span class="prsr_fltOut_image" id="prsr_fltOut_image">-</span> -->
-                    <span class="prsr_fltIn_image" id="prsr_fltIn_image">N/A</span>
-    
-                    <span class="unit_pressure image"></span>
-                </div>
-                <!-- 顯示Filtter數值框 -->
-                <div class="value_border" style="top: 77.5%; left:63%">
-                    <span class="prsr_fltDiffa_image" id="prsr_fltDiff_image">-</span>
-                    <span class="unit_pressure image"></span>
-                </div>
-                <!-- 顯示P4數值框 -->
-                <div class="value_border" style="top: 77.5%; left:70%">
-                    <!-- <span class="prsr_fltIn_image" id="prsr_fltIn_image">N/A</span> -->
-                    <span class="prsr_fltOut_image" id="prsr_fltOut_image">-</span>
-    
-                    <span class="unit_pressure image"></span>
-                </div>
-                <!-- 顯示F1數值框 -->
-                <div class="value_border" style="top: 77.5%; left:76.9%">
-                    <span class="clnt_flow_image" id="clnt_flow_image">-</span>
-                    <span class="unit_flow image"></span>
-                </div>
-    
-                <div class="unit_block">
-                    <table class="table table-hover">
-                        <tbody>
-                            <tr>
-                                <td scope="row">CDU Status:</td>
-                                <td scope="row" style="position: relative" class="light_box">
-                                    <div class="status_light" id="status_light"></div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td scope="row">Mode:</td>
-                                <td id="current_mode" class="current_mode" scope="row"></td>
-                            </tr>
-                            <tr>
-                                <td scope="row">PLC:</td>
-                                <td id="PLC" class="PLC" scope="row"></td>
-                            </tr>
-                            <tr>
-                                <td scope="row">Box PC:</td>
-                                <td>Redundent</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+
+        .fans_light {
+            background-color: transparent;
+            border-radius: 50px;
+            width: 18px;
+            height: 18px;
+            position: absolute;
+        }
+    }
+
+    tr:nth-of-type(even) {
+        background-color: rgba(0, 0, 0, 0.09);
+    }
+
+    tr:nth-of-type(odd) {
+        background-color: white;
+    }
+</style>
+{% endblock %} {% block content %}
+<div class="container-fluid" style="margin-top: 100px; margin-bottom: 60px">
+    <div class="pic_1920 detail scrollable-image-container">
+        <div class="image">
+            <div class="image_machine_container">
+                <img class="machine" id="machine" src="../static/images/full_picture.jpg" alt="設備" loading="eager" />
             </div>
-        </div>
-    
-        <div class="sensor title" data-label="Sensor Value">
-            <div class="data-before-trigger"></div>
-            <div class="content">
+            <!-- 顯示TDp數值框 -->
+            <div class="value_border" id="dew_point_image_set" style="top: 4%; left:13.5%">
+                <span class="dew_point_image" id="dew_point_image">-</span>
+                <span class="unit_temp image"></span>
+            </div>
+            <!-- 顯示Ta數值框 -->
+            <div class="value_border" id="ambient_temp_image_set" style="top: 8.4%; left:13.5%">
+                <span class="ambient_temp_image" id="ambient_temp_image">-</span>
+                <span class="unit_temp image"></span>
+            </div>
+            <!-- 顯示T1數值框 -->
+            <div class="value_border" id="temp_clntSply_image_set" style="top: 21.5%; left:18.5%">
+                <span class="temp_clntSply_image" id="temp_clntSply_image">-</span>
+                <span class="unit_temp image"></span>
+            </div>
+            <!-- 顯示P1數值框 -->
+            <div class="value_border" id="prsr_clntSply_image_set" style="top: 21.5%; left:28%">
+                <span class="prsr_clntSply_image" id="prsr_clntSply_image">-</span>
+                <span class="unit_pressure image"></span>
+            </div>
+            <!-- 顯示PD數值框 -->
+            <div class="value_border" id="prsr_diff_image_set" style="top: 29%; left:28%">
+                <span class="prsr_diff_image" id="prsr_diff_image">-</span>
+                <span class="unit_pressure image"></span>
+            </div>
+            <!-- 顯示Tur數值框 -->
+            <div class="value_border" id="tbd_image_set" style="top: 44%; left:48%">
+                <span class="tbd_image" id="tbd_image">-</span>
+                <span class="Tur_unit" id="Tur_unit">NTU</span>
+            </div>
+            <!-- 顯示CON數值框 -->
+            <div class="value_border" id="cdct_image_set" style="top: 44%; left:53.4%">
+                <span class="cdct_image" id="cdct_image">-</span>
+                <span class="CON_unit" id="CON_unit">μS/cm</span>
+            </div>
+            <!-- 顯示PH數值框 -->
+            <div class="value_border" id="pH_image_set" style="top: 44%; left:58.8%">
+                <span class="pH_image" id="pH_image">-</span>
+                <span class="pH_unit" id="pH_unit">pH</span>
+            </div>
+            <!-- 顯示Heat Capacity數值框 -->
+            <div class="value_border" id="heat_capacity_image_set" style="top: 42%; left:73.2%">
+                <span class="heat_capacity_image" id="heat_capacity_image">-</span>
+                <span>kW</span>
+            </div>
+            <!-- 顯示fan speed 數值框 -->
+            <div class="value_border" id="fan_freq_image_set" style="top:20%; left:76.5%">
+                <span class="fan_freq_image" id="fan_freq_image">-</span>
+                <span class="fan_unit">%</span>
+            </div>
+            <!-- fan 1-8 light 啟動時顯示 -->
+            <div>
+                <div class="fans_light" id="fan_freq5_light"></div>
+            </div>
+            <div>
+                <div class="fans_light" id="fan_freq4_light"></div>
+            </div>
+            <div>
+                <div class="fans_light" id="fan_freq6_light"></div>
+            </div>
+            <div>
+                <div class="fans_light" id="fan_freq3_light"></div>
+            </div>
+            <div>
+                <div class="fans_light" id="fan_freq7_light"></div>
+            </div>
+            <div>
+                <div class="fans_light" id="fan_freq2_light"></div>
+            </div>
+            <div>
+                <div class="fans_light" id="fan_freq8_light"></div>
+            </div>
+            <div>
+                <div class="fans_light" id="fan_freq1_light"></div>
+            </div>
+            <!-- 顯示fan 1-8 數值框 -->
+            <!--<div class="value_border" style="top: 275px; left:1250px">
+                                        <span class="fan_freq_image" id="fan_freq1_image">-</span>
+                                        <span class="fan_unit">%</span>
+                                    </div>
+                                    <div class="value_border" style="top: 315px; left:1250px">
+                                        <span class="fan_freq_image" id="fan_freq2_image">-</span>
+                                        <span class="fan_unit">%</span>
+                                    </div>
+                                    <div class="value_border" style="top: 355px; left:1250px">
+                                        <span class="fan_freq_image" id="fan_freq3_image">-</span>
+                                        <span class="fan_unit">%</span>
+                                    </div>
+                                    <div class="value_border" style="top: 395px; left:1250px">
+                                        <span class="fan_freq_image" id="fan_freq4_image">-</span>
+                                        <span class="fan_unit">%</span>
+                                    </div>
+                                    <div class="value_border" style="top: 275px; left:1560px">
+                                        <span class="fan_freq_image" id="fan_freq5_image">-</span>
+                                        <span class="fan_unit">%</span>
+                                    </div>
+                                    <div class="value_border" style="top: 315px; left:1560px">
+                                        <span class="fan_freq_image" id="fan_freq6_image">-</span>
+                                        <span class="fan_unit">%</span>
+                                    </div>
+                                    <div class="value_border" style="top: 355px; left:1560px">
+                                        <span class="fan_freq_image" id="fan_freq7_image">-</span>
+                                        <span class="fan_unit">%</span>
+                                    </div>
+                                    <div class="value_border" style="top: 395px; left:1560px">
+                                        <span class="fan_freq_image" id="fan_freq8_image">-</span>
+                                        <span class="fan_unit">%</span>
+                                    </div>-->
+
+            <!-- 顯示T2數值框 -->
+            <div class="value_border" id="temp_clntRtn_image_set" style="top: 77.5%; left:9.2%">
+                <span class="temp_clntRtn_image" id="temp_clntRtn_image">-</span>
+                <span class="unit_temp image"></span>
+            </div>
+            <!-- 顯示P2數值框 -->
+            <div class="value_border" id="prsr_clntRtn_image_set" style="top: 77.5%; left:16.2%">
+                <span class="prsr_clntRtn_image" id="prsr_clntRtn_image">-</span>
+                <span class="unit_pressure image"></span>
+            </div>
+            <!-- 顯示Pump1數值框 -->
+            <div class="value_border" id="inv1_freq_image_set" style="top: 60%; left:36.7%">
+                <span class="inv1_freq_image" id="inv1_freq_image">-</span>
+                <span class="inv_unit" id="inv1_unit">%</span>
+            </div>
+            <!-- 顯示Pump2數值框 -->
+            <div class="value_border" id="inv2_freq_image_set" style="top: 77.5%; left:36.7%">
+                <span class="inv2_freq_image" id="inv2_freq_image">-</span>
+                <span class="inv_unit" id="inv1_unit">%</span>
+            </div>
+            <!-- 顯示Pump3數值框 -->
+            <div class="value_border" id="inv3_freq_image_set" style="top: 94%; left:36.7%">
+                <span class="inv3_freq_image" id="inv3_freq_image">-</span>
+                <span class="inv_unit" id="inv1_unit">%</span>
+            </div>
+            <!-- 顯示P3數值框 -->
+            <div class="value_border" id="prsr_fltIn_image_set" style="top: 77.5%; left:56.4%">
+                <!-- <span class="prsr_fltOut_image" id="prsr_fltOut_image">-</span> -->
+                <span class="prsr_fltIn_image" id="prsr_fltIn_image">-</span>
+
+                <span class="unit_pressure image"></span>
+            </div>
+            <!-- 顯示Filtter數值框 -->
+            <div class="value_border" id="prsr_fltDiff_image_set" style="top: 77.5%; left:63%">
+                <span class="prsr_fltDiff_image" id="prsr_fltDiff_image">-</span>
+                <span class="unit_pressure image"></span>
+            </div>
+            <!-- 顯示P4數值框 -->
+            <div class="value_border" id="prsr_fltOut_image_set" style="top: 77.5%; left:70%">
+                <!-- <span class="prsr_fltIn_image" id="prsr_fltIn_image">N/A</span> -->
+                <span class="prsr_fltOut_image" id="prsr_fltOut_image">-</span>
+
+                <span class="unit_pressure image"></span>
+            </div>
+            <!-- 顯示F1數值框 -->
+            <div class="value_border" id="clnt_flow_image" style="top: 77.5%; left:76.9%">
+                <span class="clnt_flow_image" id="clnt_flow_image">-</span>
+                <span class="unit_flow image"></span>
+            </div>
+
+            <div class="unit_block">
                 <table class="table table-hover">
-                    <thead>
-                        <tr class="row_sticky">
-                            <th class="col-4 tdCenterAlign" scope="col">Sensor</th>
-                            <th class="col-3 tdCenterAlign">Status</th>
-                            <th class="col-3 tdCenterAlign">Value</th>
-                            <th class="col-2 tdCenterAlign">Unit</th>
-                        </tr>
-                    </thead>
                     <tbody>
                         <tr>
-                            <td class="tdCenterAlign" scope="row">
-                                Coolant Supply Temperature (T1)
+                            <td scope="row">CDU Status:</td>
+                            <td scope="row" style="position: relative" class="light_box">
+                                <div class="status_light" id="status_light"></div>
                             </td>
-                            <td id="temp_clntSply_status" class="tdCenterAlign" scope="row"></td>
-                            <td id="temp_clntSply" class="tdCenterAlign" scope="row"></td>
-                            <td class="unit_temp tdCenterAlign" scope="row"></td>
-                        </tr>
-                        <tr class="t1sp_set">
-                            <td class="tdCenterAlign" scope="row">
-                                Coolant Supply Temperature Spare (T1sp)
-                            </td>
-                            <td id="temp_clntSplySpare_status" class="tdCenterAlign" scope="row"></td>
-                            <td id="temp_clntSplySpare" class="tdCenterAlign" scope="row"></td>
-                            <td class="unit_temp tdCenterAlign" scope="row"></td>
                         </tr>
                         <tr>
-                            <td class="tdCenterAlign" scope="row">
-                                Coolant Return Temperature (T2)
-                            </td>
-                            <td id="temp_clntRtn_status" class="tdCenterAlign" scope="row"></td>
-                            <td id="temp_clntRtn" class="tdCenterAlign" scope="row"></td>
-                            <td class="tdCenterAlign unit_temp" scope="row"></td>
+                            <td scope="row">Mode:</td>
+                            <td id="current_mode" class="current_mode" scope="row"></td>
                         </tr>
                         <tr>
-                            <td class="tdCenterAlign" scope="row">
-                                Coolant Return Temperature Spare (T2sp)
-                            </td>
-                            <td id="temp_clntRtnSpare_status" class="tdCenterAlign" scope="row"></td>
-                            <td id="temp_clntRtnSpare" class="tdCenterAlign" scope="row"></td>
-                            <td class="tdCenterAlign unit_temp" scope="row"></td>
+                            <td scope="row">PLC:</td>
+                            <td id="PLC" class="PLC" scope="row"></td>
                         </tr>
                         <tr>
-                            <td class="tdCenterAlign" scope="row">
-                                Coolant Supply Pressure (P1)
-                            </td>
-                            <td id="prsr_clntSply_status" class="tdCenterAlign" scope="row"></td>
-                            <td id="prsr_clntSply" class="tdCenterAlign" scope="row"></td>
-                            <td class="unit_pressure tdCenterAlign" scope="row"></td>
-                        </tr>
-                        <tr class="p1sp_set">
-                            <td class="tdCenterAlign" scope="row">
-                                Coolant Supply Pressure Spare (P1sp)
-                            </td>
-                            <td id="prsr_clntSplySpare_status" class="tdCenterAlign" scope="row"></td>
-                            <td id="prsr_clntSplySpare" class="tdCenterAlign" scope="row"></td>
-                            <td class="unit_pressure tdCenterAlign" scope="row"></td>
-                        </tr>
-                        <tr>
-                            <td class="tdCenterAlign" scope="row">
-                                Coolant Return Pressure (P2)
-                            </td>
-                            <td id="prsr_clntRtn_status" class="tdCenterAlign" scope="row"></td>
-                            <td id="prsr_clntRtn" scope="row"></td>
-                            <td class="unit_pressure" scope="row"></td>
-                        </tr>
-                        <tr class="t2sp_set">
-                            <td class="tdCenterAlign" scope="row">
-                                Coolant Return Pressure Spare (P2sp)
-                            </td>
-                            <td id="prsr_clntRtnSpare_status" class="tdCenterAlign" scope="row"></td>
-                            <td id="prsr_clntRtnSpare" scope="row"></td>
-                            <td class="unit_pressure" scope="row"></td>
-                        </tr>
-                        <tr class="t2sp_set">
-                            <td class="tdCenterAlign" scope="row">
-                                Differential Pressure (Pd)
-                            </td>
-                            <td class="tdCenterAlign" scope="row">-</td>
-                            <td id="prsr_diff" scope="row"></td>
-                            <td class="unit_pressure" scope="row"></td>
-                        </tr>
-    
-                        <tr>
-                            <td class="tdCenterAlign" scope="row">
-                                Coolant Flow Rate (F1)
-                            </td>
-                            <td id="clnt_flow_status" class="tdCenterAlign" scope="row"></td>
-                            <td id="clnt_flow" scope="row"></td>
-                            <td class="unit_flow" scope="row"></td>
-                        </tr>
-                        <tr>
-                            <td class="tdCenterAlign" scope="row">
-                                Ambient Temperature (Ta)
-                            </td>
-                            <td id="ambient_temp_status" class="tdCenterAlign" scope="row"></td>
-                            <td id="ambient_temp" scope="row"></td>
-                            <td class="unit_temp" scope="row"></td>
-                        </tr>
-                        <tr>
-                            <td class="tdCenterAlign" scope="row">
-                                Relative Humidity (RH)
-                            </td>
-                            <td id="relative_humid_status" class="tdCenterAlign" scope="row"></td>
-                            <td id="relative_humid" scope="row"></td>
-                            <td class="" scope="row">%</td>
-                        </tr>
-                        <tr>
-                            <td class="tdCenterAlign" scope="row">
-                                Dew Point Temperature (TDp)
-                            </td>
-                            <td id="dew_point_status" class="tdCenterAlign" scope="row"></td>
-                            <td id="dew_point" scope="row"></td>
-                            <td class="unit_temp" scope="row"></td>
-                        </tr>
-    
-                        <tr class = "pH_set">
-                            <td class="tdCenterAlign" scope="row">pH (PH)</td>
-                            <td id="pH_status" class="tdCenterAlign" scope="row"></td>
-                            <td id="pH" scope="row"></td>
-                            <td scope="row">pH</td>
-                        </tr>
-                        <tr class = "cdct_set">
-                            <td class="tdCenterAlign" scope="row">
-                                Conductivity (CON)
-                            </td>
-                            <td id="cdct_status" class="tdCenterAlign" scope="row"></td>
-                            <td id="cdct" scope="row"></td>
-                            <td scope="row">µS/cm</td>
-                        </tr>
-                        <tr class = "tbd_set">
-                            <td class="tdCenterAlign" scope="row">
-                                Turbidity (Tur)
-                            </td>
-                            <td id="tbd_status" class="tdCenterAlign" scope="row"></td>
-                            <td id="tbd" scope="row"></td>
-                            <td scope="row">NTU</td>
-                        </tr>
-                        <tr>
-                            <td class="tdCenterAlign" scope="row">
-                                Instant Power Consumption
-                            </td>
-                            <td id="power_status" class="tdCenterAlign" scope="row">
-                                -
-                            </td>
-                            <td id="power" scope="row"></td>
-                            <td scope="row">kW</td>
-                        </tr>
-    
-                        {% if (user == 'admin') or (user == 'superuser') %}
-                        <tr>
-                            <td class="tdCenterAlign" scope="row">
-                                Average Current
-                            </td>
-                            <td id="AC_status" class="tdCenterAlign" scope="row"></td>
-                            <td id="AC" scope="row"></td>
-                            <td scope="row">A</td>
-                        </tr>
-                        {% endif %}
-                        <tr>
-                            <td class="tdCenterAlign" scope="row">Heat Capacity</td>
-                            <td class="tdCenterAlign" scope="row">-</td>
-                            <td id="heat_capacity" scope="row"></td>
-                            <td scope="row">kW</td>
-                        </tr>
-                        <tr>
-                            <td class="tdCenterAlign" scope="row">
-                                Filter Inlet Pressure (P3)
-                            </td>
-                            <td id="prsr_fltIn_status" class="tdCenterAlign" scope="row"></td>
-                            <td id="prsr_fltIn" scope="row"></td>
-                            <td class="unit_pressure" scope="row"></td>
-                        </tr>
-                        <tr>
-                            <td class="tdCenterAlign" scope="row">
-                                Filter Outlet Pressure (P4)
-                            </td>
-                            <td id="prsr_fltOut_status" class="tdCenterAlign" scope="row"></td>
-                            <td id="prsr_fltOut" scope="row"></td>
-                            <td class="unit_pressure" scope="row"></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    
-        <div class="pumpValve title" data-label="Pump Information">
-            <div class="data-before-trigger"></div>
-            <div class="content">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th class="col-4 tdCenterAlign"></th>
-                            <th class="col-3 tdCenterAlign">Status</th>
-                            <th class="col-3 tdCenterAlign">Value</th>
-                            <th class="col-2 tdCenterAlign">Unit</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="tdCenterAlign">Coolant Pump1</td>
-                            <td class="tdCenterAlign" id="inv1_freq_status"></td>
-                            <td class="tdCenterAlign" id="inv1_freq"></td>
-                            <td>%</td>
-                        </tr>
-                        <tr>
-                            <td class="tdCenterAlign">Coolant Pump2</td>
-                            <td class="tdCenterAlign" id="inv2_freq_status"></td>
-                            <td class="tdCenterAlign" id="inv2_freq"></td>
-                            <td>%</td>
-                        </tr>
-                        <tr>
-                            <td class="tdCenterAlign">Coolant Pump3</td>
-                            <td class="tdCenterAlign" id="inv3_freq_status"></td>
-                            <td class="tdCenterAlign" id="inv3_freq"></td>
-                            <td>%</td>
-                        </tr>
-                        <!-- <tr>
-                                    <td class="w-12 tdCenterAlign" scope="row">
-                                        Inverter 1 Error
-                                    </td>
-                                    <td id="Inv1_Error" class="w-12 tdCenterAlign" scope="row"></td>
-                                    <td scope="row"></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td class="w-12 tdCenterAlign" scope="row">
-                                        Inverter 2 Error
-                                    </td>
-                                    <td id="Inv2_Error" class="w-12 tdCenterAlign" scope="row"></td>
-                                    <td scope="row"></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td class="w-12 tdCenterAlign" scope="row">
-                                        Inverter 3 Error
-                                    </td>
-                                    <td id="Inv3_Error" class="w-12 tdCenterAlign" scope="row"></td>
-                                    <td scope="row"></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td class="w-12 tdCenterAlign" scope="row">
-                                        Inverter 1 Overload
-                                    </td>
-                                    <td id="Inv1_OverLoad" class="w-12 tdCenterAlign" scope="row"></td>
-                                    <td scope="row"></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td class="w-12 tdCenterAlign" scope="row">
-                                        Inverter 2 Overload
-                                    </td>
-                                    <td id="Inv2_OverLoad" class="w-12 tdCenterAlign" scope="row"></td>
-                                    <td scope="row"></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td class="w-12 tdCenterAlign" scope="row">
-                                        Inverter 3 Overload
-                                    </td>
-                                    <td id="Inv3_OverLoad" class="w-12 tdCenterAlign" scope="row"></td>
-                                    <td scope="row"></td>
-                                    <td></td>
-                                </tr> -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    
-        <div class="fanValve title" data-label="Fan Information">
-            <div class="data-before-trigger"></div>
-            <div class="content">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th class="col-4 tdCenterAlign"></th>
-                            <th class="col-3 tdCenterAlign">Status</th>
-                            <th class="col-3 tdCenterAlign">Value</th>
-                            <th class="col-2 tdCenterAlign">Unit</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="tdCenterAlign">Fan Speed 1</td>
-                            <td class="tdCenterAlign" id="fan_freq1_status"></td>
-                            <td class="tdCenterAlign" id="fan_freq1"></td>
-                            <td>%</td>
-                        </tr>
-                        <tr>
-                            <td class="tdCenterAlign">Fan Speed 2</td>
-                            <td class="tdCenterAlign" id="fan_freq2_status"></td>
-                            <td class="tdCenterAlign" id="fan_freq2"></td>
-                            <td>%</td>
-                        </tr>
-                        <tr>
-                            <td class="tdCenterAlign">Fan Speed 3</td>
-                            <td class="tdCenterAlign" id="fan_freq3_status"></td>
-                            <td class="tdCenterAlign" id="fan_freq3"></td>
-                            <td>%</td>
-                        </tr>
-                        <tr>
-                            <td class="tdCenterAlign">Fan Speed 4</td>
-                            <td class="tdCenterAlign" id="fan_freq4_status"></td>
-                            <td class="tdCenterAlign" id="fan_freq4"></td>
-                            <td>%</td>
-                        </tr>
-                        <tr>
-                            <td class="tdCenterAlign">Fan Speed 5</td>
-                            <td class="tdCenterAlign" id="fan_freq5_status"></td>
-                            <td class="tdCenterAlign" id="fan_freq5"></td>
-                            <td>%</td>
-                        </tr>
-                        <tr>
-                            <td class="tdCenterAlign">Fan Speed 6</td>
-                            <td class="tdCenterAlign" id="fan_freq6_status"></td>
-                            <td class="tdCenterAlign" id="fan_freq6"></td>
-                            <td>%</td>
-                        </tr>
-                        <tr>
-                            <td class="tdCenterAlign">Fan Speed 7</td>
-                            <td class="tdCenterAlign" id="fan_freq7_status"></td>
-                            <td class="tdCenterAlign" id="fan_freq7"></td>
-                            <td>%</td>
-                        </tr>
-                        <tr>
-                            <td class="tdCenterAlign">Fan Speed 8</td>
-                            <td class="tdCenterAlign" id="fan_freq8_status"></td>
-                            <td class="tdCenterAlign" id="fan_freq8"></td>
-                            <td>%</td>
-                        </tr>
-    
-                        <!-- <tr>
-                                    <td class="w-12 tdCenterAlign" scope="row">
-                                        Fan Overload 1
-                                    </td>
-                                    <td id="Fan_OverLoad1" class="w-12 tdCenterAlign" scope="row"></td>
-                                    <td scope="row"></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td class="w-12 tdCenterAlign" scope="row">
-                                        Fan Overload 2
-                                    </td>
-                                    <td id="Fan_OverLoad2" class="w-12 tdCenterAlign" scope="row"></td>
-                                    <td scope="row"></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td class="w-12 tdCenterAlign" scope="row">
-                                        Fan 1 Alarm Status
-                                    </td>
-                                    <td id="fan1_error" class="w-12 tdCenterAlign" scope="row"></td>
-                                    <td scope="row"></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td class="w-12 tdCenterAlign" scope="row">
-                                        Fan 2 Alarm Status
-                                    </td>
-                                    <td id="fan2_error" class="w-12 tdCenterAlign" scope="row"></td>
-                                    <td scope="row"></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td class="w-12 tdCenterAlign" scope="row">
-                                        Fan 3 Alarm Status
-                                    </td>
-                                    <td id="fan3_error" class="w-12 tdCenterAlign" scope="row"></td>
-                                    <td scope="row"></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td class="w-12 tdCenterAlign" scope="row">
-                                        Fan 4 Alarm Status
-                                    </td>
-                                    <td id="fan4_error" class="w-12 tdCenterAlign" scope="row"></td>
-                                    <td scope="row"></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td class="w-12 tdCenterAlign" scope="row">
-                                        Fan 5 Alarm Status
-                                    </td>
-                                    <td id="fan5_error" class="w-12 tdCenterAlign" scope="row"></td>
-                                    <td scope="row"></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td class="w-12 tdCenterAlign" scope="row">
-                                        Fan 6 Alarm Status
-                                    </td>
-                                    <td id="fan6_error" class="w-12 tdCenterAlign" scope="row"></td>
-                                    <td scope="row"></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td class="w-12 tdCenterAlign" scope="row">
-                                        Fan 7 Alarm Status
-                                    </td>
-                                    <td id="fan7_error" class="w-12 tdCenterAlign" scope="row"></td>
-                                    <td scope="row"></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td class="w-12 tdCenterAlign" scope="row">
-                                        Fan 8 Alarm Status
-                                    </td>
-                                    <td id="fan8_error" class="w-12 tdCenterAlign" scope="row"></td>
-                                    <td scope="row"></td>
-                                    <td></td>
-                                </tr> -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        {% if (user == 'admin') or (user == 'superuser') %}
-        <div class="mcInfo title" data-label="Magnetic Contactor Information">
-            <div class="data-before-trigger"></div>
-            <div class="content">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th class="col-4 tdCenterAlign"></th>
-                            <th class="col-3 tdCenterAlign">Status</th>
-                            <th class="col-3"></th>
-                            <th class="col-2"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="w-12 tdCenterAlign" scope="row">Inverter 1 MC</td>
-                            <td id="mc1_sw" class="w-12 tdCenterAlign" scope="row"></td>
-                            <td scope="row"></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td class="w-12 tdCenterAlign" scope="row">Inverter 2 MC</td>
-                            <td id="mc2_sw" class="w-12 tdCenterAlign" scope="row"></td>
-                            <td scope="row"></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td class="w-12 tdCenterAlign" scope="row">Inverter 3 MC</td>
-                            <td id="mc3_sw" class="w-12 tdCenterAlign" scope="row"></td>
-                            <td scope="row"></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td class="w-12 tdCenterAlign" scope="row">Fan 1-4 MC</td>
-                            <td id="fan_mc1" class="w-12 tdCenterAlign" scope="row"></td>
-                            <td scope="row"></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td class="w-12 tdCenterAlign" scope="row">Fan 5-8 MC</td>
-                            <td id="fan_mc2" class="w-12 tdCenterAlign" scope="row"></td>
-                            <td scope="row"></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td class="w-12 tdCenterAlign" scope="row">
-                                Main MC
-                            </td>
-                            <td id="main_mc_error" class="w-12 tdCenterAlign" scope="row"></td>
-                            <td scope="row"></td>
-                            <td></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        {% endif %}
-    
-        <div class="deviceStatus title" data-label="Device Status">
-            <div class="data-before-trigger"></div>
-            <div class="content">
-                <table class="table table-hover">
-                    <thead>
-                        <tr class="row_sticky">
-                            <th class="col-4 tdCenterAlign" scope="col">Sensor</th>
-                            <th class="col-3 tdCenterAlign">Status</th>
-                            <th class="col-3"></th>
-                            <th class="col-2"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="w-12 tdCenterAlign" scope="row">
-                                Leakage Sensor
-                            </td>
-                            <td id="leakage1" class="w-12 tdCenterAlign" scope="row"></td>
-                            <td scope="row"></td>
-                            <td></td>
-                        </tr>
-                        <!-- 暫時隱藏liquid coolant level -->
-                        <!-- <tr>
-                                    <td class="w-12 tdCenterAlign" scope="row">
-                                        Liquid Coolant Level 1
-                                    </td>
-                                    <td id="level1" class="w-12 tdCenterAlign" scope="row"></td>
-                                    <td scope="row"></td>
-                                    <td></td>
-                                </tr>
-            
-                                <tr>
-                                    <td class="w-12 tdCenterAlign" scope="row">
-                                        Liquid Coolant Level 2
-                                    </td>
-                                    <td id="level2" class="w-12 tdCenterAlign" scope="row"></td>
-                                    <td scope="row"></td>
-                                    <td></td>
-                                </tr>
-            
-                                <tr>
-                                    <td class="w-12 tdCenterAlign" scope="row">
-                                        Liquid Coolant Level 3
-                                    </td>
-                                    <td id="level3" class="w-12 tdCenterAlign" scope="row"></td>
-                                    <td scope="row"></td>
-                                    <td></td>
-                                </tr> -->
-    
-                        <tr>
-                            <td class="w-12 tdCenterAlign" scope="row">
-                                24V Power Supply
-                            </td>
-                            <td id="power24v" class="w-12 tdCenterAlign" scope="row"></td>
-                            <td scope="row"></td>
-                            <td></td>
-                        </tr>
-    
-                        <!--<tr>
-                                    <td class="w-12 tdCenterAlign" scope="row">
-                                        24V Power Supply 2
-                                    </td>
-                                    <td id="power24v2" class="w-12 tdCenterAlign" scope="row"></td>
-                                    <td scope="row"></td>
-                                    <td></td>
-                                </tr>-->
-    
-                        <tr class = "power12v_set">
-                            <td class="w-12 tdCenterAlign" scope="row">
-                                12V Power Supply
-                            </td>
-                            <td id="power12v" class="w-12 tdCenterAlign" scope="row"></td>
-                            <td scope="row"></td>
-                            <td></td>
-                        </tr>
-    
-                        <!--<tr>
-                                    <td class="w-12 tdCenterAlign" scope="row">
-                                        12V Power Supply 2
-                                    </td>
-                                    <td id="power12v2" class="w-12 tdCenterAlign" scope="row"></td>
-                                    <td scope="row"></td>
-                                    <td></td>
-                                </tr>-->
-    
-                        <tr>
-                            <td class="w-12 tdCenterAlign" scope="row">ATS</td>
-                            <td id="ATS_status" class="w-12 tdCenterAlign" scope="row"></td>
-                            <td scope="row"></td>
-                            <td></td>
-                        </tr>
-    
-                        <tr>
-                            <td class="w-12 tdCenterAlign" scope="row">PC</td>
-                            <td id="pc_error" class="w-12 tdCenterAlign" scope="row"></td>
-                            <td scope="row"></td>
-                            <td></td>
-                        </tr>
-                        <!--<tr>
-                                    <td class="w-12 tdCenterAlign" scope="row">PC2</td>
-                                    <td id="pc2_error" class="w-12 tdCenterAlign" scope="row"></td>
-                                    <td scope="row"></td>
-                                    <td></td>
-                                </tr>-->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    
-    
-    
-        <div class="rack_setting hidden title" data-label="Rack Information">
-            <div class="data-before-trigger"></div>
-            <div class="content">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th class="col-4 tdCenterAlign"></th>
-                            <th class="col-3 tdCenterAlign">Opening (%)</th>
-                            <th class="col-3 tdCenterAlign">Leakage</th>
-                            <th class="col-2"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="rack1 hidden">
-                            <td class="w-25 tdCenterAlign">Rack1</td>
-                            <td id="rack1_status" class="w-25 tdCenterAlign"></td>
-                            <td id="rack1_leak" class="w-25 tdCenterAlign"></td>
-                            <td></td>
-                        </tr>
-                        <tr class="rack2 hidden">
-                            <td class="w-25 tdCenterAlign">Rack2</td>
-                            <td id="rack2_status" class="w-25 tdCenterAlign"></td>
-                            <td id="rack2_leak" class="w-25 tdCenterAlign"></td>
-                            <td></td>
-                        </tr>
-                        <tr class="rack3 hidden">
-                            <td class="w-25 tdCenterAlign">Rack3</td>
-                            <td id="rack3_status" class="w-25 tdCenterAlign"></td>
-                            <td id="rack3_leak" class="w-25 tdCenterAlign"></td>
-                            <td></td>
-                        </tr>
-                        <tr class="rack4 hidden">
-                            <td class="w-25 tdCenterAlign">Rack4</td>
-                            <td id="rack4_status" class="w-25 tdCenterAlign"></td>
-                            <td id="rack4_leak" class="w-25 tdCenterAlign"></td>
-                            <td></td>
-                        </tr>
-                        <tr class="rack5 hidden">
-                            <td class="w-25 tdCenterAlign">Rack5</td>
-                            <td id="rack5_status" class="w-25 tdCenterAlign"></td>
-                            <td id="rack5_leak" class="w-25 tdCenterAlign"></td>
-                            <td></td>
-                        </tr>
-                        <tr class="rack6 hidden">
-                            <td class="w-25 tdCenterAlign">Rack6</td>
-                            <td id="rack6_status" class="w-25 tdCenterAlign"></td>
-                            <td id="rack6_leak" class="w-25 tdCenterAlign"></td>
-                            <td></td>
-                        </tr>
-                        <tr class="rack7 hidden">
-                            <td class="w-25 tdCenterAlign">Rack7</td>
-                            <td id="rack7_status" class="w-25 tdCenterAlign"></td>
-                            <td id="rack7_leak" class="w-25 tdCenterAlign"></td>
-                            <td></td>
-                        </tr>
-                        <tr class="rack8 hidden">
-                            <td class="w-25 tdCenterAlign">Rack8</td>
-                            <td id="rack8_status" class="w-25 tdCenterAlign"></td>
-                            <td id="rack8_leak" class="w-25 tdCenterAlign"></td>
-                            <td></td>
-                        </tr>
-                        <tr class="rack9 hidden">
-                            <td class="w-25 tdCenterAlign">Rack9</td>
-                            <td id="rack9_status" class="w-25 tdCenterAlign"></td>
-                            <td id="rack9_leak" class="w-25 tdCenterAlign"></td>
-                            <td></td>
-                        </tr>
-                        <tr class="rack10 hidden">
-                            <td class="w-25 tdCenterAlign">Rack10</td>
-                            <td id="rack10_status" class="w-25 tdCenterAlign"></td>
-                            <td id="rack10_leak" class="w-25 tdCenterAlign"></td>
-                            <td></td>
+                            <td scope="row">Box PC:</td>
+                            <td>Redundent</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
-    {% endblock %} {% block scripts %}
-    <script>
-        function changeAgentVal() {
-            document.getElementById("picpath").value =
-                document.getElementById("inputFileAgent").value;
+
+    <div class="sensor title" data-label="Sensor Value">
+        <div class="data-before-trigger"></div>
+        <div class="content">
+            <table class="table table-hover">
+                <thead>
+                    <tr class="row_sticky">
+                        <th class="col-4 tdCenterAlign" scope="col">Sensor</th>
+                        <th class="col-3 tdCenterAlign">Status</th>
+                        <th class="col-3 tdCenterAlign">Value</th>
+                        <th class="col-2 tdCenterAlign">Unit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="tdCenterAlign" scope="row">
+                            Coolant Supply Temperature (T1)
+                        </td>
+                        <td id="temp_clntSply_status" class="tdCenterAlign" scope="row"></td>
+                        <td id="temp_clntSply" class="tdCenterAlign" scope="row"></td>
+                        <td class="unit_temp tdCenterAlign" scope="row"></td>
+                    </tr>
+                    <tr class="t1sp_set">
+                        <td class="tdCenterAlign" scope="row">
+                            Coolant Supply Temperature Spare (T1sp)
+                        </td>
+                        <td id="temp_clntSplySpare_status" class="tdCenterAlign" scope="row"></td>
+                        <td id="temp_clntSplySpare" class="tdCenterAlign" scope="row"></td>
+                        <td class="unit_temp tdCenterAlign" scope="row"></td>
+                    </tr>
+                    <tr>
+                        <td class="tdCenterAlign" scope="row">
+                            Coolant Return Temperature (T2)
+                        </td>
+                        <td id="temp_clntRtn_status" class="tdCenterAlign" scope="row"></td>
+                        <td id="temp_clntRtn" class="tdCenterAlign" scope="row"></td>
+                        <td class="tdCenterAlign unit_temp" scope="row"></td>
+                    </tr>
+                    <tr>
+                        <td class="tdCenterAlign" scope="row">
+                            Coolant Return Temperature Spare (T2sp)
+                        </td>
+                        <td id="temp_clntRtnSpare_status" class="tdCenterAlign" scope="row"></td>
+                        <td id="temp_clntRtnSpare" class="tdCenterAlign" scope="row"></td>
+                        <td class="tdCenterAlign unit_temp" scope="row"></td>
+                    </tr>
+                    <tr>
+                        <td class="tdCenterAlign" scope="row">
+                            Coolant Supply Pressure (P1)
+                        </td>
+                        <td id="prsr_clntSply_status" class="tdCenterAlign" scope="row"></td>
+                        <td id="prsr_clntSply" class="tdCenterAlign" scope="row"></td>
+                        <td class="unit_pressure tdCenterAlign" scope="row"></td>
+                    </tr>
+                    <tr class="p1sp_set">
+                        <td class="tdCenterAlign" scope="row">
+                            Coolant Supply Pressure Spare (P1sp)
+                        </td>
+                        <td id="prsr_clntSplySpare_status" class="tdCenterAlign" scope="row"></td>
+                        <td id="prsr_clntSplySpare" class="tdCenterAlign" scope="row"></td>
+                        <td class="unit_pressure tdCenterAlign" scope="row"></td>
+                    </tr>
+                    <tr>
+                        <td class="tdCenterAlign" scope="row">
+                            Coolant Return Pressure (P2)
+                        </td>
+                        <td id="prsr_clntRtn_status" class="tdCenterAlign" scope="row"></td>
+                        <td id="prsr_clntRtn" scope="row"></td>
+                        <td class="unit_pressure" scope="row"></td>
+                    </tr>
+                    <tr class="t2sp_set">
+                        <td class="tdCenterAlign" scope="row">
+                            Coolant Return Pressure Spare (P2sp)
+                        </td>
+                        <td id="prsr_clntRtnSpare_status" class="tdCenterAlign" scope="row"></td>
+                        <td id="prsr_clntRtnSpare" scope="row"></td>
+                        <td class="unit_pressure" scope="row"></td>
+                    </tr>
+                    <tr class="t2sp_set">
+                        <td class="tdCenterAlign" scope="row">
+                            Differential Pressure (Pd)
+                        </td>
+                        <td class="tdCenterAlign" scope="row">-</td>
+                        <td id="prsr_diff" scope="row"></td>
+                        <td class="unit_pressure" scope="row"></td>
+                    </tr>
+
+                    <tr>
+                        <td class="tdCenterAlign" scope="row">
+                            Coolant Flow Rate (F1)
+                        </td>
+                        <td id="clnt_flow_status" class="tdCenterAlign" scope="row"></td>
+                        <td id="clnt_flow" scope="row"></td>
+                        <td class="unit_flow" scope="row"></td>
+                    </tr>
+                    <tr>
+                        <td class="tdCenterAlign" scope="row">
+                            Ambient Temperature (Ta)
+                        </td>
+                        <td id="ambient_temp_status" class="tdCenterAlign" scope="row"></td>
+                        <td id="ambient_temp" scope="row"></td>
+                        <td class="unit_temp" scope="row"></td>
+                    </tr>
+                    <tr>
+                        <td class="tdCenterAlign" scope="row">
+                            Relative Humidity (RH)
+                        </td>
+                        <td id="relative_humid_status" class="tdCenterAlign" scope="row"></td>
+                        <td id="relative_humid" scope="row"></td>
+                        <td class="" scope="row">%</td>
+                    </tr>
+                    <tr>
+                        <td class="tdCenterAlign" scope="row">
+                            Dew Point Temperature (TDp)
+                        </td>
+                        <td id="dew_point_status" class="tdCenterAlign" scope="row"></td>
+                        <td id="dew_point" scope="row"></td>
+                        <td class="unit_temp" scope="row"></td>
+                    </tr>
+
+                    <tr class="pH_set">
+                        <td class="tdCenterAlign" scope="row">pH (PH)</td>
+                        <td id="pH_status" class="tdCenterAlign" scope="row"></td>
+                        <td id="pH" scope="row"></td>
+                        <td scope="row">pH</td>
+                    </tr>
+                    <tr class="cdct_set">
+                        <td class="tdCenterAlign" scope="row">
+                            Conductivity (CON)
+                        </td>
+                        <td id="cdct_status" class="tdCenterAlign" scope="row"></td>
+                        <td id="cdct" scope="row"></td>
+                        <td scope="row">µS/cm</td>
+                    </tr>
+                    <tr class="tbd_set">
+                        <td class="tdCenterAlign" scope="row">
+                            Turbidity (Tur)
+                        </td>
+                        <td id="tbd_status" class="tdCenterAlign" scope="row"></td>
+                        <td id="tbd" scope="row"></td>
+                        <td scope="row">NTU</td>
+                    </tr>
+                    <tr>
+                        <td class="tdCenterAlign" scope="row">
+                            Instant Power Consumption
+                        </td>
+                        <td id="power_status" class="tdCenterAlign" scope="row">
+                            -
+                        </td>
+                        <td id="power" scope="row"></td>
+                        <td scope="row">kW</td>
+                    </tr>
+
+                    {% if (user == 'admin') or (user == 'superuser') %}
+                    <tr>
+                        <td class="tdCenterAlign" scope="row">
+                            Average Current
+                        </td>
+                        <td id="AC_status" class="tdCenterAlign" scope="row"></td>
+                        <td id="AC" scope="row"></td>
+                        <td scope="row">A</td>
+                    </tr>
+                    {% endif %}
+                    <tr>
+                        <td class="tdCenterAlign" scope="row">Heat Capacity</td>
+                        <td class="tdCenterAlign" scope="row">-</td>
+                        <td id="heat_capacity" scope="row"></td>
+                        <td scope="row">kW</td>
+                    </tr>
+                    <tr>
+                        <td class="tdCenterAlign" scope="row">
+                            Filter Inlet Pressure (P3)
+                        </td>
+                        <td id="prsr_fltIn_status" class="tdCenterAlign" scope="row"></td>
+                        <td id="prsr_fltIn" scope="row"></td>
+                        <td class="unit_pressure" scope="row"></td>
+                    </tr>
+                    <tr>
+                        <td class="tdCenterAlign" scope="row">
+                            Filter Outlet Pressure (P4)
+                        </td>
+                        <td id="prsr_fltOut_status" class="tdCenterAlign" scope="row"></td>
+                        <td id="prsr_fltOut" scope="row"></td>
+                        <td class="unit_pressure" scope="row"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="pumpValve title" data-label="Pump Information">
+        <div class="data-before-trigger"></div>
+        <div class="content">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th class="col-4 tdCenterAlign"></th>
+                        <th class="col-3 tdCenterAlign">Status</th>
+                        <th class="col-3 tdCenterAlign">Value</th>
+                        <th class="col-2 tdCenterAlign">Unit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="tdCenterAlign">Coolant Pump1</td>
+                        <td class="tdCenterAlign" id="inv1_freq_status"></td>
+                        <td class="tdCenterAlign" id="inv1_freq"></td>
+                        <td>%</td>
+                    </tr>
+                    <tr>
+                        <td class="tdCenterAlign">Coolant Pump2</td>
+                        <td class="tdCenterAlign" id="inv2_freq_status"></td>
+                        <td class="tdCenterAlign" id="inv2_freq"></td>
+                        <td>%</td>
+                    </tr>
+                    <tr>
+                        <td class="tdCenterAlign">Coolant Pump3</td>
+                        <td class="tdCenterAlign" id="inv3_freq_status"></td>
+                        <td class="tdCenterAlign" id="inv3_freq"></td>
+                        <td>%</td>
+                    </tr>
+                    <!-- <tr>
+                                                <td class="w-12 tdCenterAlign" scope="row">
+                                                    Inverter 1 Error
+                                                </td>
+                                                <td id="Inv1_Error" class="w-12 tdCenterAlign" scope="row"></td>
+                                                <td scope="row"></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="w-12 tdCenterAlign" scope="row">
+                                                    Inverter 2 Error
+                                                </td>
+                                                <td id="Inv2_Error" class="w-12 tdCenterAlign" scope="row"></td>
+                                                <td scope="row"></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="w-12 tdCenterAlign" scope="row">
+                                                    Inverter 3 Error
+                                                </td>
+                                                <td id="Inv3_Error" class="w-12 tdCenterAlign" scope="row"></td>
+                                                <td scope="row"></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="w-12 tdCenterAlign" scope="row">
+                                                    Inverter 1 Overload
+                                                </td>
+                                                <td id="Inv1_OverLoad" class="w-12 tdCenterAlign" scope="row"></td>
+                                                <td scope="row"></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="w-12 tdCenterAlign" scope="row">
+                                                    Inverter 2 Overload
+                                                </td>
+                                                <td id="Inv2_OverLoad" class="w-12 tdCenterAlign" scope="row"></td>
+                                                <td scope="row"></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="w-12 tdCenterAlign" scope="row">
+                                                    Inverter 3 Overload
+                                                </td>
+                                                <td id="Inv3_OverLoad" class="w-12 tdCenterAlign" scope="row"></td>
+                                                <td scope="row"></td>
+                                                <td></td>
+                                            </tr> -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="fanValve title" data-label="Fan Information">
+        <div class="data-before-trigger"></div>
+        <div class="content">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th class="col-4 tdCenterAlign"></th>
+                        <th class="col-3 tdCenterAlign">Status</th>
+                        <th class="col-3 tdCenterAlign">Value</th>
+                        <th class="col-2 tdCenterAlign">Unit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="tdCenterAlign">Fan Speed 1</td>
+                        <td class="tdCenterAlign" id="fan_freq1_status"></td>
+                        <td class="tdCenterAlign" id="fan_freq1"></td>
+                        <td class="fan_speed_unit">%</td>
+                    </tr>
+                    <tr>
+                        <td class="tdCenterAlign">Fan Speed 2</td>
+                        <td class="tdCenterAlign" id="fan_freq2_status"></td>
+                        <td class="tdCenterAlign" id="fan_freq2"></td>
+                        <td class="fan_speed_unit">%</td>
+                    </tr>
+                    <tr>
+                        <td class="tdCenterAlign">Fan Speed 3</td>
+                        <td class="tdCenterAlign" id="fan_freq3_status"></td>
+                        <td class="tdCenterAlign" id="fan_freq3"></td>
+                        <td class="fan_speed_unit">%</td>
+                    </tr>
+                    <tr id="Fan4_set">
+                        <td class="tdCenterAlign">Fan Speed 4</td>
+                        <td class="tdCenterAlign" id="fan_freq4_status"></td>
+                        <td class="tdCenterAlign" id="fan_freq4"></td>
+                        <td class="fan_speed_unit">%</td>
+                    </tr>
+                    <tr>
+                        <td class="tdCenterAlign" id="Fan5_name">Fan Speed 5</td>
+                        <td class="tdCenterAlign" id="fan_freq5_status"></td>
+                        <td class="tdCenterAlign" id="fan_freq5"></td>
+                        <td class="fan_speed_unit">%</td>
+                    </tr>
+                    <tr>
+                        <td class="tdCenterAlign" id="Fan6_name">Fan Speed 6</td>
+                        <td class="tdCenterAlign" id="fan_freq6_status"></td>
+                        <td class="tdCenterAlign" id="fan_freq6"></td>
+                        <td class="fan_speed_unit">%</td>
+                    </tr>
+                    <tr>
+                        <td class="tdCenterAlign" id="Fan7_name">Fan Speed 7</td>
+                        <td class="tdCenterAlign" id="fan_freq7_status"></td>
+                        <td class="tdCenterAlign" id="fan_freq7"></td>
+                        <td class="fan_speed_unit">%</td>
+                    </tr>
+                    <tr id="Fan8_set">
+                        <td class="tdCenterAlign">Fan Speed 8</td>
+                        <td class="tdCenterAlign" id="fan_freq8_status"></td>
+                        <td class="tdCenterAlign" id="fan_freq8"></td>
+                        <td class="fan_speed_unit">%</td>
+                    </tr>
+
+                    <!-- <tr>
+                                                <td class="w-12 tdCenterAlign" scope="row">
+                                                    Fan Overload 1
+                                                </td>
+                                                <td id="Fan_OverLoad1" class="w-12 tdCenterAlign" scope="row"></td>
+                                                <td scope="row"></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="w-12 tdCenterAlign" scope="row">
+                                                    Fan Overload 2
+                                                </td>
+                                                <td id="Fan_OverLoad2" class="w-12 tdCenterAlign" scope="row"></td>
+                                                <td scope="row"></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="w-12 tdCenterAlign" scope="row">
+                                                    Fan 1 Alarm Status
+                                                </td>
+                                                <td id="fan1_error" class="w-12 tdCenterAlign" scope="row"></td>
+                                                <td scope="row"></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="w-12 tdCenterAlign" scope="row">
+                                                    Fan 2 Alarm Status
+                                                </td>
+                                                <td id="fan2_error" class="w-12 tdCenterAlign" scope="row"></td>
+                                                <td scope="row"></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="w-12 tdCenterAlign" scope="row">
+                                                    Fan 3 Alarm Status
+                                                </td>
+                                                <td id="fan3_error" class="w-12 tdCenterAlign" scope="row"></td>
+                                                <td scope="row"></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="w-12 tdCenterAlign" scope="row">
+                                                    Fan 4 Alarm Status
+                                                </td>
+                                                <td id="fan4_error" class="w-12 tdCenterAlign" scope="row"></td>
+                                                <td scope="row"></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="w-12 tdCenterAlign" scope="row">
+                                                    Fan 5 Alarm Status
+                                                </td>
+                                                <td id="fan5_error" class="w-12 tdCenterAlign" scope="row"></td>
+                                                <td scope="row"></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="w-12 tdCenterAlign" scope="row">
+                                                    Fan 6 Alarm Status
+                                                </td>
+                                                <td id="fan6_error" class="w-12 tdCenterAlign" scope="row"></td>
+                                                <td scope="row"></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="w-12 tdCenterAlign" scope="row">
+                                                    Fan 7 Alarm Status
+                                                </td>
+                                                <td id="fan7_error" class="w-12 tdCenterAlign" scope="row"></td>
+                                                <td scope="row"></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="w-12 tdCenterAlign" scope="row">
+                                                    Fan 8 Alarm Status
+                                                </td>
+                                                <td id="fan8_error" class="w-12 tdCenterAlign" scope="row"></td>
+                                                <td scope="row"></td>
+                                                <td></td>
+                                            </tr> -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% if (user == 'admin') or (user == 'superuser') %}
+    <div class="mcInfo title" data-label="Magnetic Contactor Information">
+        <div class="data-before-trigger"></div>
+        <div class="content">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th class="col-4 tdCenterAlign"></th>
+                        <th class="col-3 tdCenterAlign">Status</th>
+                        <th class="col-3"></th>
+                        <th class="col-2"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="w-12 tdCenterAlign" scope="row">Inverter 1 MC</td>
+                        <td id="mc1_sw" class="w-12 tdCenterAlign" scope="row"></td>
+                        <td scope="row"></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="w-12 tdCenterAlign" scope="row">Inverter 2 MC</td>
+                        <td id="mc2_sw" class="w-12 tdCenterAlign" scope="row"></td>
+                        <td scope="row"></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="w-12 tdCenterAlign" scope="row">Inverter 3 MC</td>
+                        <td id="mc3_sw" class="w-12 tdCenterAlign" scope="row"></td>
+                        <td scope="row"></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="w-12 tdCenterAlign" scope="row" id="Fan_group1">Fan 1-4 MC</td>
+                        <td id="fan_mc1" class="w-12 tdCenterAlign" scope="row"></td>
+                        <td scope="row"></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="w-12 tdCenterAlign" scope="row" id="Fan_group2">Fan 5-8 MC</td>
+                        <td id="fan_mc2" class="w-12 tdCenterAlign" scope="row"></td>
+                        <td scope="row"></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="w-12 tdCenterAlign" scope="row">
+                            Main MC
+                        </td>
+                        <td id="main_mc_error" class="w-12 tdCenterAlign" scope="row"></td>
+                        <td scope="row"></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="deviceStatus title" data-label="Device Status">
+        <div class="data-before-trigger"></div>
+        <div class="content">
+            <table class="table table-hover">
+                <thead>
+                    <tr class="row_sticky">
+                        <th class="col-4 tdCenterAlign" scope="col">Sensor</th>
+                        <th class="col-3 tdCenterAlign">Status</th>
+                        <th class="col-3"></th>
+                        <th class="col-2"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="w-12 tdCenterAlign" scope="row">
+                            Leakage Sensor
+                        </td>
+                        <td id="leakage1" class="w-12 tdCenterAlign" scope="row"></td>
+                        <td scope="row"></td>
+                        <td></td>
+                    </tr>
+
+                    <tr>
+                        <td class="w-12 tdCenterAlign" scope="row">
+                            Liquid Coolant Level 1
+                        </td>
+                        <td id="level1" class="w-12 tdCenterAlign" scope="row"></td>
+                        <td scope="row"></td>
+                        <td></td>
+                    </tr>
+
+                    <tr>
+                        <td class="w-12 tdCenterAlign" scope="row">
+                            Liquid Coolant Level 2
+                        </td>
+                        <td id="level2" class="w-12 tdCenterAlign" scope="row"></td>
+                        <td scope="row"></td>
+                        <td></td>
+                    </tr>
+
+                    <tr>
+                        <td class="w-12 tdCenterAlign" scope="row">
+                            Liquid Coolant Level 3
+                        </td>
+                        <td id="level3" class="w-12 tdCenterAlign" scope="row"></td>
+                        <td scope="row"></td>
+                        <td></td>
+                    </tr>
+
+                    <tr>
+                        <td class="w-12 tdCenterAlign" scope="row">
+                            24V Power Supply
+                        </td>
+                        <td id="power24v" class="w-12 tdCenterAlign" scope="row"></td>
+                        <td scope="row"></td>
+                        <td></td>
+                    </tr>
+
+                    <!--<tr>
+                                                <td class="w-12 tdCenterAlign" scope="row">
+                                                    24V Power Supply 2
+                                                </td>
+                                                <td id="power24v2" class="w-12 tdCenterAlign" scope="row"></td>
+                                                <td scope="row"></td>
+                                                <td></td>
+                                            </tr>-->
+
+                    <tr class="power12v_set">
+                        <td class="w-12 tdCenterAlign" scope="row">
+                            12V Power Supply
+                        </td>
+                        <td id="power12v" class="w-12 tdCenterAlign" scope="row"></td>
+                        <td scope="row"></td>
+                        <td></td>
+                    </tr>
+
+                    <!--<tr>
+                                                <td class="w-12 tdCenterAlign" scope="row">
+                                                    12V Power Supply 2
+                                                </td>
+                                                <td id="power12v2" class="w-12 tdCenterAlign" scope="row"></td>
+                                                <td scope="row"></td>
+                                                <td></td>
+                                            </tr>-->
+
+                    <tr>
+                        <td class="w-12 tdCenterAlign" scope="row">ATS</td>
+                        <td id="ATS_status" class="w-12 tdCenterAlign" scope="row"></td>
+                        <td scope="row"></td>
+                        <td></td>
+                    </tr>
+
+                    <tr>
+                        <td class="w-12 tdCenterAlign" scope="row">PC</td>
+                        <td id="pc_error" class="w-12 tdCenterAlign" scope="row"></td>
+                        <td scope="row"></td>
+                        <td></td>
+                    </tr>
+                    <!--<tr>
+                                                <td class="w-12 tdCenterAlign" scope="row">PC2</td>
+                                                <td id="pc2_error" class="w-12 tdCenterAlign" scope="row"></td>
+                                                <td scope="row"></td>
+                                                <td></td>
+                                            </tr>-->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+
+    <div class="rack_setting hidden title" data-label="Rack Information">
+        <div class="data-before-trigger"></div>
+        <div class="content">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th class="col-4 tdCenterAlign"></th>
+                        <th class="col-3 tdCenterAlign">Opening (%)</th>
+                        <th class="col-3 tdCenterAlign">Leakage</th>
+                        <th class="col-2"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="rack1 hidden">
+                        <td class="w-25 tdCenterAlign">Rack1</td>
+                        <td id="rack1_status" class="w-25 tdCenterAlign"></td>
+                        <td id="rack1_leak" class="w-25 tdCenterAlign"></td>
+                        <td></td>
+                    </tr>
+                    <tr class="rack2 hidden">
+                        <td class="w-25 tdCenterAlign">Rack2</td>
+                        <td id="rack2_status" class="w-25 tdCenterAlign"></td>
+                        <td id="rack2_leak" class="w-25 tdCenterAlign"></td>
+                        <td></td>
+                    </tr>
+                    <tr class="rack3 hidden">
+                        <td class="w-25 tdCenterAlign">Rack3</td>
+                        <td id="rack3_status" class="w-25 tdCenterAlign"></td>
+                        <td id="rack3_leak" class="w-25 tdCenterAlign"></td>
+                        <td></td>
+                    </tr>
+                    <tr class="rack4 hidden">
+                        <td class="w-25 tdCenterAlign">Rack4</td>
+                        <td id="rack4_status" class="w-25 tdCenterAlign"></td>
+                        <td id="rack4_leak" class="w-25 tdCenterAlign"></td>
+                        <td></td>
+                    </tr>
+                    <tr class="rack5 hidden">
+                        <td class="w-25 tdCenterAlign">Rack5</td>
+                        <td id="rack5_status" class="w-25 tdCenterAlign"></td>
+                        <td id="rack5_leak" class="w-25 tdCenterAlign"></td>
+                        <td></td>
+                    </tr>
+                    <tr class="rack6 hidden">
+                        <td class="w-25 tdCenterAlign">Rack6</td>
+                        <td id="rack6_status" class="w-25 tdCenterAlign"></td>
+                        <td id="rack6_leak" class="w-25 tdCenterAlign"></td>
+                        <td></td>
+                    </tr>
+                    <tr class="rack7 hidden">
+                        <td class="w-25 tdCenterAlign">Rack7</td>
+                        <td id="rack7_status" class="w-25 tdCenterAlign"></td>
+                        <td id="rack7_leak" class="w-25 tdCenterAlign"></td>
+                        <td></td>
+                    </tr>
+                    <tr class="rack8 hidden">
+                        <td class="w-25 tdCenterAlign">Rack8</td>
+                        <td id="rack8_status" class="w-25 tdCenterAlign"></td>
+                        <td id="rack8_leak" class="w-25 tdCenterAlign"></td>
+                        <td></td>
+                    </tr>
+                    <tr class="rack9 hidden">
+                        <td class="w-25 tdCenterAlign">Rack9</td>
+                        <td id="rack9_status" class="w-25 tdCenterAlign"></td>
+                        <td id="rack9_leak" class="w-25 tdCenterAlign"></td>
+                        <td></td>
+                    </tr>
+                    <tr class="rack10 hidden">
+                        <td class="w-25 tdCenterAlign">Rack10</td>
+                        <td id="rack10_status" class="w-25 tdCenterAlign"></td>
+                        <td id="rack10_leak" class="w-25 tdCenterAlign"></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %} {% block scripts %}
+<script>
+    function changeAgentVal() {
+        document.getElementById("picpath").value =
+            document.getElementById("inputFileAgent").value;
+    }
+
+    function cvtInputValue(val_in) {
+        let val_cvt = val_in.replace(/[^0-9.]/g, "");
+
+        const decimalPointIndex = val_cvt.indexOf(".");
+        if (decimalPointIndex !== -1) {
+            val_cvt =
+                val_cvt.slice(0, decimalPointIndex + 1) +
+                val_cvt.slice(decimalPointIndex + 1).replace(".", "");
         }
-    
-        function cvtInputValue(val_in) {
-            let val_cvt = val_in.replace(/[^0-9.]/g, "");
-    
-            const decimalPointIndex = val_cvt.indexOf(".");
-            if (decimalPointIndex !== -1) {
-                val_cvt =
-                    val_cvt.slice(0, decimalPointIndex + 1) +
-                    val_cvt.slice(decimalPointIndex + 1).replace(".", "");
-            }
-            return val_cvt;
+        return val_cvt;
+    }
+
+    function cvtInputValueNoPnt(val_in) {
+        let val_cvt = val_in.replace(/[^0-9]/g, "");
+
+        const decimalPointIndex = val_cvt.indexOf(".");
+        if (decimalPointIndex !== -1) {
+            val_cvt =
+                val_cvt.slice(0, decimalPointIndex + 1) +
+                val_cvt.slice(decimalPointIndex + 1).replace(".", "");
         }
-    
-        function cvtInputValueNoPnt(val_in) {
-            let val_cvt = val_in.replace(/[^0-9]/g, "");
-    
-            const decimalPointIndex = val_cvt.indexOf(".");
-            if (decimalPointIndex !== -1) {
-                val_cvt =
-                    val_cvt.slice(0, decimalPointIndex + 1) +
-                    val_cvt.slice(decimalPointIndex + 1).replace(".", "");
-            }
-            return val_cvt;
-        }
-    
-        jQuery(document).ready(function () {
-            let max_filterout = -Infinity;
-            let userType = "{{user}}";
-            let selectedValue = $("#opMod").val();
-    
-            jQuery(".pumpValve").attr("data-before", "Pump Information ▼");
-            jQuery(".fanValve").attr("data-before", "Fan Information ▼");
-            jQuery(".mcInfo").attr("data-before", "Magnetic Contactor Information ▼");
-            jQuery(".deviceStatus").attr("data-before", "Device Status ▼");
-            jQuery(".sensor").attr("data-before", "Sensor Value ▼");
-            jQuery(".rack_setting").attr("data-before", "Rack Information ▼");
-    
-    
-    
-    
-            function current_data(data) {
-                // console.log(data);
-    
-                // $("#inv1_freq").text(150)
-                for (let key in data["value"]) {
-                    if (data["value"].hasOwnProperty(key)) {
-                        let value = data["value"][key];
-                        let inv1 = data["value"]["inv1_freq"];
-                        let inv2 = data["value"]["inv2_freq"];
-                        let inv3 = data["value"]["inv3_freq"];
-                        $(`#${key}`).css("color", "black");
-                        $(`#${key}_image`).css("color", "black");
-                        $(`#${key}_status`).css("color", "black").text("Valid");
-    
-                        if (key.includes("flow") || key.includes("freq")) {
-    
-                            ///////////測試用///////////
-    
+        return val_cvt;
+    }
+
+    jQuery(document).ready(function () {
+        let max_filterout = -Infinity;
+        let userType = "{{user}}";
+        let selectedValue = $("#opMod").val();
+
+        jQuery(".pumpValve").attr("data-before", "Pump Information ▼");
+        jQuery(".fanValve").attr("data-before", "Fan Information ▼");
+        jQuery(".mcInfo").attr("data-before", "Magnetic Contactor Information ▼");
+        jQuery(".deviceStatus").attr("data-before", "Device Status ▼");
+        jQuery(".sensor").attr("data-before", "Sensor Value ▼");
+        jQuery(".rack_setting").attr("data-before", "Rack Information ▼");
+
+
+
+
+        function current_data(data) {
+            // console.log(data);
+
+            // $("#inv1_freq").text(150)
+            for (let key in data["value"]) {
+                if (data["value"].hasOwnProperty(key)) {
+                    let value = data["value"][key];
+                    let inv1 = data["value"]["inv1_freq"];
+                    let inv2 = data["value"]["inv2_freq"];
+                    let inv3 = data["value"]["inv3_freq"];
+                    $(`#${key}`).css("color", "black");
+                    $(`#${key}_image`).css("color", "black");
+                    $(`#${key}_status`).css("color", "black").text("Valid");
+
+                    if (key.includes("flow") || key.includes("freq")) {
+
+                        ///////////測試用///////////
+                        const currentVersion = window.sharedData.version;
+                        if (currentVersion["fan_count_switch"] === false) {
+
                             const test_group = ["fan_freq1",
                                 "fan_freq2",
                                 "fan_freq3",
@@ -1188,692 +1188,782 @@
                             if (test_group.includes(key)) {
                                 continue;
                             }
-                            ///////////測試用結束///////////
-                            $("#" + key).text(value.toFixed(0));
-                            $("#" + key + "_image").text(value.toFixed(0));
-    
-                            // if (inv1 > 100 || inv2 > 100) {
-                            //     $("#" + key).text(100);
-                            //     $("#" + key + "_image").test(100);
-                            // }
-                        } else {
-                            $("#" + key).text(
-                                value.toFixed(userType == "superuser" ? 2 : 1)
-                            );
-                            $(`#${key}_image`).text(
-                                value.toFixed(userType == "superuser" ? 2 : 1)
-                            );
-    
-    
                         }
+                        ///////////測試用結束///////////
+                        $("#" + key).text(value.toFixed(0));
+                        $("#" + key + "_image").text(value.toFixed(0));
+
+                        // if (inv1 > 100 || inv2 > 100) {
+                        //     $("#" + key).text(100);
+                        //     $("#" + key + "_image").test(100);
+                        // }
+                    } else {
+                        $("#" + key).text(
+                            value.toFixed(userType == "superuser" ? 2 : 1)
+                        );
+                        $(`#${key}_image`).text(
+                            value.toFixed(userType == "superuser" ? 2 : 1)
+                        );
+
+
                     }
                 }
-    
-                for (let key in data["ats_status"]) {
-                    if (data["ats_status"].hasOwnProperty(key)) {
-                        let value = data["ats_status"][key];
-                        if (key == "ATS1" && value) {
-                            $("#ATS_status").css("color", "black").text("Primary");
-                        } else if (key == "ATS2" && !data["ats_status"]["ATS1"]) {
-                            let ats_status = value ? "Secondary" : "OFF";
-                            $("#ATS_status").css("color", "black").text(ats_status);
-                        } else {
-                            $("#ATS_status").css("color", "black").text("OFF");
-                        }
+            }
+
+            for (let key in data["ats_status"]) {
+                if (data["ats_status"].hasOwnProperty(key)) {
+                    let value = data["ats_status"][key];
+                    if (key == "ATS1" && value) {
+                        $("#ATS_status").css("color", "black").text("Primary");
+                    } else if (key == "ATS2" && !data["ats_status"]["ATS1"]) {
+                        let ats_status = value ? "Secondary" : "OFF";
+                        $("#ATS_status").css("color", "black").text(ats_status);
+                    } else {
+                        $("#ATS_status").css("color", "black").text("OFF");
                     }
                 }
-    
-                for (let key in data["unit"]) {
-                    if (data["unit"].hasOwnProperty(key)) {
-                        let value = data["unit"][key];
-                        $("." + key).text(value);
-                    }
+            }
+
+            for (let key in data["unit"]) {
+                if (data["unit"].hasOwnProperty(key)) {
+                    let value = data["unit"][key];
+                    $("." + key).text(value);
                 }
-    
-                for (let key in data["mc"]) {
-                    if (data["mc"].hasOwnProperty(key)) {
-                        let value = data["mc"][key];
-                        $("#" + key).text(value ? "ON" : "OFF");
-                    }
+            }
+
+            for (let key in data["mc"]) {
+                if (data["mc"].hasOwnProperty(key)) {
+                    let value = data["mc"][key];
+                    $("#" + key).text(value ? "ON" : "OFF");
                 }
-    
-                $(".t1sp_set").hide();
-                $(".p1sp_set").hide();
-                $(".p2sp_set").hide();
-    
-                if (userType != "superuser") {
-                    for (let key in data["collapse"]) {
-                        if (data["collapse"].hasOwnProperty(key)) {
-                            let value = data["collapse"][key];
-                            if (key.includes("_show_final")) {
-                                let main_key = key.replace("_show_final", "");
-                                if (value) {
-                                    $("." + main_key + "_set").show();
-                                }
+            }
+
+            $(".t1sp_set").hide();
+            $(".p1sp_set").hide();
+            $(".p2sp_set").hide();
+
+            if (userType != "superuser") {
+                for (let key in data["collapse"]) {
+                    if (data["collapse"].hasOwnProperty(key)) {
+                        let value = data["collapse"][key];
+                        if (key.includes("_show_final")) {
+                            let main_key = key.replace("_show_final", "");
+                            if (value) {
+                                $("." + main_key + "_set").show();
                             }
                         }
                     }
-                } else {
-                    $(".t1sp_set").show();
-                    $(".p1sp_set").show();
-                    $(".p2sp_set").show();
                 }
-    
-                for (let key in data["warning_notice"]) {
-                    if (data["warning_notice"].hasOwnProperty(key)) {
-                        let status_w = data["warning_notice"][key];
-                        let status_a = data["alert_notice"][key];
-    
-                        if (status_a === true) {
-                            $("#" + key + "_status")
-                                .css("color", "red")
-                                .text("Alert Level");
-                        } else if (status_w === true) {
-                            $("#" + key + "_status")
-                                .css("color", "#F39C12")
-                                .text("Warning Level");
-                        } else {
-                            $("#" + key + "_status")
-                                .css("color", "black")
-                                .text("Valid");
-                        }
+            } else {
+                $(".t1sp_set").show();
+                $(".p1sp_set").show();
+                $(".p2sp_set").show();
+            }
+
+            for (let key in data["warning_notice"]) {
+                if (data["warning_notice"].hasOwnProperty(key)) {
+                    let status_w = data["warning_notice"][key];
+                    let status_a = data["alert_notice"][key];
+
+                    if (status_a === true) {
+                        $("#" + key + "_status")
+                            .css("color", "red")
+                            .text("Alert Level");
+                    } else if (status_w === true) {
+                        $("#" + key + "_status")
+                            .css("color", "#F39C12")
+                            .text("Warning Level");
+                    } else {
+                        $("#" + key + "_status")
+                            .css("color", "black")
+                            .text("Valid");
                     }
                 }
-    
-                for (let key in data["error"]) {
-                    if (data["error"].hasOwnProperty(key)) {
-                        let value = data["error"][key];
-                        let $device = $("#" + key);
-    
-    
-                        if (
-                            $device &&
-                            !key.includes("_Com") &&
-                            !key.includes("_broken")
-                        ) {
-                            if (value == true) {
-                                $device.css("color", "red").text("Error");
+            }
+
+            for (let key in data["error"]) {
+                if (data["error"].hasOwnProperty(key)) {
+                    let value = data["error"][key];
+                    let $device = $("#" + key);
+
+
+                    if (
+                        $device &&
+                        !key.includes("_Com") &&
+                        !key.includes("_broken")
+                    ) {
+                        if (value == true) {
+                            $device.css("color", "red").text("Error");
+                        } else {
+                            $device.css("color", "black").text("OK");
+                        }
+
+                        if (key.includes("pc")) {
+                            if (data["error"]["pc1_error"]) {
+                                $("#pc_error").css("color", "red").text("PC1 Error");
+                            } else if (data["error"]["pc2_error"]) {
+                                $("#pc_error").css("color", "red").text("PC2 Error");
                             } else {
-                                $device.css("color", "black").text("OK");
-                            }
-    
-                            if (key.includes("pc")) {
-                                if (data["error"]["pc1_error"]) {
-                                    $("#pc_error").css("color", "red").text("PC1 Error");
-                                } else if (data["error"]["pc2_error"]) {
-                                    $("#pc_error").css("color", "red").text("PC2 Error");
-                                } else {
-                                    $("#pc_error").css("color", "black").text("OK");
-                                }
-                            }
-    
-                            if (key.includes("power24v")) {
-                                if (data["error"]["power24v1"] && data["error"]["power24v2"]) {
-                                    $("#power24v")
-                                        .css("color", "red")
-                                        .text("Both Error");
-                                } else if (data["error"]["power24v1"]) {
-                                    $("#power24v")
-                                        .css("color", "red")
-                                        .text("Power1 Error");
-                                } else if (data["error"]["power24v2"]) {
-                                    $("#power24v")
-                                        .css("color", "red")
-                                        .text("Power2 Error");
-                                } else {
-                                    $("#power24v")
-                                        .css("color", "black")
-                                        .text("OK");
-                                }
-                            }
-    
-                            if (key.includes("power12v")) {
-                                if (data["error"]["power12v1"] && data["error"]["power12v2"]) {
-                                    $("#power12v")
-                                        .css("color", "red")
-                                        .text("Both Error");
-                                } else if (data["error"]["power12v1"]) {
-                                    $("#power12v")
-                                        .css("color", "red")
-                                        .text("Power1 Error");
-                                } else if (data["error"]["power12v2"]) {
-                                    $("#power12v")
-                                        .css("color", "red")
-                                        .text("Power2 Error");
-                                } else {
-                                    $("#power12v")
-                                        .css("color", "black")
-                                        .text("OK");
-                                }
-                            }
-    
-                            if (key.includes("leakage1")) {
-                                if (data["error"]["leakage1_broken"]) {
-                                    $("#leakage1")
-                                        .css("color", "red")
-                                        .text("Broken");
-                                } else if (
-                                    !data["error"]["leakage1_broken"] &&
-                                    data["error"]["leakage1_leak"]
-                                ) {
-                                    $("#leakage1").css("color", "red").text("Leak");
-                                } else {
-                                    $("#leakage1").css("color", "black").text("OK");
-                                }
+                                $("#pc_error").css("color", "black").text("OK");
                             }
                         }
-    
-                        let broken_mapping = {
-                            PrsrClntRtn_broken: "prsr_clntRtn",
-                            PrsrClntRtnSpare_broken: "prsr_clntRtnSpare",
-                            PrsrClntSply_broken: "prsr_clntSply",
-                            PrsrClntSplySpare_broken: "prsr_clntSplySpare",
-                            TempClntRtn_broken: "temp_clntRtn",
-                            TempClntRtnSpare_broken: "temp_clntRtnSpare",
-                            TempClntSply_broken: "temp_clntSply",
-                            TempClntSplySpare_broken: "temp_clntSplySpare",
-                            PrsrFltIn_broken: "prsr_fltIn",
-                            PrsrFltOut_broken: "prsr_fltOut",
-                            Clnt_Flow_broken: "clnt_flow",
-                        };
-    
-                        for (const [broken_key, local_value] of Object.entries(
-                            broken_mapping
-                        )) {
-                            let status_element = $(`#${local_value}_status`);
-                            let local_element = $(`#${local_value}`);
-                            let local_element_image = $(`#${local_value}_image`);
-    
-                            if (key === broken_key) {
-                                if (value) {
+                        if (key.includes("main_mc")) {
+                            if (data["error"]["main_mc_error"]) {
+                                $("#main_mc_error").css("color", "black").text("OFF");
+                            } else {
+                                $("#main_mc_error").css("color", "black").text("ON");
+                            }
+                        }
+                        if (key.includes("power24v")) {
+                            if (data["error"]["power24v1"] && data["error"]["power24v2"]) {
+                                $("#power24v")
+                                    .css("color", "red")
+                                    .text("Both Error");
+                            } else if (data["error"]["power24v1"]) {
+                                $("#power24v")
+                                    .css("color", "red")
+                                    .text("Power1 Error");
+                            } else if (data["error"]["power24v2"]) {
+                                $("#power24v")
+                                    .css("color", "red")
+                                    .text("Power2 Error");
+                            } else {
+                                $("#power24v")
+                                    .css("color", "black")
+                                    .text("OK");
+                            }
+                        }
+
+                        if (key.includes("power12v")) {
+                            if (data["error"]["power12v1"] && data["error"]["power12v2"]) {
+                                $("#power12v")
+                                    .css("color", "red")
+                                    .text("Both Error");
+                            } else if (data["error"]["power12v1"]) {
+                                $("#power12v")
+                                    .css("color", "red")
+                                    .text("Power1 Error");
+                            } else if (data["error"]["power12v2"]) {
+                                $("#power12v")
+                                    .css("color", "red")
+                                    .text("Power2 Error");
+                            } else {
+                                $("#power12v")
+                                    .css("color", "black")
+                                    .text("OK");
+                            }
+                        }
+
+                        if (key.includes("leakage1")) {
+                            if (data["error"]["leakage1_broken"]) {
+                                $("#leakage1")
+                                    .css("color", "red")
+                                    .text("Broken");
+                            } else if (
+                                !data["error"]["leakage1_broken"] &&
+                                data["error"]["leakage1_leak"]
+                            ) {
+                                $("#leakage1").css("color", "red").text("Leak");
+                            } else {
+                                $("#leakage1").css("color", "black").text("OK");
+                            }
+                        }
+                    }
+
+                    let broken_mapping = {
+                        PrsrClntRtn_broken: "prsr_clntRtn",
+                        PrsrClntRtnSpare_broken: "prsr_clntRtnSpare",
+                        PrsrClntSply_broken: "prsr_clntSply",
+                        PrsrClntSplySpare_broken: "prsr_clntSplySpare",
+                        TempClntRtn_broken: "temp_clntRtn",
+                        TempClntRtnSpare_broken: "temp_clntRtnSpare",
+                        TempClntSply_broken: "temp_clntSply",
+                        TempClntSplySpare_broken: "temp_clntSplySpare",
+                        PrsrFltIn_broken: "prsr_fltIn",
+                        PrsrFltOut_broken: "prsr_fltOut",
+                        Clnt_Flow_broken: "clnt_flow",
+                    };
+
+                    for (const [broken_key, local_value] of Object.entries(
+                        broken_mapping
+                    )) {
+                        let status_element = $(`#${local_value}_status`);
+                        let local_element = $(`#${local_value}`);
+                        let local_element_image = $(`#${local_value}_image`);
+
+                        if (key === broken_key) {
+                            if (value) {
+                                status_element
+                                    .css("color", "red")
+                                    .text("Broken Error");
+                                local_element.css("color", "red").text("-");
+                                local_element_image.css("color", "red").text("-");
+                            }
+                        }
+                    }
+
+                    let com_mapping = {
+                        "Inv1_Com": "inv1_freq",
+                        "Inv2_Com": "inv2_freq",
+                        "Inv3_Com": "inv3_freq",
+                        "Clnt_Flow_Com": "clnt_flow",
+                        "Ambient_Temp_Com": "ambient_temp",
+                        "Relative_Humid_Com": "relative_humid",
+                        "Dew_Point_Com": "dew_point",
+                        "Cdct_Sensor_Com": "cdct",
+                        "pH_Com": "pH",
+                        "Tbd_Com": "tbd",
+                        "ATS1_Com": "ATS",
+                        "ATS2_Com": "ATS",
+                        "Power_Meter_Com": "power",
+                        "Average_Current_Com": "AC",
+                        "Fan1_Com": "fan_freq1",
+                        "Fan2_Com": "fan_freq2",
+                        "Fan3_Com": "fan_freq3",
+                        "Fan4_Com": "fan_freq4",
+                        "Fan5_Com": "fan_freq5",
+                        "Fan6_Com": "fan_freq6",
+                        "Fan7_Com": "fan_freq7",
+                        "Fan8_Com": "fan_freq8",
+                    };
+
+                    for (const [com_key, local_value] of Object.entries(
+                        com_mapping
+                    )) {
+
+                        let status_element = $(`#${local_value}_status`);
+                        let local_element = $(`#${local_value}`);
+                        let local_element_image = $(`#${local_value}_image`);
+
+                        if (key === com_key) {
+                            if (value) {
+                                status_element.css("color", "red").text("Comm Error");
+                                local_element.css("color", "red").text("-");
+                                local_element_image.css("color", "red").text("-");
+                            }
+                        }
+                    }
+
+                    if (data["error"]["PLC"]) {
+                        const exclude_keys = [
+                            "clnt_flow",
+                            "pH",
+                            "cdct",
+                            "tbd",
+                            "power",
+                            "inv1_freq",
+                            "inv2_freq",
+                            "inv3_freq",
+                            "fan_freq",
+                            "heat_capacity",
+                            "AC",
+                        ];
+
+                        for (let key in data["value"]) {
+                            if (data["value"].hasOwnProperty(key)) {
+                                if (exclude_keys.includes(key)) {
+                                    continue;
+                                }
+                                let status_value = `${key}_status`;
+                                $(`#${status_value}`)
+                                    .css("color", "red")
+                                    .text("PLC Error");
+                                $(`#${key}`).css("color", "red").text("-");
+                            }
+                        }
+                    }
+
+                    let fan_inv_error_mapping = {
+                        "Inv1_Error": "inv1_freq",
+                        "Inv2_Error": "inv2_freq",
+                        "Inv3_Error": "inv3_freq",
+                        "fan1_error": "fan_freq1",
+                        "fan2_error": "fan_freq2",
+                        "fan3_error": "fan_freq3",
+                        "fan4_error": "fan_freq4",
+                        "fan5_error": "fan_freq5",
+                        "fan6_error": "fan_freq6",
+                        "fan7_error": "fan_freq7",
+                        "fan8_error": "fan_freq8",
+                    };
+
+                    for (const [error_key, local_value] of Object.entries(
+                        fan_inv_error_mapping
+                    )) {
+
+                        let status_element = $(`#${local_value}_status`);
+                        let local_element = $(`#${local_value}`);
+                        let local_element_image = $(`#${local_value}_image`);
+
+                        if (key === error_key) {
+                            if (value) {
+                                if (error_key.includes("fan")) {
                                     status_element
                                         .css("color", "red")
-                                        .text("Broken Error");
+                                        .text("Fan Error");
                                     local_element.css("color", "red").text("-");
                                     local_element_image.css("color", "red").text("-");
-                                }
-                            }
-                        }
-    
-                        let com_mapping = {
-                            "Inv1_Com": "inv1_freq",
-                            "Inv2_Com": "inv2_freq",
-                            "Inv3_Com": "inv3_freq",
-                            "Clnt_Flow_Com": "clnt_flow",
-                            "Ambient_Temp_Com": "ambient_temp",
-                            "Relative_Humid_Com": "relative_humid",
-                            "Dew_Point_Com": "dew_point",
-                            "Cdct_Sensor_Com": "cdct",
-                            "pH_Com": "pH",
-                            "Tbd_Com": "tbd",
-                            "ATS1_Com": "ATS",
-                            "ATS2_Com": "ATS",
-                            "Power_Meter_Com": "power",
-                            "Average_Current_Com": "AC",
-                            "Fan1_Com": "fan_freq1",
-                            "Fan2_Com": "fan_freq2",
-                            "Fan3_Com": "fan_freq3",
-                            "Fan4_Com": "fan_freq4",
-                            "Fan5_Com": "fan_freq5",
-                            "Fan6_Com": "fan_freq6",
-                            "Fan7_Com": "fan_freq7",
-                            "Fan8_Com": "fan_freq8",
-                        };
-    
-                        for (const [com_key, local_value] of Object.entries(
-                            com_mapping
-                        )) {
-    
-                            let status_element = $(`#${local_value}_status`);
-                            let local_element = $(`#${local_value}`);
-                            let local_element_image = $(`#${local_value}_image`);
-    
-                            if (key === com_key) {
-                                if (value) {
-                                    status_element.css("color", "red").text("Comm Error");
-                                    local_element.css("color", "red").text("-");
-                                    local_element_image.css("color", "red").text("-");
-                                }
-                            }
-                        }
-    
-                        if (data["error"]["PLC"]) {
-                            const exclude_keys = [
-                                "clnt_flow",
-                                "pH",
-                                "cdct",
-                                "tbd",
-                                "power",
-                                "inv1_freq",
-                                "inv2_freq",
-                                "inv3_freq",
-                                "fan_freq",
-                                "heat_capacity",
-                                "AC",
-                            ];
-    
-                            for (let key in data["value"]) {
-                                if (data["value"].hasOwnProperty(key)) {
-                                    if (exclude_keys.includes(key)) {
-                                        continue;
-                                    }
-                                    let status_value = `${key}_status`;
-                                    $(`#${status_value}`)
-                                        .css("color", "red")
-                                        .text("PLC Error");
-                                    $(`#${key}`).css("color", "red").text("-");
-                                }
-                            }
-                        }
-    
-                        let fan_inv_error_mapping = {
-                            "Inv1_Error": "inv1_freq",
-                            "Inv2_Error": "inv2_freq",
-                            "Inv3_Error": "inv3_freq",
-                            "fan1_error": "fan_freq1",
-                            "fan2_error": "fan_freq2",
-                            "fan3_error": "fan_freq3",
-                            "fan4_error": "fan_freq4",
-                            "fan5_error": "fan_freq5",
-                            "fan6_error": "fan_freq6",
-                            "fan7_error": "fan_freq7",
-                            "fan8_error": "fan_freq8",
-                        };
-    
-                        for (const [error_key, local_value] of Object.entries(
-                            fan_inv_error_mapping
-                        )) {
-    
-                            let status_element = $(`#${local_value}_status`);
-                            let local_element = $(`#${local_value}`);
-                            let local_element_image = $(`#${local_value}_image`);
-    
-                            if (key === error_key) {
-                                if (value) {
-                                    if (error_key.includes("fan")) {
-                                        status_element
-                                            .css("color", "red")
-                                            .text("Fan Error");
-                                        local_element.css("color", "red").text("-");
-                                        local_element_image.css("color", "red").text("-");
-                                    } else {
-                                        status_element
-                                            .css("color", "red")
-                                            .text("Inv Error");
-                                        local_element.css("color", "red").text("-");
-                                        local_element_image.css("color", "red").text("-");
-                                    }
-                                }
-                            }
-                        }
-    
-                        let overload_mapping = {
-                            "Inv1_OverLoad": "inv1_freq",
-                            "Inv2_OverLoad": "inv2_freq",
-                            "Inv3_OverLoad": "inv3_freq"
-                        };
-    
-                        for (const [error_key, local_value] of Object.entries(
-                            overload_mapping
-                        )) {
-    
-                            let status_element = $(`#${local_value}_status`);
-                            let local_element = $(`#${local_value}`);
-                            let local_element_image = $(`#${local_value}_image`);
-    
-                            if (key === error_key) {
-                                if (value) {
+                                } else {
                                     status_element
                                         .css("color", "red")
-                                        .text("Overload");
+                                        .text("Inv Error");
                                     local_element.css("color", "red").text("-");
                                     local_element_image.css("color", "red").text("-");
                                 }
                             }
                         }
-    
-                        if (data["error"]["Fan_OverLoad1"]) {
-                            for (i = 1; i < 5; i++) {
-                                $(`#fan_freq${i}_status`).css("color", "red").text("Overload");
-                                $(`#fan_freq${i}`).css("color", "red").text("-");
-                                $(`#fan_freq${i}_image`).css("color", "red").text("-");
+                    }
+
+                    let overload_mapping = {
+                        "Inv1_OverLoad": "inv1_freq",
+                        "Inv2_OverLoad": "inv2_freq",
+                        "Inv3_OverLoad": "inv3_freq"
+                    };
+
+                    for (const [error_key, local_value] of Object.entries(
+                        overload_mapping
+                    )) {
+
+                        let status_element = $(`#${local_value}_status`);
+                        let local_element = $(`#${local_value}`);
+                        let local_element_image = $(`#${local_value}_image`);
+
+                        if (key === error_key) {
+                            if (value) {
+                                status_element
+                                    .css("color", "red")
+                                    .text("Overload");
+                                local_element.css("color", "red").text("-");
+                                local_element_image.css("color", "red").text("-");
                             }
                         }
-                        if (data["error"]["Fan_OverLoad2"]) {
-                            for (i = 5; i < 9; i++) {
-                                $(`#fan_freq${i}_status`).css("color", "red").text("Overload");
-                                $(`#fan_freq${i}`).css("color", "red").text("-");
-                                $(`#fan_freq${i}_image`).css("color", "red").text("-");
-                            }
+                    }
+
+                    if (data["error"]["Fan_OverLoad1"]) {
+                        for (i = 1; i < 5; i++) {
+                            $(`#fan_freq${i}_status`).css("color", "red").text("Overload");
+                            $(`#fan_freq${i}`).css("color", "red").text("-");
+                            $(`#fan_freq${i}_image`).css("color", "red").text("-");
                         }
-    
                     }
+                    if (data["error"]["Fan_OverLoad2"]) {
+                        for (i = 5; i < 9; i++) {
+                            $(`#fan_freq${i}_status`).css("color", "red").text("Overload");
+                            $(`#fan_freq${i}`).css("color", "red").text("-");
+                            $(`#fan_freq${i}_image`).css("color", "red").text("-");
+                        }
+                    }
+
                 }
-    
-                //Fillter計算
-                let fillter_val;
-    
-                let p3 = !data["error"]["PrsrFltIn_broken"]
-                    ? data["value"]["prsr_fltIn"]
+            }
+
+            //Fillter計算
+            let fillter_val;
+
+            let p3 = !data["error"]["PrsrFltIn_broken"]
+                ? data["value"]["prsr_fltIn"]
+                : "-";
+
+            let p4 = !data["error"]["PrsrFltOut_broken"]
+                ? data["value"]["prsr_fltOut"]
+                : "-";
+
+
+            if (p3 == "-" || p4 == "-") {
+                fillter_val = "-";
+                $("#prsr_fltDiff_image").text("-").css("color", "red");
+            } else {
+                fillter_val = p4 - p3;
+
+                if (userType == "superuser") {
+                    fillter_val = parseFloat(fillter_val).toFixed(2);
+                } else {
+                    fillter_val = parseFloat(fillter_val).toFixed(1);
+                }
+                $("#prsr_fltDiff_image").css("color", "black").text(fillter_val);
+            }
+
+            //PD計算
+            let prsr_diff;
+
+            let p1 = !data["error"]["PrsrClntSply_broken"]
+                ? data["value"]["prsr_clntSply"]
+                : !data["error"]["PrsrClntSplySpare_broken"]
+                    ? data["value"]["prsr_clntSplySpare"]
                     : "-";
-    
-                let p4 = !data["error"]["PrsrFltOut_broken"]
-                    ? data["value"]["prsr_fltOut"]
+
+            let p2 = !data["error"]["PrsrClntRtn_broken"]
+                ? data["value"]["prsr_clntRtn"]
+                : !data["error"]["PrsrClntRtnSpare_broken"]
+                    ? data["value"]["prsr_clntRtnSpare"]
                     : "-";
-    
-    
-                if (p3 == "-" || p4 == "-") {
-                    fillter_val = "-";
-                    $("#prsr_fltDiff_image").text("-").css("color", "red");
+
+            if (p1 == data["value"]["prsr_clntSplySpare"]) {
+                $("#prsr_clntSply_image").css("color", "black").text(
+                    p1.toFixed(userType == "superuser" ? 2 : 1)
+                );
+            }
+
+            if (p2 == data["value"]["prsr_clntRtnSpare"]) {
+                $("#prsr_clntRtn_image").css("color", "black").text(
+                    p2.toFixed(userType == "superuser" ? 2 : 1)
+                );
+            }
+
+            if (p1 == "-" || p2 == "-") {
+                prsr_diff = "-";
+            } else {
+                prsr_diff = p1 - p2;
+
+                if (userType == "superuser") {
+                    prsr_diff = parseFloat(prsr_diff).toFixed(2);
                 } else {
-                    fillter_val = p4 - p3;
-    
-                    if (userType == "superuser") {
-                        fillter_val = parseFloat(fillter_val).toFixed(2);
-                    } else {
-                        fillter_val = parseFloat(fillter_val).toFixed(1);
-                    }
-                    $("#prsr_fltDiff_image").css("color", "black").text(fillter_val);
+                    prsr_diff = parseFloat(prsr_diff).toFixed(1);
                 }
-    
-                //PD計算
-                let prsr_diff;
-    
-                let p1 = !data["error"]["PrsrClntSply_broken"]
-                    ? data["value"]["prsr_clntSply"]
-                    : !data["error"]["PrsrClntSplySpare_broken"]
-                        ? data["value"]["prsr_clntSplySpare"]
-                        : "-";
-    
-                let p2 = !data["error"]["PrsrClntRtn_broken"]
-                    ? data["value"]["prsr_clntRtn"]
-                    : !data["error"]["PrsrClntRtnSpare_broken"]
-                        ? data["value"]["prsr_clntRtnSpare"]
-                        : "-";
-    
-                if (p1 == data["value"]["prsr_clntSplySpare"]) {
-                    $("#prsr_clntSply_image").css("color", "black").text(
-                        p1.toFixed(userType == "superuser" ? 2 : 1)
-                    );
+            }
+
+            if (prsr_diff == "-") {
+                $("#prsr_diff").text("-").css("color", "red");
+                $("#prsr_diff_image").text("-").css("color", "red");
+            } else {
+                $("#prsr_diff").css("color", "black").text(prsr_diff);
+                $("#prsr_diff_image").css("color", "black").text(prsr_diff);
+            }
+
+            for (let key in data["rack_status"]) {
+                if (data["rack_status"].hasOwnProperty(key)) {
+                    let value = data["rack_status"][key];
+                    $("#" + key)
+                        .text(value.toFixed(0))
+                        .css("color", "black");
                 }
-    
-                if (p2 == data["value"]["prsr_clntRtnSpare"]) {
-                    $("#prsr_clntRtn_image").css("color", "black").text(
-                        p2.toFixed(userType == "superuser" ? 2 : 1)
-                    );
+            }
+
+            for (let key in data["rack_leak"]) {
+                if (data["rack_leak"].hasOwnProperty(key)) {
+                    let value = data["rack_leak"][key];
+                    let value_key = key.replace("_leak", "_status");
+                    $("#" + key)
+                        .text(value ? "OK" : "Leak")
+                        .css("color", value ? "black" : "red");
                 }
-    
-                if (p1 == "-" || p2 == "-") {
-                    prsr_diff = "-";
-                } else {
-                    prsr_diff = p1 - p2;
-    
-                    if (userType == "superuser") {
-                        prsr_diff = parseFloat(prsr_diff).toFixed(2);
-                    } else {
-                        prsr_diff = parseFloat(prsr_diff).toFixed(1);
+            }
+
+            for (let key in data["rack_broken"]) {
+                if (data["rack_broken"].hasOwnProperty(key)) {
+                    let value = data["rack_broken"][key];
+                    let assign_key = key.replace("_broken", "_leak");
+                    let value_key = key.replace("_broken", "_status");
+                    if (!value) {
+                        $("#" + assign_key)
+                            .text("Broken")
+                            .css("color", "red");
                     }
                 }
-    
-                if (prsr_diff == "-") {
-                    $("#prsr_diff").text("-").css("color", "red");
-                    $("#prsr_diff_image").text("-").css("color", "red");
-                } else {
-                    $("#prsr_diff").css("color", "black").text(prsr_diff);
-                    $("#prsr_diff_image").css("color", "black").text(prsr_diff);
-                }
-    
-                for (let key in data["rack_status"]) {
-                    if (data["rack_status"].hasOwnProperty(key)) {
-                        let value = data["rack_status"][key];
-                        $("#" + key)
-                            .text(value.toFixed(0))
-                            .css("color", "black");
+            }
+
+            for (let key in data["rack_no_connection"]) {
+                if (data["rack_no_connection"].hasOwnProperty(key)) {
+                    let value = data["rack_no_connection"][key];
+                    if (key.includes("_status")) {
+                        if (value) {
+                            $("#" + key)
+                                .text("Comm Error")
+                                .css("color", "red");
+                        }
                     }
-                }
-    
-                for (let key in data["rack_leak"]) {
-                    if (data["rack_leak"].hasOwnProperty(key)) {
-                        let value = data["rack_leak"][key];
-                        let value_key = key.replace("_leak", "_status");
-                        $("#" + key)
-                            .text(value ? "OK" : "Leak")
-                            .css("color", value ? "black" : "red");
-                    }
-                }
-    
-                for (let key in data["rack_broken"]) {
-                    if (data["rack_broken"].hasOwnProperty(key)) {
-                        let value = data["rack_broken"][key];
-                        let assign_key = key.replace("_broken", "_leak");
-                        let value_key = key.replace("_broken", "_status");
-                        if (!value) {
-                            $("#" + assign_key)
-                                .text("Broken")
+
+                    if (key.includes("_leak")) {
+                        if (value) {
+                            $("#" + key)
+                                .text("Comm Error")
                                 .css("color", "red");
                         }
                     }
                 }
-    
-                for (let key in data["rack_no_connection"]) {
-                    if (data["rack_no_connection"].hasOwnProperty(key)) {
-                        let value = data["rack_no_connection"][key];
-                        if (key.includes("_status")) {
-                            if (value) {
-                                $("#" + key)
-                                    .text("Comm Error")
-                                    .css("color", "red");
-                            }
-                        }
-    
-                        if (key.includes("_leak")) {
-                            if (value) {
-                                $("#" + key)
-                                    .text("Comm Error")
-                                    .css("color", "red");
-                            }
-                        }
+            }
+        }
+
+        function change_status_light(data) {
+            let light_orange = [];
+            $(".status_light").css("background-color", "green");
+
+            if (data["cdu_status"] == "alert") {
+                $(".status_light").css("background-color", "red");
+            } else if (data["cdu_status"] == "warning") {
+                $(".status_light").css("background-color", "orange");
+            } else {
+                $(".status_light").css("background-color", "green");
+            }
+            // for (key in data["warning_notice"]) {
+            //     let w_value = data["warning_notice"][key];
+
+            //     if (w_value) {
+            //         $(".status_light").css("background-color", "red");
+            //     }
+            // }
+
+            // for (key in data["alert_notice"]) {
+            //     let a_value = data["alert_notice"][key];
+
+            //     if (a_value) {
+            //         $(".status_light").css("background-color", "red");
+            //     }
+            // }
+
+            // for (key in data["error"]) {
+            //     let e_value = data["error"][key];
+
+            //     if (key != "ATS1") {
+            //         if (e_value) {
+            //             $(".status_light").css("background-color", "red");
+            //         }
+            //     }
+            // }
+        }
+
+        function change_fan_light(data) {
+            index = 1;
+            for (key in data["value"]) {
+                if (key.startsWith("fan") && key.includes("check")) {
+                    if (data["value"][key] && data["value"]["resultFan"]) {
+                        $(`#fan_freq${index}_light`).css("background-color", "green")
+                    } else {
+                        $(`#fan_freq${index}_light`).css("background-color", "transparent")
                     }
+                    index += 1;
                 }
             }
-    
-            function change_status_light(data) {
-                let light_orange = [];
-                $(".status_light").css("background-color", "black");
-    
-                for (key in data["warning_notice"]) {
-                    let w_value = data["warning_notice"][key];
-    
-                    if (w_value) {
-                        $(".status_light").css("background-color", "red");
-                    }
-                }
-    
-                for (key in data["alert_notice"]) {
-                    let a_value = data["alert_notice"][key];
-    
-                    if (a_value) {
-                        $(".status_light").css("background-color", "red");
-                    }
-                }
-    
-                for (key in data["error"]) {
-                    let e_value = data["error"][key];
-    
-                    if (key != "ATS1") {
-                        if (e_value) {
-                            $(".status_light").css("background-color", "red");
-                        }
-                    }
-                }
+        }
+        //版本切換
+        function change_version(ver_switch) {
+            //////尚未取得正確位置/////////
+            if (ver_switch["fan_count_switch"] === true) {
+                $("#fan_freq5_light").css({ top: "32.6%", left: "81.9%" });
+                $("#fan_freq3_light").css({ top: "32.6%", left: "86.25%" });
+                $("#fan_freq6_light").css({ top: "40%", left: "81.9%" });
+                $("#fan_freq2_light").css({ top: "40%", left: "86.25%" });
+                $("#fan_freq7_light").css({ top: "47.4%", left: "81.9%" });
+                $("#fan_freq1_light").css({ top: "47.4%", left: "86.25%" });
+
+                $("#Fan4_set, #Fan8_set").hide();
+                $("#Fan5_name").text("Fan Speed 4");
+                $("#Fan6_name").text("Fan Speed 5");
+                $("#Fan7_name").text("Fan Speed 6");
+                $("#Fan_group1").text("Fan 1-3 MC");
+                $("#Fan_group2").text("Fan 4-6 MC");
+
+                $(".fan_speed_unit").text("%");
+
+            } else if (ver_switch["fan_count_switch"] === false) {
+                $("#fan_freq5_light").css({ top: "28.95%", left: "81.8%" });
+                $("#fan_freq4_light").css({ top: "28.9%", left: "86.25%" });
+                $("#fan_freq6_light").css({ top: "36.25%", left: "81.8%" });
+                $("#fan_freq3_light").css({ top: "36.2%", left: "86.25%" });
+                $("#fan_freq7_light").css({ top: "43.5%", left: "81.8%" });
+                $("#fan_freq2_light").css({ top: "43.5%", left: "86.25%" });
+                $("#fan_freq8_light").css({ top: "50.8%", left: "81.8%" });
+                $("#fan_freq1_light").css({ top: "50.8%", left: "86.25%" });
+
+                $("#Fan4_set, #Fan8_set").show();
+                $("#Fan5_name").text("Fan Speed 5");
+                $("#Fan6_name").text("Fan Speed 6");
+                $("#Fan7_name").text("Fan Speed 7");
+                $("#Fan_group1").text("Fan 1-4 MC");
+                $("#Fan_group2").text("Fan 5-8 MC");
+
+                $(".fan_speed_unit").text("%");
             }
-    
-            function check_fan_status(data) {
-                index = 1;
-                for (key in data["value"]) {
-                    if (key.startsWith("fan") && key.includes("freq")) {
-                        if (data["value"][key] > 0) {
-                            $(`#fan_freq${index}_light`).css("background-color", "green")
-                        } else {
-                            $(`#fan_freq${index}_light`).css("background-color", "transparent")
-                        }
-                        index += 1;
-                    }
-                }
+
+            if (ver_switch["coolant_quality_meter_switch"] === true) {
+                $(".pH_set, .cdct_set, .tbd_set, .power12v_set").hide();
+                $("#pH_image_set, #cdct_image_set, #tbd_image_set").hide();
+            } else if (ver_switch["coolant_quality_meter_switch"] === false) {
+                $(".pH_set, .cdct_set, .tbd_set, .power12v_set").show();
+                $("#pH_image_set, #cdct_image_set, #tbd_image_set").show();
             }
-    
-            function change_coolant_quality_meter_div(ver_switch){
-                if(ver_switch == true){
-                    $(".pH_set").hide();
-                    $(".cdct_set").hide();
-                    $(".tbd_set").hide();
-                    $(".power12v_set").hide();
-                }else{
-                    $(".pH_set").show();
-                    $(".cdct_set").show();
-                    $(".tbd_set").show();
-                    $(".power12v_set").show();
-                }
+
+
+            ///更改首頁大圖
+            if (ver_switch["coolant_quality_meter_switch"] === true && ver_switch["fan_count_switch"] === true) {
+                $("#machine").attr("src", "../static/images/side_car_with_six_fan_0325_no_coolant_quarity_meter.png");
+            } else if (ver_switch["coolant_quality_meter_switch"] === false && ver_switch["fan_count_switch"] === true) {
+                $("#machine").attr("src", "../static/images/side_car_with_six_fan_0325.png");
+            } else if (ver_switch["coolant_quality_meter_switch"] === false && ver_switch["fan_count_switch"] === false) {
+                $("#machine").attr("src", "../static/images/full_picture.jpg");
+            } else if (ver_switch["coolant_quality_meter_switch"] === true && ver_switch["fan_count_switch"] === false) {
+                $("#machine").attr("src", "../static/images/full_picture.jpg"); ///待新圖出來後更改
             }
-    
-            function updateRowStripes() {
-                $("table").each(function () {  // 遍歷每個 table
-                    var table = $(this);
-                    table.find("tbody tr:visible").each(function (index) {
-                        // 將每個 table 的第一行設為灰色，其他行交替顯示
-                        $(this).css("background-color", index % 2 === 0 ? "rgba(0, 0, 0, 0.09)" : "white");
-                    });
+        }
+
+        function updateRowStripes() {
+            $("table").each(function () {  // 遍歷每個 table
+                var table = $(this);
+                table.find("tbody tr:visible").each(function (index) {
+                    // 將每個 table 的第一行設為灰色，其他行交替顯示
+                    $(this).css("background-color", index % 2 === 0 ? "rgba(0, 0, 0, 0.09)" : "white");
                 });
-            }
-    
-            async function fetch_get_data() {
-                while (true) {
-                    try {
-                        const data = await $.ajax({
-                            url: "/get_data",
-                            method: "GET",
-                            loader: false,
-                            timeout: 10000,
-                            dataType: "json",
-                        });
-                        const ver_switch = await $.ajax({
-                            url: "/get_data_version",
-                            method: "GET",
-                            loader: false,
-                            timeout: 10000,
-                            dataType: "json",
-                        });
-                        change_coolant_quality_meter_div(ver_switch["coolant_quality_meter_switch"]);
-                        current_data(data);
-                        change_status_light(data);
-                        check_fan_status(data);
-                        updateRowStripes();
-                    } catch (xhr) {
-                        console.error(
-                            `AJAX request failed with status: ${xhr.status} - ${xhr.statusText}`
-                        );
-                    }
-    
-                    await new Promise((resolve) => setTimeout(resolve, 2000));
+            });
+        }
+
+        async function fetch_get_data() {
+            while (true) {
+                try {
+                    // const data = await $.ajax({
+                    //     url: "/get_data",
+                    //     method: "GET",
+                    //     loader: false,
+                    //     timeout: 10000,
+                    //     dataType: "json",
+                    // });
+                    // const ver_switch = await $.ajax({
+                    //     url: "/get_data_version",
+                    //     method: "GET",
+                    //     loader: false,
+                    //     timeout: 10000,
+                    //     dataType: "json",
+                    // });
+
+                    //透過全域抓取base.html的數值
+                    const currentData = window.sharedData.data;
+                    const currentVersion = window.sharedData.version;
+                    change_version(currentVersion);
+                    current_data(currentData);
+                    change_status_light(currentData);
+                    updateRowStripes();
+                } catch (xhr) {
+                    console.error(
+                        `AJAX request failed with status: ${xhr.status} - ${xhr.statusText}`
+                    );
                 }
+
+                await new Promise((resolve) => setTimeout(resolve, 2000));
             }
-    
-            fetch_get_data();
-    
-            //確認風扇是否開啟取得風扇速度
-            function get_fan_speed(data) {
-                let isAnyFanOn = Object.keys(data["value"])
-                    .filter(key => key.startsWith("fan") && key.endsWith("check"))
-                    .some(key => data["value"][key]);
-    
-                return isAnyFanOn
-            }
-    
-            async function fetch_get_data_control() {
-                while (true) {
-                    try {
-                        const data = await $.ajax({
-                            url: "/get_data_control",
-                            method: "GET",
-                            loader: false,
-                            timeout: 10000,
-                            dataType: "json",
-                        });
-    
-                        ///////////暫時測試用///////////
-    
-                        for (let i = 1; i <= 8; i++) {
-                            if (data["value"][`fan${i}_check`]) {
-                                let value = data["value"][`resultFan`];
-                                $(`#fan_freq${i}`).text(value.toFixed(0));
-                            } else {
-                                $(`#fan_freq${i}`).text(0);
-    
-                            }
-                        }
-                        ///////////測試用結束///////////
-    
-                        if (get_fan_speed(data)) {
-                            let value = data["value"]["resultFan"];
-                            $("#fan_freq_image").text(value.toFixed(0));
-                            if (value > 100) {
-                                $("#fan_freq_image").text(100);
-                            }
-                        } else {
-                            $("#fan_freq_image").text(0);
-                        }
-    
-                        for (let key in data["rack_visibility"]) {
-                            if (data["rack_visibility"].hasOwnProperty(key)) {
-                                let value = data["rack_visibility"][key];
-                                let rack_key = key.replace("_enable", "");
-    
-                                if (value) {
-                                    $("." + rack_key).show();
-                                } else {
-                                    $("." + rack_key).hide();
+        }
+
+        fetch_get_data();
+
+        //確認風扇是否開啟取得風扇速度
+        function get_fan_speed(data) {
+            let isAnyFanOn = Object.keys(data["value"])
+                .filter(key => key.startsWith("fan") && key.endsWith("check"))
+                .some(key => data["value"][key]);
+
+            return isAnyFanOn
+        }
+
+        async function fetch_get_data_control() {
+            while (true) {
+                try {
+                    const data = await $.ajax({
+                        url: "/get_data_control",
+                        method: "GET",
+                        loader: false,
+                        timeout: 10000,
+                        dataType: "json",
+                    });
+
+                    ///////////暫時測試用///////////
+                    change_fan_light(data)
+                    const currentVersion = window.sharedData.version;
+                    const currentData = window.sharedData.data;
+                    // console.log(`currentVersion${currentVersion["fan_count_switch"]}`);
+
+                    if (currentVersion["fan_count_switch"] === false) {
+                        if (currentData["error"]["Fan_OverLoad1"] === false) {
+                            for (let i = 1; i <= 4; i++) {
+                                if (currentData["error"][`Fan${i}_Com`] === false &&
+                                    currentData["error"][`fan${i}_error`] === false
+                                ) {
+                                    if (data["value"][`fan${i}_check`]) {
+                                        let value = data["value"][`resultFan`];
+                                        $(`#fan_freq${i}`).text(value.toFixed(0));
+                                    } else {
+                                        $(`#fan_freq${i}`).text(0);
+                                    }
                                 }
-                            }
-                            let allFalse = Object.values(
-                                data["rack_visibility"]
-                            ).every((value) => value === false);
-    
-                            if (allFalse) {
-                                $(".rack_setting").hide();
-                            } else {
-                                $(".rack_setting").show();
+
                             }
                         }
-    
-                        $(".current_mode").text(data["value"]["resultMode"]);
-                    } catch (xhr) {
-                        console.error(
-                            `AJAX request failed with status: ${xhr.status} - ${xhr.statusText}`
-                        );
+                        if (currentData["error"]["Fan_OverLoad2"] === false) {
+                            for (let i = 5; i <= 8; i++) {
+                                if (currentData["error"][`Fan${i}_Com`] === false &&
+                                    currentData["error"][`fan${i}_error`] === false
+                                ) {
+                                    if (data["value"][`fan${i}_check`]) {
+                                        let value = data["value"][`resultFan`];
+                                        $(`#fan_freq${i}`).text(value.toFixed(0));
+                                    } else {
+                                        $(`#fan_freq${i}`).text(0);
+                                    }
+                                }
+
+                            }
+                        }
                     }
-    
-                    await new Promise((resolve) => setTimeout(resolve, 2000));
+                    ///////////測試用結束///////////
+
+                    if (get_fan_speed(data)) {
+                        let value = data["value"]["resultFan"];
+                        $("#fan_freq_image").text(value.toFixed(0));
+                        if (value > 100) {
+                            $("#fan_freq_image").text(100);
+                        }
+                    } else {
+                        $("#fan_freq_image").text(0);
+                    }
+
+                    for (let key in data["rack_visibility"]) {
+                        if (data["rack_visibility"].hasOwnProperty(key)) {
+                            let value = data["rack_visibility"][key];
+                            let rack_key = key.replace("_enable", "");
+
+                            if (value) {
+                                $("." + rack_key).show();
+                            } else {
+                                $("." + rack_key).hide();
+                            }
+                        }
+                        let allFalse = Object.values(
+                            data["rack_visibility"]
+                        ).every((value) => value === false);
+
+                        if (allFalse) {
+                            $(".rack_setting").hide();
+                        } else {
+                            $(".rack_setting").show();
+                        }
+                    }
+
+                    $(".current_mode").text(data["value"]["resultMode"]);
+                } catch (xhr) {
+                    console.error(
+                        `AJAX request failed with status: ${xhr.status} - ${xhr.statusText}`
+                    );
                 }
+
+                await new Promise((resolve) => setTimeout(resolve, 2000));
             }
-    
-            fetch_get_data_control();
-    
-            $(".title").each(function () {
-                if ($(this).data("default") === "collapsed") {
-                    $(this).addClass("collapsed");
-                }
-            });
-    
-            $(".data-before-trigger").click(function () {
-                let $title = $(this).closest(".title");
-                $title.toggleClass("collapsed");
-                if ($title.hasClass("collapsed")) {
-                    $title.attr("data-before", $title.attr("data-label") + " ▲");
-                } else {
-                    $title.attr("data-before", $title.attr("data-label") + " ▼");
-                }
-            });
+        }
+
+        fetch_get_data_control();
+
+        $(".title").each(function () {
+            if ($(this).data("default") === "collapsed") {
+                $(this).addClass("collapsed");
+            }
         });
-    </script>
-    <script></script>
-    {% endblock %}
+
+        $(".data-before-trigger").click(function () {
+            let $title = $(this).closest(".title");
+            $title.toggleClass("collapsed");
+            if ($title.hasClass("collapsed")) {
+                $title.attr("data-before", $title.attr("data-label") + " ▲");
+            } else {
+                $title.attr("data-before", $title.attr("data-label") + " ▼");
+            }
+        });
+    });
+</script>
+<script></script>
+{% endblock %}

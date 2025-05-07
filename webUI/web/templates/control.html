@@ -261,7 +261,7 @@ styles %}
 </style>
 {% endblock %} {% block content %}
 <div class="container-fluid" style="margin-top: 100px; margin-bottom: 60px">
-    {% if user == 'superuser' or user == 'admin' %}
+    {#{% if user == 'superuser' or user == 'admin' %}#}
     <div class="overCurrent" data-label="Error Reset">
         <div class="container-fluid">
             <div class="row">
@@ -276,7 +276,7 @@ styles %}
             </div>
         </div>
     </div>
-    {% endif %}
+    {#{% endif %}#}
 
     <div class="modeSelect" data-label="Mode Selection">
         <div class="row">
@@ -725,7 +725,7 @@ styles %}
                 </div>
                 {% endif %}
             </div>
-            <div class="row">
+            <div class="row" id="Fan4_run_time_set">
                 <div class="col-4">
                     <p>Fan4 Running Time:</p>
                 </div>
@@ -745,7 +745,7 @@ styles %}
                 {% endif %}
             </div>
             <div class="row">
-                <div class="col-4">
+                <div class="col-4" id="Fan5_run_name_set">
                     <p>Fan5 Running Time:</p>
                 </div>
                 <div class="col-2 sideNum">
@@ -764,7 +764,7 @@ styles %}
                 {% endif %}
             </div>
             <div class="row">
-                <div class="col-4">
+                <div class="col-4" id="Fan6_run_name_set">
                     <p>Fan6 Running Time:</p>
                 </div>
                 <div class="col-2 sideNum">
@@ -783,7 +783,7 @@ styles %}
                 {% endif %}
             </div>
             <div class="row">
-                <div class="col-4">
+                <div class="col-4" id="Fan7_run_name_set">
                     <p>Fan7 Running Time:</p>
                 </div>
                 <div class="col-2 sideNum">
@@ -801,7 +801,7 @@ styles %}
                 </div>
                 {% endif %}
             </div>
-            <div class="row">
+            <div class="row" id="Fan8_run_time_set">
                 <div class="col-4">
                     <p>Fan8 Running Time:</p>
                 </div>
@@ -1214,12 +1214,15 @@ styles %}
         async function fetchData() {
             while (true) {
                 try {
-                    const data = await $.ajax({
-                        url: "/get_data",
-                        method: "GET",
-                        timeout: 10000,
-                        loader: false,
-                    });
+                    //// 測試直接從base.html抓取get_data資料////
+
+                    // const data = await $.ajax({
+                    //     url: "/get_data",
+                    //     method: "GET",
+                    //     timeout: 10000,
+                    //     loader: false,
+                    // });
+                    const data = window.sharedData.data;
                     /// 如果Inverter 1~3有error 便不能開 
                     for (let i = 1; i <= 3; i++) {  // pump  從 1 到 3
                         if (data["error"][`Inv${i}_Error`] || data["error"][`Inv${i}_OverLoad`]) {
@@ -1335,19 +1338,25 @@ styles %}
                 console.error("Error fetching data:", error);
             },
         });
-        
-        function fan_count_version(ver_switch){
-            if(ver_switch === true){
-                $("#Fan4_set, #Fan8_set").hide();
+
+        function fan_count_version(ver_switch) {
+            if (ver_switch === true) {
+                $("#Fan4_set, #Fan8_set, #Fan4_run_time_set, #Fan8_run_time_set").hide();
                 $("#fan4_check, #fan8_check").prop("checked", false);
                 $("#Fan5_name").text("Fan4:");
                 $("#Fan6_name").text("Fan5:");
                 $("#Fan7_name").text("Fan6:");
-            }else{
-                $("#Fan4_set, #Fan8_set").show();
+                $("#Fan5_run_name_set").text("Fan4 Running Time:");
+                $("#Fan6_run_name_set").text("Fan5 Running Time:");
+                $("#Fan7_run_name_set").text("Fan6 Running Time:");
+            } else {
+                $("#Fan4_set, #Fan8_set, #Fan4_run_time_set, #Fan8_run_time_set").show();
                 $("#Fan5_name").text("Fan5:");
                 $("#Fan6_name").text("Fan6:");
                 $("#Fan7_name").text("Fan7:");
+                $("#Fan5_run_name_set").text("Fan5 Running Time:");
+                $("#Fan6_run_name_set").text("Fan6 Running Time:");
+                $("#Fan7_run_name_set").text("Fan7 Running Time:");
             }
         }
 
@@ -1360,14 +1369,8 @@ styles %}
                         timeout: 10000,
                         loader: false,
                     });
-                    const ver_switch = await $.ajax({
-                            url: "/get_data_version",
-                            method: "GET",
-                            loader: false,
-                            timeout: 10000,
-                            dataType: "json",
-                        });
-                    fan_count_version(ver_switch["fan_count_switch"])
+                    const currentVersion = window.sharedData.version;
+                    fan_count_version(currentVersion["fan_count_switch"]);
                     shared_data(data);
                 } catch (error) {
                     console.error("Error fetching data:", error);
@@ -1388,7 +1391,7 @@ styles %}
             inspect_action = data["inspect_action"];
             oc_issue = data["downtime_error"]["oc_issue"];
             f1_issue = data["downtime_error"]["f1_issue"];
-            
+
 
             for (let i = 1; i <= 3; i++) {  // pump  從 1 到 3
                 if (data["mc"][`mc${i}_sw`]) {
@@ -1947,31 +1950,80 @@ styles %}
                 data: formData,
                 processData: false,
                 contentType: false,
+                // success: function (response) {
+                //     clearInterval(interval);
+                //     progressBar.css("width", "100%");
+                //     progressText.text("100% upload successfully");
+                //     Swal.fire({
+                //         title: "Success",
+                //         text: "Upload Completed, system will reboot...",
+                //         icon: "success",
+                //         showConfirmButton: false,
+                //         timer: 5000, // 5 秒後自動關閉
+                //         didOpen: () => {
+                //             // SweetAlert 開啟後呼叫 reboot API
+                //             $.ajax({
+                //                 url: "/reboot-all",
+                //                 type: "GET",
+                //                 success: function (res) {
+                //                     console.log("Reboot triggered:", res);
+                //                 },
+                //                 error: function (xhr) {
+                //                     console.error("Failed to reboot:", xhr);
+                //                 }
+                //             });
+                //         }
+                //     });
+                // },
                 success: function (response) {
                     clearInterval(interval);
                     progressBar.css("width", "100%");
-                    progressText.text("100% upload successfully");
-                    Swal.fire({
-                        title: "Success",
-                        text: "Upload Completed, system will reboot...",
-                        icon: "success",
-                        showConfirmButton: false,
-                        timer: 5000, // 5 秒後自動關閉
-                        didOpen: () => {
-                            // SweetAlert 開啟後呼叫 reboot API
-                            $.ajax({
-                                url: "/reboot-all",
-                                type: "GET",
-                                success: function (res) {
-                                    console.log("Reboot triggered:", res);
-                                },
-                                error: function (xhr) {
-                                    console.error("Failed to reboot:", xhr);
-                                }
-                            });
+
+                    const results = response.results || {};
+                    let allSuccess = true;
+                    let errorDetails = "";
+
+                    for (const [filename, result] of Object.entries(results)) {
+                        if (result.status !== 200) {
+                            allSuccess = false;
+                            errorDetails += `${filename}: ${result.error || result.response || result.status}\n`;
                         }
-                    });
+                    }
+
+                    if (allSuccess) {
+                        progressText.text("100% upload successfully");
+
+                        Swal.fire({
+                            title: "Success",
+                            text: "Upload Completed, system will reboot...",
+                            icon: "success",
+                            showConfirmButton: false,
+                            timer: 5000,
+                            didOpen: () => {
+                                $.ajax({
+                                    url: "/reboot-all",
+                                    type: "GET",
+                                    success: function (res) {
+                                        console.log("Reboot triggered:", res);
+                                    },
+                                    error: function (xhr) {
+                                        console.error("Failed to reboot:", xhr);
+                                    }
+                                });
+                            }
+                        });
+                    } else {
+                        progressText.text("Upload completed with errors");
+
+                        Swal.fire({
+                            title: "Partial Failure",
+                            text: "Some devices failed to update:\n" + errorDetails,
+                            icon: "warning",
+                            confirmButtonText: "OK"
+                        });
+                    }
                 },
+
                 error: function (xhr) {
                     clearInterval(interval);
                     progressContainer.hide();
@@ -2215,11 +2267,11 @@ styles %}
 
                 fan = parseFloat(fan);
 
-                if (fan > 100 || (fan !== 0 && fan < 20)) {
+                if (fan > 100 || (fan !== 0 && fan < 15)) {
                     const range = fan > 100 ? "Over Range" : "Under Range";
                     Swal.fire({
                         title: range,
-                        html: "Fan Speed invalid input.<br>The accepted setting range is 20-100",
+                        html: "Fan Speed invalid input.<br>The accepted setting range is 15-100",
                         icon: "error",
                         confirmButtonText: "OK",
                     });
