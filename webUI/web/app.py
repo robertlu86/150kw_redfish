@@ -1901,6 +1901,7 @@ pid_order = {
         "kd_time_temp",
     ],
 }
+auto_setting = {"auto_broken_temperature": 0, "auto_broken_pressure": 0}
 
 system_data = {
     "value": {
@@ -4592,6 +4593,17 @@ def read_modbus_data():
             except Exception as e:
                 print(f"read pid pressure error:{e}")
                 flag = True
+            try:
+                with ModbusTcpClient(
+                    host=modbus_host, port=modbus_port, unit=modbus_slave_id
+                ) as client:
+                    r = client.read_holding_registers(960, 2, unit=modbus_slave_id)
+
+                    auto_setting["auto_broken_temperature"] = r.registers[0]
+                    auto_setting["auto_broken_pressure"] = r.registers[1]
+            except Exception as e:
+                print(f"read auto setting error:{e}")
+                flag = True
 
             try:
                 with ModbusTcpClient(
@@ -4902,6 +4914,7 @@ def get_data_engineerMode():
             "pid_temp": pid_setting["temperature"],
             "inspection_time": inspection_time,
             "visibility": ctr_data["rack_visibility"],
+            "auto_setting": auto_setting,
             "ver_switch": ver_switch,
         }
     )
@@ -6569,9 +6582,9 @@ def upload_zip_pc_both():
 
     if file.filename == "":
         return jsonify({"message": "No File Selected"}), 400
-
-    if file.filename != "upload.zip":
-        return jsonify({"message": "Please upload correct file name"}), 400
+    ### 取消zip檔名限制
+    # if file.filename != "upload.zip":
+    #     return jsonify({"message": "Please upload correct file name"}), 400
 
     if not file.filename.endswith(".zip"):
         return jsonify({"message": "Wrong File Type"}), 400
@@ -6585,10 +6598,42 @@ def upload_zip_pc_both():
     file.save(local_zip_path)
 
     # 解壓縮 ZIP
+    # try:
+    #     with zipfile.ZipFile(local_zip_path, "r") as zip_ref:
+    #         zip_ref.extractall(temp_dir)
+    # except zipfile.BadZipFile:
+    #     return jsonify({"message": "Invalid ZIP file"}), 400
+    zip_password = "Itgs50848614"
     try:
-        with zipfile.ZipFile(local_zip_path, "r") as zip_ref:
+        with pyzipper.AESZipFile(local_zip_path, "r", encryption=pyzipper.WZ_AES) as zip_ref:
+
+            # 檢查每個檔案是否加密
+            if not any(info.flag_bits & 0x1 for info in zip_ref.infolist()):
+                os.remove(local_zip_path)  # 清理未通過檢查的 zip
+                return jsonify({"message": "ZIP file must be password-protected"}), 400
+
+            zip_ref.setpassword(zip_password.encode())
+
+            try:
+                namelist = zip_ref.namelist()
+                if not namelist:
+                    os.remove(local_zip_path)
+                    return jsonify({"status": "error", "message": "ZIP file is empty"}), 400
+
+                # 嘗試讀取第一個檔案驗證密碼
+                zip_ref.read(namelist[0])
+            except RuntimeError:
+                os.remove(local_zip_path)
+                return jsonify({"status": "error", "message": "Invalid password"}), 400
+                
             zip_ref.extractall(temp_dir)
-    except zipfile.BadZipFile:
+
+    except RuntimeError:
+        os.remove(local_zip_path)
+        return jsonify({"message": "Wrong password or corrupt zip"}), 400
+
+    except pyzipper.BadZipFile:
+        os.remove(local_zip_path)
         return jsonify({"message": "Invalid ZIP file"}), 400
 
     # 定義目標 API 端點
@@ -7044,6 +7089,27 @@ def cancel_inspect():
         return retry_modbus_2reg(900, 2, 973, 2)
     op_logger.info("Cancel Inspection")
     return jsonify(message="Cancel Inspection")
+
+@app.route("/auto_setting_apply", methods=["POST"])
+def auto_setting_apply():
+    data = request.get_json("data")
+    auto_broken_temperature = data["auto_broken_temperature"]
+    auto_broken_pressure = data["auto_broken_pressure"]
+
+
+    try:
+        with ModbusTcpClient(
+            host=modbus_host, port=modbus_port, unit=modbus_slave_id
+        ) as client:
+            client.write_register(960, int(auto_broken_temperature))
+            client.write_register(961, int(auto_broken_pressure))
+
+
+    except Exception as e:
+        print(f"auto setting:{e}")
+ 
+    op_logger.info(f"Update Auto Setting Successfully. {data}")
+    return jsonify(message="Update Auto Setting Successfully")
 
 
 @app.route("/resetAdjust", methods=["POST"])
