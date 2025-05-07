@@ -20,6 +20,7 @@ sudo systemctl restart systemd-journald
 
 # Install Nginx (assuming sudo privileges are available)
 sudo apt update
+sudo apt install curl
 sudo apt install -y nginx
 
 # Copy the default Nginx configuration to /etc/nginx/sites-available/
