@@ -1901,6 +1901,7 @@ pid_order = {
         "kd_time_temp",
     ],
 }
+auto_setting = {"auto_broken_temperature": 0, "auto_broken_pressure": 0}
 
 system_data = {
     "value": {
@@ -4592,6 +4593,17 @@ def read_modbus_data():
             except Exception as e:
                 print(f"read pid pressure error:{e}")
                 flag = True
+            try:
+                with ModbusTcpClient(
+                    host=modbus_host, port=modbus_port, unit=modbus_slave_id
+                ) as client:
+                    r = client.read_holding_registers(960, 2, unit=modbus_slave_id)
+
+                    auto_setting["auto_broken_temperature"] = r.registers[0]
+                    auto_setting["auto_broken_pressure"] = r.registers[1]
+            except Exception as e:
+                print(f"read auto setting error:{e}")
+                flag = True
 
             try:
                 with ModbusTcpClient(
@@ -4902,6 +4914,7 @@ def get_data_engineerMode():
             "pid_temp": pid_setting["temperature"],
             "inspection_time": inspection_time,
             "visibility": ctr_data["rack_visibility"],
+            "auto_setting": auto_setting,
             "ver_switch": ver_switch,
         }
     )
@@ -7076,6 +7089,27 @@ def cancel_inspect():
         return retry_modbus_2reg(900, 2, 973, 2)
     op_logger.info("Cancel Inspection")
     return jsonify(message="Cancel Inspection")
+
+@app.route("/auto_setting_apply", methods=["POST"])
+def auto_setting_apply():
+    data = request.get_json("data")
+    auto_broken_temperature = data["auto_broken_temperature"]
+    auto_broken_pressure = data["auto_broken_pressure"]
+
+
+    try:
+        with ModbusTcpClient(
+            host=modbus_host, port=modbus_port, unit=modbus_slave_id
+        ) as client:
+            client.write_register(960, int(auto_broken_temperature))
+            client.write_register(961, int(auto_broken_pressure))
+
+
+    except Exception as e:
+        print(f"auto setting:{e}")
+ 
+    op_logger.info(f"Update Auto Setting Successfully. {data}")
+    return jsonify(message="Update Auto Setting Successfully")
 
 
 @app.route("/resetAdjust", methods=["POST"])
