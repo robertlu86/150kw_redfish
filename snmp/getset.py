@@ -882,7 +882,17 @@ def mib(jsondata):
                             (pMod.apiPDU.setNoSuchInstanceError, errorIndex)
                         )
                         break
-
+            # elif reqPDU.isSameTypeWith(pMod.GetNextRequestPDU()):
+            #     for oid, val in pMod.apiPDU.getVarBinds(reqPDU):
+            #         next_oids = sorted(k for k in mibInstrIdx if k > oid)
+            #         if next_oids:
+            #             next_oid = next_oids[0]
+            #             varBinds.append((next_oid, mibInstrIdx[next_oid](msgVer)))
+            #         else:
+            #             pendingErrors.append(
+            #                 (pMod.apiPDU.setNoSuchInstanceError, errorIndex)
+            #             )
+            #             break
             else:
                 pMod.apiPDU.setErrorStatus(rspPDU, "genErr")
             pMod.apiPDU.setVarBinds(rspPDU, varBinds)
