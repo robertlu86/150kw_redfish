@@ -943,33 +943,33 @@ styles %}
                         <td scope="row"></td>
                         <td></td>
                     </tr>
-                    <!-- 暫時隱藏liquid coolant level -->
-                    <!-- <tr>
-                                                <td class="w-12 tdCenterAlign" scope="row">
-                                                    Liquid Coolant Level 1
-                                                </td>
-                                                <td id="level1" class="w-12 tdCenterAlign" scope="row"></td>
-                                                <td scope="row"></td>
-                                                <td></td>
-                                            </tr>
-                        
-                                            <tr>
-                                                <td class="w-12 tdCenterAlign" scope="row">
-                                                    Liquid Coolant Level 2
-                                                </td>
-                                                <td id="level2" class="w-12 tdCenterAlign" scope="row"></td>
-                                                <td scope="row"></td>
-                                                <td></td>
-                                            </tr>
-                        
-                                            <tr>
-                                                <td class="w-12 tdCenterAlign" scope="row">
-                                                    Liquid Coolant Level 3
-                                                </td>
-                                                <td id="level3" class="w-12 tdCenterAlign" scope="row"></td>
-                                                <td scope="row"></td>
-                                                <td></td>
-                                            </tr> -->
+
+                    <tr>
+                        <td class="w-12 tdCenterAlign" scope="row">
+                            Liquid Coolant Level 1
+                        </td>
+                        <td id="level1" class="w-12 tdCenterAlign" scope="row"></td>
+                        <td scope="row"></td>
+                        <td></td>
+                    </tr>
+
+                    <tr>
+                        <td class="w-12 tdCenterAlign" scope="row">
+                            Liquid Coolant Level 2
+                        </td>
+                        <td id="level2" class="w-12 tdCenterAlign" scope="row"></td>
+                        <td scope="row"></td>
+                        <td></td>
+                    </tr>
+
+                    <tr>
+                        <td class="w-12 tdCenterAlign" scope="row">
+                            Liquid Coolant Level 3
+                        </td>
+                        <td id="level3" class="w-12 tdCenterAlign" scope="row"></td>
+                        <td scope="row"></td>
+                        <td></td>
+                    </tr>
 
                     <tr>
                         <td class="w-12 tdCenterAlign" scope="row">
@@ -1307,7 +1307,13 @@ styles %}
                                 $("#pc_error").css("color", "black").text("OK");
                             }
                         }
-
+                        if (key.includes("main_mc")) {
+                            if (data["error"]["main_mc_error"]) {
+                                $("#main_mc_error").css("color", "black").text("OFF");
+                            } else {
+                                $("#main_mc_error").css("color", "black").text("ON");
+                            }
+                        }
                         if (key.includes("power24v")) {
                             if (data["error"]["power24v1"] && data["error"]["power24v2"]) {
                                 $("#power24v")
@@ -1751,7 +1757,7 @@ styles %}
 
             } else if (ver_switch["fan_count_switch"] === false) {
                 $("#fan_freq5_light").css({ top: "28.95%", left: "81.8%" });
-                $("#fan_freq4_light").css({ top: "28.9%", left: "86.25" });
+                $("#fan_freq4_light").css({ top: "28.9%", left: "86.25%" });
                 $("#fan_freq6_light").css({ top: "36.25%", left: "81.8%" });
                 $("#fan_freq3_light").css({ top: "36.2%", left: "86.25%" });
                 $("#fan_freq7_light").css({ top: "43.5%", left: "81.8%" });

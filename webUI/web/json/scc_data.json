@@ -1,16 +1,16 @@
 {
     "sensor_value_data": {
         "CoolantSupplyTemperature": {
-            "Warning": true,
-            "Alert": true
+            "Warning": false,
+            "Alert": false
         },
         "CoolantSupplyTemperatureSpare": {
             "Warning": false,
             "Alert": false
         },
         "CoolantReturnTemperature": {
-            "Warning": false,
-            "Alert": false
+            "Warning": true,
+            "Alert": true
         },
         "CoolantReturnTemperatureSpare": {
             "Warning": false,
@@ -74,7 +74,7 @@
         }
     },
     "devices": {
-        "Inv1Overload": true,
+        "Inv1Overload": false,
         "Inv2Overload": false,
         "Inv3Overload": false,
         "FanOverload1": false,
