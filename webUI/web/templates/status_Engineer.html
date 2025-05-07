@@ -767,7 +767,7 @@ styles %}
                         <td class="tdCenterAlign" id="fan_freq6"></td>
                         <td class="fan_speed_unit">%</td>
                     </tr>
-                    <tr>
+                    <tr id="Fan7_set">
                         <td class="tdCenterAlign" id="Fan7_name">Fan Speed 7</td>
                         <td class="tdCenterAlign" id="fan_freq7_status"></td>
                         <td class="tdCenterAlign" id="fan_freq7"></td>
@@ -1739,17 +1739,21 @@ styles %}
         function change_version(ver_switch) {
             //////尚未取得正確位置/////////
             if (ver_switch["fan_count_switch"] === true) {
-                $("#fan_freq5_light").css({ top: "32.6%", left: "81.9%" });
+                // $("#fan_freq5_light").css({ top: "32.6%", left: "81.9%" });
+                $("#fan_freq4_light").css({ top: "32.6%", left: "81.9%" });
                 $("#fan_freq3_light").css({ top: "32.6%", left: "86.25%" });
-                $("#fan_freq6_light").css({ top: "40%", left: "81.9%" });
+                // $("#fan_freq6_light").css({ top: "40%", left: "81.9%" });
+                $("#fan_freq5_light").css({ top: "40%", left: "81.9%" });
                 $("#fan_freq2_light").css({ top: "40%", left: "86.25%" });
-                $("#fan_freq7_light").css({ top: "47.4%", left: "81.9%" });
+                // $("#fan_freq7_light").css({ top: "47.4%", left: "81.9%" });
+                $("#fan_freq6_light").css({ top: "47.4%", left: "81.9%" });
                 $("#fan_freq1_light").css({ top: "47.4%", left: "86.25%" });
 
-                $("#Fan4_set, #Fan8_set").hide();
-                $("#Fan5_name").text("Fan Speed 4");
-                $("#Fan6_name").text("Fan Speed 5");
-                $("#Fan7_name").text("Fan Speed 6");
+                // $("#Fan4_set, #Fan8_set").hide();
+                $("#Fan7_set, #Fan8_set").hide();
+                // $("#Fan5_name").text("Fan Speed 4");
+                // $("#Fan6_name").text("Fan Speed 5");
+                // $("#Fan7_name").text("Fan Speed 6");
                 $("#Fan_group1").text("Fan 1-3 MC");
                 $("#Fan_group2").text("Fan 4-6 MC");
 
@@ -1765,7 +1769,8 @@ styles %}
                 $("#fan_freq8_light").css({ top: "50.8%", left: "81.8%" });
                 $("#fan_freq1_light").css({ top: "50.8%", left: "86.25%" });
 
-                $("#Fan4_set, #Fan8_set").show();
+                // $("#Fan4_set, #Fan8_set").show();
+                $("#Fan7_set, #Fan8_set").show();
                 $("#Fan5_name").text("Fan Speed 5");
                 $("#Fan6_name").text("Fan Speed 6");
                 $("#Fan7_name").text("Fan Speed 7");

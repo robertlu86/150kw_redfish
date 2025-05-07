@@ -2378,18 +2378,18 @@ def set_warning_registers(mode):
         check_communication("Fan2Com", "Delay_Fan2Com_Communication", True)
         check_communication("Fan3Com", "Delay_Fan3Com_Communication", True)
 
+        check_communication("Fan4Com", "Delay_Fan4Com_Communication", True)
         check_communication("Fan5Com", "Delay_Fan5Com_Communication", True)
         check_communication("Fan6Com", "Delay_Fan6Com_Communication", True)
-        check_communication("Fan7Com", "Delay_Fan7Com_Communication", True)
 
         
         check_input("Delay_fan1_error", "fan1_error", False)
         check_input("Delay_fan2_error", "fan2_error", False)
         check_input("Delay_fan3_error", "fan3_error", False)
 
+        check_input("Delay_fan4_error", "fan4_error", False)
         check_input("Delay_fan5_error", "fan5_error", False)
         check_input("Delay_fan6_error", "fan6_error", False)
-        check_input("Delay_fan7_error", "fan7_error", False)
         
         
     else:
@@ -2704,11 +2704,11 @@ def set_warning_registers(mode):
     except Exception as e:
         print(f"ATS issue:{e}")
 
-    for i in range(1, 4):
-        if not bit_output_regs[f"mc{i}"]:
-            warning_data["error"][f"Inv{i}_Freq_communication"] = True
-        else:
-            warning_data["error"][f"Inv{i}_Freq_communication"] = False
+    # for i in range(1, 4):
+    #     if not bit_output_regs[f"mc{i}"]:
+    #         warning_data["error"][f"Inv{i}_Freq_communication"] = True
+    #     else:
+    #         warning_data["error"][f"Inv{i}_Freq_communication"] = False
             
         
     warning_key = list(warning_data["warning"].keys())
@@ -5809,19 +5809,32 @@ def rtu_thread():
                     time.sleep(duration)
 
                 fan_units = [16, 17, 18, 19, 12, 13, 14, 15]
-                # fan_units = [13, 14, 12, 19, 18, 16, 17, 15]
+                fan_units_6 = [16, 17, 18, 12, 13, 14]
 
-                for i, unit in enumerate(fan_units, start=1):
-                    try:
-                        r = client.read_input_registers(53293, 1, unit=unit)
-                        ###fan speed freq
-                        raw_485_data[f"Fan{i}Com"] = r.registers[0]
-                        raw_485_comm[f"Fan{i}Com"] = False
-                    except Exception as e:
-                        raw_485_comm[f"Fan{i}Com"] = True
-                        print(f"Fan {i} error: {e}")
+                if ver_switch["fan_count_switch"]:
+                    for i, unit in enumerate(fan_units_6, start=1):
+                        try:
+                            r = client.read_input_registers(53293, 1, unit=unit)
+                            ###fan speed freq
+                            raw_485_data[f"Fan{i}Com"] = r.registers[0]
+                            raw_485_comm[f"Fan{i}Com"] = False
+                        except Exception as e:
+                            raw_485_comm[f"Fan{i}Com"] = True
+                            print(f"Fan {i} error: {e}")
 
-                    time.sleep(duration)
+                        time.sleep(duration)
+                else:
+                    for i, unit in enumerate(fan_units, start=1):
+                        try:
+                            r = client.read_input_registers(53293, 1, unit=unit)
+                            ###fan speed freq
+                            raw_485_data[f"Fan{i}Com"] = r.registers[0]
+                            raw_485_comm[f"Fan{i}Com"] = False
+                        except Exception as e:
+                            raw_485_comm[f"Fan{i}Com"] = True
+                            print(f"Fan {i} error: {e}")
+
+                        time.sleep(duration)      
 
                 # try:
                 #     r = client.read_discrete_inputs(6, 9, unit=10)
@@ -5860,7 +5873,7 @@ def rtu_thread():
                                        
                 except Exception as e:
                     raw_485_comm["ATS1"] = True
-                    raw_485_comm["ATS2"] = True
+                    # raw_485_comm["ATS2"] = True
                     print(f"ATS error: {e}")
 
                 time.sleep(duration)
