@@ -469,7 +469,7 @@ styles %}
                                 <div class="result resultFan6" id="resultFan6"></div>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row" id="Fan7_set">
                             <div class="col-6 center_text" id="Fan7_name">Fan7:</div>
                             <div class="col-3 sideNum">
                                 <div class="form-check">
@@ -1341,16 +1341,16 @@ styles %}
 
         function fan_count_version(ver_switch) {
             if (ver_switch === true) {
-                $("#Fan4_set, #Fan8_set, #Fan4_run_time_set, #Fan8_run_time_set").hide();
-                $("#fan4_check, #fan8_check").prop("checked", false);
-                $("#Fan5_name").text("Fan4:");
-                $("#Fan6_name").text("Fan5:");
-                $("#Fan7_name").text("Fan6:");
-                $("#Fan5_run_name_set").text("Fan4 Running Time:");
-                $("#Fan6_run_name_set").text("Fan5 Running Time:");
-                $("#Fan7_run_name_set").text("Fan6 Running Time:");
+                $("#Fan7_set, #Fan8_set, #Fan7_run_time_set, #Fan8_run_time_set").hide();
+                $("#fan7_check, #fan8_check").prop("checked", false);
+                // $("#Fan5_name").text("Fan4:");
+                // $("#Fan6_name").text("Fan5:");
+                // $("#Fan7_name").text("Fan6:");
+                // $("#Fan5_run_name_set").text("Fan4 Running Time:");
+                // $("#Fan6_run_name_set").text("Fan5 Running Time:");
+                // $("#Fan7_run_name_set").text("Fan6 Running Time:");
             } else {
-                $("#Fan4_set, #Fan8_set, #Fan4_run_time_set, #Fan8_run_time_set").show();
+                $("#Fan7_set, #Fan8_set, #Fan7_run_time_set, #Fan8_run_time_set").show();
                 $("#Fan5_name").text("Fan5:");
                 $("#Fan6_name").text("Fan6:");
                 $("#Fan7_name").text("Fan7:");
