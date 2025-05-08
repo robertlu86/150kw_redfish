@@ -323,6 +323,10 @@ messages = {
         "M427": ["Rack8 error", False],
         "M428": ["Rack9 error", False],
         "M429": ["Rack10 error", False],
+        # "M430": ["Rack Leakage Sensor 1 Leak", False],
+        # "M431": ["Rack Leakage Sensor 1 Broken", False],
+        # "M432": ["Rack Leakage Sensor 2 Leak", False],
+        # "M345": ["Rack Leakage Sensor 2 Broken", False],
     },
 }
 
@@ -2160,6 +2164,10 @@ class ErrorMessages(Resource):
                 "M427": "rack8_error",
                 "M428": "rack9_error",
                 "M429": "rack10_error",
+                # "M430": "rack_leakage1_leak",
+                # "M431": "rack_leakage1_broken",
+                # "M432": "rack_leakage2_leak",
+                # "M433": "rack_leakage2_broken",
             }
 
             for msg_key, sensor_key in rack_mapping.items():

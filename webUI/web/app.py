@@ -380,10 +380,6 @@ sensorData = {
         "fan7_error": False,
         "fan8_error": False,
         "Low_Coolant_Level_Warning": False,
-        # "rack_leakage1_leak": False,
-        # "rack_leakage1_broken": False,
-        # "rack_leakage2_leak": False,
-        # "rack_leakage2_broken": False,
         "PLC": False,
     },
     "rack": {
@@ -417,6 +413,10 @@ sensorData = {
         "rack8_error": False,
         "rack9_error": False,
         "rack10_error": False,
+        # "rack_leakage1_leak": False,
+        # "rack_leakage1_broken": False,
+        # "rack_leakage2_leak": False,
+        # "rack_leakage2_broken": False,
     },
     "err_log": {
         "warning": {
