@@ -255,7 +255,7 @@ styles %}
                     render: function (data, type, row) {
                         if (row.signal_name.startsWith("M2")) {
                             return '<span class="alert-text">ALERT</span>';
-                        } else if (row.signal_name.startsWith("M3")) {
+                        } else if (row.signal_name.startsWith("M3") || row.signal_name.startsWith("M4")) {
                             return '<span class="error-text">ERROR</span>';
                         } else {
                             return "";

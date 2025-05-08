@@ -73,6 +73,7 @@ debug = os.environ.get("NODEBUG") == "False"
 previous_warning_states = {}
 previous_alert_states = {}
 previous_error_states = {}
+previous_rack_states = {}
 prev_plc_error = False
 if onLinux:
     from web.auth import (
@@ -413,10 +414,10 @@ sensorData = {
         "rack8_error": False,
         "rack9_error": False,
         "rack10_error": False,
-        # "rack_leakage1_leak": False,
-        # "rack_leakage1_broken": False,
-        # "rack_leakage2_leak": False,
-        # "rack_leakage2_broken": False,
+        "rack_leakage1_leak": False,
+        "rack_leakage1_broken": False,
+        "rack_leakage2_leak": False,
+        "rack_leakage2_broken": False,
     },
     "err_log": {
         "warning": {
@@ -568,10 +569,10 @@ sensorData = {
             "rack8_error": "M427 Rack8 error",
             "rack9_error": "M428 Rack9 error",
             "rack10_error": "M429 Rack10 error",
-            # "rack_leakage1_leak": "M430 Rack Leakage Sensor 1 Leak",
-            # "rack_leakage1_broken": "M431 Rack Leakage Sensor 1 Broken",
-            # "rack_leakage2_leak": "M432 Rack Leakage Sensor 2 Leak",
-            # "rack_leakage2_broken": "M433 Rack Leakage Sensor 2 Broken",
+            "rack_leakage1_leak": "M430 Rack Leakage Sensor 1 Leak",
+            "rack_leakage1_broken": "M431 Rack Leakage Sensor 1 Broken",
+            "rack_leakage2_leak": "M432 Rack Leakage Sensor 2 Leak",
+            "rack_leakage2_broken": "M433 Rack Leakage Sensor 2 Broken",
         },
     },
     "unit": {
@@ -1020,10 +1021,10 @@ thrshd = OrderedDict(
         "Delay_fan7_error": 0,
         "Delay_fan8_error": 0,
         "Delay_rack_error": 0,
-        # "Delay_rack_leakage1_leak": 0,
-        # "Delay_rack_leakage1_broken": 0,
-        # "Delay_rack_leakage2_leak": 0,
-        # "Delay_rack_leakage2_broken": 0,
+        "Delay_rack_leakage1_leak": 0,
+        "Delay_rack_leakage1_broken": 0,
+        "Delay_rack_leakage2_leak": 0,
+        "Delay_rack_leakage2_broken": 0,
         "W_TempClntSply_trap": False,
         "A_TempClntSply_trap": False,
         "W_TempClntSplySpare_trap": False,
@@ -1125,10 +1126,10 @@ thrshd = OrderedDict(
         "E_pc1_error_trap": False,
         "E_pc2_error_trap": False,
         "E_plc_trap": False,
-        # "E_rack_leakage1_leak_trap": False,
-        # "E_rack_leakage1_broken_trap": False,
-        # "E_rack_leakage2_leak_trap": False,
-        # "E_rack_leakage2_broken_trap": False,
+        "E_rack_leakage1_leak_trap": False,
+        "E_rack_leakage1_broken_trap": False,
+        "E_rack_leakage2_leak_trap": False,
+        "E_rack_leakage2_broken_trap": False,
     }
 )
 
@@ -1441,10 +1442,10 @@ thrshd_factory = {
     "Delay_power24v1": 0,
     "Delay_power24v2": 0,
     "Delay_rack_error": 0,
-    # "Delay_rack_leakage1_broken": 0,
-    # "Delay_rack_leakage1_leak": 0,
-    # "Delay_rack_leakage2_broken": 0,
-    # "Delay_rack_leakage2_leak": 0,
+    "Delay_rack_leakage1_broken": 0,
+    "Delay_rack_leakage1_leak": 0,
+    "Delay_rack_leakage2_broken": 0,
+    "Delay_rack_leakage2_leak": 0,
     "E_ATS1_Communication_trap": False,
     "E_ATS2_Communication_trap": False,
     "E_ATS_trap": False,
@@ -1510,10 +1511,10 @@ thrshd_factory = {
     "E_power24v1_trap": False,
     "E_power24v2_trap": False,
     "E_rack_trap": False,
-    # "E_rack_leakage1_broken_trap": False,
-    # "E_rack_leakage1_leak_trap": False,
-    # "E_rack_leakage2_broken_trap": False,
-    # "E_rack_leakage2_leak_trap": False,
+    "E_rack_leakage1_broken_trap": False,
+    "E_rack_leakage1_leak_trap": False,
+    "E_rack_leakage2_broken_trap": False,
+    "E_rack_leakage2_leak_trap": False,
     "Thr_A_AC_H": 45,
     "Thr_A_AmbientTemp_H": 45,
     "Thr_A_AmbientTemp_L": 18,
@@ -3608,6 +3609,7 @@ def read_modbus_data():
         pc2_active, \
         previous_alert_states, \
         previous_error_states, \
+        previous_rack_states, \
         previous_warning_states
     current_date = datetime.now().strftime("%Y-%m-%d")
     last_date = datetime.now().strftime("%Y-%m-%d")
@@ -3620,6 +3622,7 @@ def read_modbus_data():
     error_count = 0
     warning_count = 0
     alert_count = 0
+    rack_count = 0
 
     while True:
         try:
@@ -4538,6 +4541,70 @@ def read_modbus_data():
             check_cdu_status()  
         except Exception as e:
             print(f"read error issue:{e}")
+            
+        try:
+            with ModbusTcpClient(
+                host=modbus_host, port=modbus_port, unit=modbus_slave_id
+            ) as client:
+                rack_key_len = len(sensorData["rack"].keys())
+                rack_reg = (rack_key_len // 16) + (1 if rack_key_len % 16 != 0 else 0)
+                result = client.read_holding_registers(
+                    1715, rack_reg, unit=modbus_slave_id
+                )
+
+                if not result.isError():
+                    value = (
+                        result.registers[0]
+                        | result.registers[1] << 16
+                        | result.registers[2] << 32
+                    )
+                    binary_string = bin(value)[2:].zfill(rack_key_len)
+                    keys_list = list(sensorData["rack"].keys())
+                    index = -1
+
+                    for key in keys_list:
+                        sensorData["rack"][key] = bool(int(binary_string[index]))
+                        index -= 1
+
+                    for key in keys_list:
+                        if sensorData["rack"][key]:
+                            if sensorData["err_log"]["rack"][key] not in error_data:
+                                error_data.append(sensorData["err_log"]["rack"][key])
+                    rack_count += 1
+
+                    if error_toggle:
+                        if rack_count > 10:
+                            for key in keys_list:
+                                # sensorData["rack"]["rack1_leak"] = False
+                                current_state = sensorData["rack"][key]
+
+                                if key not in previous_rack_states:
+                                    previous_rack_states[key] = False
+
+                                if current_state and not previous_rack_states[key]:
+                                    app.logger.warning(
+                                        sensorData["err_log"]["rack"][key]
+                                    )
+
+                                    record_signal_on(
+                                        sensorData["err_log"]["rack"][key].split()[0],
+                                        sensorData["err_log"]["rack"][key],
+                                    )
+
+                                elif not current_state and previous_rack_states[key]:
+                                    app.logger.info(
+                                        f"{sensorData['err_log']['rack'][key]} Restore"
+                                    )
+
+                                    record_signal_off(
+                                        sensorData["err_log"]["rack"][key].split()[0],
+                                        sensorData["err_log"]["rack"][key],
+                                    )
+                                previous_rack_states[key] = current_state
+                            rack_count = 0
+
+        except Exception as e:
+            print(f"read rack error issue:{e}")
 
         # sensorData["error"] = False
         read_data["control"] = False
@@ -8346,6 +8413,7 @@ def read_rack_status():
             value_r = [0] * rack_reg
             for i in range(0, rack_key_len):
                 key = rack_key[i]
+                # sensorData["rack"]["rack_leakage1_broken"] = True
                 if sensorData["rack"][key]:
                     value_r[i // 16] |= 1 << (i % 16)
 

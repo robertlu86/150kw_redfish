@@ -182,10 +182,10 @@ bit_input_regs = {
     "fan6_error": None,
     "fan7_error": None,
     "fan8_error": None,
-    # "rack_leakage1_leak": None,
-    # "rack_leakage1_broken": None,
-    # "rack_leakage2_leak": None,
-    # "rack_leakage2_broken": None,
+    "rack_leakage1_leak": None,
+    "rack_leakage1_broken": None,
+    "rack_leakage2_leak": None,
+    "rack_leakage2_broken": None,
 }
 
 raw_485_data = {
@@ -817,10 +817,10 @@ thrshd_data = {
     "Delay_fan7_error": 0,
     "Delay_fan8_error": 0,
     "Delay_rack_error": 0,
-    # "Delay_rack_leakage1_leak": 0,
-    # "Delay_rack_leakage1_broken": 0,
-    # "Delay_rack_leakage2_leak": 0,
-    # "Delay_rack_leakage2_broken": 0,
+    "Delay_rack_leakage1_leak": 0,
+    "Delay_rack_leakage1_broken": 0,
+    "Delay_rack_leakage2_leak": 0,
+    "Delay_rack_leakage2_broken": 0,
 }
 
 rack_data = {
@@ -1018,10 +1018,10 @@ time_data = {
         "Delay_fan7_error": 0,
         "Delay_fan8_error": 0,
         "Delay_rack_error": 0,
-        # "Delay_rack_leakage1_leak": 0,
-        # "Delay_rack_leakage1_broken": 0,
-        # "Delay_rack_leakage2_leak": 0,
-        # "Delay_rack_leakage2_broken": 0,
+        "Delay_rack_leakage1_leak": 0,
+        "Delay_rack_leakage1_broken": 0,
+        "Delay_rack_leakage2_leak": 0,
+        "Delay_rack_leakage2_broken": 0,
     },
     "end": {
         "W_TempClntSply": 0,
@@ -1143,10 +1143,10 @@ time_data = {
         "Delay_fan7_error": 0,
         "Delay_fan8_error": 0,
         "Delay_rack_error": 0,
-        # "Delay_rack_leakage1_leak": 0,
-        # "Delay_rack_leakage1_broken": 0,
-        # "Delay_rack_leakage2_leak": 0,
-        # "Delay_rack_leakage2_broken": 0,
+        "Delay_rack_leakage1_leak": 0,
+        "Delay_rack_leakage1_broken": 0,
+        "Delay_rack_leakage2_leak": 0,
+        "Delay_rack_leakage2_broken": 0,
     },
     "check": {
         "W_TempClntSply": 0,
@@ -1268,10 +1268,10 @@ time_data = {
         "Delay_fan7_error": 0,
         "Delay_fan8_error": 0,
         "Delay_rack_error": 0,
-        # "Delay_rack_leakage1_leak": 0,
-        # "Delay_rack_leakage1_broken": 0,
-        # "Delay_rack_leakage2_leak": 0,
-        # "Delay_rack_leakage2_broken": 0,
+        "Delay_rack_leakage1_leak": 0,
+        "Delay_rack_leakage1_broken": 0,
+        "Delay_rack_leakage2_leak": 0,
+        "Delay_rack_leakage2_broken": 0,
     },
     "condition": {
         "low": {
@@ -2456,10 +2456,10 @@ def set_warning_registers(mode):
 
     check_input("Delay_leakage1_leak", "leakage1_leak", True)
     check_input("Delay_leakage1_broken", "leakage1_broken", True)
-    # check_input("Delay_rack_leakage1_leak", "rack_leakage1_leak", True)
-    # check_input("Delay_rack_leakage1_broken", "rack_leakage1_broken", True)
-    # check_input("Delay_rack_leakage2_leak", "rack_leakage2_leak", True)
-    # check_input("Delay_rack_leakage2_broken", "rack_leakage2_broken", True)
+    check_input("Delay_rack_leakage1_leak", "rack_leakage1_leak", True)
+    check_input("Delay_rack_leakage1_broken", "rack_leakage1_broken", True)
+    check_input("Delay_rack_leakage2_leak", "rack_leakage2_leak", True)
+    check_input("Delay_rack_leakage2_broken", "rack_leakage2_broken", True)
     check_input("Delay_main_mc_error", "main_mc_error", False)
     check_input("Delay_Inv1_Error", "Inv1_Error", True)
     check_input("Delay_Inv2_Error", "Inv2_Error", True)
@@ -3628,11 +3628,11 @@ def control():
                     bit_input_regs["leakage1_leak"] = leak.bits[0]
                     bit_input_regs["leakage1_broken"] = leak.bits[1]
 
-                    # rack_leak = client.read_discrete_inputs(44, 4, unit=modbus_slave_id)
-                    # bit_input_regs["rack_leakage1_leak"] = rack_leak.bits[0]
-                    # bit_input_regs["rack_leakage1_broken"] = rack_leak.bits[1]
-                    # bit_input_regs["rack_leakage2_leak"] = rack_leak.bits[2]
-                    # bit_input_regs["rack_leakage2_broken"] = rack_leak.bits[3]
+                    rack_leak = client.read_discrete_inputs(44, 4, unit=modbus_slave_id)
+                    bit_input_regs["rack_leakage1_leak"] = rack_leak.bits[0]
+                    bit_input_regs["rack_leakage1_broken"] = rack_leak.bits[1]
+                    bit_input_regs["rack_leakage2_leak"] = rack_leak.bits[2]
+                    bit_input_regs["rack_leakage2_broken"] = rack_leak.bits[3]
                     
                     mainMC = client.read_discrete_inputs(35, 1, unit=modbus_slave_id)
                     bit_input_regs["main_mc_error"] = mainMC.bits[0]
