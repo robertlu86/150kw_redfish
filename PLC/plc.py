@@ -4017,24 +4017,46 @@ def control():
                             
                     # bit_output_regs["mc_fan1"] = True
                     # print(f'bit_output_regs["mc_fan1"]:{bit_output_regs["mc_fan1"]}')
-                    for i in range(1, 5):
-                        key = f"fan_freq{i}"
-                        all_sensors_dict[key] = (
-                            ##轉速100%, RPM為4150
-                            ### 將RPM 轉為 %
-                            serial_sensor_value[key] / 4150 * 100
-                            )
-                        if not bit_output_regs["mc_fan1"]:
-                            all_sensors_dict[key] = 0
-                    for i in range(5, 9):
-                        key = f"fan_freq{i}"
-                        all_sensors_dict[key] = (
-                            ##轉速100%, RPM為4150
-                            ### 將RPM 轉為 %
-                            serial_sensor_value[key] / 4150 * 100
-                            )
-                        if not bit_output_regs["mc_fan2"]:
-                            all_sensors_dict[key] = 0
+                    
+                    ###增加fan_count判斷###
+                    if ver_switch["fan_count_switch"]:
+                        for i in range(1, 4):
+                            key = f"fan_freq{i}"
+                            all_sensors_dict[key] = (
+                                ##轉速100%, RPM為4150
+                                ### 將RPM 轉為 %
+                                serial_sensor_value[key] / 4150 * 100
+                                )
+                            if not bit_output_regs["mc_fan1"]:
+                                all_sensors_dict[key] = 0
+                        for i in range(4, 7):
+                            key = f"fan_freq{i}"
+                            all_sensors_dict[key] = (
+                                ##轉速100%, RPM為4150
+                                ### 將RPM 轉為 %
+                                serial_sensor_value[key] / 4150 * 100
+                                )
+                            if not bit_output_regs["mc_fan2"]:
+                                all_sensors_dict[key] = 0
+                    else:
+                        for i in range(1, 5):
+                            key = f"fan_freq{i}"
+                            all_sensors_dict[key] = (
+                                ##轉速100%, RPM為4150
+                                ### 將RPM 轉為 %
+                                serial_sensor_value[key] / 4150 * 100
+                                )
+                            if not bit_output_regs["mc_fan1"]:
+                                all_sensors_dict[key] = 0
+                        for i in range(5, 9):
+                            key = f"fan_freq{i}"
+                            all_sensors_dict[key] = (
+                                ##轉速100%, RPM為4150
+                                ### 將RPM 轉為 %
+                                serial_sensor_value[key] / 4150 * 100
+                                )
+                            if not bit_output_regs["mc_fan2"]:
+                                all_sensors_dict[key] = 0                   
                             
 
                     r = (
@@ -5808,8 +5830,10 @@ def rtu_thread():
 
                     time.sleep(duration)
 
-                fan_units = [16, 17, 18, 19, 12, 13, 14, 15]
-                fan_units_6 = [16, 17, 18, 12, 13, 14]
+                fan_units = [12, 13, 14, 15, 16, 17, 18, 19]
+                # fan_units_6 = [16, 17, 18, 12, 13, 14]
+                fan_units_6 = [12, 13, 14, 16, 17, 18]
+                
 
                 if ver_switch["fan_count_switch"]:
                     for i, unit in enumerate(fan_units_6, start=1):
