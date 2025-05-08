@@ -1400,23 +1400,49 @@ styles %}
                     $(`#pump${i}_check`).prop("disabled", true).prop("checked", false)
                 }
             }
+            const currentVersion = window.sharedData.version;
+            // console.log(`currentVersion["fan_count_switch"]:${currentVersion["fan_count_switch"]}`);
+            
 
-            if (data["mc"][`fan_mc1`]) {
-                for (let i = 1; i <= 4; i++) {
-                    $(`#fan${i}_check`).prop("disabled", false)
+            if (currentVersion["fan_count_switch"]) {
+                if (data["mc"][`fan_mc1`]) {
+                    for (let i = 1; i <= 3; i++) {
+                        $(`#fan${i}_check`).prop("disabled", false)
+                    }
+                } else {
+                    for (let i = 1; i <= 3; i++) {
+                        $(`#fan${i}_check`).prop("disabled", true).prop("checked", false)
+                    }
                 }
+                if (data["mc"][`fan_mc2`]) {
+                    for (let i = 4; i <= 6; i++) {
+                        $(`#fan${i}_check`).prop("disabled", false)
+                    }
+                } else {
+                    for (let i = 4; i <= 6; i++) {
+                        $(`#fan${i}_check`).prop("disabled", true).prop("checked", false)
+                    }
+                }
+
             } else {
-                for (let i = 1; i <= 4; i++) {
-                    $(`#fan${i}_check`).prop("disabled", true).prop("checked", false)
+
+                if (data["mc"][`fan_mc1`]) {
+                    for (let i = 1; i <= 4; i++) {
+                        $(`#fan${i}_check`).prop("disabled", false)
+                    }
+                } else {
+                    for (let i = 1; i <= 4; i++) {
+                        $(`#fan${i}_check`).prop("disabled", true).prop("checked", false)
+                    }
                 }
-            }
-            if (data["mc"][`fan_mc2`]) {
-                for (let i = 5; i <= 8; i++) {
-                    $(`#fan${i}_check`).prop("disabled", false)
-                }
-            } else {
-                for (let i = 5; i <= 8; i++) {
-                    $(`#fan${i}_check`).prop("disabled", true).prop("checked", false)
+                if (data["mc"][`fan_mc2`]) {
+                    for (let i = 5; i <= 8; i++) {
+                        $(`#fan${i}_check`).prop("disabled", false)
+                    }
+                } else {
+                    for (let i = 5; i <= 8; i++) {
+                        $(`#fan${i}_check`).prop("disabled", true).prop("checked", false)
+                    }
                 }
             }
             for (var key in data["value"]) {
