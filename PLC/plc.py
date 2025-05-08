@@ -2435,15 +2435,23 @@ def set_warning_registers(mode):
     check_communication("Inv1_Freq", "Delay_Inverter1_Communication", True)
     check_communication("Inv2_Freq", "Delay_Inverter2_Communication", True)
     check_communication("Inv3_Freq", "Delay_Inverter3_Communication", True)
+    
+    ### 跟RH TDp為同一個
     check_communication("AmbientTemp", "Delay_AmbientTemp_Communication", True)
-    check_communication("RelativeHumid", "Delay_RelativeHumid_Communication", True)
-    check_communication("DewPoint", "Delay_DewPoint_Communication", True)
+    
+    # check_communication("RelativeHumid", "Delay_RelativeHumid_Communication", True)
+    # check_communication("DewPoint", "Delay_DewPoint_Communication", True)
+    
+    ###flow_rate不再從485抓
     # check_communication("coolant_flow_rate", "Delay_Coolant_Flow_Meter_Communication")
     
     check_communication("ATS1", "Delay_ATS1_Communication", True)
-    check_communication("ATS2", "Delay_ATS2_Communication", True)
+    # check_communication("ATS2", "Delay_ATS2_Communication", True)
+    
     check_communication("inst_power", "Delay_Power_Meter_Communication", True)
-    check_communication("average_current", "Delay_average_current_Communication", True)
+    
+    ###跟inst_power相同
+    # check_communication("average_current", "Delay_average_current_Communication", True)
     
 
 
