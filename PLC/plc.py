@@ -2758,7 +2758,7 @@ def set_warning_registers(mode):
     for i in range(0, err_key_len):
         key = error_key[i]
         # print(f'warning_data["error"][Inv1_Error]{warning_data["error"]["Inv1_Error"]}')
-        warning_data["error"][key] = False
+        # warning_data["error"][key] = False
         # warning_data["error"][key] = True
         # warning_data["error"]["Inv1_Error"] =True
         # warning_data["error"]["Fan1Com_communication"] = True

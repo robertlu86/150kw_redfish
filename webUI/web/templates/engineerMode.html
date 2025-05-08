@@ -1258,7 +1258,7 @@ block styles %}
             </div>
             <div class="row">
                 <div class="col-3">
-                    <p>[Device] Fan OverLoad1:</p>
+                    <p>[Device] Fan Group 1 OverLoad:</p>
                 </div>
                 <div class="col-9 content_box">
                     <div class="col-1"></div>
@@ -1280,7 +1280,7 @@ block styles %}
             </div>
             <div class="row">
                 <div class="col-3">
-                    <p>[Device] Fan OverLoad2:</p>
+                    <p>[Device] Fan Group 2 OverLoad:</p>
                 </div>
                 <div class="col-9 content_box">
                     <div class="col-1"></div>
@@ -1621,7 +1621,7 @@ block styles %}
             </div>
             <div class="row">
                 <div class="col-3">
-                    <p>[Communication] ATS1:</p>
+                    <p>[Communication] ATS:</p>
                 </div>
                 <div class="col-9 content_box">
                     <div class="col-1"></div>
@@ -1641,7 +1641,7 @@ block styles %}
                     </div>
                 </div>
             </div>
-            <div class="row">
+            <div class="row" id="ATS2_comm_set">
                 <div class="col-3">
                     <p>[Communication] ATS2:</p>
                 </div>
@@ -3326,7 +3326,7 @@ block styles %}
         );
         jQuery(".rack_setting").attr("data-before", "Rack Enable Setting ▲");
         jQuery(".switch_version").attr("data-before", "Switch Version ▲");
-
+        $("#ATS2_comm_set").hide();
         $.ajax({
             url: "/get_data_engineerMode",
             method: "GET",

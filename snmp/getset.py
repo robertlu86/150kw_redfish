@@ -253,6 +253,10 @@ check_key_list = [
         "Rack10Error",
         "",
         "",
+        # "RackLeakage1Leak",
+        # "RackLeakage1Broken",
+        # "RackLeakage2Leak",
+        # "RackLeakage2Broken",
     ],
 ]
 
@@ -437,6 +441,10 @@ warning_alert_list = [
         "M429 Rack10 error",
         "",
         "",
+        # "M430 Rack Leakage Sensor 1 Leak",
+        # "M431 Rack Leakage Sensor 1 Broken Error",
+        # "M430 Rack Leakage Sensor 2 Leak",
+        # "M345 Rack Leakage 2 Broken Error",
     ],
 ]
 
