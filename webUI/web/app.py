@@ -3986,14 +3986,25 @@ def read_modbus_data():
                 inv1_v = inv1.registers[0] / 16000 * 100
                 inv2_v = inv2.registers[0] / 16000 * 100
                 inv3_v = inv3.registers[0] / 16000 * 100
-                fan1_v = fan1.registers[0] / 16000 * 100
-                fan2_v = fan2.registers[0] / 16000 * 100
-                fan3_v = fan3.registers[0] / 16000 * 100
-                fan4_v = fan4.registers[0] / 16000 * 100
-                fan5_v = fan5.registers[0] / 16000 * 100
-                fan6_v = fan6.registers[0] / 16000 * 100
-                fan7_v = fan7.registers[0] / 16000 * 100
-                fan8_v = fan8.registers[0] / 16000 * 100
+                
+                if ver_switch["fan_count_switch"]:
+                    fan1_v = fan1.registers[0] / 16000 * 100
+                    fan2_v = fan2.registers[0] / 16000 * 100
+                    fan3_v = fan3.registers[0] / 16000 * 100
+                    fan4_v = fan5.registers[0] / 16000 * 100
+                    fan5_v = fan6.registers[0] / 16000 * 100
+                    fan6_v = fan7.registers[0] / 16000 * 100
+
+                    
+                else:
+                    fan1_v = fan1.registers[0] / 16000 * 100
+                    fan2_v = fan2.registers[0] / 16000 * 100
+                    fan3_v = fan3.registers[0] / 16000 * 100
+                    fan4_v = fan4.registers[0] / 16000 * 100
+                    fan5_v = fan5.registers[0] / 16000 * 100
+                    fan6_v = fan6.registers[0] / 16000 * 100
+                    fan7_v = fan7.registers[0] / 16000 * 100
+                    fan8_v = fan8.registers[0] / 16000 * 100
                 # journal_logger.info(fan1_v)
                 # journal_logger.info(fan2_v)
                 # journal_logger.info(fan3_v)
@@ -4089,14 +4100,24 @@ def read_modbus_data():
                 fan = cvt_registers_to_float(r3.registers[0], r3.registers[1])
 
                 r4 = client.read_coils(address=(8192 + 850), count=8)
-                f1 = r4.bits[0]
-                f2 = r4.bits[1]
-                f3 = r4.bits[2]
-                f4 = r4.bits[3]
-                f5 = r4.bits[4]
-                f6 = r4.bits[5]
-                f7 = r4.bits[6]
-                f8 = r4.bits[7]
+                ### 將打勾選項換至4 5 6
+                if ver_switch["fan_count_switch"]:
+                    f1 = r4.bits[0]
+                    f2 = r4.bits[1]
+                    f3 = r4.bits[2]
+                    f4 = r4.bits[4]
+                    f5 = r4.bits[5]
+                    f6 = r4.bits[6]
+
+                else:
+                    f1 = r4.bits[0]
+                    f2 = r4.bits[1]
+                    f3 = r4.bits[2]
+                    f4 = r4.bits[3]
+                    f5 = r4.bits[4]
+                    f6 = r4.bits[5]
+                    f7 = r4.bits[6]
+                    f8 = r4.bits[7]
 
                 ctr_data["value"]["pump_speed"] = ps
                 ctr_data["value"]["pump1_check"] = p1
@@ -4161,7 +4182,7 @@ def read_modbus_data():
 
         if not any(v for k, v in ctr_data["inv"].items() if k.startswith("inv")):
             ctr_data["value"]["resultPS"] = 0
-  ########寫入resultFan 
+        ########寫入resultFan 
         fan_inv_addresses = {"fan1": 7020, "fan2": 7060, "fan3": 7100,"fan4":7140, "fan5":7380, "fan6":7420, "fan7":7460, "fan8":7500}
   
         for k, v in ctr_data["inv"].items():
@@ -4179,6 +4200,7 @@ def read_modbus_data():
                             fs = r.registers[0]
                             fs = fs / 16000 * 100
                             # print(f'fs:{fs}')
+                            ###如果速度小於5, 速度就為0
                             if fs < 5:
                                 fs = 0
                             ctr_data["value"]["resultFan"] = round(fs)
@@ -5160,7 +5182,13 @@ def set_operation_mode():
             mc_flag = False
 
             set_p_check([p1, p2, p3])
-            set_f_check([f1, f2, f3, f4, f5, f6, f7, f8])
+            
+            ### 將打勾選項換至4 5 6
+            if ver_switch["fan_count_switch"]:
+                set_f_check([f1, f2, f3, 0, f4, f5, f6, 0])
+            else:
+                set_f_check([f1, f2, f3, f4, f5, f6, f7, f8])
+                
             ### 如果設定值為0, 設定2% 320
             if fan == 0:
                 ### 將傳給PLC的速度設成2

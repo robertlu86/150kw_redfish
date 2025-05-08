@@ -2758,7 +2758,7 @@ def set_warning_registers(mode):
     for i in range(0, err_key_len):
         key = error_key[i]
         # print(f'warning_data["error"][Inv1_Error]{warning_data["error"]["Inv1_Error"]}')
-        # warning_data["error"][key] = False
+        warning_data["error"][key] = False
         # warning_data["error"][key] = True
         # warning_data["error"]["Inv1_Error"] =True
         # warning_data["error"]["Fan1Com_communication"] = True
@@ -3637,12 +3637,30 @@ def control():
                     mainMC = client.read_discrete_inputs(35, 1, unit=modbus_slave_id)
                     bit_input_regs["main_mc_error"] = mainMC.bits[0]
 
-                    full_input = client.read_discrete_inputs(
-                        40, 8, unit=modbus_slave_id
-                    )
-                    for i in range(8):
-                        key_list = list(bit_input_regs.keys())
-                        bit_input_regs[key_list[i + 6]] = full_input.bits[i]
+                    ### 增加fan數量判斷
+                    if ver_switch["fan_count_switch"]:
+                        ###抓取1~3
+                        full_input = client.read_discrete_inputs(
+                            40, 3, unit=modbus_slave_id
+                        )
+                        for i in range(3):
+                            key_list = list(bit_input_regs.keys())
+                            bit_input_regs[key_list[i + 6]] = full_input.bits[i]
+                        ###抓取4~6
+                        full_input_2 = client.read_discrete_inputs(
+                            44, 3, unit=modbus_slave_id
+                        )
+                        for i in range(3):
+                            key_list = list(bit_input_regs.keys())
+                            bit_input_regs[key_list[i + 9]] = full_input_2.bits[i]
+                    else:
+                    
+                        full_input = client.read_discrete_inputs(
+                            40, 8, unit=modbus_slave_id
+                        )
+                        for i in range(8):
+                            key_list = list(bit_input_regs.keys())
+                            bit_input_regs[key_list[i + 6]] = full_input.bits[i]
 
                     inv_error = client.read_discrete_inputs(0, 2, unit=modbus_slave_id)
                     bit_input_regs["Inv1_Error"] = inv_error.bits[0]
