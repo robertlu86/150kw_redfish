@@ -776,7 +776,7 @@ def Mbus_get():
             version_data = json.load(file)
             check_switch = version_data["coolant_quality_meter_switch"] # Enable = false、 Disabled = true
         
-        if cnt > 5:
+        if cnt > 14:
             try:
                 with ModbusTcpClient(
                     host=MODBUS_SERVER_IP, port=MODBUS_SERVER_PORT

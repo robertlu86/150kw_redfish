@@ -491,7 +491,7 @@ sensorData = {
             "pH_Com": "M316 pH (PH) Sensor Communication Error",
             "Cdct_Sensor_Com": "M317 Conductivity (CON) Sensor Communication Error",
             "Tbd_Com": "M318 Turbidity (Tur) Sensor Communication Error",
-            "ATS1_Com": "M319 ATS 1 Communication Error",
+            "ATS1_Com": "M319 ATS Communication Error",
             "ATS2_Com": "M320 ATS 2 Communication Error",
             "Power_Meter_Com": "M321 Power Meter Communication Error",
             "Average_Current_Com": "M322 Average Current Communication Error",
