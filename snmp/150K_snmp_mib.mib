@@ -691,14 +691,14 @@ M303 NOTIFICATION-TYPE
     SYNTAX OCTET STRING
     MAX-ACCESS read-only
     STATUS current
-    DESCRIPTION "Fan1 Inverter Overload"
+    DESCRIPTION "Fan1 Group1 Overload"
     ::= { trapsval 68 }
 
 M304 NOTIFICATION-TYPE
     SYNTAX OCTET STRING
     MAX-ACCESS read-only
     STATUS current
-    DESCRIPTION "Fan2 Inverter Overload"
+    DESCRIPTION "Fan2 Group2 Overload"
     ::= { trapsval 69 }
 
 M305 NOTIFICATION-TYPE
@@ -726,7 +726,7 @@ M308 NOTIFICATION-TYPE
     SYNTAX OCTET STRING
     MAX-ACCESS read-only
     STATUS current
-    DESCRIPTION "Factory Power Status"
+    DESCRIPTION "Primary Power Broken"
     ::= { trapsval 73 }
 
 M309 NOTIFICATION-TYPE
