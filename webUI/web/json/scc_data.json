@@ -9,8 +9,8 @@
             "Alert": false
         },
         "CoolantReturnTemperature": {
-            "Warning": true,
-            "Alert": true
+            "Warning": false,
+            "Alert": false
         },
         "CoolantReturnTemperatureSpare": {
             "Warning": false,
@@ -138,6 +138,10 @@
         "LowCoolantLevelWarning": false,
         "PC1Error": false,
         "PC2Error": false,
-        "ControlUnit": false
+        "ControlUnit": false,
+        "RackLeakage1Leak": false,
+        "RackLeakage1Broken": false,
+        "RackLeakage2Leak": false,
+        "RackLeakage2Broken": false
     }
 }

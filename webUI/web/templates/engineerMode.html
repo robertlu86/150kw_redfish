@@ -3043,7 +3043,39 @@ block styles %}
                     </select>
                 </div>
             </div>
-
+            <div class="row">
+                <div class="col-4">
+                    <p>Liquid Level 1:</p>
+                </div>
+                <div class="col-2 sideNum">
+                    <select class="form-select" id="liquid_level_1_switch">
+                        <option value="old">Disabled</option>
+                        <option value="new">Enable</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <p>Liquid Level 2:</p>
+                </div>
+                <div class="col-2 sideNum">
+                    <select class="form-select" id="liquid_level_2_switch">
+                        <option value="old">Disabled</option>
+                        <option value="new">Enable</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <p>Liquid Level 3:</p>
+                </div>
+                <div class="col-2 sideNum">
+                    <select class="form-select" id="liquid_level_3_switch">
+                        <option value="old">Disabled</option>
+                        <option value="new">Enable</option>
+                    </select>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-4"></div>
                 <div class="col-4">
@@ -4840,6 +4872,9 @@ block styles %}
             let median_switch = $("#median_switch").val();
             let coolant_quality_meter_switch = $("#coolant_quality_meter_switch").val();
             let fan_count_switch = $("#fan_count_switch").val();
+            let liquid_level_3_switch = $("#liquid_level_3_switch").val();
+            let liquid_level_2_switch = $("#liquid_level_2_switch").val();
+            let liquid_level_1_switch = $("#liquid_level_1_switch").val();
 
             if (median_switch == "old") {
                 median_switch = true;
@@ -4858,11 +4893,30 @@ block styles %}
             } else {
                 fan_count_switch = false;
             }
+            if (liquid_level_1_switch == "old") {
+                liquid_level_1_switch = true;
+            } else {
+                liquid_level_1_switch = false;
+            }
+            if (liquid_level_2_switch == "old") {
+                liquid_level_2_switch = true;
+            } else {
+                liquid_level_2_switch = false;
+            }
+            if (liquid_level_3_switch == "old") {
+                liquid_level_3_switch = true;
+            } else {
+                liquid_level_3_switch = false;
+            }
+
 
             combined_data = {
                 median_switch: median_switch,
                 coolant_quality_meter_switch: coolant_quality_meter_switch,
-                fan_count_switch: fan_count_switch
+                fan_count_switch: fan_count_switch,
+                liquid_level_1_switch: liquid_level_1_switch,
+                liquid_level_2_switch: liquid_level_2_switch, 
+                liquid_level_3_switch: liquid_level_3_switch
             };
 
             console.log(combined_data);
