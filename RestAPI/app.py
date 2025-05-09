@@ -240,7 +240,7 @@ messages = {
         "M310": ["Inverter2 Communication Error", False],
         "M311": ["Inverter3 Communication Error", False],
         "M312": ["Coolant Flow (F1) Meter Communication Error", False],
-        "M313": ["Ambient Sensor (Ta) Communication Error", False],
+        "M313": ["Ambient Sensor (Ta, RH, TDp) Communication Error", False],
         "M314": ["Relative Humidity (RH) Communication Error", False],
         "M315": ["Dew Point Temperature (TDp) Communication Error", False],
         "M316": ["pH (PH) Sensor Communication Error", False],

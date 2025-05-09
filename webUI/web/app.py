@@ -8455,31 +8455,27 @@ def read_rack_status():
                 rack_leakage1_broken = rack_leak.bits[1]
                 rack_leakage2_leak = rack_leak.bits[2]
                 rack_leakage2_broken = rack_leak.bits[3]
-                check_rack_leakage_sensor_status(
-                    "rack_leakage1_leak",
-                    rack_leakage1_leak,
-                    "Delay_rack_leakage1_leak",
-                )
-                check_rack_leakage_sensor_status(
-                    "rack_leakage1_broken",
-                    rack_leakage1_broken,
-                    "Delay_rack_leakage1_broken",
-                )
-                check_rack_leakage_sensor_status(
-                    "rack_leakage2_leak",
-                    rack_leakage2_leak,
-                    "Delay_rack_leakage2_leak",
-                )
-                check_rack_leakage_sensor_status(
-                    "rack_leakage1_broken",
-                    rack_leakage1_broken,
-                    "Delay_rack_leakage1_broken",
-                )
-                check_rack_leakage_sensor_status(
-                    "rack_leakage2_broken",
-                    rack_leakage2_broken,
-                    "Delay_rack_leakage2_broken",
-                )
+                
+            check_rack_leakage_sensor_status(
+                "rack_leakage1_leak",
+                rack_leakage1_leak,
+                "Delay_rack_leakage1_leak",
+            )
+            check_rack_leakage_sensor_status(
+                "rack_leakage1_broken",
+                rack_leakage1_broken,
+                "Delay_rack_leakage1_broken",
+            )
+            check_rack_leakage_sensor_status(
+                "rack_leakage2_leak",
+                rack_leakage2_leak,
+                "Delay_rack_leakage2_leak",
+            )
+            check_rack_leakage_sensor_status(
+                "rack_leakage2_broken",
+                rack_leakage2_broken,
+                "Delay_rack_leakage2_broken",
+            )
             for i in range(0, rack_key_len):
                 key = rack_key[i]
                 # 測試用
