@@ -3802,7 +3802,7 @@ def read_modbus_data():
                         setting_limit["control"]["oil_pressure_set_low"] = 0
                     else:
                         setting_limit["control"]["oil_temp_set_up"] = 55.0
-                        setting_limit["control"]["oil_temp_set_low"] = 35.0
+                        setting_limit["control"]["oil_temp_set_low"] = 25.0
                         setting_limit["control"]["oil_pressure_set_up"] = 750.0
                         setting_limit["control"]["oil_pressure_set_low"] = 0
                 else:
@@ -5146,7 +5146,7 @@ def set_operation_mode():
                 {
                     "status": "warning",
                     "title": "Out of Range",
-                    "message": "Temperature setting must be between\n35°C and 55°C (95°F to 131°F).",
+                    "message": "Temperature setting must be between\n25°C and 55°C (77°F to 131°F).",
                 }
             )
         word1, word2 = cvt_float_byte(temp)
