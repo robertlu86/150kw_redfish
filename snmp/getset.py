@@ -620,7 +620,7 @@ def convert_float_to_registers(float_data):
 
 
 def word_to_bool_list(words):
-    bit_lengths = [16] * 17
+    bit_lengths = [16] * 18
     all_bool_lists = []
     word_index = 0
     for bits in bit_lengths:
@@ -700,31 +700,22 @@ def trap(trap_bool_lists, check_switch):
         1 for sublist in warning_alert_list if sublist and sublist[0].startswith("M3")
     )
     m4_count = sum(
-        1
-        for sublist in warning_alert_list
-        if sublist
-        and sublist[0].startswith("M4")
-        and "Leakage Sensor" not in sublist[0]
-    )
-    
-    m4_count_with_leakage_sensor = sum(
-        1 for sublist in warning_alert_list if sublist and sublist[0].startswith("M4") and "Leakage Sensor" in sublist[0]
+        1 for sublist in warning_alert_list if sublist and sublist[0].startswith("M4")
     )
 
     level1 = m1_count
     level2 = m2_count + m1_count
     level3 = m3_count + m2_count + m1_count
     level4 = m4_count + m3_count + m2_count + m1_count
-    level5 = m4_count_with_leakage_sensor + m4_count + m3_count + m2_count + m1_count
-
-    size = m4_count_with_leakage_sensor + m4_count + m3_count + m2_count + m1_count
+    
+    size = m4_count + m3_count + m2_count + m1_count
     base_offsets = [n * 16 for n in range(size)]
 
     level1_reg = level1 * 16
     level2_reg = level2 * 16
     level3_reg = level3 * 16
     level4_reg = level4 * 16
-    level5_reg = level5 * 16
+    
 
     for i, trap_bool_list in enumerate(trap_bool_lists):
         if i < level1:
@@ -735,8 +726,7 @@ def trap(trap_bool_lists, check_switch):
             severity_level = 3
         elif level3 <= i < level4:
             severity_level = 4
-        elif level3 <= i < level5:
-            severity_level = 4    
+
         else:
             severity_level = 0
         for j, bool_value in enumerate(trap_bool_list):
@@ -744,13 +734,26 @@ def trap(trap_bool_lists, check_switch):
 
             try:
                 if bool_value:
-                    oid = base_oid + (base_offsets[i] + j + 1,)
+                    if a_name in [
+                        "RackLeakage1Leak",
+                        "RackLeakage1Broken",
+                        "RackLeakage2Leak",
+                        "RackLeakage2Broken",
+                    ]:
+                        oid = base_oid + (base_offsets[i] + j,)
+                    else:
+                        oid = base_oid + (base_offsets[i] + j + 1,)
+                    # oid = base_oid + (base_offsets[i] + j + 1,)
                     if index < level1_reg:
                         if data_details["sensor_value_data"][a_name]["Warning"]:
                             # messages(oid, warning_alert_list[i][j])
-                            if check_switch and (a_name == "pH" or a_name == "Conductivity" or a_name == "Turbidity"):
+                            if check_switch and (
+                                a_name == "pH"
+                                or a_name == "Conductivity"
+                                or a_name == "Turbidity"
+                            ):
                                 continue
-                            
+
                             send_snmp_trap(
                                 oid,
                                 SNMP_TRAP_RECEIVER_IP,
@@ -760,9 +763,13 @@ def trap(trap_bool_lists, check_switch):
                     elif level1_reg <= index < level2_reg:
                         if data_details["sensor_value_data"][a_name]["Alert"]:
                             # messages(oid, warning_alert_list[i][j])
-                            if check_switch and (a_name == "pH" or a_name == "Conductivity" or a_name == "Turbidity"):
+                            if check_switch and (
+                                a_name == "pH"
+                                or a_name == "Conductivity"
+                                or a_name == "Turbidity"
+                            ):
                                 continue
-                            
+
                             send_snmp_trap(
                                 oid,
                                 SNMP_TRAP_RECEIVER_IP,
@@ -788,17 +795,35 @@ def trap(trap_bool_lists, check_switch):
                                 value=f"{warning_alert_list[i][j]}",
                             )
                     elif level3_reg <= index < level4_reg:
-                        if data_details["devices"]["RackError"]:
-                            # messages(oid, warning_alert_list[i][j])
+                        # journal_logger.info(f"有進到rack")
+                        # journal_logger.info(a_name)
+                        # journal_logger.info(oid)
+                        # journal_logger.info(f"{warning_alert_list[i][j]}")
+                        # journal_logger.info(
+                        #     f"data_details:{data_details['devices'][a_name]}"
+                        # )
+                        if data_details["devices"][a_name] and a_name in [
+                            "RackLeakage1Leak",
+                            "RackLeakage1Broken",
+                            "RackLeakage2Leak",
+                            "RackLeakage2Broken",
+                        ]:
+                            # journal_logger.info(
+                            #     f"{a_name} {oid} {warning_alert_list[i][j]}"
+                            # )
                             send_snmp_trap(
                                 oid,
                                 SNMP_TRAP_RECEIVER_IP,
                                 severity=severity_level,
                                 value=f"{warning_alert_list[i][j]}",
                             )
-                    elif level4_reg <= index < level5_reg:
-                        if data_details["devices"][a_name]:
-                            messages(oid, warning_alert_list[i][j])
+                        elif data_details["devices"]["RackError"] and a_name not in [
+                            "RackLeakage1Leak",
+                            "RackLeakage1Broken",
+                            "RackLeakage2Leak",
+                            "RackLeakage2Broken",
+                        ]:
+                            # messages(a_name, oid, warning_alert_list[i][j])
                             send_snmp_trap(
                                 oid,
                                 SNMP_TRAP_RECEIVER_IP,
@@ -821,10 +846,14 @@ def Mbus_get():
         ) as file:
             data_details = json.load(file)
 
-        with open(f"{os.path.dirname(log_path)}/webUI/web/json/version.json", "r") as file:
+        with open(
+            f"{os.path.dirname(log_path)}/webUI/web/json/version.json", "r"
+        ) as file:
             version_data = json.load(file)
-            check_switch = version_data["coolant_quality_meter_switch"] # Enable = false、 Disabled = true
-        
+            check_switch = version_data[
+                "coolant_quality_meter_switch"
+            ]  # Enable = false、 Disabled = true
+
         if cnt > 14:
             try:
                 with ModbusTcpClient(
@@ -849,7 +878,7 @@ def Mbus_get():
                     else:
                         ats_list = ["NG", "NG"]
 
-                    trap_list = client.read_holding_registers(1700, 17)
+                    trap_list = client.read_holding_registers(1700, 18)
                     if not trap_list.isError():
                         trap_bool_lists = word_to_bool_list(trap_list.registers)
                         error_section = [
@@ -859,7 +888,7 @@ def Mbus_get():
                         trap(error_section, check_switch)
                 cnt = 0
             except Exception as e:
-                print(f"trap list error: {e}")
+                journal_logger.info(f"trap list error: {e}")
                 ###增加Plc異常發送trap
                 if data_details["devices"]["ControlUnit"]:
                     send_snmp_trap(
