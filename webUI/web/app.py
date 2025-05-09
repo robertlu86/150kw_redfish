@@ -1210,6 +1210,10 @@ time_data = {
         "rack8_error": 0,
         "rack9_error": 0,
         "rack10_error": 0,
+        "rack_leakage1_leak": 0,
+        "rack_leakage1_broken": 0,
+        "rack_leakage2_leak": 0,
+        "rack_leakage2_broken": 0,
     },
     "start": {
         "rack1_broken": 0,
@@ -1242,6 +1246,10 @@ time_data = {
         "rack8_error": 0,
         "rack9_error": 0,
         "rack10_error": 0,
+        "rack_leakage1_leak": 0,
+        "rack_leakage1_broken": 0,
+        "rack_leakage2_leak": 0,
+        "rack_leakage2_broken": 0,
     },
     "end": {
         "rack1_broken": 0,
@@ -1274,6 +1282,10 @@ time_data = {
         "rack8_error": 0,
         "rack9_error": 0,
         "rack10_error": 0,
+        "rack_leakage1_leak": 0,
+        "rack_leakage1_broken": 0,
+        "rack_leakage2_leak": 0,
+        "rack_leakage2_broken": 0,
     },
     "errorlog_start": {
         "rack1": 0,
@@ -7792,6 +7804,31 @@ def mc_setting():
 
 update_json_restore_times()
 
+def check_rack_leakage_sensor_status(rack_sensor, inputs, delay):
+    try:
+        if time_data["check"][rack_sensor]:
+            if not inputs:
+                time_data["check"][rack_sensor] = False
+                sensorData["rack"][rack_sensor] = False
+                return False
+            else:
+                time_data["end"][rack_sensor] = time.perf_counter()
+                passed_time = time_data["end"][rack_sensor] - time_data["start"][rack_sensor]
+
+                if passed_time > thrshd[delay]:
+                    sensorData["rack"][rack_sensor] = True
+                    return True
+        else:
+            if inputs:
+                time_data["start"][rack_sensor] = time.perf_counter()
+                time_data["check"][rack_sensor] = True
+            else:
+                time_data["check"][rack_sensor] = False
+                sensorData["rack"][rack_sensor] = False
+                return False
+    except Exception as e:
+        print(f"check broken error：{e}")
+
 
 def check_rack_error(rack, delay="Delay_rack_error"):
     broken = rack + "_broken"
@@ -8423,6 +8460,34 @@ def read_rack_status():
             rack_key_len = len(sensorData["rack"].keys())
             rack_reg = (rack_key_len // 16) + (1 if rack_key_len % 16 != 0 else 0)
             value_r = [0] * rack_reg
+            with ModbusTcpClient(
+                host=modbus_host, port=modbus_port) as client:
+                rack_leak = client.read_discrete_inputs(36, 4, unit=modbus_slave_id)
+                rack_leakage1_leak = rack_leak.bits[0]
+                rack_leakage1_broken = rack_leak.bits[1]
+                rack_leakage2_leak = rack_leak.bits[2]
+                rack_leakage2_broken = rack_leak.bits[3]
+                
+            check_rack_leakage_sensor_status(
+                "rack_leakage1_leak",
+                rack_leakage1_leak,
+                "Delay_rack_leakage1_leak",
+            )
+            check_rack_leakage_sensor_status(
+                "rack_leakage1_broken",
+                rack_leakage1_broken,
+                "Delay_rack_leakage1_broken",
+            )
+            check_rack_leakage_sensor_status(
+                "rack_leakage2_leak",
+                rack_leakage2_leak,
+                "Delay_rack_leakage2_leak",
+            )
+            check_rack_leakage_sensor_status(
+                "rack_leakage2_broken",
+                rack_leakage2_broken,
+                "Delay_rack_leakage2_broken",
+            )
             for i in range(0, rack_key_len):
                 key = rack_key[i]
                 # 測試用
