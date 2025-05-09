@@ -811,6 +811,14 @@ def Mbus_get():
                 cnt = 0
             except Exception as e:
                 print(f"trap list error: {e}")
+                ###增加Plc異常發送trap
+                if data_details["devices"]["ControlUnit"]:
+                    send_snmp_trap(
+                        (1, 3, 6, 1, 4, 1, 10876, 1, 1, 2, 1, 127),
+                        SNMP_TRAP_RECEIVER_IP,
+                        severity=3,
+                        value="363 PLC Communication Broken Error",
+                    )
 
         cnt += 1
         time.sleep(1)
