@@ -3636,7 +3636,7 @@ def control():
                     bit_input_regs["leakage1_leak"] = leak.bits[0]
                     bit_input_regs["leakage1_broken"] = leak.bits[1]
 
-                    rack_leak = client.read_discrete_inputs(44, 4, unit=modbus_slave_id)
+                    rack_leak = client.read_discrete_inputs(36, 4, unit=modbus_slave_id)
                     bit_input_regs["rack_leakage1_leak"] = rack_leak.bits[0]
                     bit_input_regs["rack_leakage1_broken"] = rack_leak.bits[1]
                     bit_input_regs["rack_leakage2_leak"] = rack_leak.bits[2]
