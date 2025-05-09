@@ -8413,7 +8413,11 @@ def read_rack_status():
             value_r = [0] * rack_reg
             for i in range(0, rack_key_len):
                 key = rack_key[i]
+                # 測試用
                 # sensorData["rack"]["rack_leakage1_broken"] = True
+                # sensorData["rack"]["rack_leakage1_leak"] = True
+                # sensorData["rack"]["rack_leakage2_broken"] = True
+                # sensorData["rack"]["rack_leakage2_leak"] = True
                 if sensorData["rack"][key]:
                     value_r[i // 16] |= 1 << (i % 16)
 
