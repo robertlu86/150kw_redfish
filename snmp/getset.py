@@ -216,7 +216,7 @@ check_key_list = [
         "Fan8Error",
         "LowCoolantLevelWarning",
         "ControlUnit",
-        ""
+        "",
     ],
     [
         "Rack1Broken",
@@ -251,12 +251,26 @@ check_key_list = [
         "Rack8Error",
         "Rack9Error",
         "Rack10Error",
+        "RackLeakage1Leak",
+        "RackLeakage1Broken",
+    ],
+    [
+        "RackLeakage2Leak",
+        "RackLeakage2Broken",
         "",
         "",
-        # "RackLeakage1Leak",
-        # "RackLeakage1Broken",
-        # "RackLeakage2Leak",
-        # "RackLeakage2Broken",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
     ],
 ]
 
@@ -404,7 +418,7 @@ warning_alert_list = [
         "M361 FAN 8 Alarm Status Error",
         "M362 Stop Due to Low Coolant Level",
         "M363 PLC Communication Broken Error",
-        ""
+        "",
     ],
     [
         "M400 Rack1 broken",
@@ -439,12 +453,26 @@ warning_alert_list = [
         "M427 Rack8 error",
         "M428 Rack9 error",
         "M429 Rack10 error",
+        "M430 Rack Leakage Sensor 1 Leak",
+        "M431 Rack Leakage Sensor 1 Broken",
+    ],
+    [
+        "M432 Rack Leakage Sensor 2 Leak",
+        "M433 Rack Leakage Sensor 2 Broken",
         "",
         "",
-        # "M430 Rack Leakage Sensor 1 Leak",
-        # "M431 Rack Leakage Sensor 1 Broken Error",
-        # "M430 Rack Leakage Sensor 2 Leak",
-        # "M345 Rack Leakage 2 Broken Error",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
     ],
 ]
 
@@ -672,21 +700,31 @@ def trap(trap_bool_lists, check_switch):
         1 for sublist in warning_alert_list if sublist and sublist[0].startswith("M3")
     )
     m4_count = sum(
-        1 for sublist in warning_alert_list if sublist and sublist[0].startswith("M4")
+        1
+        for sublist in warning_alert_list
+        if sublist
+        and sublist[0].startswith("M4")
+        and "Leakage Sensor" not in sublist[0]
+    )
+    
+    m4_count_with_leakage_sensor = sum(
+        1 for sublist in warning_alert_list if sublist and sublist[0].startswith("M4") and "Leakage Sensor" in sublist[0]
     )
 
     level1 = m1_count
     level2 = m2_count + m1_count
     level3 = m3_count + m2_count + m1_count
     level4 = m4_count + m3_count + m2_count + m1_count
+    level5 = m4_count_with_leakage_sensor + m4_count + m3_count + m2_count + m1_count
 
-    size = m4_count + m3_count + m2_count + m1_count
+    size = m4_count_with_leakage_sensor + m4_count + m3_count + m2_count + m1_count
     base_offsets = [n * 16 for n in range(size)]
 
     level1_reg = level1 * 16
     level2_reg = level2 * 16
     level3_reg = level3 * 16
     level4_reg = level4 * 16
+    level5_reg = level5 * 16
 
     for i, trap_bool_list in enumerate(trap_bool_lists):
         if i < level1:
@@ -697,6 +735,8 @@ def trap(trap_bool_lists, check_switch):
             severity_level = 3
         elif level3 <= i < level4:
             severity_level = 4
+        elif level3 <= i < level5:
+            severity_level = 4    
         else:
             severity_level = 0
         for j, bool_value in enumerate(trap_bool_list):
@@ -756,6 +796,15 @@ def trap(trap_bool_lists, check_switch):
                                 severity=severity_level,
                                 value=f"{warning_alert_list[i][j]}",
                             )
+                    elif level4_reg <= index < level5_reg:
+                        if data_details["devices"][a_name]:
+                            messages(oid, warning_alert_list[i][j])
+                            send_snmp_trap(
+                                oid,
+                                SNMP_TRAP_RECEIVER_IP,
+                                severity=severity_level,
+                                value=f"{warning_alert_list[i][j]}",
+                            )
                     else:
                         index = 0
             except Exception as e:
@@ -805,7 +854,7 @@ def Mbus_get():
                         trap_bool_lists = word_to_bool_list(trap_list.registers)
                         error_section = [
                             trap_bool_lists[i]
-                            for i in [0, 1, 5, 6, 8, 9, 10, 11, 15, 16]
+                            for i in [0, 1, 5, 6, 8, 9, 10, 11, 15, 16, 17]
                         ]
                         trap(error_section, check_switch)
                 cnt = 0
