@@ -361,7 +361,7 @@ warning_alert_list = [
         "M310 Inverter2 Communication Error",
         "M311 Inverter3 Communication Error",
         # "M312 Coolant Flow (F1) Meter Communication Error",
-        "M313 Ambient Sensor (Ta) Communication Error",
+        "M313 Ambient Sensor (Ta, RH, TDp) Communication Error",
         "M314 Relative Humidity (RH) Communication Error",
         "M315 Dew Point Temperature (TDp) Communication Error",
         "M316 pH (PH) Sensor Communication Error",
