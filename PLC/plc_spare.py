@@ -3654,6 +3654,7 @@ def control():
 
         if change_to_server2:
             ### 與PLC相同 開始 (要tab一次)
+        
             try:
                 restart_server["start"] = time.time()
                 server_error["start"] = time.time()
@@ -4383,30 +4384,45 @@ def control():
                             ### 等於0的話給 2 % = 320 , 以避免風扇全速轉
                             # print(f'fs:{fs}')
                             if fs > 0:
-                                set_f1(fs if word_regs["f1_check"] else 320)
-                                set_f2(fs if word_regs["f2_check"] else 320)
-                                set_f3(fs if word_regs["f3_check"] else 320)
-                                set_f4(fs if word_regs["f4_check"] else 320)
+                                # set_f1(fs if word_regs["f1_check"] else 320)
+                                # set_f2(fs if word_regs["f2_check"] else 320)
+                                # set_f3(fs if word_regs["f3_check"] else 320)
+                                # set_f4(fs if word_regs["f4_check"] else 320)
+                                set_f1(fs if word_regs["f1_check"] else 960)
+                                set_f2(fs if word_regs["f2_check"] else 960)
+                                set_f3(fs if word_regs["f3_check"] else 960)
+                                set_f4(fs if word_regs["f4_check"] else 960)
                         else:
-                            set_f1(320)
-                            set_f2(320)
-                            set_f3(320)
-                            set_f4(320)
-
+                            # set_f1(320)
+                            # set_f2(320)
+                            # set_f3(320)
+                            # set_f4(320)
+                            set_f1(960)
+                            set_f2(960)
+                            set_f3(960)
+                            set_f4(960)
                     if not flag5:
                         if word_regs["fan_speed"] > 0:
                             fs = translate_fan_speed(word_regs["fan_speed"])
                             ### 如果轉換後大於0
                             if fs > 0:
-                                set_f5(fs if word_regs["f5_check"] else 320)
-                                set_f6(fs if word_regs["f6_check"] else 320)
-                                set_f7(fs if word_regs["f7_check"] else 320)
-                                set_f8(fs if word_regs["f8_check"] else 320)
+                                # set_f5(fs if word_regs["f5_check"] else 320)
+                                # set_f6(fs if word_regs["f6_check"] else 320)
+                                # set_f7(fs if word_regs["f7_check"] else 320)
+                                # set_f8(fs if word_regs["f8_check"] else 320)
+                                set_f5(fs if word_regs["f5_check"] else 960)
+                                set_f6(fs if word_regs["f6_check"] else 960)
+                                set_f7(fs if word_regs["f7_check"] else 960)
+                                set_f8(fs if word_regs["f8_check"] else 960)
                         else:
-                            set_f5(320)
-                            set_f6(320)
-                            set_f7(320)
-                            set_f8(320)
+                            # set_f5(320)
+                            # set_f6(320)
+                            # set_f7(320)
+                            # set_f8(320)
+                            set_f5(960)
+                            set_f6(960)
+                            set_f7(960)
+                            set_f8(960)
 
                     mode_last = mode
                     change_back_mode = mode
@@ -5701,7 +5717,7 @@ def control():
                 time.sleep(1)
             except Exception as e:
                 print(f"TCP Client Error: {e}")
-                        
+                            
             ### 與PLC相同 結束
             try:
                 if restart_server["stage"] == 1:
