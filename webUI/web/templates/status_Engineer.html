@@ -946,32 +946,32 @@ styles %}
                         <td></td>
                     </tr>
 
-                    <tr>
-                                            <td class="w-12 tdCenterAlign" scope="row">
-                                                Liquid Coolant Level 1
-                                            </td>
-                                            <td id="level1" class="w-12 tdCenterAlign" scope="row"></td>
-                                            <td scope="row"></td>
-                                            <td></td>
-                                        </tr>
-                    
-                                        <tr>
-                                            <td class="w-12 tdCenterAlign" scope="row">
-                                                Liquid Coolant Level 2
-                                            </td>
-                                            <td id="level2" class="w-12 tdCenterAlign" scope="row"></td>
-                                            <td scope="row"></td>
-                                            <td></td>
-                                        </tr>
-                    
-                                        <tr>
-                                            <td class="w-12 tdCenterAlign" scope="row">
-                                                Liquid Coolant Level 3
-                                            </td>
-                                            <td id="level3" class="w-12 tdCenterAlign" scope="row"></td>
-                                            <td scope="row"></td>
-                                            <td></td>
-                                        </tr>
+                    <tr class="level1_set">
+                        <td class="w-12 tdCenterAlign" scope="row">
+                            Liquid Coolant Level 1
+                        </td>
+                        <td id="level1" class="w-12 tdCenterAlign" scope="row"></td>
+                        <td scope="row"></td>
+                        <td></td>
+                    </tr>
+
+                    <tr class="level2_set">
+                        <td class="w-12 tdCenterAlign" scope="row">
+                            Liquid Coolant Level 2
+                        </td>
+                        <td id="level2" class="w-12 tdCenterAlign" scope="row"></td>
+                        <td scope="row"></td>
+                        <td></td>
+                    </tr>
+
+                    <tr class="level3_set">
+                        <td class="w-12 tdCenterAlign" scope="row">
+                            Liquid Coolant Level 3
+                        </td>
+                        <td id="level3" class="w-12 tdCenterAlign" scope="row"></td>
+                        <td scope="row"></td>
+                        <td></td>
+                    </tr>
 
                     <tr>
                         <td class="w-12 tdCenterAlign" scope="row">
@@ -1429,29 +1429,29 @@ styles %}
 
                         if (key === broken_key) {
                             if (key === "TempClntSply_broken") {
-                                if(value && data["error"]["TempClntSplySpare_broken"] === false){
+                                if (value && data["error"]["TempClntSplySpare_broken"] === false) {
                                     spare_value = data["value"]["temp_clntSplySpare"];
                                     status_element
                                         .css("color", "red")
                                         .text("Broken Error");
                                     local_element.css("color", "red").text("-");
                                     local_element_image.css("color", "black").text(spare_value.toFixed(userType == "superuser" ? 2 : 1));
-                                }else if(value){
+                                } else if (value) {
                                     status_element
                                         .css("color", "red")
                                         .text("Broken Error");
                                     local_element.css("color", "red").text("-");
                                     local_element_image.css("color", "red").text("-");
                                 }
-                            }else if(key === "TempClntRtn_broken"){
-                                if(value && data["error"]["TempClntRtnSpare_broken"] === false){
+                            } else if (key === "TempClntRtn_broken") {
+                                if (value && data["error"]["TempClntRtnSpare_broken"] === false) {
                                     spare_value = data["value"]["temp_clntRtnSpare"];
                                     status_element
                                         .css("color", "red")
                                         .text("Broken Error");
                                     local_element.css("color", "red").text("-");
                                     local_element_image.css("color", "black").text(spare_value.toFixed(userType == "superuser" ? 2 : 1));
-                                }else if(value){
+                                } else if (value) {
                                     local_element_image.css("color", "red").text("-");
                                     status_element
                                         .css("color", "red")
@@ -1459,7 +1459,7 @@ styles %}
                                     local_element.css("color", "red").text("-");
                                 }
                             }
-                            else if(value && !(key === "TempClntSply_broken" || key === "TempClntRtn_broken")) {
+                            else if (value && !(key === "TempClntSply_broken" || key === "TempClntRtn_broken")) {
                                 status_element
                                     .css("color", "red")
                                     .text("Broken Error");
@@ -1695,7 +1695,7 @@ styles %}
                 $("#prsr_diff_image").css("color", "black").text(prsr_diff);
             }
 
-            for(let key in data["rack"]){
+            for (let key in data["rack"]) {
                 if (key.includes("rack_leakage1")) {
                     if (data["rack"]["rack_leakage1_broken"]) {
                         $("#rack_leakage1")
@@ -1885,6 +1885,21 @@ styles %}
                 $("#pH_image_set, #cdct_image_set, #tbd_image_set").show();
             }
 
+            if (ver_switch["liquid_level_1_switch"] === true) {
+                $(".level1_set").hide();
+            } else if (ver_switch["liquid_level_1_switch"] === false) {
+                $(".level1_set").show();
+            }
+            if (ver_switch["liquid_level_2_switch"] === true) {
+                $(".level2_set").hide();
+            } else if (ver_switch["liquid_level_2_switch"] === false) {
+                $(".level2_set").show();
+            }
+            if (ver_switch["liquid_level_3_switch"] === true) {
+                $(".level3_set").hide();
+            } else if (ver_switch["liquid_level_3_switch"] === false) {
+                $(".level3_set").show();
+            }
 
             ///更改首頁大圖
             if (ver_switch["coolant_quality_meter_switch"] === true && ver_switch["fan_count_switch"] === true) {
@@ -1892,7 +1907,7 @@ styles %}
             } else if (ver_switch["coolant_quality_meter_switch"] === false && ver_switch["fan_count_switch"] === true) {
                 $("#machine").attr("src", "../static/images/side_car_with_six_fan_0325.png");
             } else if (ver_switch["coolant_quality_meter_switch"] === false && ver_switch["fan_count_switch"] === false) {
-                $("#machine").attr("src", "../static/images/full_picture.jpg"); 
+                $("#machine").attr("src", "../static/images/full_picture.jpg");
             } else if (ver_switch["coolant_quality_meter_switch"] === true && ver_switch["fan_count_switch"] === false) {
                 $("#machine").attr("src", "../static/images/full_picture.jpg"); ///待新圖出來後更改
             }

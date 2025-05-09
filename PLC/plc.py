@@ -478,8 +478,12 @@ inspection_data = {
 ver_switch = {
     "median_switch": False,
     "coolant_quality_meter_switch": False,
-    "fan_count_switch": False
+    "fan_count_switch": False,
+    "liquid_level_1_switch": False,
+    "liquid_level_2_switch": False,
+    "liquid_level_3_switch": False,
 }
+
 
 measured_data_mapping = {
     9: "TempClntSply",
@@ -2449,11 +2453,22 @@ def set_warning_registers(mode):
     ###跟inst_power相同
     # check_communication("average_current", "Delay_average_current_Communication", True)
     
+    if not ver_switch["liquid_level_1_switch"]:
+        check_level("Delay_level1", "level1", True)
+    else:
+        warning_data['error']["level1"] = False
+        
+    if not ver_switch["liquid_level_2_switch"]:
+        check_level("Delay_level2", "level2", True)
+    else:
+        warning_data['error']["level2"] = False
+       
+    if not ver_switch["liquid_level_3_switch"]:
+        check_level("Delay_level3", "level3", True)
+    else:
+        warning_data['error']["level3"] = False
 
-
-    check_level("Delay_level1", "level1", True)
-    check_level("Delay_level2", "level2", True)
-    check_level("Delay_level3", "level3", True)
+    
     check_level("Delay_power24v1", "power24v1", True)
     check_level("Delay_power24v2", "power24v2", True)
 
@@ -3605,11 +3620,14 @@ def control():
 
             try:
                 with ModbusTcpClient(host=modbus_host, port=modbus_port) as client:
-                    r = client.read_coils((8192 + 800), 6)
+                    r = client.read_coils((8192 + 800), 9)
                     reset_current_btn["status"] = r.bits[0]
                     ver_switch["median_switch"] = r.bits[3]
                     ver_switch["coolant_quality_meter_switch"] = r.bits[4]
                     ver_switch["fan_count_switch"] = r.bits[5]
+                    ver_switch["liquid_level_1_switch"] = r.bits[6]
+                    ver_switch["liquid_level_2_switch"] = r.bits[7]
+                    ver_switch["liquid_level_3_switch"] = r.bits[8]
                     
                     r2 = client.read_holding_registers(900, 1)
                     inspection_data["start_btn"] = r2.registers[0]

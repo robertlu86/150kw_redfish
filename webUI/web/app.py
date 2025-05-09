@@ -1309,7 +1309,10 @@ auto_factory = {"pv1": 80, "pump": 50, "water_min": 20}
 ver_switch = {
     "median_switch": False,
     "coolant_quality_meter_switch": False,
-    "fan_count_switch": False
+    "fan_count_switch": False,
+    "liquid_level_1_switch": False,
+    "liquid_level_2_switch": False,
+    "liquid_level_3_switch": False,
 }
 
 
@@ -3696,10 +3699,13 @@ def read_modbus_data():
                 ctr_data["mc"]["fan_mc2"] = read_mc3.bits[1]
                 ctr_data["mc"]["fan_mc2_result"] = read_mc3.bits[1]
 
-                read_ver = client.read_coils((8192 + 803), 3)
+                read_ver = client.read_coils((8192 + 803), 6)
                 ver_switch["median_switch"] = read_ver.bits[0]
                 ver_switch["coolant_quality_meter_switch"] = read_ver.bits[1]
                 ver_switch["fan_count_switch"] = read_ver.bits[2]
+                ver_switch["liquid_level_1_switch"] = read_ver.bits[3]
+                ver_switch["liquid_level_2_switch"] = read_ver.bits[4]
+                ver_switch["liquid_level_3_switch"] = read_ver.bits[5]
                 
                 if not os.path.exists(f"{web_path}/json/version.json"):
                     with open(f"{web_path}/json/version.json", "w") as file:
@@ -7390,6 +7396,9 @@ def version_switch():
     median_switch = data["median_switch"]
     coolant_quality_meter_switch = data["coolant_quality_meter_switch"]
     fan_count_switch = data["fan_count_switch"]
+    liquid_level_1_switch = data["liquid_level_1_switch"]
+    liquid_level_2_switch = data["liquid_level_2_switch"]
+    liquid_level_3_switch = data["liquid_level_3_switch"]
     
     try:
         with ModbusTcpClient(
@@ -7398,6 +7407,9 @@ def version_switch():
             client.write_coils((8192 + 803), [median_switch])
             client.write_coils((8192 + 804), [coolant_quality_meter_switch])
             client.write_coils((8192 + 805), [fan_count_switch])
+            client.write_coils((8192 + 806), [liquid_level_1_switch])
+            client.write_coils((8192 + 807), [liquid_level_2_switch])
+            client.write_coils((8192 + 808), [liquid_level_3_switch])
         op_logger.info(f"Version setting updated successfully. {data}")
         return jsonify(status="success", message="Version setting updated successfully")
     except Exception as e:
