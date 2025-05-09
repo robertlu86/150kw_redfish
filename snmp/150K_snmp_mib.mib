@@ -691,14 +691,14 @@ M303 NOTIFICATION-TYPE
     SYNTAX OCTET STRING
     MAX-ACCESS read-only
     STATUS current
-    DESCRIPTION "Fan1 Group1 Overload"
+    DESCRIPTION "Fan Group1 Overload"
     ::= { trapsval 68 }
 
 M304 NOTIFICATION-TYPE
     SYNTAX OCTET STRING
     MAX-ACCESS read-only
     STATUS current
-    DESCRIPTION "Fan2 Group2 Overload"
+    DESCRIPTION "Fan Group2 Overload"
     ::= { trapsval 69 }
 
 M305 NOTIFICATION-TYPE
@@ -755,7 +755,7 @@ M313 NOTIFICATION-TYPE
     SYNTAX OCTET STRING
     MAX-ACCESS read-only
     STATUS current
-    DESCRIPTION "Ambient Sensor (Ta) Communication Error"
+    DESCRIPTION "Ambient Sensor (Ta, RH, TDp) Communication Error"
 ::= { trapsval 77 }
 
 M314 NOTIFICATION-TYPE
