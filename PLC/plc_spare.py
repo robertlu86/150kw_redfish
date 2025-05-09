@@ -478,8 +478,12 @@ inspection_data = {
 ver_switch = {
     "median_switch": False,
     "coolant_quality_meter_switch": False,
-    "fan_count_switch": False
+    "fan_count_switch": False,
+    "liquid_level_1_switch": False,
+    "liquid_level_2_switch": False,
+    "liquid_level_3_switch": False,
 }
+
 
 measured_data_mapping = {
     9: "TempClntSply",
@@ -813,6 +817,10 @@ thrshd_data = {
     "Delay_fan7_error": 0,
     "Delay_fan8_error": 0,
     "Delay_rack_error": 0,
+    "Delay_rack_leakage1_leak": 0,
+    "Delay_rack_leakage1_broken": 0,
+    "Delay_rack_leakage2_leak": 0,
+    "Delay_rack_leakage2_broken": 0,
 }
 
 rack_data = {
@@ -1010,6 +1018,10 @@ time_data = {
         "Delay_fan7_error": 0,
         "Delay_fan8_error": 0,
         "Delay_rack_error": 0,
+        "Delay_rack_leakage1_leak": 0,
+        "Delay_rack_leakage1_broken": 0,
+        "Delay_rack_leakage2_leak": 0,
+        "Delay_rack_leakage2_broken": 0,
     },
     "end": {
         "W_TempClntSply": 0,
@@ -1131,6 +1143,10 @@ time_data = {
         "Delay_fan7_error": 0,
         "Delay_fan8_error": 0,
         "Delay_rack_error": 0,
+        "Delay_rack_leakage1_leak": 0,
+        "Delay_rack_leakage1_broken": 0,
+        "Delay_rack_leakage2_leak": 0,
+        "Delay_rack_leakage2_broken": 0,
     },
     "check": {
         "W_TempClntSply": 0,
@@ -1252,6 +1268,10 @@ time_data = {
         "Delay_fan7_error": 0,
         "Delay_fan8_error": 0,
         "Delay_rack_error": 0,
+        "Delay_rack_leakage1_leak": 0,
+        "Delay_rack_leakage1_broken": 0,
+        "Delay_rack_leakage2_leak": 0,
+        "Delay_rack_leakage2_broken": 0,
     },
     "condition": {
         "low": {
@@ -2378,18 +2398,18 @@ def set_warning_registers(mode):
         check_communication("Fan2Com", "Delay_Fan2Com_Communication", True)
         check_communication("Fan3Com", "Delay_Fan3Com_Communication", True)
 
+        check_communication("Fan4Com", "Delay_Fan4Com_Communication", True)
         check_communication("Fan5Com", "Delay_Fan5Com_Communication", True)
         check_communication("Fan6Com", "Delay_Fan6Com_Communication", True)
-        check_communication("Fan7Com", "Delay_Fan7Com_Communication", True)
 
         
         check_input("Delay_fan1_error", "fan1_error", False)
         check_input("Delay_fan2_error", "fan2_error", False)
         check_input("Delay_fan3_error", "fan3_error", False)
 
+        check_input("Delay_fan4_error", "fan4_error", False)
         check_input("Delay_fan5_error", "fan5_error", False)
         check_input("Delay_fan6_error", "fan6_error", False)
-        check_input("Delay_fan7_error", "fan7_error", False)
         
         
     else:
@@ -2415,35 +2435,46 @@ def set_warning_registers(mode):
     check_communication("Inv1_Freq", "Delay_Inverter1_Communication", True)
     check_communication("Inv2_Freq", "Delay_Inverter2_Communication", True)
     check_communication("Inv3_Freq", "Delay_Inverter3_Communication", True)
+    
+    ### 跟RH TDp為同一個
     check_communication("AmbientTemp", "Delay_AmbientTemp_Communication", True)
-    check_communication("RelativeHumid", "Delay_RelativeHumid_Communication", True)
-    check_communication("DewPoint", "Delay_DewPoint_Communication", True)
+    
+    # check_communication("RelativeHumid", "Delay_RelativeHumid_Communication", True)
+    # check_communication("DewPoint", "Delay_DewPoint_Communication", True)
+    
+    ###flow_rate不再從485抓
     # check_communication("coolant_flow_rate", "Delay_Coolant_Flow_Meter_Communication")
     
     check_communication("ATS1", "Delay_ATS1_Communication", True)
-    check_communication("ATS2", "Delay_ATS2_Communication", True)
-    check_communication("inst_power", "Delay_Power_Meter_Communication", True)
-    check_communication("average_current", "Delay_average_current_Communication", True)
+    # check_communication("ATS2", "Delay_ATS2_Communication", True)
     
+    check_communication("inst_power", "Delay_Power_Meter_Communication", True)
+    
+    ###跟inst_power相同
+    # check_communication("average_current", "Delay_average_current_Communication", True)
+    
+    if not ver_switch["liquid_level_1_switch"]:
+        check_level("Delay_level1", "level1", True)
+    else:
+        warning_data['error']["level1"] = False
+        
+    if not ver_switch["liquid_level_2_switch"]:
+        check_level("Delay_level2", "level2", True)
+    else:
+        warning_data['error']["level2"] = False
+       
+    if not ver_switch["liquid_level_3_switch"]:
+        check_level("Delay_level3", "level3", True)
+    else:
+        warning_data['error']["level3"] = False
 
-    ### 先隱藏不顯示
-    check_level("Delay_level1", "level1", True)
-    check_level("Delay_level2", "level2", True)
-    check_level("Delay_level3", "level3", True)
+    
     check_level("Delay_power24v1", "power24v1", True)
     check_level("Delay_power24v2", "power24v2", True)
 
 
     check_input("Delay_leakage1_leak", "leakage1_leak", True)
     check_input("Delay_leakage1_broken", "leakage1_broken", True)
-    # check_input("Delay_fan1_error", "fan1_error", True)
-    # check_input("Delay_fan2_error", "fan2_error", True)
-    # check_input("Delay_fan3_error", "fan3_error", True)
-    # check_input("Delay_fan4_error", "fan4_error", True)
-    # check_input("Delay_fan5_error", "fan5_error", True)
-    # check_input("Delay_fan6_error", "fan6_error", True)
-    # check_input("Delay_fan7_error", "fan7_error", True)
-    # check_input("Delay_fan8_error", "fan8_error", True)
     check_input("Delay_main_mc_error", "main_mc_error", False)
     check_input("Delay_Inv1_Error", "Inv1_Error", True)
     check_input("Delay_Inv2_Error", "Inv2_Error", True)
@@ -2704,11 +2735,11 @@ def set_warning_registers(mode):
     except Exception as e:
         print(f"ATS issue:{e}")
 
-    for i in range(1, 4):
-        if not bit_output_regs[f"mc{i}"]:
-            warning_data["error"][f"Inv{i}_Freq_communication"] = True
-        else:
-            warning_data["error"][f"Inv{i}_Freq_communication"] = False
+    # for i in range(1, 4):
+    #     if not bit_output_regs[f"mc{i}"]:
+    #         warning_data["error"][f"Inv{i}_Freq_communication"] = True
+    #     else:
+    #         warning_data["error"][f"Inv{i}_Freq_communication"] = False
             
         
     warning_key = list(warning_data["warning"].keys())
@@ -2763,6 +2794,7 @@ def set_warning_registers(mode):
         # warning_data["error"]["fan7_error"] = True
         # warning_data["error"]["pc1_error"] = True
         # warning_data["error"]["pc2_error"] = True
+        # warning_data["error"]["level1"] = False
         
         # warning_data["error"]["Fan_OverLoad1"] = True
         # warning_data["error"]["Fan_OverLoad2"] = True
@@ -3622,7 +3654,6 @@ def control():
 
         if change_to_server2:
             ### 與PLC相同 開始 (要tab一次)
-        
             try:
                 restart_server["start"] = time.time()
                 server_error["start"] = time.time()
@@ -3657,11 +3688,14 @@ def control():
 
                 try:
                     with ModbusTcpClient(host=modbus_host, port=modbus_port) as client:
-                        r = client.read_coils((8192 + 800), 6)
+                        r = client.read_coils((8192 + 800), 9)
                         reset_current_btn["status"] = r.bits[0]
                         ver_switch["median_switch"] = r.bits[3]
                         ver_switch["coolant_quality_meter_switch"] = r.bits[4]
                         ver_switch["fan_count_switch"] = r.bits[5]
+                        ver_switch["liquid_level_1_switch"] = r.bits[6]
+                        ver_switch["liquid_level_2_switch"] = r.bits[7]
+                        ver_switch["liquid_level_3_switch"] = r.bits[8]
                         
                         r2 = client.read_holding_registers(900, 1)
                         inspection_data["start_btn"] = r2.registers[0]
@@ -3679,16 +3713,34 @@ def control():
                         leak = client.read_discrete_inputs(2, 2, unit=modbus_slave_id)
                         bit_input_regs["leakage1_leak"] = leak.bits[0]
                         bit_input_regs["leakage1_broken"] = leak.bits[1]
-
+                        
                         mainMC = client.read_discrete_inputs(35, 1, unit=modbus_slave_id)
                         bit_input_regs["main_mc_error"] = mainMC.bits[0]
 
-                        full_input = client.read_discrete_inputs(
-                            40, 8, unit=modbus_slave_id
-                        )
-                        for i in range(8):
-                            key_list = list(bit_input_regs.keys())
-                            bit_input_regs[key_list[i + 6]] = full_input.bits[i]
+                        ### 增加fan數量判斷
+                        if ver_switch["fan_count_switch"]:
+                            ###抓取1~3
+                            full_input = client.read_discrete_inputs(
+                                40, 3, unit=modbus_slave_id
+                            )
+                            for i in range(3):
+                                key_list = list(bit_input_regs.keys())
+                                bit_input_regs[key_list[i + 6]] = full_input.bits[i]
+                            ###抓取4~6
+                            full_input_2 = client.read_discrete_inputs(
+                                44, 3, unit=modbus_slave_id
+                            )
+                            for i in range(3):
+                                key_list = list(bit_input_regs.keys())
+                                bit_input_regs[key_list[i + 9]] = full_input_2.bits[i]
+                        else:
+                        
+                            full_input = client.read_discrete_inputs(
+                                40, 8, unit=modbus_slave_id
+                            )
+                            for i in range(8):
+                                key_list = list(bit_input_regs.keys())
+                                bit_input_regs[key_list[i + 6]] = full_input.bits[i]
 
                         inv_error = client.read_discrete_inputs(0, 2, unit=modbus_slave_id)
                         bit_input_regs["Inv1_Error"] = inv_error.bits[0]
@@ -4085,24 +4137,46 @@ def control():
                                 
                         # bit_output_regs["mc_fan1"] = True
                         # print(f'bit_output_regs["mc_fan1"]:{bit_output_regs["mc_fan1"]}')
-                        for i in range(1, 5):
-                            key = f"fan_freq{i}"
-                            all_sensors_dict[key] = (
-                                ##轉速100%, RPM為4150
-                                ### 將RPM 轉為 %
-                                serial_sensor_value[key] / 4150 * 100
-                                )
-                            if not bit_output_regs["mc_fan1"]:
-                                all_sensors_dict[key] = 0
-                        for i in range(5, 9):
-                            key = f"fan_freq{i}"
-                            all_sensors_dict[key] = (
-                                ##轉速100%, RPM為4150
-                                ### 將RPM 轉為 %
-                                serial_sensor_value[key] / 4150 * 100
-                                )
-                            if not bit_output_regs["mc_fan2"]:
-                                all_sensors_dict[key] = 0
+                        
+                        ###增加fan_count判斷###
+                        if ver_switch["fan_count_switch"]:
+                            for i in range(1, 4):
+                                key = f"fan_freq{i}"
+                                all_sensors_dict[key] = (
+                                    ##轉速100%, RPM為4150
+                                    ### 將RPM 轉為 %
+                                    serial_sensor_value[key] / 4150 * 100
+                                    )
+                                if not bit_output_regs["mc_fan1"]:
+                                    all_sensors_dict[key] = 0
+                            for i in range(4, 7):
+                                key = f"fan_freq{i}"
+                                all_sensors_dict[key] = (
+                                    ##轉速100%, RPM為4150
+                                    ### 將RPM 轉為 %
+                                    serial_sensor_value[key] / 4150 * 100
+                                    )
+                                if not bit_output_regs["mc_fan2"]:
+                                    all_sensors_dict[key] = 0
+                        else:
+                            for i in range(1, 5):
+                                key = f"fan_freq{i}"
+                                all_sensors_dict[key] = (
+                                    ##轉速100%, RPM為4150
+                                    ### 將RPM 轉為 %
+                                    serial_sensor_value[key] / 4150 * 100
+                                    )
+                                if not bit_output_regs["mc_fan1"]:
+                                    all_sensors_dict[key] = 0
+                            for i in range(5, 9):
+                                key = f"fan_freq{i}"
+                                all_sensors_dict[key] = (
+                                    ##轉速100%, RPM為4150
+                                    ### 將RPM 轉為 %
+                                    serial_sensor_value[key] / 4150 * 100
+                                    )
+                                if not bit_output_regs["mc_fan2"]:
+                                    all_sensors_dict[key] = 0                   
                                 
 
                         r = (
@@ -5627,7 +5701,7 @@ def control():
                 time.sleep(1)
             except Exception as e:
                 print(f"TCP Client Error: {e}")
-                
+                        
             ### 與PLC相同 結束
             try:
                 if restart_server["stage"] == 1:
@@ -5819,20 +5893,35 @@ def rtu_thread():
 
                         time.sleep(duration)
 
-                    fan_units = [16, 17, 18, 19, 12, 13, 14, 15]
-                    # fan_units = [13, 14, 12, 19, 18, 16, 17, 15]
+                    fan_units = [12, 13, 14, 15, 16, 17, 18, 19]
+                    # fan_units_6 = [16, 17, 18, 12, 13, 14]
+                    fan_units_6 = [12, 13, 14, 16, 17, 18]
+                    
 
-                    for i, unit in enumerate(fan_units, start=1):
-                        try:
-                            r = client.read_input_registers(53293, 1, unit=unit)
-                            ###fan speed freq
-                            raw_485_data[f"Fan{i}Com"] = r.registers[0]
-                            raw_485_comm[f"Fan{i}Com"] = False
-                        except Exception as e:
-                            raw_485_comm[f"Fan{i}Com"] = True
-                            print(f"Fan {i} error: {e}")
+                    if ver_switch["fan_count_switch"]:
+                        for i, unit in enumerate(fan_units_6, start=1):
+                            try:
+                                r = client.read_input_registers(53293, 1, unit=unit)
+                                ###fan speed freq
+                                raw_485_data[f"Fan{i}Com"] = r.registers[0]
+                                raw_485_comm[f"Fan{i}Com"] = False
+                            except Exception as e:
+                                raw_485_comm[f"Fan{i}Com"] = True
+                                print(f"Fan {i} error: {e}")
 
-                        time.sleep(duration)
+                            time.sleep(duration)
+                    else:
+                        for i, unit in enumerate(fan_units, start=1):
+                            try:
+                                r = client.read_input_registers(53293, 1, unit=unit)
+                                ###fan speed freq
+                                raw_485_data[f"Fan{i}Com"] = r.registers[0]
+                                raw_485_comm[f"Fan{i}Com"] = False
+                            except Exception as e:
+                                raw_485_comm[f"Fan{i}Com"] = True
+                                print(f"Fan {i} error: {e}")
+
+                            time.sleep(duration)      
 
                     # try:
                     #     r = client.read_discrete_inputs(6, 9, unit=10)
@@ -5871,7 +5960,7 @@ def rtu_thread():
                                         
                     except Exception as e:
                         raw_485_comm["ATS1"] = True
-                        raw_485_comm["ATS2"] = True
+                        # raw_485_comm["ATS2"] = True
                         print(f"ATS error: {e}")
 
                     time.sleep(duration)
@@ -5880,7 +5969,7 @@ def rtu_thread():
                     # journal_logger.info(f"485 通訊：{raw_485_comm}")
                 except Exception as e:
                     print(f"enclosed: {e}")
-                    
+                            
             ### 與PLC相同 結束
 
     except Exception as e:

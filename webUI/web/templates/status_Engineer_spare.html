@@ -21,6 +21,7 @@ styles %}
         top: -1em;
     }
 
+    .rackStatus,
     .cduStatus,
     .pumpValve,
     .fanValve,
@@ -42,6 +43,7 @@ styles %}
         position: relative;
     }
 
+    .rackStatus::before,
     .cduStatus::before,
     .pumpValve::before,
     .evStatus::before,
@@ -944,7 +946,7 @@ styles %}
                         <td></td>
                     </tr>
 
-                    <tr>
+                    <tr class="level1_set">
                         <td class="w-12 tdCenterAlign" scope="row">
                             Liquid Coolant Level 1
                         </td>
@@ -953,7 +955,7 @@ styles %}
                         <td></td>
                     </tr>
 
-                    <tr>
+                    <tr class="level2_set">
                         <td class="w-12 tdCenterAlign" scope="row">
                             Liquid Coolant Level 2
                         </td>
@@ -962,7 +964,7 @@ styles %}
                         <td></td>
                     </tr>
 
-                    <tr>
+                    <tr class="level3_set">
                         <td class="w-12 tdCenterAlign" scope="row">
                             Liquid Coolant Level 3
                         </td>
@@ -1031,6 +1033,39 @@ styles %}
         </div>
     </div>
 
+    <div class="rackStatus title" data-label="Rack Status">
+        <div class="data-before-trigger"></div>
+        <div class="content">
+            <table class="table table-hover">
+                <thead>
+                    <tr class="row_sticky">
+                        <th class="col-4 tdCenterAlign" scope="col">Sensor</th>
+                        <th class="col-3 tdCenterAlign">Status</th>
+                        <th class="col-3"></th>
+                        <th class="col-2"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="w-12 tdCenterAlign" scope="row">
+                            Leakage Sensor 1
+                        </td>
+                        <td id="rack_leakage1" class="w-12 tdCenterAlign" scope="row"></td>
+                        <td scope="row"></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="w-12 tdCenterAlign" scope="row">
+                            Leakage Sensor 2
+                        </td>
+                        <td id="rack_leakage2" class="w-12 tdCenterAlign" scope="row"></td>
+                        <td scope="row"></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
 
     <div class="rack_setting hidden title" data-label="Rack Information">
@@ -1151,6 +1186,7 @@ styles %}
         jQuery(".fanValve").attr("data-before", "Fan Information ▼");
         jQuery(".mcInfo").attr("data-before", "Magnetic Contactor Information ▼");
         jQuery(".deviceStatus").attr("data-before", "Device Status ▼");
+        jQuery(".rackStatus").attr("data-before", "Rack Status ▼");
         jQuery(".sensor").attr("data-before", "Sensor Value ▼");
         jQuery(".rack_setting").attr("data-before", "Rack Information ▼");
 
@@ -1532,8 +1568,6 @@ styles %}
                                     status_element
                                         .css("color", "red")
                                         .text("Fan Error");
-                                    local_element.css("color", "red").text("-");
-                                    local_element_image.css("color", "red").text("-");
                                 } else {
                                     status_element
                                         .css("color", "red")
@@ -1659,6 +1693,38 @@ styles %}
             } else {
                 $("#prsr_diff").css("color", "black").text(prsr_diff);
                 $("#prsr_diff_image").css("color", "black").text(prsr_diff);
+            }
+
+            for (let key in data["rack"]) {
+                if (key.includes("rack_leakage1")) {
+                    if (data["rack"]["rack_leakage1_broken"]) {
+                        $("#rack_leakage1")
+                            .css("color", "red")
+                            .text("Broken");
+                    } else if (
+                        !data["rack"]["rack_leakage1_broken"] &&
+                        data["rack"]["rack_leakage1_leak"]
+                    ) {
+                        $("#rack_leakage1").css("color", "red").text("Leak");
+                    } else {
+                        $("#rack_leakage1").css("color", "black").text("Valid");
+                    }
+                }
+
+                if (key.includes("rack_leakage2")) {
+                    if (data["rack"]["rack_leakage2_broken"]) {
+                        $("#rack_leakage2")
+                            .css("color", "red")
+                            .text("Broken");
+                    } else if (
+                        !data["rack"]["rack_leakage2_broken"] &&
+                        data["rack"]["rack_leakage2_leak"]
+                    ) {
+                        $("#rack_leakage2").css("color", "red").text("Leak");
+                    } else {
+                        $("#rack_leakage2").css("color", "black").text("Valid");
+                    }
+                }
             }
 
             for (let key in data["rack_status"]) {
@@ -1819,6 +1885,21 @@ styles %}
                 $("#pH_image_set, #cdct_image_set, #tbd_image_set").show();
             }
 
+            if (ver_switch["liquid_level_1_switch"] === true) {
+                $(".level1_set").hide();
+            } else if (ver_switch["liquid_level_1_switch"] === false) {
+                $(".level1_set").show();
+            }
+            if (ver_switch["liquid_level_2_switch"] === true) {
+                $(".level2_set").hide();
+            } else if (ver_switch["liquid_level_2_switch"] === false) {
+                $(".level2_set").show();
+            }
+            if (ver_switch["liquid_level_3_switch"] === true) {
+                $(".level3_set").hide();
+            } else if (ver_switch["liquid_level_3_switch"] === false) {
+                $(".level3_set").show();
+            }
 
             ///更改首頁大圖
             if (ver_switch["coolant_quality_meter_switch"] === true && ver_switch["fan_count_switch"] === true) {
