@@ -7824,22 +7824,18 @@ def check_rack_leakage_sensor_status(rack_sensor, inputs, delay):
             if not inputs:
                 time_data["check"][rack_sensor] = False
                 sensorData["rack"][rack_sensor] = False
-                return False
             else:
                 time_data["end"][rack_sensor] = time.perf_counter()
                 passed_time = time_data["end"][rack_sensor] - time_data["start"][rack_sensor]
 
                 if passed_time > thrshd[delay]:
                     sensorData["rack"][rack_sensor] = True
-                    return True
         else:
             if inputs:
                 time_data["start"][rack_sensor] = time.perf_counter()
                 time_data["check"][rack_sensor] = True
             else:
-                time_data["check"][rack_sensor] = False
                 sensorData["rack"][rack_sensor] = False
-                return False
     except Exception as e:
         print(f"check broken error：{e}")
 
