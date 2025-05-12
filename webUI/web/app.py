@@ -4229,8 +4229,8 @@ def read_modbus_data():
                             fs = r.registers[0]
                             fs = fs / 16000 * 100
                             # print(f'fs:{fs}')
-                            ###如果速度小於5, 速度就為0
-                            if fs < 5:
+                            ###如果速度小於7, 速度就為0
+                            if fs < 7:
                                 fs = 0
                             ctr_data["value"]["resultFan"] = round(fs)
                             break

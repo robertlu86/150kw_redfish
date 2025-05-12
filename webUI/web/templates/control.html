@@ -1273,7 +1273,18 @@ styles %}
                                     if (key.includes("pressure")) {
                                         value = Math.round(value * 10) / 10;
                                         element.value = value;
-                                    } else {
+                                    /// 增加fan speed 判斷, 設定小於7 會出現0
+                                    } else if (key.includes("fan_speed")) {
+                                        if (value < 7) {
+                                            value = 0
+                                            element.value = value;
+                                        } else {
+                                            value = Math.round(value);
+                                            element.value = value;
+                                        }
+                                    }
+
+                                    else {
                                         if (element) {
                                             value = Math.round(value);
                                             element.value = value;
@@ -1402,7 +1413,7 @@ styles %}
             }
             const currentVersion = window.sharedData.version;
             // console.log(`currentVersion["fan_count_switch"]:${currentVersion["fan_count_switch"]}`);
-            
+
 
             if (currentVersion["fan_count_switch"]) {
                 if (data["mc"][`fan_mc1`]) {
@@ -1461,6 +1472,7 @@ styles %}
                             } else {
                                 if (element) {
                                     value = Math.round(value);
+                                    // console.log(`key:${key}, value:${value}`);
                                     element.innerHTML = value;
                                 }
                             }
