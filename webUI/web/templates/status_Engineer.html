@@ -1604,20 +1604,39 @@ styles %}
                         }
                     }
 
-                    if (data["error"]["Fan_OverLoad1"]) {
-                        for (i = 1; i < 5; i++) {
-                            $(`#fan_freq${i}_status`).css("color", "red").text("Overload");
-                            $(`#fan_freq${i}`).css("color", "red").text("-");
-                            $(`#fan_freq${i}_image`).css("color", "red").text("-");
+                    const currentVersion = window.sharedData.version;
+                    if(currentVersion["fan_count_switch"] === false) {
+                        if (data["error"]["Fan_OverLoad1"]) {
+                            for (i = 1; i < 5; i++) {
+                                $(`#fan_freq${i}_status`).css("color", "red").text("Overload");
+                                $(`#fan_freq${i}`).css("color", "red").text("-");
+                                $(`#fan_freq${i}_image`).css("color", "red").text("-");
+                            }
+                        }
+                        if (data["error"]["Fan_OverLoad2"]) {
+                            for (i = 5; i < 9; i++) {
+                                $(`#fan_freq${i}_status`).css("color", "red").text("Overload");
+                                $(`#fan_freq${i}`).css("color", "red").text("-");
+                                $(`#fan_freq${i}_image`).css("color", "red").text("-");
+                            }
+                        }
+                    }else{
+                        if (data["error"]["Fan_OverLoad1"]) {
+                            for (i = 1; i < 4; i++) {
+                                $(`#fan_freq${i}_status`).css("color", "red").text("Overload");
+                                $(`#fan_freq${i}`).css("color", "red").text("-");
+                                $(`#fan_freq${i}_image`).css("color", "red").text("-");
+                            }
+                        }
+                        if (data["error"]["Fan_OverLoad2"]) {
+                            for (i = 4; i < 7; i++) {
+                                $(`#fan_freq${i}_status`).css("color", "red").text("Overload");
+                                $(`#fan_freq${i}`).css("color", "red").text("-");
+                                $(`#fan_freq${i}_image`).css("color", "red").text("-");
+                            }
                         }
                     }
-                    if (data["error"]["Fan_OverLoad2"]) {
-                        for (i = 5; i < 9; i++) {
-                            $(`#fan_freq${i}_status`).css("color", "red").text("Overload");
-                            $(`#fan_freq${i}`).css("color", "red").text("-");
-                            $(`#fan_freq${i}_image`).css("color", "red").text("-");
-                        }
-                    }
+                    
 
                 }
             }
