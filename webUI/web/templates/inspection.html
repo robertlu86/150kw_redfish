@@ -310,7 +310,7 @@
                             <td class="w16 tdCenterAlign" id="fan3_speed_measure"></td>
                             <td class="w16 tdCenterAlign">%</td>
                         </tr>
-                        <tr class="Fan8_version">
+                        <tr>
                             <td class="w20 tdCenterAlign">Fan4</td>
                             <td class="w16 tdCenterAlign" id="fan4_speed_status">
                                 *
@@ -354,7 +354,7 @@
                             <td class="w16 tdCenterAlign" id="fan6_speed_measure"></td>
                             <td class="w16 tdCenterAlign">%</td>
                         </tr>
-                        <tr>
+                        <tr class="Fan8_version">
                             <td class="w20 tdCenterAlign Fan7_name">Fan7</td>
                             <td class="w16 tdCenterAlign" id="fan7_speed_status">
                                 *
@@ -828,7 +828,7 @@
                             <td class="w16 tdCenterAlign"></td>
                             <td class="w16 tdCenterAlign"></td>
                         </tr>
-                        <tr class="Fan8_version Fan_com">
+                        <tr class="Fan_com">
                             <td class="w20 tdCenterAlign">Fan4</td>
                             <td class="w16 tdCenterAlign" id="Fan4Com_com_status">
                                 *
@@ -864,7 +864,7 @@
                             <td class="w16 tdCenterAlign"></td>
                             <td class="w16 tdCenterAlign"></td>
                         </tr>
-                        <tr class="Fan_com">
+                        <tr class="Fan8_version Fan_com">
                             <td class="w20 tdCenterAlign Fan7_name">Fan7</td>
                             <td class="w16 tdCenterAlign" id="Fan7Com_com_status">
                                 *
@@ -949,7 +949,7 @@
     
     
                         <tr>
-                            <td class="w20 tdCenterAlign" id="Fan_group1">Fan1-4 MC</td>
+                            <td class="w20 tdCenterAlign" id="Fan_group1">Fan Group1 MC</td>
                             <td class="w16 tdCenterAlign" id="Fan_OverLoad1_status">
                                 *
                             </td>
@@ -962,7 +962,7 @@
                         </tr>
     
                         <tr>
-                            <td class="w20 tdCenterAlign" id="Fan_group2">Fan5-8 MC</td>
+                            <td class="w20 tdCenterAlign" id="Fan_group2">Fan Group2 MC</td>
                             <td class="w16 tdCenterAlign" id="Fan_OverLoad2_status">
                                 *
                             </td>
@@ -1071,7 +1071,7 @@
                             <td class="w16 tdCenterAlign"></td>
                             <td class="w16 tdCenterAlign"></td>
                         </tr>
-                        <tr class="Fan8_version">
+                        <tr>
                             <td class="w20 tdCenterAlign">Fan4</td>
                             <td class="w16 tdCenterAlign" id="fan4_error_status">
                                 *
@@ -1109,7 +1109,7 @@
                             <td class="w16 tdCenterAlign"></td>
                         </tr>
     
-                        <tr>
+                        <tr class="Fan8_version">
                             <td class="w20 tdCenterAlign Fan7_name">Fan7</td>
                             <td class="w16 tdCenterAlign" id="fan7_error_status">
                                 *
@@ -1380,18 +1380,8 @@
                 if (ver_switch["fan_count_switch"] === true) {
                     $(".Fan_com").show();
                     $(".Fan8_version").hide();
-                    $(".Fan5_name").text("Fan4");
-                    $(".Fan6_name").text("Fan5");
-                    $(".Fan7_name").text("Fan6");
-                    $("#Fan_group1").text("Fan1-3 MC");
-                    $("#Fan_group2").text("Fan4-6 MC");
                 } else {
                     $(".Fan_com").hide();
-                    $(".Fan5_name").text("Fan5");
-                    $(".Fan6_name").text("Fan5");
-                    $(".Fan7_name").text("Fan7");
-                    $("#Fan_group1").text("Fan1-4 MC");
-                    $("#Fan_group2").text("Fan5-8 MC");
                 }
                 if (ver_switch["coolant_quality_meter_switch"] === true) {
                     $(".no_coolant_quality_meter_switch").hide();
