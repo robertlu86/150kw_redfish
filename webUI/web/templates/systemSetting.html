@@ -742,11 +742,32 @@ block styles %}
                             console.log(response);
                             Swal.fire({
                                 title: "Success",
-                                text: "Please log in again.",
+                                text: "Please reboot PC again.",
                                 icon: "success",
                                 confirmButtonText: "OK",
                             }).then(() => {
-                                window.location.href = "/";
+                                $.ajax({
+                                    url: "/reboot",
+                                    method: "GET",
+                                    success: function (response) {
+                                        console.log("電腦已關閉");
+                                        Swal.fire({
+                                            title: "Success",
+                                            text: response,
+                                            icon: "success",
+                                            confirmButtonText: "OK",
+                                        });
+                                    },
+                                    error: function (xhr, statusText) {
+                                        console.log("Error:", statusText);
+                                        // Swal.fire({
+                                        //     title: "Error",
+                                        //     text: "Reboot failed. Please try again.",
+                                        //     icon: "error",
+                                        //     confirmButtonText: "OK",
+                                        // });
+                                    },
+                                });
                             });
                         },
                         error: function (xhr, status, error) {
@@ -812,22 +833,41 @@ block styles %}
                         success: function (response) {
                             Swal.fire({
                                 title: "Success",
-                                text: "Please log in again.",
+                                text: "Please reboot PC .",
                                 icon: "success",
                                 confirmButtonText: "OK",
                             }).then(() => {
-                                window.location.href = "/";
+                                $.ajax({
+                                    url: "/reboot",
+                                    method: "GET",
+                                    success: function (response) {
+                                        console.log("電腦已關閉");
+                                        Swal.fire({
+                                            title: "Success",
+                                            text: response,
+                                            icon: "success",
+                                            confirmButtonText: "OK",
+                                        });
+                                    },
+                                    error: function (xhr, statusText) {
+                                        console.log("Error:", statusText);
+                                        // Swal.fire({
+                                        //     title: "Error",
+                                        //     text: "Reboot failed. Please try again.",
+                                        //     icon: "error",
+                                        //     confirmButtonText: "OK",
+                                        // });
+                                    },
+                                });
                             });
                         },
                         error: function (xhr, status, error) {
                             Swal.fire({
-                                title: "warning",
-                                text: "Please log in again.",
-                                icon: "warning",
+                                title: "Error",
+                                text: "Please check NTP server connection .",
+                                icon: "error",
                                 confirmButtonText: "OK",
-                            }).then(() => {
-                                window.location.href = "/";
-                            });
+                            })
                         },
                     });
                 } else {
