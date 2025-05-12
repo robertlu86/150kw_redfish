@@ -2327,6 +2327,242 @@ class UploadZipFile(Resource):
             print(f"An error occurred: {e}")         
         return {"message": "Upload Completed, Please Restart PC", "results": upload_results}, 200
 
+# 0507新增
+sensor_mapping_output = {
+    "temp_clntSply": "temp_coolant_supply",
+    "temp_clntSplySpare": " temp_coolant_supply_spare",
+    "temp_clntRtn": "temp_coolant_return",
+    "temp_clntRtnSpare": "temp_coolant_return_spare",
+    "prsr_clntSply": "pressure_coolant_supply",
+    "prsr_clntSplySpare": "pressure_coolant_supply_spare",
+    "prsr_clntRtn": "pressure_coolant_return",
+    "prsr_clntRtnSpare": "pressure_coolant_return_spare",
+    "prsr_fltIn": "pressure_filter_in",
+    "prsr_fltOut": "pressure_filter_out",
+    "clnt_flow": "coolant_flow_rate",
+    "ambient_temp": "temperature_ambient",
+    "relative_humid": "humidity_relative",
+    "dew_point": "temperature_dew_point",
+    "pH": "ph_level",
+    "cdct": "conductivity",
+    "tbd": "turbidity",
+    "power": "power_total",
+    "AC": "cooling_capacity",
+    "heat_capacity": "heat_capacity",
+    "power24v1": "power24v1",
+    "power24v2": "power24v2",
+    "power12v1": "power12v1",
+    "power12v2": "power12v2"
+}
+def fan_health_judge(i, sensor):
+    # fan health
+    health = "OK"
+    if sensor["error"][f"Fan{i}_Com"]:
+        health = "Warning"
+    if sensor["error"][f"fan{i}_error"]:
+        health = "Critical"
+    return health    
+
+def fan_state_judge(i, sensor):
+    # fan state
+    if sensor["error"][f"fan{i}_error"] or sensor["error"][f"Fan{i}_Com"]:
+        state = "Absent"
+    elif sensor["value"][f"fan_freq{i}"]:
+        state = "Enabled"
+    else:
+        state = "Disabled"    
+    return state  
+
+sensor_mapping_broken = {
+    "temp_clntSply": "TempClntSply_broken",
+    "temp_clntSplySpare": " TempClntSplySpare_broken",
+    "temp_clntRtn": "TempClntRtn_broken",
+    "temp_clntRtnSpare": "TempClntRtnSpare_broken",
+    "prsr_clntSply": "PrsrClntSply_broken",
+    "prsr_clntSplySpare": "PrsrClntSplySpare_broken",
+    "prsr_clntRtn": "PrsrClntRtn_broken",
+    "prsr_clntRtnSpare": "PrsrClntRtnSpare_broken",
+    "prsr_fltIn": "PrsrFltIn_broken",
+    "prsr_fltOut": "PrsrFltOut_broken",
+    "clnt_flow": "Clnt_Flow_broken",
+    "power24v1": "power24v1",
+    "power24v2": "power24v2",
+    "power12v1": "power12v1",
+    "power12v2": "power12v2"
+    # "AC": "cooling_capacity", # 沒有error
+    # "heat_capacity": "heat_capacity", # 沒有error
+}
+sensor_mapping_com = {
+    "ambient_temp": "Ambient_Temp_Com",
+    "relative_humid": "Relative_Humid_Com",
+    "dew_point": "Dew_Point_Com",
+    "pH": "pH_Com",
+    "cdct": "Cdct_Sensor_Com",
+    "tbd": "Tbd_Com",
+    "power": "Power_Meter_Com",
+}
+dis_reading = {
+    "power24v1",
+    "power24v2",
+    "power12v1",
+    "power12v2"
+}
+def state_judge(key, sensor, value):
+    # all sensor state
+    com_key   = sensor_mapping_com.get(key)
+    broken_key = sensor_mapping_broken.get(key)
+    
+    if sensor["error"].get(com_key) or sensor["error"].get(broken_key):
+        state = "Absent"
+    elif value:
+        state = "Enabled"
+    else:
+        state = "Disabled"    
+    return state
+
+def health_judge(key, sensor):
+    # all sensor health
+    com_key   = sensor_mapping_com.get(key)
+    broken_key = sensor_mapping_broken.get(key)
+
+    health = "OK"
+    if com_key and sensor["error"].get(com_key):
+        health = "Warning"
+    if broken_key and sensor["error"].get(broken_key):
+        health = "Critical"  
+    return health
+
+@default_ns.route("/cdu/components/chassis/summary")
+class SensorsSummary(Resource):
+    '''
+    fan_count_switch true是6個風扇 false是8個風扇
+    state: Enabled(啟用) Disabled(未啟用) Absent(斷線、壞掉)
+    health: OK(正常) Warning(斷線) Critical(壞掉)
+    reading: 風扇轉速
+    '''
+    @default_ns.doc("get_sensor_summary")
+    def get(self):
+        with open(f"{json_path}/version.json", "r") as file:
+            version_josn = json.load(file)
+        # 判斷幾顆風扇
+        fan_count_switch = version_josn["fan_count_switch"]
+        rep = {}
+        try:
+            sensor_data = read_sensor_data()
+            sensor_value = sensor_data["value"]
+            FAN_COUNT = 6 if version_josn["fan_count_switch"] else 8
+
+            # 動態寫入 fan 數量
+            for i in range(1, FAN_COUNT + 1):
+                fan_key = f"fan{i}"
+                # fan 數量判斷取值
+                if fan_count_switch == True and i >= 4:
+                    s = i + 1
+                else:
+                    s = i    
+                fan_speed = sensor_value[f"fan_freq{s}"]    
+                rep[fan_key] = {
+                    "status": {
+                        "state":  fan_state_judge(s, sensor_data) ,
+                        "health": fan_health_judge(s, sensor_data),
+                    }, 
+                    # hardware{}
+                    "reading": fan_speed, 
+                    "ServiceHours": 100,
+                    "ServiceDate": 100,
+                    "HardWareInfo":{}
+                }
+            # 加入其他sensor
+            for key, value in sensor_mapping_output.items():
+                sensor_value_get = sensor_value.get(key)
+                if sensor_value_get != None:
+                    sensor_reading = round(sensor_value_get, 2) if key != "clnt_flow" else round(sensor_value_get)
+                # if key in dis_reading: sensor_reading = None
+                if key not in rep:
+                    rep[value] = {
+                        "status": {
+                            "state": state_judge(key, sensor_data, sensor_reading),
+                            "health": health_judge(key, sensor_data),
+                        },
+                        "reading": sensor_reading,
+                        "ServiceHours": 100,
+                        "ServiceDate": 100,
+                        "HardWareInfo":{}
+                    }
+            
+        except Exception as e:
+            print(f"get sensors data error:{e}")
+            return plc_error()
+
+        return  rep, 200
+        
+thermal_equipment = {
+    "ambient_temp": "temperature_ambient",
+    "relative_humid": "humidity_relative",
+    "dew_point": "temperature_dew_point",    
+    # "leakage1": "leak_deteceor"
+}
+
+def leak_judge(leak_broken, leak_leak):
+    if leak_broken:
+        health = "Critical"
+        state = "Disabled"
+    elif leak_leak:
+        health = "warning"    
+        state = "Enabled"
+    else:
+        health = "OK"    
+        state = "Enabled"  
+          
+    return  {
+            "status": {
+                "state": state,
+                "health": health
+            },
+            "reading": None,
+            "ServiceHours": 100,
+            "ServiceDate": 100,
+            "HardWareInfo":{}
+        }    
+    
+    
+'''
+leak broken -> health:Critical state:Disable
+leak leak -> health:warning state:Enable
+'''
+@default_ns.route("/cdu/components/thermal_equipment/summary")
+class SensorsSummary(Resource):
+    @default_ns.doc("get_thermal_equipment_summary")
+    def get(self):
+        rep = {}
+        try:
+            sensor_data = read_sensor_data()
+            sensor_value = sensor_data["value"]
+            leak_broken = sensor_data["error"]["leakage1_broken"]
+            leak_leak = sensor_data["error"]["leakage1_leak"]
+            
+            for key, value in thermal_equipment.items():
+                raw = sensor_value.get(key, 0)
+                sensor_reading = round(raw, 2) if key != "clnt_flow" else round(raw)
+                if key not in rep:
+                    rep[value] = {
+                        "status": {
+                            "state": state_judge(key, sensor_data, sensor_reading),
+                            "health": health_judge(key, sensor_data),
+                        },
+                        "reading": sensor_reading,
+                        "ServiceHours": 100,
+                        "ServiceDate": 100,
+                        "HardWareInfo":{}
+                    }
+                    
+            rep["leak_detector"] = leak_judge(leak_broken, leak_leak)
+                            
+        except Exception as e:
+            print(f"get sensors data error:{e}")
+            return plc_error()        
+        
+        return rep    
 
 api.add_namespace(default_ns)
 
