@@ -6059,6 +6059,7 @@ def rack_thread():
                 print(f"pass error: {e}")
         except Exception as e:
             print(f"enclosed: {e}")
+            
         ### 複製進plc_spare 結束
 
         time.sleep(2)
