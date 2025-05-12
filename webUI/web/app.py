@@ -5824,21 +5824,21 @@ def sync_time():
         )
 
         # 重新啟動 webui.service，確保應用程式正確運行
-        result = subprocess.run(
-            ["sudo", "systemctl", "restart", "webui.service"],
-            capture_output=True,
-            text=True,
-        )
-        if result.returncode != 0:
-            return (
-                jsonify(
-                    {
-                        "status": "error",
-                        "message": f"Failed to restart webui service: {result.stderr}",
-                    }
-                ),
-                500,
-            )
+        # result = subprocess.run(
+        #     ["sudo", "systemctl", "restart", "webui.service"],
+        #     capture_output=True,
+        #     text=True,
+        # )
+        # if result.returncode != 0:
+        #     return (
+        #         jsonify(
+        #             {
+        #                 "status": "error",
+        #                 "message": f"Failed to restart webui service: {result.stderr}",
+        #             }
+        #         ),
+        #         500,
+        #     )
 
         op_logger.info(
             f"Time synchronized with {ntp_server} and timezone set to {timezone}."
