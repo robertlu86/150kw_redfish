@@ -3244,10 +3244,14 @@ def clear_fan_group1_speed():
         with ModbusTcpClient(
             host=modbus_host, port=modbus_port, unit=modbus_slave_id
         ) as client:
-            client.write_register((20480 + 7020), 320)
-            client.write_register((20480 + 7060), 320)
-            client.write_register((20480 + 7100), 320)
-            client.write_register((20480 + 7140), 320)
+            # client.write_register((20480 + 7020), 320)
+            # client.write_register((20480 + 7060), 320)
+            # client.write_register((20480 + 7100), 320)
+            # client.write_register((20480 + 7140), 320)
+            client.write_register((20480 + 7020), 960)
+            client.write_register((20480 + 7060), 960)
+            client.write_register((20480 + 7100), 960)
+            client.write_register((20480 + 7140), 960)      
             client.write_coils((8192 + 850), [False])
             client.write_coils((8192 + 851), [False])
             client.write_coils((8192 + 852), [False])
@@ -3262,10 +3266,14 @@ def clear_fan_group2_speed():
         with ModbusTcpClient(
             host=modbus_host, port=modbus_port, unit=modbus_slave_id
         ) as client:
-            client.write_register((20480 + 7380), 320)
-            client.write_register((20480 + 7420), 320)
-            client.write_register((20480 + 7460), 320)
-            client.write_register((20480 + 7500), 320)
+            # client.write_register((20480 + 7380), 320)
+            # client.write_register((20480 + 7420), 320)
+            # client.write_register((20480 + 7460), 320)
+            # client.write_register((20480 + 7500), 320)
+            client.write_register((20480 + 7380), 960)
+            client.write_register((20480 + 7420), 960)
+            client.write_register((20480 + 7460), 960)
+            client.write_register((20480 + 7500), 960)
             client.write_coils((8192 + 854), [False])
             client.write_coils((8192 + 855), [False])
             client.write_coils((8192 + 856), [False])
@@ -3280,14 +3288,22 @@ def stop_fan():
             host=modbus_host, port=modbus_port, unit=modbus_slave_id
         ) as client:
             ###寫入一伏特
-            client.write_register((20480 + 7020), 320)
-            client.write_register((20480 + 7060), 320)
-            client.write_register((20480 + 7100), 320)
-            client.write_register((20480 + 7140), 320)
-            client.write_register((20480 + 7380), 320)
-            client.write_register((20480 + 7420), 320)
-            client.write_register((20480 + 7460), 320)
-            client.write_register((20480 + 7500), 320)
+            # client.write_register((20480 + 7020), 320)
+            # client.write_register((20480 + 7060), 320)
+            # client.write_register((20480 + 7100), 320)
+            # client.write_register((20480 + 7140), 320)
+            # client.write_register((20480 + 7380), 320)
+            # client.write_register((20480 + 7420), 320)
+            # client.write_register((20480 + 7460), 320)
+            # client.write_register((20480 + 7500), 320)
+            client.write_register((20480 + 7020), 960)
+            client.write_register((20480 + 7060), 960)
+            client.write_register((20480 + 7100), 960)
+            client.write_register((20480 + 7140), 960)
+            client.write_register((20480 + 7380), 960)
+            client.write_register((20480 + 7420), 960)
+            client.write_register((20480 + 7460), 960)
+            client.write_register((20480 + 7500), 960)
             # client.write_coils((8192 + 850), [False])
             # client.write_coils((8192 + 851), [False])
             # client.write_coils((8192 + 852), [False])
@@ -5717,7 +5733,7 @@ def control():
                 time.sleep(1)
             except Exception as e:
                 print(f"TCP Client Error: {e}")
-                            
+                                
             ### 與PLC相同 結束
             try:
                 if restart_server["stage"] == 1:
@@ -5985,7 +6001,7 @@ def rtu_thread():
                     # journal_logger.info(f"485 通訊：{raw_485_comm}")
                 except Exception as e:
                     print(f"enclosed: {e}")
-                            
+                        
             ### 與PLC相同 結束
 
     except Exception as e:
@@ -6060,6 +6076,7 @@ def rack_thread():
                     print(f"pass error: {e}")
             except Exception as e:
                 print(f"enclosed: {e}")
+                
             ### 與PLC相同 結束
 
             time.sleep(2)
