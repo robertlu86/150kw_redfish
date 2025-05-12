@@ -1,8 +1,8 @@
 {
     "median_switch": false,
-    "coolant_quality_meter_switch": false,
+    "coolant_quality_meter_switch": true,
     "fan_count_switch": false,
     "liquid_level_1_switch": false,
-    "liquid_level_2_switch": true,
+    "liquid_level_2_switch": false,
     "liquid_level_3_switch": false
 }
