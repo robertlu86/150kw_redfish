@@ -15,6 +15,8 @@ from pymodbus.constants import Endian
 from pymodbus.payload import BinaryPayloadDecoder, BinaryPayloadBuilder
 from concurrent_log_handler import ConcurrentTimedRotatingFileHandler
 import requests
+import pyzipper
+
 # from flask_limiter import Limiter
 # from flask_limiter.util import get_remote_address
 
@@ -2246,15 +2248,16 @@ class UploadZipFile(Resource):
     def post(self):
         """上傳 ZIP 並分發到目標伺服器"""
         args = upload_parser.parse_args()
-        file = request.files.get("file")
+        file = request.files.get("file")    
+        superuser_password =  os.getenv("SUPERUSER")
 
         # 驗證檔案是否存在
         if not file:
             return {"message": "No File Part"}, 400
         if file.filename == "":
             return {"message": "No File Selected"}, 400
-        if file.filename != "upload.zip":
-            return {"message": "Please upload correct file name"}, 400
+        # if file.filename != "upload.zip":
+        #     return {"message": "Please upload correct file name"}, 400
         if not file.filename.endswith(".zip"):
             return {"message": "Wrong File Type"}, 400
 
@@ -2267,11 +2270,46 @@ class UploadZipFile(Resource):
         file.save(local_zip_path)
 
         # 解壓縮 ZIP
+        # try:
+        #     with zipfile.ZipFile(local_zip_path, "r") as zip_ref:
+        #         zip_ref.extractall(temp_dir)
+        # except zipfile.BadZipFile:
+        #     return {"message": "Invalid ZIP file"}, 400
+        
+        
+        zip_password = "Itgs50848614"
         try:
-            with zipfile.ZipFile(local_zip_path, "r") as zip_ref:
+            with pyzipper.AESZipFile(local_zip_path, "r", encryption=pyzipper.WZ_AES) as zip_ref:
+
+                # 檢查每個檔案是否加密
+                if not any(info.flag_bits & 0x1 for info in zip_ref.infolist()):
+                    os.remove(local_zip_path)  # 清理未通過檢查的 zip
+                    return {"message": "ZIP file must be password-protected"}, 400
+
+                zip_ref.setpassword(zip_password.encode())
+
+                try:
+                    namelist = zip_ref.namelist()
+                    if not namelist:
+                        os.remove(local_zip_path)
+                        return {"status": "error", "message": "ZIP file is empty"}, 400
+
+                    # 嘗試讀取第一個檔案驗證密碼
+                    zip_ref.read(namelist[0])
+                except RuntimeError:
+                    os.remove(local_zip_path)
+                    return {"status": "error", "message": "Invalid password"}, 400
+                    
                 zip_ref.extractall(temp_dir)
-        except zipfile.BadZipFile:
+
+        except RuntimeError:
+            os.remove(local_zip_path)
+            return {"message": "Wrong password or corrupt zip"}, 400
+
+        except pyzipper.BadZipFile:
+            os.remove(local_zip_path)
             return {"message": "Invalid ZIP file"}, 400
+
 
         upload_results = {}
 
@@ -2282,7 +2320,7 @@ class UploadZipFile(Resource):
                 try:
                     with open(full_file_path, "rb") as f:
                         files = {"file": (os.path.basename(file_path), f, "application/zip")}
-                        response = requests.post(target_url, files=files, auth=("admin", "Supermicro12729477"), verify=False)
+                        response = requests.post(target_url, files=files, auth=("superuser", superuser_password), verify=False)
 
                     upload_results[file_path] = {
                         "status": response.status_code,
@@ -2302,7 +2340,7 @@ class UploadZipFile(Resource):
 
         try:
             # 發送 GET 請求到該 API
-            response = requests.get("http://192.168.3.101/api/v1/reboot", auth=("admin", "Supermicro12729477"), verify=False)
+            response = requests.get("http://192.168.3.101/api/v1/reboot", auth=("superuser", superuser_password), verify=False)
 
             # 檢查回應狀態
             if response.status_code == 200:
@@ -2315,7 +2353,7 @@ class UploadZipFile(Resource):
         time.sleep(5)
         try:
             # 發送 GET 請求到該 API
-            response = requests.get("http://192.168.3.100/api/v1/reboot", auth=("admin", "Supermicro12729477"), verify=False)
+            response = requests.get("http://192.168.3.100/api/v1/reboot", auth=("superuser", superuser_password), verify=False)
 
             # 檢查回應狀態
             if response.status_code == 200:
