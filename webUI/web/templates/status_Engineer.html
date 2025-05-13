@@ -600,7 +600,7 @@ styles %}
                     </tr>
 
                     {% if (user == 'admin') or (user == 'superuser') %}
-                    <tr>
+                    <tr id="AC_status_set" style="display:none;">
                         <td class="tdCenterAlign" scope="row">
                             Average Current
                         </td>
@@ -1195,7 +1195,7 @@ styles %}
 
         function current_data(data) {
             // console.log(data);
-
+            $("#AC_status_set").hide();
             // $("#inv1_freq").text(150)
             for (let key in data["value"]) {
                 if (data["value"].hasOwnProperty(key)) {
