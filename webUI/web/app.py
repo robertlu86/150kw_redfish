@@ -3577,7 +3577,7 @@ def set_fan1(speed):
 
 def set_fan2(speed):
     base_addr = 20480
-    offsets = [7380, 7400, 7460, 7500]
+    offsets = [7380, 7420, 7460, 7500]
     try:
         with ModbusTcpClient(
             host=modbus_host, port=modbus_port, unit=modbus_slave_id
@@ -4043,53 +4043,90 @@ def read_modbus_data():
                 if not ctr_data["mc"]["resultMC3"] or not ctr_data["value"]["resultP3"]:
                     inv3_v = 0
                     
-                if (
-                    not ctr_data["mc"]["fan_mc1_result"]
-                    or not ctr_data["value"]["resultFan1"]
-                ):
-                    fan1_v = 0
-                        
-                if (
-                    not ctr_data["mc"]["fan_mc1_result"]
-                    or not ctr_data["value"]["resultFan2"]
-                ):
-                    fan2_v = 0
+                if ver_switch["fan_count_switch"]:
+                    if (
+                        not ctr_data["mc"]["fan_mc1_result"]
+                        or not ctr_data["value"]["resultFan1"]
+                    ):
+                        fan1_v = 0
 
-                if (
-                    not ctr_data["mc"]["fan_mc1_result"]
-                    or not ctr_data["value"]["resultFan3"]
-                ):
-                    fan3_v = 0
-                
-                if (
-                    not ctr_data["mc"]["fan_mc1_result"]
-                    or not ctr_data["value"]["resultFan4"]
-                ):
-                    fan4_v = 0
-                
-                if (
-                    not ctr_data["mc"]["fan_mc2_result"]
-                    or not ctr_data["value"]["resultFan5"]
-                ):
-                    fan5_v = 0
-                
-                if (
-                    not ctr_data["mc"]["fan_mc2_result"]
-                    or not ctr_data["value"]["resultFan6"]
-                ):
-                    fan6_v = 0
-                    
-                if (
-                    not ctr_data["mc"]["fan_mc2_result"]
-                    or not ctr_data["value"]["resultFan7"]
-                ):
-                    fan7_v = 0
-                    
-                if (
-                    not ctr_data["mc"]["fan_mc2_result"]
-                    or not ctr_data["value"]["resultFan8"]
-                ):
-                    fan8_v = 0
+                    if (
+                        not ctr_data["mc"]["fan_mc1_result"]
+                        or not ctr_data["value"]["resultFan2"]
+                    ):
+                        fan2_v = 0
+
+                    if (
+                        not ctr_data["mc"]["fan_mc1_result"]
+                        or not ctr_data["value"]["resultFan3"]
+                    ):
+                        fan3_v = 0
+
+                    if (
+                        not ctr_data["mc"]["fan_mc2_result"]
+                        or not ctr_data["value"]["resultFan4"]
+                    ):
+                        fan4_v = 0
+
+                    if (
+                        not ctr_data["mc"]["fan_mc2_result"]
+                        or not ctr_data["value"]["resultFan5"]
+                    ):
+                        fan5_v = 0
+
+                    if (
+                        not ctr_data["mc"]["fan_mc2_result"]
+                        or not ctr_data["value"]["resultFan6"]
+                    ):
+                        fan6_v = 0
+                else:
+                    if (
+                        not ctr_data["mc"]["fan_mc1_result"]
+                        or not ctr_data["value"]["resultFan1"]
+                    ):
+                        fan1_v = 0
+
+                    if (
+                        not ctr_data["mc"]["fan_mc1_result"]
+                        or not ctr_data["value"]["resultFan2"]
+                    ):
+                        fan2_v = 0
+
+                    if (
+                        not ctr_data["mc"]["fan_mc1_result"]
+                        or not ctr_data["value"]["resultFan3"]
+                    ):
+                        fan3_v = 0
+
+                    if (
+                        not ctr_data["mc"]["fan_mc1_result"]
+                        or not ctr_data["value"]["resultFan4"]
+                    ):
+                        fan4_v = 0
+
+                    if (
+                        not ctr_data["mc"]["fan_mc2_result"]
+                        or not ctr_data["value"]["resultFan5"]
+                    ):
+                        fan5_v = 0
+
+                    if (
+                        not ctr_data["mc"]["fan_mc2_result"]
+                        or not ctr_data["value"]["resultFan6"]
+                    ):
+                        fan6_v = 0
+
+                    if (
+                        not ctr_data["mc"]["fan_mc2_result"]
+                        or not ctr_data["value"]["resultFan7"]
+                    ):
+                        fan7_v = 0
+
+                    if (
+                        not ctr_data["mc"]["fan_mc2_result"]
+                        or not ctr_data["value"]["resultFan8"]
+                    ):
+                        fan8_v = 0
                 
                 ctr_data["inv"]["inv1"] = inv1_v >= 25
                 ctr_data["inv"]["inv2"] = inv2_v >= 25
@@ -4212,7 +4249,26 @@ def read_modbus_data():
         if not any(v for k, v in ctr_data["inv"].items() if k.startswith("inv")):
             ctr_data["value"]["resultPS"] = 0
         ########寫入resultFan 
-        fan_inv_addresses = {"fan1": 7020, "fan2": 7060, "fan3": 7100,"fan4":7140, "fan5":7380, "fan6":7420, "fan7":7460, "fan8":7500}
+        if ver_switch["fan_count_switch"]:
+            fan_inv_addresses = {
+                "fan1": 7020,
+                "fan2": 7060,
+                "fan3": 7100,
+                "fan4": 7380,
+                "fan5": 7420,
+                "fan6": 7460,
+            }
+        else:
+            fan_inv_addresses = {
+                "fan1": 7020,
+                "fan2": 7060,
+                "fan3": 7100,
+                "fan4": 7140,
+                "fan5": 7380,
+                "fan6": 7420,
+                "fan7": 7460,
+                "fan8": 7500,
+            }
   
         for k, v in ctr_data["inv"].items():
             if k.startswith("fan"):
