@@ -3676,13 +3676,12 @@ def control():
                 server_error["start"] = time.time()
                 try:
                     with ModbusTcpClient(host=modbus_host, port=modbus_port) as client:
-                        
                         value_list = [
                             v
                             for key, v in raw_485_data.items()
                             if key != "ATS1" and key != "ATS2"
                         ]
-                        
+
                         new_list = []
                         # journal_logger.info(f'value_list:{value_list}')
                         for value in value_list:
@@ -3690,7 +3689,7 @@ def control():
                             new_list.append(r2)
                             new_list.append(r1)
                             # journal_logger.info(f'new_list:{new_list}')
-                            
+
                         ### 將raw_485_data丟進D19
                         client.write_registers(19, new_list)
                 except Exception as e:
@@ -3713,24 +3712,24 @@ def control():
                         ver_switch["liquid_level_1_switch"] = r.bits[6]
                         ver_switch["liquid_level_2_switch"] = r.bits[7]
                         ver_switch["liquid_level_3_switch"] = r.bits[8]
-                        
+
                         r2 = client.read_holding_registers(900, 1)
                         inspection_data["start_btn"] = r2.registers[0]
                 except Exception as e:
                     print(f"check version: {e}")
-                
-                ### 檢查目前FAN數量   
+
+                ### 檢查目前FAN數量
 
                 # print(f'ver_switch["fan_count_switch"]:{ver_switch["fan_count_switch"]}')
                 fan_count_6 = bool(ver_switch["fan_count_switch"])
                 # print(f'fan_count_6:{fan_count_6}')
-                
+
                 try:
                     with ModbusTcpClient(host=modbus_host, port=modbus_port) as client:
                         leak = client.read_discrete_inputs(2, 2, unit=modbus_slave_id)
                         bit_input_regs["leakage1_leak"] = leak.bits[0]
                         bit_input_regs["leakage1_broken"] = leak.bits[1]
-                        
+
                         mainMC = client.read_discrete_inputs(35, 1, unit=modbus_slave_id)
                         bit_input_regs["main_mc_error"] = mainMC.bits[0]
 
@@ -3751,7 +3750,6 @@ def control():
                                 key_list = list(bit_input_regs.keys())
                                 bit_input_regs[key_list[i + 9]] = full_input_2.bits[i]
                         else:
-                        
                             full_input = client.read_discrete_inputs(
                                 40, 8, unit=modbus_slave_id
                             )
@@ -3869,7 +3867,6 @@ def control():
                 except Exception as e:
                     print(f"read inv_en 2 error:{e}")
 
-
                 ### 讀取 runtime
                 try:
                     with ModbusTcpClient(host=modbus_host, port=modbus_port) as client:
@@ -3885,36 +3882,68 @@ def control():
                         dword_regs["p3_run_min"] = read_split_register(time3.registers, 0)
                         dword_regs["p3_run_hr"] = read_split_register(time3.registers, 2)
 
-                        time_f_1 = client.read_holding_registers(310, 4, unit=modbus_slave_id)
-                        dword_regs["f1_run_min"] = read_split_register(time_f_1.registers, 0)
+                        time_f_1 = client.read_holding_registers(
+                            310, 4, unit=modbus_slave_id
+                        )
+                        dword_regs["f1_run_min"] = read_split_register(
+                            time_f_1.registers, 0
+                        )
                         dword_regs["f1_run_hr"] = read_split_register(time_f_1.registers, 2)
 
-                        time_f_2 = client.read_holding_registers(314, 4, unit=modbus_slave_id)
-                        dword_regs["f2_run_min"] = read_split_register(time_f_2.registers, 0)
+                        time_f_2 = client.read_holding_registers(
+                            314, 4, unit=modbus_slave_id
+                        )
+                        dword_regs["f2_run_min"] = read_split_register(
+                            time_f_2.registers, 0
+                        )
                         dword_regs["f2_run_hr"] = read_split_register(time_f_2.registers, 2)
 
-                        time_f_3 = client.read_holding_registers(318, 4, unit=modbus_slave_id)
-                        dword_regs["f3_run_min"] = read_split_register(time_f_3.registers, 0)
+                        time_f_3 = client.read_holding_registers(
+                            318, 4, unit=modbus_slave_id
+                        )
+                        dword_regs["f3_run_min"] = read_split_register(
+                            time_f_3.registers, 0
+                        )
                         dword_regs["f3_run_hr"] = read_split_register(time_f_3.registers, 2)
 
-                        time_f_4 = client.read_holding_registers(322, 4, unit=modbus_slave_id)
-                        dword_regs["f4_run_min"] = read_split_register(time_f_4.registers, 0)
+                        time_f_4 = client.read_holding_registers(
+                            322, 4, unit=modbus_slave_id
+                        )
+                        dword_regs["f4_run_min"] = read_split_register(
+                            time_f_4.registers, 0
+                        )
                         dword_regs["f4_run_hr"] = read_split_register(time_f_4.registers, 2)
 
-                        time_f_5 = client.read_holding_registers(326, 4, unit=modbus_slave_id)
-                        dword_regs["f5_run_min"] = read_split_register(time_f_5.registers, 0)
+                        time_f_5 = client.read_holding_registers(
+                            326, 4, unit=modbus_slave_id
+                        )
+                        dword_regs["f5_run_min"] = read_split_register(
+                            time_f_5.registers, 0
+                        )
                         dword_regs["f5_run_hr"] = read_split_register(time_f_5.registers, 2)
 
-                        time_f_6 = client.read_holding_registers(330, 4, unit=modbus_slave_id)
-                        dword_regs["f6_run_min"] = read_split_register(time_f_6.registers, 0)
+                        time_f_6 = client.read_holding_registers(
+                            330, 4, unit=modbus_slave_id
+                        )
+                        dword_regs["f6_run_min"] = read_split_register(
+                            time_f_6.registers, 0
+                        )
                         dword_regs["f6_run_hr"] = read_split_register(time_f_6.registers, 2)
 
-                        time_f_7 = client.read_holding_registers(334, 4, unit=modbus_slave_id)
-                        dword_regs["f7_run_min"] = read_split_register(time_f_7.registers, 0)
+                        time_f_7 = client.read_holding_registers(
+                            334, 4, unit=modbus_slave_id
+                        )
+                        dword_regs["f7_run_min"] = read_split_register(
+                            time_f_7.registers, 0
+                        )
                         dword_regs["f7_run_hr"] = read_split_register(time_f_7.registers, 2)
 
-                        time_f_8 = client.read_holding_registers(338, 4, unit=modbus_slave_id)
-                        dword_regs["f8_run_min"] = read_split_register(time_f_8.registers, 0)
+                        time_f_8 = client.read_holding_registers(
+                            338, 4, unit=modbus_slave_id
+                        )
+                        dword_regs["f8_run_min"] = read_split_register(
+                            time_f_8.registers, 0
+                        )
                         dword_regs["f8_run_hr"] = read_split_register(time_f_8.registers, 2)
 
                         p_swap = client.read_holding_registers(303, 2, unit=modbus_slave_id)
@@ -3957,7 +3986,7 @@ def control():
                 try:
                     with ModbusTcpClient(host=modbus_host, port=modbus_port) as client:
                         ad_count = len(ad_sensor_value.keys())
-                        serial_count = len(serial_sensor_value.keys()) 
+                        serial_count = len(serial_sensor_value.keys())
                         ### 增加八個固定PLC占用位置
                         all_count = ad_count + (serial_count * 2) + 8
 
@@ -3965,7 +3994,7 @@ def control():
                             0, all_count, unit=modbus_slave_id
                         )
 
-                        ##從D0開始讀ad sensor value 
+                        ##從D0開始讀ad sensor value
                         keys_list = list(ad_sensor_value.keys())
                         for i in range(0, ad_count):
                             value = all_sensors.registers[i]
@@ -4038,7 +4067,7 @@ def control():
                         #     if k in raw_485_data:
                         #         serial_sensor_value[v] = raw_485_data[k]
                         # print(f'serial_sensor_value{serial_sensor_value}')
-                        
+
                         try:
                             flow_rate = client.read_holding_registers((20480 + 6380), 1)
 
@@ -4142,7 +4171,6 @@ def control():
                             key = f"Inv{i}_Freq"
                             all_sensors_dict[key] = (
                                 # 0.1664 * serial_sensor_value[key] + 0.0818
-                                
                                 ### 將sensor數值 轉為 hz
                                 # serial_sensor_value[key] /100
                                 ### 將hz 轉為 %
@@ -4151,10 +4179,10 @@ def control():
 
                             if not bit_output_regs[f"mc{i}"]:
                                 all_sensors_dict[key] = 0
-                                
+
                         # bit_output_regs["mc_fan1"] = True
                         # print(f'bit_output_regs["mc_fan1"]:{bit_output_regs["mc_fan1"]}')
-                        
+
                         ###增加fan_count判斷###
                         if ver_switch["fan_count_switch"]:
                             for i in range(1, 4):
@@ -4163,7 +4191,7 @@ def control():
                                     ##轉速100%, RPM為4150
                                     ### 將RPM 轉為 %
                                     serial_sensor_value[key] / 4150 * 100
-                                    )
+                                )
                                 if not bit_output_regs["mc_fan1"]:
                                     all_sensors_dict[key] = 0
                             for i in range(4, 7):
@@ -4172,7 +4200,7 @@ def control():
                                     ##轉速100%, RPM為4150
                                     ### 將RPM 轉為 %
                                     serial_sensor_value[key] / 4150 * 100
-                                    )
+                                )
                                 if not bit_output_regs["mc_fan2"]:
                                     all_sensors_dict[key] = 0
                         else:
@@ -4182,7 +4210,7 @@ def control():
                                     ##轉速100%, RPM為4150
                                     ### 將RPM 轉為 %
                                     serial_sensor_value[key] / 4150 * 100
-                                    )
+                                )
                                 if not bit_output_regs["mc_fan1"]:
                                     all_sensors_dict[key] = 0
                             for i in range(5, 9):
@@ -4191,10 +4219,9 @@ def control():
                                     ##轉速100%, RPM為4150
                                     ### 將RPM 轉為 %
                                     serial_sensor_value[key] / 4150 * 100
-                                    )
+                                )
                                 if not bit_output_regs["mc_fan2"]:
-                                    all_sensors_dict[key] = 0                   
-                                
+                                    all_sensors_dict[key] = 0
 
                         r = (
                             all_sensors_dict["Clnt_Flow"]
@@ -4234,7 +4261,7 @@ def control():
                                     all_sensors_dict[key] = all_sensors_dict[key] * 0.2642
                 except Exception as e:
                     print(f"change to imperial error: {e}")
-                    
+
                 # journal_logger.info(f'serial_sensor_value:{serial_sensor_value}')
 
                 # journal_logger.info(f'all_sensors_dict:{all_sensors_dict}')
@@ -4344,7 +4371,7 @@ def control():
                     reset_inspect_btn()
                     change_inspect_time()
                     diff = 0
-                    inspection_data["step"] = 1              
+                    inspection_data["step"] = 1
                     flag1 = False
                     flag2 = False
                     flag3 = False
@@ -4396,7 +4423,7 @@ def control():
                         # print(f'word_regs["fan_speed"]:{word_regs["fan_speed"]}')
                         if word_regs["fan_speed"] > 0:
                             fs = translate_fan_speed(word_regs["fan_speed"])
-                            ### 如果轉換後大於0  
+                            ### 如果轉換後大於0
                             ### 等於0的話給 2 % = 320 , 以避免風扇全速轉
                             # print(f'fs:{fs}')
                             if fs > 0:
@@ -4555,7 +4582,7 @@ def control():
                 elif mode == "inspection":
                     read_flow_time = 15
                     pump_open_time = 20
-                    fan_open_time = 20        
+                    fan_open_time = 20
                     error_check_time = 18
                     overload_index = {
                         "Inv": [1, 2, 3],
@@ -4564,7 +4591,7 @@ def control():
                     error_index = {
                         "Inv": [1, 2, 3],
                         "fan": [1, 2, 3, 4, 5, 6, 7, 8],
-                    }   
+                    }
                     mode_last = mode
                     change_inspect_time()
                     global count
@@ -4590,15 +4617,20 @@ def control():
                                 inspection_data["prev"]["inv1"] = inv1_v
                                 inspection_data["prev"]["inv2"] = inv2_v
                                 inspection_data["prev"]["inv3"] = inv3_v
-                                
+
                                 # 重置所有 result_data
 
                                 for key in inspection_data["result"]:
-                                    if key == "f1" or "_com" in key.lower() or "overload" in key.lower() or "error" in key.lower():
+                                    if (
+                                        key == "f1"
+                                        or "_com" in key.lower()
+                                        or "overload" in key.lower()
+                                        or "error" in key.lower()
+                                    ):
                                         inspection_data["result"][key] = []
                                     else:
                                         inspection_data["result"][key] = False
-                                
+
                                 # 重置所有 status_data
 
                                 for key in inspection_data["prog"]:
@@ -4632,9 +4664,9 @@ def control():
                             if inspection_data["step"] == 2:
                                 print(f"2. 開啟 inv/mc: {pump_open_time} 秒")
 
-                                bit_output_regs["mc1"]= True
-                                bit_output_regs["mc2"]= True
-                                bit_output_regs["mc3"]= True
+                                bit_output_regs["mc1"] = True
+                                bit_output_regs["mc2"] = True
+                                bit_output_regs["mc3"] = True
                                 change_progress("p1_speed", "standby")
                                 change_progress("p2_speed", "standby")
                                 change_progress("p3_speed", "standby")
@@ -4667,7 +4699,7 @@ def control():
                                         p1_data.append(p1)
                                 except Exception as e:
                                     print(f"pump1 speed check: {e}")
-                                    
+
                                 ### 檢查pump2流速
                                 try:
                                     with ModbusTcpClient(
@@ -4682,7 +4714,7 @@ def control():
                                         # print(f'p2_data"{p2_data}')
                                 except Exception as e:
                                     print(f"pump2 speed check: {e}")
-                                    
+
                                 ### 檢查pump3流速
                                 try:
                                     with ModbusTcpClient(
@@ -4696,10 +4728,7 @@ def control():
                                         p3_data.append(p3)
                                 except Exception as e:
                                     print(f"pump3 speed check: {e}")
-                                        
-                                    
-                                    
-                                    
+
                                 inspection_data["end_time"] = time.time()
                                 diff = (
                                     inspection_data["end_time"]
@@ -4710,7 +4739,7 @@ def control():
                                     inspection_data["mid_time"] = inspection_data[
                                         "end_time"
                                     ]
-                                
+
                                 # 即時更新進度
 
                                 send_progress(0, "p1_speed")
@@ -4723,7 +4752,7 @@ def control():
                                 if any(p1_error_box):
                                     print("跳過 p1")
                                     change_progress("p1_speed", "skip")
-                                    
+
                                     ###送NG給前端
                                     inspection_data["result"]["p1_speed"] = True
                                     stop_p1()
@@ -4734,8 +4763,8 @@ def control():
                                 else:
                                     # p1_data = [50]
                                     max_p1 = max(p1_data)
-                                    print(f'max_p1{max_p1}')
-                                    
+                                    print(f"max_p1{max_p1}")
+
                                     ###超過範圍就送NG給前端
                                     inspection_data["result"]["p1_speed"] = not (
                                         55 > max_p1 > 45
@@ -4783,8 +4812,8 @@ def control():
                                 send_all(0, "p1_speed")
                                 send_all(1, "p2_speed")
                                 send_all(2, "p3_speed")
-                                
-                            if inspection_data["step"] == 3.1:                           
+
+                            if inspection_data["step"] == 3.1:
                                 print(f"3.1 開 f1：{read_flow_time} 秒")
 
                                 speed = translate_pump_speed(50)
@@ -4798,9 +4827,7 @@ def control():
                                     # or warning_data["error"][
                                     #     "coolant_flow_rate_communication"
                                     # ]
-                                    or warning_data["error"][
-                                        "Clnt_Flow_broken"
-                                    ]
+                                    or warning_data["error"]["Clnt_Flow_broken"]
                                 ):
                                     inspection_data["result"]["f1"].append(True)
                                 else:
@@ -4821,9 +4848,8 @@ def control():
                                     inspection_data["mid_time"] = inspection_data[
                                         "end_time"
                                     ]
-                                    
+
                             if inspection_data["step"] == 3.2:
-                                
                                 print("3.2 測 f1")
                                 max_f1 = max(f1_data)
                                 ### 測試是否換成broken
@@ -4834,9 +4860,7 @@ def control():
                                 write_measured_data(7, max_f1)
                                 print(f"F1 結果：{max_f1}")
 
-                                inspection_data["result"]["f1"] = not(
-                                    136 > max_f1 > 100
-                                )
+                                inspection_data["result"]["f1"] = not (136 > max_f1 > 100)
 
                                 change_progress("f1", "finish")
                                 send_all(3, "f1")
@@ -4844,7 +4868,7 @@ def control():
                                 inspection_data["step"] += 0.3
                                 inspection_data["end_time"] = time.time()
                                 inspection_data["mid_time"] = inspection_data["end_time"]
-                                
+
                             if inspection_data["step"] == 3.5:
                                 print("3.5 測 liquid & power")
                                 # journal_logger.info("5.5 測 liquid & power")
@@ -4864,16 +4888,15 @@ def control():
                                 #         send_progress(4 + x, key)
 
                                 inspection_data["step"] += 0.5
-                            
+
                             if inspection_data["step"] == 4:
-                                
                                 ###測fan
                                 print(f"4. 開啟 Fan 的 inv/mc: {fan_open_time} 秒")
-                                bit_output_regs["mc_fan1"]=True
-                                bit_output_regs["mc_fan2"]=True
+                                bit_output_regs["mc_fan1"] = True
+                                bit_output_regs["mc_fan2"] = True
                                 for i in range(1, 9):
                                     change_progress(f"fan{i}_speed", "standby")
-                                    
+
                                 speed = translate_fan_speed(30)
                                 set_f1(speed)
                                 set_f2(speed)
@@ -4883,7 +4906,7 @@ def control():
                                 set_f6(speed)
                                 set_f7(speed)
                                 set_f8(speed)
-                                
+
                                 fan1_error_boxes = {
                                     "1": fan1_error_box,
                                     "2": fan2_error_box,
@@ -4892,10 +4915,14 @@ def control():
                                 }
 
                                 for i in ["1", "2", "3", "4"]:
-                                    fan1_error_boxes[i].append(warning_data["error"][f"fan{i}_error"])
-                                    fan1_error_boxes[i].append(warning_data["error"]["Fan_OverLoad1"])
+                                    fan1_error_boxes[i].append(
+                                        warning_data["error"][f"fan{i}_error"]
+                                    )
+                                    fan1_error_boxes[i].append(
+                                        warning_data["error"]["Fan_OverLoad1"]
+                                    )
                                     fan1_error_boxes[i].append(oc_detection["f1"])
-                                    
+
                                 fan2_error_boxes = {
                                     "5": fan5_error_box,
                                     "6": fan6_error_box,
@@ -4904,29 +4931,56 @@ def control():
                                 }
 
                                 for i in ["5", "6", "7", "8"]:
-                                    fan2_error_boxes[i].append(warning_data["error"][f"fan{i}_error"])
-                                    fan2_error_boxes[i].append(warning_data["error"]["Fan_OverLoad2"])
+                                    fan2_error_boxes[i].append(
+                                        warning_data["error"][f"fan{i}_error"]
+                                    )
+                                    fan2_error_boxes[i].append(
+                                        warning_data["error"]["Fan_OverLoad2"]
+                                    )
                                     fan2_error_boxes[i].append(oc_detection["f2"])
-
 
                                 def read_fan_flow(address):
                                     try:
-                                        with ModbusTcpClient(host=modbus_host, port=modbus_port) as client:
+                                        with ModbusTcpClient(
+                                            host=modbus_host, port=modbus_port
+                                        ) as client:
                                             r = client.read_holding_registers(address, 2)
-                                            return cvt_registers_to_float(r.registers[0], r.registers[1])
+                                            return cvt_registers_to_float(
+                                                r.registers[0], r.registers[1]
+                                            )
                                     except Exception as e:
-                                        print(f"Fan at address {address} speed check error: {e}")
+                                        print(
+                                            f"Fan at address {address} speed check error: {e}"
+                                        )
                                         return None
 
-                                fan_addresses = [5048, 5050, 5052, 5054, 5056, 5058, 5060, 5062]
-                                fan_data_lists = [fan1_data, fan2_data, fan3_data, fan4_data, fan5_data, fan6_data, fan7_data, fan8_data]
+                                fan_addresses = [
+                                    5048,
+                                    5050,
+                                    5052,
+                                    5054,
+                                    5056,
+                                    5058,
+                                    5060,
+                                    5062,
+                                ]
+                                fan_data_lists = [
+                                    fan1_data,
+                                    fan2_data,
+                                    fan3_data,
+                                    fan4_data,
+                                    fan5_data,
+                                    fan6_data,
+                                    fan7_data,
+                                    fan8_data,
+                                ]
 
                                 for addr, data_list in zip(fan_addresses, fan_data_lists):
                                     flow = read_fan_flow(addr)
                                     if flow is not None:
                                         data_list.append(flow)
                                         # print(f'data_list:{data_list}')
-                                
+
                                 inspection_data["end_time"] = time.time()
                                 diff = (
                                     inspection_data["end_time"]
@@ -4939,12 +4993,12 @@ def control():
                                     ]
                                 send_progress(43, "fan1_speed")
                                 send_progress(44, "fan2_speed")
-                                send_progress(45, "fan3_speed")                           
-                                send_progress(46, "fan4_speed")                           
-                                send_progress(47, "fan5_speed")                           
-                                send_progress(48, "fan6_speed")                           
-                                send_progress(49, "fan7_speed")                           
-                                send_progress(50, "fan8_speed")                           
+                                send_progress(45, "fan3_speed")
+                                send_progress(46, "fan4_speed")
+                                send_progress(47, "fan5_speed")
+                                send_progress(48, "fan6_speed")
+                                send_progress(49, "fan7_speed")
+                                send_progress(50, "fan8_speed")
 
                                 # print(f"4. 開 f1：{read_flow_time} 秒")
 
@@ -4985,8 +5039,7 @@ def control():
 
                             if inspection_data["step"] == 5:
                                 print("5. 測所有 Fan 的 inv/mc")
-                                
-                                
+
                                 fan_error_box = {
                                     "fan1": fan1_error_box,
                                     "fan2": fan2_error_box,
@@ -5020,7 +5073,9 @@ def control():
                                         inspection_data["result"][speed_key] = True
 
                                         send_all(0, speed_key)
-                                        inspection_data["mid_time"] = inspection_data["end_time"]
+                                        inspection_data["mid_time"] = inspection_data[
+                                            "end_time"
+                                        ]
                                     else:
                                         max_value = max(fan_data[fan_id])
                                         # print(f"max_{fan_id}: {max_value}")
@@ -5028,23 +5083,25 @@ def control():
                                         # 判斷範圍
                                         ###RPM判斷範圍30% 為1245  1452~1037
                                         # inspection_data["result"][speed_key] = not (50 > max_value > 45)
-                                        inspection_data["result"][speed_key] = not (35 > max_value > 25)
-                                        write_measured_data(30 + (i*2-1), max_value)
+                                        inspection_data["result"][speed_key] = not (
+                                            35 > max_value > 25
+                                        )
+                                        write_measured_data(30 + (i * 2 - 1), max_value)
                                         change_progress(speed_key, "finish")
-                                        
+
                                 stop_fan()
                                 inspection_data["step"] += 1
                                 inspection_data["end_time"] = time.time()
                                 inspection_data["mid_time"] = inspection_data["end_time"]
                                 send_all(43, "fan1_speed")
                                 send_all(44, "fan2_speed")
-                                send_all(45, "fan3_speed")                           
-                                send_all(46, "fan4_speed")                           
-                                send_all(47, "fan5_speed")                           
-                                send_all(48, "fan6_speed")                           
-                                send_all(49, "fan7_speed")                           
-                                send_all(50, "fan8_speed")      
-                                
+                                send_all(45, "fan3_speed")
+                                send_all(46, "fan4_speed")
+                                send_all(47, "fan5_speed")
+                                send_all(48, "fan6_speed")
+                                send_all(49, "fan7_speed")
+                                send_all(50, "fan8_speed")
+
                             #     print("5. 測 f1")
                             #     max_f1 = max(f1_data)
                             #     ### 測試是否換成broken
@@ -5733,7 +5790,7 @@ def control():
                 time.sleep(1)
             except Exception as e:
                 print(f"TCP Client Error: {e}")
-                            
+                        
             ### 與PLC相同 結束
             try:
                 if restart_server["stage"] == 1:
@@ -6001,7 +6058,7 @@ def rtu_thread():
                     # journal_logger.info(f"485 通訊：{raw_485_comm}")
                 except Exception as e:
                     print(f"enclosed: {e}")
-                                
+                                        
             ### 與PLC相同 結束
 
     except Exception as e:
