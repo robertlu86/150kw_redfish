@@ -3104,12 +3104,12 @@ def read_unit():
 
             if r.bits[0]:
                 setting_limit["control"]["oil_temp_set_up"] = 55.0 * 9.0 / 5.0 + 32.0
-                setting_limit["control"]["oil_temp_set_low"] = 35.0 * 9.0 / 5.0 + 32.0
+                setting_limit["control"]["oil_temp_set_low"] = 25.0 * 9.0 / 5.0 + 32.0
                 setting_limit["control"]["oil_pressure_set_up"] = 750 * 0.145038
                 setting_limit["control"]["oil_pressure_set_low"] = 0
             else:
                 setting_limit["control"]["oil_temp_set_up"] = 55.0
-                setting_limit["control"]["oil_temp_set_low"] = 35.0
+                setting_limit["control"]["oil_temp_set_low"] = 25.0
                 setting_limit["control"]["oil_pressure_set_up"] = 750
                 setting_limit["control"]["oil_pressure_set_low"] = 0
     except Exception as e:
@@ -3802,7 +3802,7 @@ def read_modbus_data():
                             55.0 * 9.0 / 5.0 + 32.0
                         )
                         setting_limit["control"]["oil_temp_set_low"] = (
-                            35.0 * 9.0 / 5.0 + 32.0
+                            25.0 * 9.0 / 5.0 + 32.0
                         )
                         setting_limit["control"]["oil_pressure_set_up"] = 750 * 0.145038
                         setting_limit["control"]["oil_pressure_set_low"] = 0
