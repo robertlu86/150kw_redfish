@@ -5733,7 +5733,7 @@ def control():
                 time.sleep(1)
             except Exception as e:
                 print(f"TCP Client Error: {e}")
-                                
+                            
             ### 與PLC相同 結束
             try:
                 if restart_server["stage"] == 1:
@@ -5770,7 +5770,7 @@ def control():
                 print(f"server 1 restart error:{e}")
 
 
-duration = 1
+duration = 0.5
 
 
 def rtu_thread():
@@ -5780,7 +5780,7 @@ def rtu_thread():
 
     client = ModbusSerialClient(
         method="rtu",
-        port="/dev/ttyS1",
+        port="/dev/ttyS0",
         baudrate=19200,
         parity="E",
         stopbits=1,
@@ -6001,7 +6001,7 @@ def rtu_thread():
                     # journal_logger.info(f"485 通訊：{raw_485_comm}")
                 except Exception as e:
                     print(f"enclosed: {e}")
-                        
+                                
             ### 與PLC相同 結束
 
     except Exception as e:
