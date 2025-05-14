@@ -734,12 +734,7 @@ def trap(trap_bool_lists, check_switch):
 
             try:
                 if bool_value:
-                    if a_name in [
-                        "RackLeakage1Leak",
-                        "RackLeakage1Broken",
-                        "RackLeakage2Leak",
-                        "RackLeakage2Broken",
-                    ]:
+                    if "Rack" in a_name:
                         oid = base_oid + (base_offsets[i] + j,)
                     else:
                         oid = base_oid + (base_offsets[i] + j + 1,)
@@ -802,27 +797,20 @@ def trap(trap_bool_lists, check_switch):
                         # journal_logger.info(
                         #     f"data_details:{data_details['devices'][a_name]}"
                         # )
-                        if data_details["devices"][a_name] and a_name in [
+                        if a_name in [
                             "RackLeakage1Leak",
                             "RackLeakage1Broken",
                             "RackLeakage2Leak",
                             "RackLeakage2Broken",
                         ]:
-                            # journal_logger.info(
-                            #     f"{a_name} {oid} {warning_alert_list[i][j]}"
-                            # )
-                            send_snmp_trap(
-                                oid,
-                                SNMP_TRAP_RECEIVER_IP,
-                                severity=severity_level,
-                                value=f"{warning_alert_list[i][j]}",
-                            )
-                        elif data_details["devices"]["RackError"] and a_name not in [
-                            "RackLeakage1Leak",
-                            "RackLeakage1Broken",
-                            "RackLeakage2Leak",
-                            "RackLeakage2Broken",
-                        ]:
+                            if data_details["devices"][a_name]:
+                                send_snmp_trap(
+                                    oid,
+                                    SNMP_TRAP_RECEIVER_IP,
+                                    severity=severity_level,
+                                    value=f"{warning_alert_list[i][j]}",
+                                )
+                        elif data_details["devices"]["RackError"]:
                             # messages(a_name, oid, warning_alert_list[i][j])
                             send_snmp_trap(
                                 oid,
