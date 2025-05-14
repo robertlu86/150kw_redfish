@@ -1036,7 +1036,7 @@ messages = {
         "M316": ["pH (PH) Sensor Communication Error", False],
         "M317": ["Conductivity (CON) Sensor Communication Error", False],
         "M318": ["Turbidity (Tur) Sensor Communication Error", False],
-        "M319": ["ATS 1 Communication Error", False],
+        "M319": ["ATS Communication Error", False],
         "M320": ["ATS 2 Communication Error", False],
         "M321": ["Power Meter Communication Error", False],
         "M322": ["Average Current Communication Error", False],
