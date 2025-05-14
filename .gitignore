@@ -156,10 +156,6 @@ logs/
 webUI/logs/
 
 # 忽略上传的文件和其他 JSON 文件
-webUI/web/upload_file.json
-webUI/web/network.json
-webUI/web/users.json
-webUI/web/static/images/machine.png
-webUI/web/thrshd.json
-webUI/web/upload_file.json
+
+webUI/web/json/
 
