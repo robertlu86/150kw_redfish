@@ -4223,19 +4223,20 @@ def control():
                                 if not bit_output_regs["mc_fan2"]:
                                     all_sensors_dict[key] = 0
 
-                        r = (
+                        heat_capacity = (
                             all_sensors_dict["Clnt_Flow"]
                             * 1.667
                             / 100
                             * 4.18
                             * (
-                                all_sensors_dict["Temp_ClntSply"]
-                                - all_sensors_dict["Temp_ClntRtn"]
+                                #### Heat capacity =  T2 - T1
+                                all_sensors_dict["Temp_ClntRtn"]
+                                - all_sensors_dict["Temp_ClntSply"]
                             )
                         )
 
                         all_sensors_dict["Heat_Capacity"] = (
-                            r * sensor_factor["Heat_Capacity"]
+                            heat_capacity * sensor_factor["Heat_Capacity"]
                             + sensor_offset["Heat_Capacity"]
                         )
 
