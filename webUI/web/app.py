@@ -6563,6 +6563,7 @@ def import_settings():
 
                     set_key(f"{web_path}/.env", "USER", USER_DATA["user"])
                     set_key(f"{web_path}/.env", "USER", USER_DATA["kiosk"])
+                    os.chmod(f"{web_path}/.env", 0o666)
 
                 except InvalidToken:
                     return jsonify(
