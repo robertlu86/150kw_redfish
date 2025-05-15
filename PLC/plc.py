@@ -3071,7 +3071,7 @@ def check_mc():
     ### mc..._sw 為前端各個開關是否為true
     if (
         not overload_error["Inv1_OverLoad"]
-        and not bit_input_regs["Inv1_Error"]
+        # and not bit_input_regs["Inv1_Error"]
         and mc1_sw
     ):
         bit_output_regs["mc1"] = True
@@ -3081,7 +3081,7 @@ def check_mc():
 
     if (
         not overload_error["Inv2_OverLoad"]
-        and not bit_input_regs["Inv2_Error"]
+        # and not bit_input_regs["Inv2_Error"]
         and mc2_sw
     ):
         bit_output_regs["mc2"] = True
@@ -3090,7 +3090,7 @@ def check_mc():
 
     if (
         not overload_error["Inv3_OverLoad"]
-        and not bit_input_regs["Inv3_Error"]
+        # and not bit_input_regs["Inv3_Error"]
         and mc3_sw
     ):
         bit_output_regs["mc3"] = True
@@ -3172,7 +3172,7 @@ def close_inv1_auto():
 
     except Exception as e:
         print(f"close inv1: {e}")
-    set_pump1_speed(word_regs["pid_pump_out"])
+    set_pump1_speed(0)
 
 
 def close_inv2_auto():
@@ -3184,7 +3184,7 @@ def close_inv2_auto():
 
     except Exception as e:
         print(f"close inv1: {e}")
-    set_pump2_speed(word_regs["pid_pump_out"])
+    set_pump2_speed(0)
 
 
 def close_inv3_auto():
@@ -3196,7 +3196,7 @@ def close_inv3_auto():
 
     except Exception as e:
         print(f"close inv1: {e}")
-    set_pump3_speed(word_regs["pid_pump_out"])
+    set_pump3_speed(0)
 
 
 def reset_btn_false():
@@ -4016,8 +4016,8 @@ def control():
                                 serial_sensor_value["Clnt_Flow"] = (
                                     65535 - serial_sensor_value["Clnt_Flow"]
                                 )
-                            # if 3200 > serial_sensor_value["Clnt_Flow"] > 3040:
-                            #     serial_sensor_value["Clnt_Flow"] = 3200
+                            if 3200 > serial_sensor_value["Clnt_Flow"] > 3040:
+                                serial_sensor_value["Clnt_Flow"] = 3200
                             sensor_raw["Clnt_Flow"] = serial_sensor_value["Clnt_Flow"]
                             check_broken("Clnt_Flow")
                             serial_sensor_value["Clnt_Flow"] = (
