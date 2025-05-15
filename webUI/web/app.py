@@ -1337,7 +1337,7 @@ adjust_factory = {
     "Prsr_FltIn_Offset": 0,
     "Prsr_FltOut_Factor": 500,
     "Prsr_FltOut_Offset": 0,
-    "Clnt_Flow_Factor": 1,
+    "Clnt_Flow_Factor": 2.2,
     "Clnt_Flow_Offset": 0,
     "Ambient_Temp_Factor": 1,
     "Ambient_Temp_Offset": 0,
@@ -1650,7 +1650,7 @@ thrshd_factory = {
 pid_factory = {
     "temperature": {
         "sample_time_temp": 100,
-        "kp_temp": 50,
+        "kp_temp": 500,
         "ki_time_temp": 10,
         "kd_temp": 0,
         "kd_time_temp": 0,

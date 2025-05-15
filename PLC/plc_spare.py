@@ -2447,31 +2447,29 @@ def set_warning_registers(mode):
     
     check_communication("ATS1", "Delay_ATS1_Communication", True)
     # check_communication("ATS2", "Delay_ATS2_Communication", True)
-    
+
     check_communication("inst_power", "Delay_Power_Meter_Communication", True)
-    
+
     ###跟inst_power相同
     # check_communication("average_current", "Delay_average_current_Communication", True)
-    
+
     if not ver_switch["liquid_level_1_switch"]:
         check_level("Delay_level1", "level1", True)
     else:
-        warning_data['error']["level1"] = False
-        
+        warning_data["error"]["level1"] = False
+
     if not ver_switch["liquid_level_2_switch"]:
         check_level("Delay_level2", "level2", True)
     else:
-        warning_data['error']["level2"] = False
-       
+        warning_data["error"]["level2"] = False
+
     if not ver_switch["liquid_level_3_switch"]:
         check_level("Delay_level3", "level3", True)
     else:
-        warning_data['error']["level3"] = False
+        warning_data["error"]["level3"] = False
 
-    
     check_level("Delay_power24v1", "power24v1", True)
     check_level("Delay_power24v2", "power24v2", True)
-
 
     check_input("Delay_leakage1_leak", "leakage1_leak", True)
     check_input("Delay_leakage1_broken", "leakage1_broken", True)
@@ -2486,14 +2484,11 @@ def set_warning_registers(mode):
     # print(f'bit_input_regs["Inv1_Error"]:{bit_input_regs["Inv1_Error"]}')
     # print(f'bit_input_regs["Inv2_Error"]:{bit_input_regs["Inv2_Error"]}')
     # print(f'bit_input_regs["Inv3_Error"]:{bit_input_regs["Inv3_Error"]}')
-    
-    
-
 
     check_overload_error("Delay_Inv1_OverLoad")
     check_overload_error("Delay_Inv2_OverLoad")
     check_overload_error("Delay_Inv3_OverLoad")
-    
+
     check_overload_error("Delay_Fan_OverLoad1")
     check_overload_error("Delay_Fan_OverLoad2")
 
@@ -2677,8 +2672,6 @@ def set_warning_registers(mode):
         "A",
     )
 
-    
-
     check_high_warning(
         "Thr_W_AC_H",
         "Thr_W_Rst_AC_H",
@@ -2740,8 +2733,7 @@ def set_warning_registers(mode):
     #         warning_data["error"][f"Inv{i}_Freq_communication"] = True
     #     else:
     #         warning_data["error"][f"Inv{i}_Freq_communication"] = False
-            
-        
+
     warning_key = list(warning_data["warning"].keys())
     warning_key_len = len(warning_data["warning"].keys())
     warning_reg = (warning_key_len // 16) + (1 if warning_key_len % 16 != 0 else 0)
@@ -2784,7 +2776,7 @@ def set_warning_registers(mode):
         # warning_data["error"]["Fan6Com_communication"] = True
         # warning_data["error"]["Fan7Com_communication"] = True
         # warning_data["error"]["Fan8Com_communication"] = True
-        
+
         # warning_data["error"]["fan1_error"] = True
         # warning_data["error"]["fan2_error"] = True
         # warning_data["error"]["fan3_error"] = True
@@ -2795,10 +2787,10 @@ def set_warning_registers(mode):
         # warning_data["error"]["pc1_error"] = True
         # warning_data["error"]["pc2_error"] = True
         # warning_data["error"]["level1"] = False
-        
+
         # warning_data["error"]["Fan_OverLoad1"] = True
         # warning_data["error"]["Fan_OverLoad2"] = True
-    
+
         # warning_data["error"]["Prsr_ClntSply_broken"] = True #P1
         # warning_data["error"]["Prsr_ClntSplySpare_broken"] = False  #P1sp
 
@@ -2902,6 +2894,7 @@ def set_warning_registers(mode):
                 bit_output_regs["led_err"] = False
         except Exception as e:
             print(f"warning light error:{e}")
+
 
 ### 轉換 freq
 def translate_pump_speed(speed):
@@ -3052,7 +3045,7 @@ def trigger_overload_from_oc_detection():
 def check_mc():
     # print(f'bit_input_regs["Inv1_Error"]{bit_input_regs["Inv1_Error"]}')
 
-        #抓取前端是否勾選MC開關
+    # 抓取前端是否勾選MC開關
     try:
         with ModbusTcpClient(host=modbus_host, port=modbus_port) as client:
             mc = client.read_coils((8192 + 840), 5, unit=modbus_slave_id)
@@ -3063,7 +3056,7 @@ def check_mc():
             mc_fan2_sw = mc.bits[4]
     except Exception as e:
         print(f"mc_switch read: {e}")
-####嘗試做重啟不會讓pump關閉####
+    ####嘗試做重啟不會讓pump關閉####
     if not mc1_sw:
         clear_p1_speed()
     if not mc2_sw:
@@ -3074,20 +3067,32 @@ def check_mc():
         clear_fan_group1_speed()
     if not mc_fan2_sw:
         clear_fan_group2_speed()
-        
+
     ### mc..._sw 為前端各個開關是否為true
-    if not overload_error["Inv1_OverLoad"] and not bit_input_regs["Inv1_Error"] and mc1_sw:
+    if (
+        not overload_error["Inv1_OverLoad"]
+        # and not bit_input_regs["Inv1_Error"]
+        and mc1_sw
+    ):
         bit_output_regs["mc1"] = True
         # print(f'bit_output_regs["mc1"] {bit_output_regs["mc1"]}')
     else:
         bit_output_regs["mc1"] = False
 
-    if not overload_error["Inv2_OverLoad"] and not bit_input_regs["Inv2_Error"] and mc2_sw:
+    if (
+        not overload_error["Inv2_OverLoad"]
+        # and not bit_input_regs["Inv2_Error"]
+        and mc2_sw
+    ):
         bit_output_regs["mc2"] = True
     else:
         bit_output_regs["mc2"] = False
 
-    if not overload_error["Inv3_OverLoad"] and not bit_input_regs["Inv3_Error"] and mc3_sw:
+    if (
+        not overload_error["Inv3_OverLoad"]
+        # and not bit_input_regs["Inv3_Error"]
+        and mc3_sw
+    ):
         bit_output_regs["mc3"] = True
     else:
         bit_output_regs["mc3"] = False
@@ -3101,6 +3106,7 @@ def check_mc():
         bit_output_regs["mc_fan2"] = True
     else:
         bit_output_regs["mc_fan2"] = False
+
 
 def uint16_to_int16(value):
     if value >= 32768:
@@ -3166,7 +3172,7 @@ def close_inv1_auto():
 
     except Exception as e:
         print(f"close inv1: {e}")
-    set_pump1_speed(word_regs["pid_pump_out"])
+    set_pump1_speed(0)
 
 
 def close_inv2_auto():
@@ -3178,7 +3184,7 @@ def close_inv2_auto():
 
     except Exception as e:
         print(f"close inv1: {e}")
-    set_pump2_speed(word_regs["pid_pump_out"])
+    set_pump2_speed(0)
 
 
 def close_inv3_auto():
@@ -3190,7 +3196,7 @@ def close_inv3_auto():
 
     except Exception as e:
         print(f"close inv1: {e}")
-    set_pump3_speed(word_regs["pid_pump_out"])
+    set_pump3_speed(0)
 
 
 def reset_btn_false():
@@ -3251,12 +3257,12 @@ def clear_fan_group1_speed():
             client.write_register((20480 + 7020), 960)
             client.write_register((20480 + 7060), 960)
             client.write_register((20480 + 7100), 960)
-            client.write_register((20480 + 7140), 960)      
+            client.write_register((20480 + 7140), 960)
             client.write_coils((8192 + 850), [False])
             client.write_coils((8192 + 851), [False])
             client.write_coils((8192 + 852), [False])
             client.write_coils((8192 + 853), [False])
-            
+
     except Exception as e:
         print(f"clear fan_group1_speed error:{e}")
 
@@ -3402,6 +3408,7 @@ def cancel_inspection():
 
     print("被切掉模式")
 
+
 ### 檢查是否強制轉換mode
 def check_last_mode_from_inspection(mode_last):
     one_time = True
@@ -3422,7 +3429,6 @@ def check_last_mode_from_inspection(mode_last):
 
 def check_inv_speed():
     try:
-        
         ###  轉換 inv_freq
         with ModbusTcpClient(
             host=modbus_host, port=modbus_port, unit=modbus_slave_id
@@ -3438,6 +3444,7 @@ def check_inv_speed():
             return inv1_v, inv2_v, inv3_v
     except Exception as e:
         print(f"read inv_en error:{e}")
+
 
 ### 切換回強制轉換mode前的mode
 def go_back_to_last_mode(mode):
@@ -3670,7 +3677,7 @@ def control():
 
         if change_to_server2:
             ### 與PLC相同 開始 (要tab一次)
-        
+
             try:
                 restart_server["start"] = time.time()
                 server_error["start"] = time.time()
@@ -4077,8 +4084,8 @@ def control():
                                     serial_sensor_value["Clnt_Flow"] = (
                                         65535 - serial_sensor_value["Clnt_Flow"]
                                     )
-                                # if 3200 > serial_sensor_value["Clnt_Flow"] > 3040:
-                                #     serial_sensor_value["Clnt_Flow"] = 3200
+                                if 3200 > serial_sensor_value["Clnt_Flow"] > 3040:
+                                    serial_sensor_value["Clnt_Flow"] = 3200
                                 sensor_raw["Clnt_Flow"] = serial_sensor_value["Clnt_Flow"]
                                 check_broken("Clnt_Flow")
                                 serial_sensor_value["Clnt_Flow"] = (
@@ -5791,7 +5798,7 @@ def control():
                 time.sleep(1)
             except Exception as e:
                 print(f"TCP Client Error: {e}")
-                        
+                    
             ### 與PLC相同 結束
             try:
                 if restart_server["stage"] == 1:
@@ -5854,7 +5861,7 @@ def rtu_thread():
 
             if change_to_server2:
             ### 與PLC相同 開始 (要tab一次)
-            
+         
                 try:
                     # journal_logger.info(f'start first')
                     if not client.connect():
@@ -6059,7 +6066,7 @@ def rtu_thread():
                     # journal_logger.info(f"485 通訊：{raw_485_comm}")
                 except Exception as e:
                     print(f"enclosed: {e}")
-                                        
+                                            
             ### 與PLC相同 結束
 
     except Exception as e:
@@ -6090,7 +6097,7 @@ def rack_thread():
         if change_to_server2:
             
             ### 與PLC相同 開始 (要tab一次)
-            
+    
             try:
                 try:
                     with ModbusTcpClient(host=modbus_host, port=modbus_port) as client:
