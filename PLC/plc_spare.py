@@ -6043,8 +6043,8 @@ def rtu_thread():
                     try:
                         r = client.read_input_registers(40, 1, unit=10)
                         reg_value = r.registers[0]
-                        bit_index1 = 2  # 第 3 個位元
-                        bit_index2 = 8  # 第 9 個位元
+                        bit_index1 = 3  # 第 3 個位元
+                        bit_index2 = 9  # 第 9 個位元
                         bit_value1 = (reg_value >> bit_index1) & 1
                         bit_value2 = (reg_value >> bit_index2) & 1
                         # print(f'bit_value2:{bit_value2}')
