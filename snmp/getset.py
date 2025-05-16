@@ -638,7 +638,7 @@ def word_to_bool_list(words):
 def send_snmp_trap(oid, target_ip, severity, port=SNMP_TRAP_PORT, value="0"):
     community = snmp_data.get("read_community", "")
     v3_switch = snmp_data.get("v3_switch")
-    oid_severity = (1, 3, 6, 1, 4, 1, 10876, 1, 1, 2, 2, 1)
+    oid_severity = (1, 3, 6, 1, 4, 1, 10876, 301, 1, 2, 2, 1)
 
     if v3_switch:
         errorIndication, errorStatus, errorIndex, varBinds = next(
@@ -686,7 +686,7 @@ def send_snmp_trap(oid, target_ip, severity, port=SNMP_TRAP_PORT, value="0"):
 
 
 def trap(trap_bool_lists, check_switch):
-    base_oid = (1, 3, 6, 1, 4, 1, 10876, 1, 1, 2, 1)
+    base_oid = (1, 3, 6, 1, 4, 1, 10876, 301, 1, 2, 1)
     global index
     index = 0
 
@@ -880,7 +880,7 @@ def Mbus_get():
                 ###增加Plc異常發送trap
                 if data_details["devices"]["ControlUnit"]:
                     send_snmp_trap(
-                        (1, 3, 6, 1, 4, 1, 10876, 1, 1, 2, 1, 127),
+                        (1, 3, 6, 1, 4, 1, 10876, 301, 1, 2, 1, 127),
                         SNMP_TRAP_RECEIVER_IP,
                         severity=3,
                         value="363 PLC Communication Broken Error",
@@ -891,7 +891,7 @@ def Mbus_get():
 
 
 def mib(jsondata):
-    oid = (1, 3, 6, 1, 4, 1, 10876, 1, 1, 1, 4, 1, 1, 0)
+    oid = (1, 3, 6, 1, 4, 1, 10876, 301, 1, 1, 4, 1, 1, 0)
     sensor_len = len(sensor)
     ats_start = sensor_len + 1
     ats_end = sensor_len + 2

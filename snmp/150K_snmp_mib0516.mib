@@ -8,7 +8,7 @@ IMPORTS
          FROM RFC1155-SMI;
 
 ITGSystem OBJECT IDENTIFIER ::= { enterprises 10876 }
-gateway OBJECT IDENTIFIER ::= { ITGSystem 1 }
+gateway OBJECT IDENTIFIER ::= { ITGSystem 301 }
 application OBJECT IDENTIFIER ::= { gateway 1 }
 data OBJECT IDENTIFIER ::= { application 1 }
 
