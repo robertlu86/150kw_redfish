@@ -1245,8 +1245,17 @@ styles %}
                     }
                 }
             }
+            let ats1 = data["ats_status"]["ATS1"];
+            let ats2 = data["ats_status"]["ATS2"];
 
-            for (let key in data["ats_status"]) {
+            if (ats1) {
+                $("#ATS_status").css("color", "black").text("Primary");
+            } else if (ats2) {
+                $("#ATS_status").css("color", "black").text("Secondary");
+            } else {
+                $("#ATS_status").css("color", "black").text("OFF");
+            }
+            /*for (let key in data["ats_status"]) {
                 if (data["ats_status"].hasOwnProperty(key)) {
                     let value = data["ats_status"][key];
                     if (key == "ATS1" && value) {
@@ -1258,7 +1267,7 @@ styles %}
                         $("#ATS_status").css("color", "black").text("OFF");
                     }
                 }
-            }
+            }*/
 
             for (let key in data["unit"]) {
                 if (data["unit"].hasOwnProperty(key)) {
