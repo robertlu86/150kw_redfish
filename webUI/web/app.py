@@ -8130,7 +8130,7 @@ def read_rack_status():
                 pass
 
             try:
-                if sensorData["rack_leak"]["rack2_leak"]:
+                if not sensorData["rack_leak"]["rack2_leak"]:
                     with ModbusTcpClient(host="192.168.3.250", port=502) as client:
                         client.write_coils((8192 + 721), [False])
                     if ctr_data["rack_set"]["rack2_sw"]:
@@ -8168,8 +8168,8 @@ def read_rack_status():
                     host=host["rack3_coil"], port=modbus_port, timeout=0.5
                 ) as client_rack3_coil:
                     r = client_rack3_coil.read_coils(0, 2)
-                    sensorData["rack_leak"]["rack3_leak"] = not r.bits[0]
-                    sensorData["rack_broken"]["rack3_broken"] = not r.bits[1]
+                    sensorData["rack_leak"]["rack3_leak"] =  r.bits[0]
+                    sensorData["rack_broken"]["rack3_broken"] =  r.bits[1]
                     sensorData["rack_no_connection"]["rack3_leak"] = False
             except Exception as e:
                 sensorData["rack_no_connection"]["rack3_leak"] = True
@@ -8177,7 +8177,7 @@ def read_rack_status():
                 pass
 
             try:
-                if sensorData["rack_leak"]["rack3_leak"]:
+                if not sensorData["rack_leak"]["rack3_leak"]:
                     with ModbusTcpClient(host="192.168.3.250", port=502) as client:
                         client.write_coils((8192 + 722), [False])
                     if ctr_data["rack_set"]["rack3_sw"]:
@@ -8215,8 +8215,8 @@ def read_rack_status():
                     host=host["rack4_coil"], port=modbus_port, timeout=0.5
                 ) as client_rack4_coil:
                     r = client_rack4_coil.read_coils(0, 2)
-                    sensorData["rack_leak"]["rack4_leak"] = not r.bits[0]
-                    sensorData["rack_broken"]["rack4_broken"] = not r.bits[1]
+                    sensorData["rack_leak"]["rack4_leak"] = r.bits[0]
+                    sensorData["rack_broken"]["rack4_broken"] = r.bits[1]
                     sensorData["rack_no_connection"]["rack4_leak"] = False
             except Exception as e:
                 sensorData["rack_no_connection"]["rack4_leak"] = True
@@ -8224,7 +8224,7 @@ def read_rack_status():
                 pass
 
             try:
-                if sensorData["rack_leak"]["rack4_leak"]:
+                if not sensorData["rack_leak"]["rack4_leak"]:
                     with ModbusTcpClient(host="192.168.3.250", port=502) as client:
                         client.write_coils((8192 + 723), [False])
                     if ctr_data["rack_set"]["rack4_sw"]:
@@ -8262,8 +8262,8 @@ def read_rack_status():
                     host=host["rack5_coil"], port=modbus_port, timeout=0.5
                 ) as client_rack5_coil:
                     r = client_rack5_coil.read_coils(0, 2)
-                    sensorData["rack_leak"]["rack5_leak"] = not r.bits[0]
-                    sensorData["rack_broken"]["rack5_broken"] = not r.bits[1]
+                    sensorData["rack_leak"]["rack5_leak"] = r.bits[0]
+                    sensorData["rack_broken"]["rack5_broken"] = r.bits[1]
                     sensorData["rack_no_connection"]["rack5_leak"] = False
             except Exception as e:
                 sensorData["rack_no_connection"]["rack5_leak"] = True
@@ -8271,7 +8271,7 @@ def read_rack_status():
                 pass
 
             try:
-                if sensorData["rack_leak"]["rack5_leak"]:
+                if not sensorData["rack_leak"]["rack5_leak"]:
                     with ModbusTcpClient(host="192.168.3.250", port=502) as client:
                         client.write_coils((8192 + 724), [False])
                     if ctr_data["rack_set"]["rack5_sw"]:
@@ -8309,8 +8309,8 @@ def read_rack_status():
                     host=host["rack6_coil"], port=modbus_port, timeout=0.5
                 ) as client_rack6_coil:
                     r = client_rack6_coil.read_coils(0, 2)
-                    sensorData["rack_leak"]["rack6_leak"] = not r.bits[0]
-                    sensorData["rack_broken"]["rack6_broken"] = not r.bits[1]
+                    sensorData["rack_leak"]["rack6_leak"] = r.bits[0]
+                    sensorData["rack_broken"]["rack6_broken"] = r.bits[1]
                     sensorData["rack_no_connection"]["rack6_leak"] = False
             except Exception as e:
                 sensorData["rack_no_connection"]["rack6_leak"] = True
@@ -8318,7 +8318,7 @@ def read_rack_status():
                 pass
 
             try:
-                if sensorData["rack_leak"]["rack5_leak"]:
+                if not sensorData["rack_leak"]["rack6_leak"]:
                     with ModbusTcpClient(host="192.168.3.250", port=502) as client:
                         client.write_coils((8192 + 725), [False])
                     if ctr_data["rack_set"]["rack6_sw"]:
@@ -8356,8 +8356,8 @@ def read_rack_status():
                     host=host["rack7_coil"], port=modbus_port, timeout=0.5
                 ) as client_rack7_coil:
                     r = client_rack7_coil.read_coils(0, 2)
-                    sensorData["rack_leak"]["rack7_leak"] = not r.bits[0]
-                    sensorData["rack_broken"]["rack7_broken"] = not r.bits[1]
+                    sensorData["rack_leak"]["rack7_leak"] = r.bits[0]
+                    sensorData["rack_broken"]["rack7_broken"] = r.bits[1]
                     sensorData["rack_no_connection"]["rack7_leak"] = False
             except Exception as e:
                 sensorData["rack_no_connection"]["rack7_leak"] = True
@@ -8365,7 +8365,7 @@ def read_rack_status():
                 pass
 
             try:
-                if sensorData["rack_leak"]["rack7_leak"]:
+                if not sensorData["rack_leak"]["rack7_leak"]:
                     with ModbusTcpClient(host="192.168.3.250", port=502) as client:
                         client.write_coils((8192 + 726), [False])
                     if ctr_data["rack_set"]["rack7_sw"]:
@@ -8404,8 +8404,8 @@ def read_rack_status():
                     host=host["rack8_coil"], port=modbus_port, timeout=0.5
                 ) as client_rack8_coil:
                     r = client_rack8_coil.read_coils(0, 2)
-                    sensorData["rack_leak"]["rack8_leak"] = not r.bits[0]
-                    sensorData["rack_broken"]["rack8_broken"] = not r.bits[1]
+                    sensorData["rack_leak"]["rack8_leak"] = r.bits[0]
+                    sensorData["rack_broken"]["rack8_broken"] = r.bits[1]
                     sensorData["rack_no_connection"]["rack8_leak"] = False
             except Exception as e:
                 sensorData["rack_no_connection"]["rack8_leak"] = True
@@ -8413,7 +8413,7 @@ def read_rack_status():
                 pass
 
             try:
-                if sensorData["rack_leak"]["rack8_leak"]:
+                if not sensorData["rack_leak"]["rack8_leak"]:
                     with ModbusTcpClient(host="192.168.3.250", port=502) as client:
                         client.write_coils((8192 + 727), [False])
                     if ctr_data["rack_set"]["rack8_sw"]:
@@ -8451,8 +8451,8 @@ def read_rack_status():
                     host=host["rack9_coil"], port=modbus_port, timeout=0.5
                 ) as client_rack9_coil:
                     r = client_rack9_coil.read_coils(0, 2)
-                    sensorData["rack_leak"]["rack9_leak"] = not r.bits[0]
-                    sensorData["rack_broken"]["rack9_broken"] = not r.bits[1]
+                    sensorData["rack_leak"]["rack9_leak"] = r.bits[0]
+                    sensorData["rack_broken"]["rack9_broken"] = r.bits[1]
                     sensorData["rack_no_connection"]["rack9_leak"] = False
             except Exception as e:
                 sensorData["rack_no_connection"]["rack9_leak"] = True
@@ -8460,7 +8460,7 @@ def read_rack_status():
                 pass
 
             try:
-                if sensorData["rack_leak"]["rack9_leak"]:
+                if not sensorData["rack_leak"]["rack9_leak"]:
                     with ModbusTcpClient(host="192.168.3.250", port=502) as client:
                         client.write_coils((8192 + 728), [False])
                     if ctr_data["rack_set"]["rack9_sw"]:
@@ -8499,8 +8499,8 @@ def read_rack_status():
                     host=host["rack10_coil"], port=modbus_port, timeout=0.5
                 ) as client_rack10_coil:
                     r = client_rack10_coil.read_coils(0, 2)
-                    sensorData["rack_leak"]["rack10_leak"] = not r.bits[0]
-                    sensorData["rack_broken"]["rack10_broken"] = not r.bits[1]
+                    sensorData["rack_leak"]["rack10_leak"] = r.bits[0]
+                    sensorData["rack_broken"]["rack10_broken"] = r.bits[1]
                     sensorData["rack_no_connection"]["rack10_leak"] = False
             except Exception as e:
                 sensorData["rack_no_connection"]["rack10_leak"] = True
@@ -8508,7 +8508,7 @@ def read_rack_status():
                 pass
 
             try:
-                if sensorData["rack_leak"]["rack10_leak"]:
+                if not sensorData["rack_leak"]["rack10_leak"]:
                     with ModbusTcpClient(host="192.168.3.250", port=502) as client:
                         client.write_coils((8192 + 729), [False])
                     if ctr_data["rack_set"]["rack10_sw"]:
