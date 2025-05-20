@@ -2619,9 +2619,10 @@ object_version = {
 class DisplayVersion(Resource): 
     def get(self):
         rep = {}  
-        version = get_version_json()
-        for key in object_version:
-            rep[key] = version[key]
+        # version = get_version_json()
+        # for key in object_version:
+        #     rep[key] = version[key]
+        rep = get_version_json()
         return rep, 200
 
 
