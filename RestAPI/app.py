@@ -2235,14 +2235,13 @@ upload_parser.add_argument("file", location="files", required=True, help="請上
 
 # 目標 API 端點
 TARGET_SERVERS = {
-    "upload/main/service.zip": "http://192.168.3.100:5501/api/v1/upload_zip",
+    "upload/main/service.zip": "http://192.168.3.137:5501/api/v1/upload_zip",
     "upload/spare/service.zip": "http://192.168.3.101:5501/api/v1/upload_zip",
 }
 
 # 定義上傳 API
 @default_ns.route("/update_firmware")
 #curl -X POST "http://127.0.0.1:5001/api/v1/update_firmware" -F "file=@/path/to/upload.zip"
-
 class UploadZipFile(Resource):
     @default_ns.expect(upload_parser)
     def post(self):
@@ -2601,6 +2600,31 @@ class SensorsSummary(Resource):
             return plc_error()        
         
         return rep    
+# 0512新增
+def get_version_json():
+    try:
+        with open(f"{web_path}/fw_info_version.json", "r") as json_file:
+            data = json.load(json_file)
+            return data
+    except Exception as e:
+        print(f"read fw_info_version error: {e}")
+        return e
+
+object_version = {
+    "WebUI",
+    "PLC"
+}
+
+@default_ns.route("/cdu/components/display/version")
+class DisplayVersion(Resource): 
+    def get(self):
+        rep = {}  
+        # version = get_version_json()
+        # for key in object_version:
+        #     rep[key] = version[key]
+        rep = get_version_json()
+        return rep, 200
+
 
 api.add_namespace(default_ns)
 
