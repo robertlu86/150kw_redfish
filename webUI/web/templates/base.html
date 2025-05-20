@@ -245,7 +245,7 @@
                         </li>
                     </ul>
                 </li>
-                {% endif %} {% if user == 'superuser' or user == 'admin' %}
+                {% endif %} {% if user == 'superuser' or user == 'admin' or user == 'user' %}
                 <li class="nav-item nav-engineermode">
                     <a class="nav-link" href="/engineerMode">Engineer Mode</a>
                 </li>
@@ -698,8 +698,8 @@
                     ///將get_data傳到全域, 讓其他html也可以使用
                     window.sharedData.data = data;
                     window.sharedData.version = version;
-                    console.log(`version_level_1:${version["liquid_level_1_switch"]}`);
-                    console.log(`coolant_quality_meter_switch:${version["coolant_quality_meter_switch"]}`);
+                    // console.log(`version_level_1:${version["liquid_level_1_switch"]}`);
+                    // console.log(`coolant_quality_meter_switch:${version["coolant_quality_meter_switch"]}`);
                     
                     change_light(data, version);
                     

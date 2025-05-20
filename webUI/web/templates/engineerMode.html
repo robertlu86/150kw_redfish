@@ -2983,6 +2983,7 @@ block styles %}
     </div>
     {% endif %}
 
+    {% if (user == 'admin') or (user == 'superuser') %}
     <div class="screen_setting title" data-default="collapsed" data-label="Status Indicator Setting">
         <div class="data-before-trigger"></div>
         <div class="content">
@@ -3006,7 +3007,9 @@ block styles %}
             </div>
         </div>
     </div>
+    {% endif %}
 
+    {% if (user == 'admin') or (user == 'superuser') %}
     <div class="switch_version title" data-default="collapsed" data-label="Switch Version">
         <div class="data-before-trigger"></div>
         <div class="content">
@@ -3086,6 +3089,7 @@ block styles %}
             </div>
         </div>
     </div>
+    {% endif %}
 
     {% if (user == 'admin') or (user == 'superuser') %}
 
@@ -3183,7 +3187,7 @@ block styles %}
             </div> -->
 
             <!-- Rack 6 -->
-            <div class="row">
+            <div class="row"  style="display: none"style="display: none">
                 <div class="col-4">
                     <p>Rack 6 Enable:</p>
                 </div>
@@ -3201,7 +3205,7 @@ block styles %}
             </div> -->
 
             <!-- Rack 7 -->
-            <div class="row">
+            <div class="row" style="display: none">
                 <div class="col-4">
                     <p>Rack 7 Enable:</p>
                 </div>
@@ -3219,7 +3223,7 @@ block styles %}
             </div> -->
 
             <!-- Rack 8 -->
-            <div class="row">
+            <div class="row" style="display: none">
                 <div class="col-4">
                     <p>Rack 8 Enable:</p>
                 </div>
@@ -3237,7 +3241,7 @@ block styles %}
             </div> -->
 
             <!-- Rack 9 -->
-            <div class="row">
+            <div class="row" style="display: none">
                 <div class="col-4">
                     <p>Rack 9 Enable:</p>
                 </div>
@@ -3255,7 +3259,7 @@ block styles %}
             </div> -->
 
             <!-- Rack 10 -->
-            <div class="row">
+            <div class="row" style="display: none">
                 <div class="col-4">
                     <p>Rack 10 Enable:</p>
                 </div>
@@ -3542,7 +3546,24 @@ block styles %}
                 },
             });
         }
-
+        if(userType == "admin" || userType == "superuser"){
+            $.ajax({
+                url: "/get_timeout",
+                method: "GET",
+                success: function (data) {
+                    for (var key in data) {
+                        if (data.hasOwnProperty(key)) {
+                            var value = data[key];
+                            var element = document.getElementById(key);
+                            element.value = value;
+                        }
+                    }
+                },
+                error: function (error) {
+                    console.error("Error fetching data:", error);
+                },
+            });
+        }
         $.ajax({
             url: "/get_timeout",
             method: "GET",
