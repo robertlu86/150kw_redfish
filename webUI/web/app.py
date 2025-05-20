@@ -5947,7 +5947,7 @@ def set_timeout():
 @app.route("/get_network_info", methods=["GET"])
 @login_required
 def get_network_info():
-    json_formatted_string = []
+    web_formatted_string = []
 
     network_info_list = collect_allnetwork_info()
 
@@ -5956,7 +5956,7 @@ def get_network_info():
     ]
 
     with open(f"{web_path}/json/network.json", "w") as jsonFile:
-        json.dump(json_formatted_string, jsonFile, indent=4)
+        json.dump(web_formatted_string, jsonFile, indent=4)
 
     return jsonify(
         {
