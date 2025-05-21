@@ -490,5 +490,9 @@
         "fan_mc1": true,
         "fan_mc2": true
     },
-    "cdu_status": "alert"
+    "cdu_status": "alert",
+    "eletricity": {
+        "average_voltage": 0.0,
+        "power_factor": 0.0
+    }
 }

@@ -693,7 +693,12 @@ sensorData = {
         "fan_mc1": False,
         "fan_mc2": False,
     },
-    "cdu_status": False ,
+    "cdu_status": False,
+    # 測試用
+    "eletricity": {
+        "average_voltage": 0,
+        "power_factor": 0,
+    },
 }
 
 ctr_data = {
@@ -3788,7 +3793,24 @@ def read_modbus_data():
             print(f"read status data error:{e}")
 
         # sensorData["value"]['fan_freq1']=5
-
+        # 測試用開始
+        try:
+            with ModbusTcpClient(
+                host=modbus_host, port=modbus_port, unit=modbus_slave_id
+            ) as client:
+                value_reg = (len(sensorData["eletricity"].keys())) * 2
+                r = client.read_holding_registers(7000, 4, unit=modbus_slave_id)
+                keys_list = list(sensorData["eletricity"].keys())
+                
+                for j, i in enumerate(range(0, value_reg, 2)):
+                    temp1 = [r.registers[i], r.registers[i + 1]]
+                    decoder = BinaryPayloadDecoder.fromRegisters(
+                        temp1, byteorder=Endian.Big, wordorder=Endian.Little
+                    )
+                    sensorData["eletricity"][keys_list[j]] = decoder.decode_32bit_float()
+        except Exception as e:
+            print(f"read status data error:{e}")
+        # 測試用結束
         try:
             with ModbusTcpClient(
                 host=modbus_host, port=modbus_port, unit=modbus_slave_id
