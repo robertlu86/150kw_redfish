@@ -3659,19 +3659,22 @@ def read_modbus_data():
                     sensorData["err_log"]["error"]["PLC"],
                 )
                 plc_status_cnt = 0
+                prev_plc_error = False  # 連接恢復正常時，重置 prev_plc_error
         except Exception as e:
             if plc_status_cnt < 3:
                 plc_status_cnt += 1
             else:
                 sensorData["error"]["PLC"] = True
-                if sensorData["err_log"]["error"]["PLC"] not in error_data:
-                    error_data.append(sensorData["err_log"]["error"]["PLC"])
-                app.logger.warning(sensorData["err_log"]["error"]["PLC"])
-                record_signal_on(
-                    sensorData["err_log"]["error"]["PLC"].split()[0],
-                    sensorData["err_log"]["error"]["PLC"],
-                )
-                print(f"plc connection error: {e}")
+                if not prev_plc_error:  # 避免重複記錄
+                    if sensorData["err_log"]["error"]["PLC"] not in error_data:
+                        error_data.append(sensorData["err_log"]["error"]["PLC"])
+                    app.logger.warning(sensorData["err_log"]["error"]["PLC"])
+                    record_signal_on(
+                        sensorData["err_log"]["error"]["PLC"].split()[0],
+                        sensorData["err_log"]["error"]["PLC"],
+                    )
+                    prev_plc_error = True  # 記錄錯誤狀態
+                    print(f"plc connection error: {e}")
 
             time.sleep(1)
             continue
@@ -6817,6 +6820,7 @@ def upload_zip_pc_both():
     #     return jsonify({"message": "Please upload correct file name"}), 400
 
     if not file.filename.endswith(".zip"):
+    # if not file.filename.endswith(".gpg"):
         return jsonify({"message": "Wrong File Type"}), 400
 
     # 定義暫存解壓縮目錄
@@ -6824,6 +6828,7 @@ def upload_zip_pc_both():
     os.makedirs(temp_dir, exist_ok=True)
     
     # 存到本機暫存區
+    # local_zip_path = os.path.join(temp_dir, file.filename.replace(".gpg", ".zip"))
     local_zip_path = os.path.join(temp_dir, file.filename)
     file.save(local_zip_path)
 
