@@ -2610,19 +2610,21 @@ def get_version_json():
         print(f"read fw_info_version error: {e}")
         return e
 
-object_version = {
-    "WebUI",
-    "PLC"
-}
+def get_fw_info():
+    try:
+        with open(f"{web_path}/fw_info.json", "r") as json_file:
+            data = json.load(json_file)
+            return data
+    except Exception as e:
+        print(f"read fw_info error: {e}")
+        return e
 
 @default_ns.route("/cdu/components/display/version")
 class DisplayVersion(Resource): 
     def get(self):
         rep = {}  
-        # version = get_version_json()
-        # for key in object_version:
-        #     rep[key] = version[key]
-        rep = get_version_json()
+        rep["version"] = get_version_json()
+        rep["fw_info"] = get_fw_info()
         return rep, 200
 
 
