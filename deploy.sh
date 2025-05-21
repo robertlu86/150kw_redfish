@@ -64,7 +64,7 @@ else
 fi
 
 #refish Service
-TARGET_SCRIPT="$SCRIPT_DIR/refish-server/deploy_redfish.sh"
+TARGET_SCRIPT="$SCRIPT_DIR/redfish-server/redfish_start.sh"
 
 # Change the permissions to make the script executable
 chmod +x "$TARGET_SCRIPT"
@@ -144,4 +144,3 @@ if [ $? -eq 0 ]; then
 else
     echo "Script failed with exit status $?"
 fi
-
