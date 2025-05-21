@@ -183,7 +183,14 @@ bit_input_regs = {
     "fan7_error": None,
     "fan8_error": None,
 }
+# 測試用開始
+raw_485_data_eletricity = {
+    "average_voltage": 0,
+    "power_factor": 0
+}
 
+raw_485_comm_eletricity = {"average_voltage": False, "power_factor": False}
+# 測試用結束
 raw_485_data = {
     "Clnt_Flow": 0,
     "AmbientTemp": 0,
@@ -4219,7 +4226,20 @@ def control():
                     client.write_registers(5000, registers)
             except Exception as e:
                 print(f"write into thrshd error: {e}")
-
+            # 測試用開始
+            registers_eletricity = []
+            for key in raw_485_data_eletricity:
+                value = raw_485_data_eletricity[key]
+                word1, word2 = cvt_float_byte(value)
+                registers_eletricity.append(word2)
+                registers_eletricity.append(word1)
+            
+            try:
+                with ModbusTcpClient(host=modbus_host, port=modbus_port) as client:
+                    client.write_registers(7000, registers_eletricity)
+            except Exception as e:
+                print(f"write into thrshd error: {e}")
+            # 測試用結束
             trigger_overload_from_oc_detection()
 
             if mode in ["auto", "stop"]:
@@ -5960,8 +5980,31 @@ def rtu_thread():
                 except Exception as e:
                     raw_485_comm["average_current"] = True
                     print(f"Average Current error: {e}")
+                # 測試用開始
+                time.sleep(duration)
+                
+                try:
+                    r = client.read_holding_registers(3025, 2, unit=3)
+                    average_voltage = cvt_registers_to_float(r.registers[1], r.registers[0])
+                    raw_485_data_eletricity["average_voltage"] = average_voltage
+                    raw_485_comm_eletricity["average_voltage"] = False
+                except Exception as e:
+                    raw_485_comm_eletricity["average_voltage"] = True
+                    print(f"Average Voltage error: {e}")
 
+                time.sleep(duration)
 
+                try:
+                    r = client.read_holding_registers(3083, 2, unit=3)
+                    power_factor = cvt_registers_to_float(
+                        r.registers[1], r.registers[0]
+                    )
+                    raw_485_data_eletricity["power_factor"] = power_factor
+                    raw_485_comm_eletricity["power_factor"] = False
+                except Exception as e:
+                    raw_485_comm_eletricity["power_factor"] = True
+                    print(f"Average Voltage error: {e}")
+                # 測試用結束
                 time.sleep(duration)
 
                 pump_units = [1, 2, 11]
