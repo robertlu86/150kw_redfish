@@ -12,6 +12,7 @@ sudo systemctl restart plc.service
 sudo systemctl restart modbusProxy.service
 sudo systemctl restart snmp.service
 sudo systemctl restart restapi.service
+sudo systemctl restart sidecar-redfish.service
 sudo systemctl restart webui.service
 sudo systemctl restart nginx.service
 

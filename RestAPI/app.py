@@ -444,7 +444,7 @@ physical_asset = {
     "FirmwareVersion": "0100",
     "Version": "N/A",
     # "ProductionDate": "20250430",
-    "Manufacturer": "Supermicro",
+    "Manufacturer": "KAORI",
     "Model": "150kw",
     "SerialNumber": "N/A",
     "PartNumber": "N/A",
@@ -2619,10 +2619,8 @@ object_version = {
 class DisplayVersion(Resource): 
     def get(self):
         rep = {}  
-        # version = get_version_json()
-        # for key in object_version:
-        #     rep[key] = version[key]
-        rep = get_version_json()
+        rep["version"] = get_version_json()
+        rep["fw_info"] = get_fw_info()
         return rep, 200
 
 

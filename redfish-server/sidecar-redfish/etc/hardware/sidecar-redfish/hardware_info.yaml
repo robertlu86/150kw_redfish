@@ -1,0 +1,13 @@
+---
+ProjectName: "sidecar-redfish"
+PowerSupply:
+  FirmwareVersion: "1.0"
+  HotPluggable: true
+  InputNominalVoltageType: "AC240V"
+  LineInputStatus: "Normal"
+  Manufacturer: "Supermicro"
+  PartNumber: "123456"
+  PowerCapacityWatts: 1000
+  PowerSupplyType: "AC"
+  SerialNumber: "12345678"
+  
