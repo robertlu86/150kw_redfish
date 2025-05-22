@@ -403,6 +403,7 @@ styles %}
                                 <div class="result resultFan" id="resultFan"></div>
                             </div>
                         </div>
+                        {% if user == 'superuser' or user == 'admin' %}
                         <div class="row">
                             <div class="col-6 center_text">Fan1:</div>
                             <div class="col-3 sideNum">
@@ -491,6 +492,7 @@ styles %}
                                 <div class="result resultFan8" id="resultFan8"></div>
                             </div>
                         </div>
+                        {% endif %}
                     </div>
                     <div id="stop_set" class="stop_set"></div>
                 </div>
@@ -1258,9 +1260,13 @@ styles %}
 
                 for (var key in data["value"]) {
                     if (data["value"].hasOwnProperty(key)) {
+                        if(userType === "user" || userType === "kiosk"){
+                            if (key.includes("fan") && key.includes("_check")) {
+                                continue;
+                            }
+                        }
                         var value = data["value"][key];
                         var element = document.getElementById(key);
-
                         if (!key.includes("result")) {
                             if (data["value"].hasOwnProperty(key)) {
                                 var value = data["value"][key];
@@ -1282,9 +1288,7 @@ styles %}
                                             value = Math.round(value);
                                             element.value = value;
                                         }
-                                    }
-
-                                    else {
+                                    }else {
                                         if (element) {
                                             value = Math.round(value);
                                             element.value = value;
@@ -1456,9 +1460,24 @@ styles %}
                     }
                 }
             }
+            const except_keys = [
+                "resultFan1",
+                "resultFan2",
+                "resultFan3",
+                "resultFan4",
+                "resultFan5",
+                "resultFan6",
+                "resultFan7",
+                "resultFan8",
+            ]
             for (var key in data["value"]) {
                 if (key.includes("result")) {
                     if (data["value"].hasOwnProperty(key)) {
+                        if(userType === "user" || userType === "kiosk"){
+                            if (except_keys.includes(key)) {
+                                continue;
+                            }
+                        }
                         var value = data["value"][key];
                         var element = document.getElementById(key);
                         if (typeof value === "string") {
@@ -2190,6 +2209,9 @@ styles %}
             let p1 = $("#pump1_check").prop("checked");
             let p2 = $("#pump2_check").prop("checked");
             let p3 = $("#pump3_check").prop("checked");
+            let oil_pressure_set = $("#oil_pressure_set").val();
+            let oil_temp_set = $("#oil_temp_set").val();
+            let swap = $("#p_swap").val();
             let f1 = $("#fan1_check").prop("checked");
             let f2 = $("#fan2_check").prop("checked");
             let f3 = $("#fan3_check").prop("checked");
@@ -2198,9 +2220,6 @@ styles %}
             let f6 = $("#fan6_check").prop("checked");
             let f7 = $("#fan7_check").prop("checked");
             let f8 = $("#fan8_check").prop("checked");
-            let oil_pressure_set = $("#oil_pressure_set").val();
-            let oil_temp_set = $("#oil_temp_set").val();
-            let swap = $("#p_swap").val();
 
             let mode_input = {
                 ps: 0,
@@ -2228,14 +2247,25 @@ styles %}
             mode_input.p1 = $("#pump1_check").prop("checked");
             mode_input.p2 = $("#pump2_check").prop("checked");
             mode_input.p3 = $("#pump3_check").prop("checked");
-            mode_input.f1 = $("#fan1_check").prop("checked");
-            mode_input.f2 = $("#fan2_check").prop("checked");
-            mode_input.f3 = $("#fan3_check").prop("checked");
-            mode_input.f4 = $("#fan4_check").prop("checked");
-            mode_input.f5 = $("#fan5_check").prop("checked");
-            mode_input.f6 = $("#fan6_check").prop("checked");
-            mode_input.f7 = $("#fan7_check").prop("checked");
-            mode_input.f8 = $("#fan8_check").prop("checked");
+            if(userType == "superuser" || userType == "admin"){
+                mode_input.f1 = $("#fan1_check").prop("checked");
+                mode_input.f2 = $("#fan2_check").prop("checked");
+                mode_input.f3 = $("#fan3_check").prop("checked");
+                mode_input.f4 = $("#fan4_check").prop("checked");
+                mode_input.f5 = $("#fan5_check").prop("checked");
+                mode_input.f6 = $("#fan6_check").prop("checked");
+                mode_input.f7 = $("#fan7_check").prop("checked");
+                mode_input.f8 = $("#fan8_check").prop("checked");
+            }else{
+                mode_input.f1 = true;
+                mode_input.f2 = true;
+                mode_input.f3 = true;
+                mode_input.f4 = true;
+                mode_input.f5 = true;
+                mode_input.f6 = true;
+                mode_input.f7 = true;
+                mode_input.f8 = true;
+            }
             mode_input.fan = parseFloat($("#fan_speed").val());
             mode_input.prsr = parseFloat($("#oil_pressure_set").val());
             mode_input.temp = parseFloat($("#oil_temp_set").val());
