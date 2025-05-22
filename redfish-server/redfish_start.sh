@@ -1,8 +1,11 @@
 TARGET_DIR=/home/user/service/redfish-server
 SERVICE_NAME=sidecar-redfish.service
-VENV_PATH=$TARGET_DIR/sidecar-redfish/redfish_venv
+VENV_PATH=$TARGET_DIR/redfish_venv
 SCRIPT_PATH=$TARGET_DIR/sidecar-redfish/app.py
 SYSTEMD_PATH=/etc/systemd/system/$SERVICE_NAME
+
+# 進入目標資料夾
+cd $TARGET_DIR
 
 #安裝python3-venv
 sudo apt install python3.10-venv
@@ -14,7 +17,7 @@ python3 -m venv $VENV_PATH
 source $VENV_PATH/bin/activate
 
 # 安裝 requirements.txt 中的依賴
-pip install --no-index --find-links=./wheelhouse --upgrade -r sidecar-redfish/requirements.txt || true
+pip install --no-index --find-links=./wheelhouse --upgrade -r requirements.txt || true
 
 
 # 創建 service 檔案
@@ -26,7 +29,7 @@ After=network.target
 [Service]
 User=user
 Group=user
-WorkingDirectory=$TARGET_DIR/sidecar-redfish
+WorkingDirectory=$TARGET_DIR
 Environment="PATH=$VENV_PATH/bin"
 ExecStart=$VENV_PATH/bin/python3 $SCRIPT_PATH
 
