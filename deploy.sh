@@ -64,36 +64,36 @@ else
 fi
 
 #refish Service
-TARGET_SCRIPT="$SCRIPT_DIR/redfish-server/redfish_start.sh"
+# TARGET_SCRIPT="$SCRIPT_DIR/redfish-server/redfish_start.sh"
 
 # Change the permissions to make the script executable
-chmod +x "$TARGET_SCRIPT"
+# chmod +x "$TARGET_SCRIPT"
 
 # Execute the script
-"$TARGET_SCRIPT"
+# "$TARGET_SCRIPT"
 
 # Optional: Check the exit status of the executed script
-if [ $? -eq 0 ]; then
-    echo "Script executed successfully"
-else
-    echo "Script failed with exit status $?"
-fi
+# if [ $? -eq 0 ]; then
+#     echo "Script executed successfully"
+# else
+#     echo "Script failed with exit status $?"
+# fi
 
 #network
-TARGET_SCRIPT="$SCRIPT_DIR/network.sh"
+# TARGET_SCRIPT="$SCRIPT_DIR/network.sh"
 
 # Change the permissions to make the script executable
-chmod +x "$TARGET_SCRIPT"
+# chmod +x "$TARGET_SCRIPT"
 
 # Execute the script
-"$TARGET_SCRIPT"
+# "$TARGET_SCRIPT"
 
 # Optional: Check the exit status of the executed script
-if [ $? -eq 0 ]; then
-    echo "Script executed successfully"
-else
-    echo "Script failed with exit status $?"
-fi
+# if [ $? -eq 0 ]; then
+#     echo "Script executed successfully"
+# else
+#     echo "Script failed with exit status $?"
+# fi
 
 #RestAPI Service
 TARGET_SCRIPT="$SCRIPT_DIR/RestAPI/restapi.sh"
