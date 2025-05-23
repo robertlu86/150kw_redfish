@@ -8,7 +8,7 @@ SYSTEMD_PATH=/etc/systemd/system/$SERVICE_NAME
 cd $TARGET_DIR
 
 #安裝python3-venv
-sudo apt install python3.10-venv
+# sudo apt install python3.10-venv
 
 # 建立 venv 環境
 python3 -m venv $VENV_PATH
