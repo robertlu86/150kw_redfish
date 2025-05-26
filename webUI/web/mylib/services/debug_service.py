@@ -16,14 +16,15 @@ class DebugService(BaseService):
             "ls_al_service": self.report_ls_al_service(),
             "ls_al_service_RestAPI": self.report_ls_al_service_RestAPI(),
             "ls_al_service_sidecar_redfish": self.report_ls_al_service_sidecar_redfish(),
+            "pip_list_of_sidecar_redfish": self.report_pip_list_of_sidecar_redfish(),
+            "pip_list_of_RestAPI": self.report_pip_list_of_RestAPI(),
         }
 
     
 
     def report_all_listen_ports(self):
-        if platform.system() == 'Linux':
-            return self.exec_command("netstat -ltnp")
-        elif platform.system() == 'Darwin':  # macOS
+        if platform.system() in ['Linux', 'Darwin']:
+            # return self.exec_command("netstat -ltnp")
             return self.exec_command("lsof -i -P | grep LISTEN")
         elif platform.system() == 'Windows':
             return self.exec_command("netstat -ltnp")
@@ -36,6 +37,13 @@ class DebugService(BaseService):
     
     def report_ls_al_service_sidecar_redfish(self):
         return self.exec_command("ls -al /home/user/service/redfish-server/sidecar-redfish")
+
+
+    def report_pip_list_of_sidecar_redfish(self):
+        return self.exec_command("source /home/user/service/redfish-server/redfish_venv/bin/activate; pip list")
+
+    def report_pip_list_of_RestAPI(self):
+        return self.exec_command("source /home/user/service/RestAPI/apienv/bin/activate; pip list")
 
     def _build_curl_get_command(self, uri):
         return f"curl -k '{uri}' -H 'accept: application/json' -u admin:admin --connect-timeout 5"
