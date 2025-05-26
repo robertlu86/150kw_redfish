@@ -5894,7 +5894,7 @@ def rtu_thread():
                             print("Failed to connect to Modbus server")
                             journal_logger.info("Failed to connect to Modbus server")
                             prev_plc_error = True  # 記錄錯誤狀態
-                            
+
                         time.sleep(2)
                         continue
 
@@ -5902,7 +5902,7 @@ def rtu_thread():
                         # journal_logger.info(f'in first')
                         r = client.read_holding_registers(2, 2, unit=4)
                         prev_plc_error = False  # 連接恢復正常時，重置 prev_plc_error
-                        
+
                         t3 = cvt_registers_to_float(r.registers[0], r.registers[1])
                         raw_485_data["AmbientTemp"] = t3
                         raw_485_comm["AmbientTemp"] = False
@@ -5969,7 +5969,7 @@ def rtu_thread():
 
                     try:
                         r = client.read_holding_registers(3059, 2, unit=3)
-                        
+
                         instant = cvt_registers_to_float(r.registers[1], r.registers[0])
                         # journal_logger.info(f'instant:{instant}')
                         raw_485_data["inst_power"] = instant
@@ -5986,7 +5986,7 @@ def rtu_thread():
                         # journal_logger.info(f'r.registers[1]:{r.registers[1]}')
                         ac = cvt_registers_to_float(r.registers[1], r.registers[0])
                         # journal_logger.info(f'ac:{ac}')
-                        
+
                         raw_485_data["average_current"] = ac
                         raw_485_comm["average_current"] = False
                     except Exception as e:
@@ -5994,10 +5994,12 @@ def rtu_thread():
                         print(f"Average Current error: {e}")
                     # 測試用開始
                     time.sleep(duration)
-                    
+
                     try:
                         r = client.read_holding_registers(3025, 2, unit=3)
-                        average_voltage = cvt_registers_to_float(r.registers[1], r.registers[0])
+                        average_voltage = cvt_registers_to_float(
+                            r.registers[1], r.registers[0]
+                        )
                         raw_485_data_eletricity["average_voltage"] = average_voltage
                         raw_485_comm_eletricity["average_voltage"] = False
                     except Exception as e:
@@ -6005,9 +6007,9 @@ def rtu_thread():
                         print(f"Average Voltage error: {e}")
 
                     time.sleep(duration)
-
+                    # Apparent Power
                     try:
-                        r = client.read_holding_registers(3083, 2, unit=3)
+                        r = client.read_holding_registers(3075, 2, unit=3)
                         power_factor = cvt_registers_to_float(
                             r.registers[1], r.registers[0]
                         )
@@ -6037,7 +6039,6 @@ def rtu_thread():
                     fan_units = [12, 13, 14, 15, 16, 17, 18, 19]
                     # fan_units_6 = [16, 17, 18, 12, 13, 14]
                     fan_units_6 = [12, 13, 14, 16, 17, 18]
-                    
 
                     if ver_switch["fan_count_switch"]:
                         for i, unit in enumerate(fan_units_6, start=1):
@@ -6062,7 +6063,7 @@ def rtu_thread():
                                 raw_485_comm[f"Fan{i}Com"] = True
                                 print(f"Fan {i} error: {e}")
 
-                            time.sleep(duration)      
+                            time.sleep(duration)
 
                     # try:
                     #     r = client.read_discrete_inputs(6, 9, unit=10)
@@ -6075,14 +6076,14 @@ def rtu_thread():
                     #     raw_485_data["ATS2"] = ats2 == 1
                     #     raw_485_comm["ATS1"] = False
                     #     raw_485_comm["ATS2"] = False
-                                        
+
                     # except Exception as e:
                     #     raw_485_comm["ATS1"] = True
                     #     raw_485_comm["ATS2"] = True
                     #     print(f"ATS error: {e}")
 
                     # time.sleep(duration)
-                    
+
                     # ### 嘗試讀取 add = 40, 並拆分出第3及第9個位元
                     try:
                         r = client.read_input_registers(40, 1, unit=10)
@@ -6098,7 +6099,7 @@ def rtu_thread():
                         raw_485_data["ATS2"] = ats2 == 1
                         raw_485_comm["ATS1"] = False
                         raw_485_comm["ATS2"] = False
-                                        
+
                     except Exception as e:
                         raw_485_comm["ATS1"] = True
                         # raw_485_comm["ATS2"] = True
@@ -6110,7 +6111,7 @@ def rtu_thread():
                     # journal_logger.info(f"485 通訊：{raw_485_comm}")
                 except Exception as e:
                     print(f"enclosed: {e}")
-                                            
+                                
             ### 與PLC相同 結束
 
     except Exception as e:
