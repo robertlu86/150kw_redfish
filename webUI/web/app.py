@@ -34,6 +34,7 @@ from pymodbus.constants import Endian
 from pymodbus.payload import BinaryPayloadDecoder
 from logging.handlers import RotatingFileHandler
 from concurrent_log_handler import ConcurrentTimedRotatingFileHandler
+from mylib.services.debug_service import DebugService
 
 load_dotenv()
 app = Flask(__name__)
@@ -4907,6 +4908,15 @@ def read_modbus_data():
 def login_page():
     return render_template("login.html")
 
+@app.route("/debug")
+def debug():
+    # check port of web services
+    debug_service = DebugService()
+    t1 = time.time()
+    report = debug_service.load_report()
+    t2 = time.time()
+    report["time_elapsed"] = t2 - t1
+    return jsonify(report)
 
 @app.route("/status")
 @login_required
