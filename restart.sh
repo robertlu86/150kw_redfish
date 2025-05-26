@@ -67,6 +67,7 @@ declare -A services=(
     ["RestAPI"]="/home/user/service/RestAPI/apienv"
     ["modbus_proxy"]="/home/user/service/modbus_proxy/venv"
     ["snmp"]="/home/user/service/snmp/snmpvenv"
+    ["RedFish"]="/home/user/service/redfish-server/redfish_venv"
 )
 
 declare -A service_scripts=(
@@ -75,6 +76,7 @@ declare -A service_scripts=(
     ["RestAPI"]="/home/user/service/RestAPI/restapi.sh"
     ["modbus_proxy"]="/home/user/service/modbus_proxy/modbusProxy_service.sh"
     ["snmp"]="/home/user/service/snmp/snmp_service.sh"
+    ["RedFish"]="/home/user/service/redfish-server/redfish_start.sh"
 )
 
 # 創建 venv（如果不存在）

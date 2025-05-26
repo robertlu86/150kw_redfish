@@ -157,8 +157,8 @@ if __name__ == "__main__":
     address_mapping = [
         (1700, 2, 1), # Holding 1700~1701 對應到 Input Coils 10001~10024
         (1705, 2, 25), # Holding 1705~1706 對應到 Input Coils 10025~10048
-        (1708, 4, 49), # Holding 1708~1711 對應到 Input Coils 10049~10112
-        (1715, 2, 113), # Holding 1715~1716 對應到 Input Coils 10113~10150
+        (1708, 4, 49), # Holding 1708~1711 對應到 Input Coils 10049~10111
+        (1715, 3, 112), # Holding 1715~1717 對應到 Input Coils 10112~10145
         (1000, 100, 1), # Holding 1000~1099 對應到 Input Registers 30001~30100
         (1100, 100, 101), # Holding 1100~1199 對應到 Input Registers 30101~30200
         (1200, 71, 201), # Holding 1200~1299 對應到 Input Registers 30201~30300

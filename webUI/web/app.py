@@ -57,8 +57,8 @@ else:
 if onLinux:
     modbus_host = os.environ.get("MODBUS_IP")
 else:
-    # modbus_host = "192.168.3.250"
-    modbus_host = "127.0.0.1"
+    modbus_host = "192.168.3.250"
+    # modbus_host = "127.0.0.1"
 
 modbus_port = 502
 modbus_slave_id = 1
@@ -73,6 +73,7 @@ debug = os.environ.get("NODEBUG") == "False"
 previous_warning_states = {}
 previous_alert_states = {}
 previous_error_states = {}
+previous_rack_states = {}
 prev_plc_error = False
 if onLinux:
     from web.auth import (
@@ -413,6 +414,10 @@ sensorData = {
         "rack8_error": False,
         "rack9_error": False,
         "rack10_error": False,
+        "rack_leakage1_leak": False,
+        "rack_leakage1_broken": False,
+        "rack_leakage2_leak": False,
+        "rack_leakage2_broken": False,
     },
     "err_log": {
         "warning": {
@@ -471,23 +476,23 @@ sensorData = {
             "Inv1_OverLoad": "M300 Coolant Pump1 Inverter Overload",
             "Inv2_OverLoad": "M301 Coolant Pump2 Inverter Overload",
             "Inv3_OverLoad": "M302 Coolant Pump3 Inverter Overload",
-            "Fan_OverLoad1": "M303 Fan1 Inverter Overload",
-            "Fan_OverLoad2": "M304 Fan2 Inverter Overload",
+            "Fan_OverLoad1": "M303 Fan Group1 Overload",
+            "Fan_OverLoad2": "M304 Fan Group2 Overload",
             "Inv1_Error": "M305 Coolant Pump1 Inverter Error",
             "Inv2_Error": "M306 Coolant Pump2 Inverter Error",
             "Inv3_Error": "M307 Coolant Pump3 Inverter Error",
-            "ATS1": "M308 Factory Power Status",
+            "ATS1": "M308 Primary Power Broken",
             "Inv1_Com": "M309 Inverter1 Communication Error",
             "Inv2_Com": "M310 Inverter2 Communication Error",
             "Inv3_Com": "M311 Inverter3 Communication Error",
             # "Clnt_Flow_Com": "M312 Coolant Flow (F1) Meter Communication Error",
-            "Ambient_Temp_Com": "M313 Ambient Sensor (Ta) Communication Error",
+            "Ambient_Temp_Com": "M313 Ambient Sensor (Ta, RH, TDp) Communication Error",
             "Relative_Humid_Com": "M314 Relative Humidity (RH) Communication Error",
             "Dew_Point_Com": "M315 Dew Point Temperature (TDp) Communication Error",
             "pH_Com": "M316 pH (PH) Sensor Communication Error",
             "Cdct_Sensor_Com": "M317 Conductivity (CON) Sensor Communication Error",
             "Tbd_Com": "M318 Turbidity (Tur) Sensor Communication Error",
-            "ATS1_Com": "M319 ATS 1 Communication Error",
+            "ATS1_Com": "M319 ATS Communication Error",
             "ATS2_Com": "M320 ATS 2 Communication Error",
             "Power_Meter_Com": "M321 Power Meter Communication Error",
             "Average_Current_Com": "M322 Average Current Communication Error",
@@ -564,6 +569,10 @@ sensorData = {
             "rack8_error": "M427 Rack8 error",
             "rack9_error": "M428 Rack9 error",
             "rack10_error": "M429 Rack10 error",
+            "rack_leakage1_leak": "M430 Rack Leakage Sensor 1 Leak",
+            "rack_leakage1_broken": "M431 Rack Leakage Sensor 1 Broken",
+            "rack_leakage2_leak": "M432 Rack Leakage Sensor 2 Leak",
+            "rack_leakage2_broken": "M433 Rack Leakage Sensor 2 Broken",
         },
     },
     "unit": {
@@ -684,7 +693,12 @@ sensorData = {
         "fan_mc1": False,
         "fan_mc2": False,
     },
-    "cdu_status": False ,
+    "cdu_status": False,
+    # 測試用
+    "eletricity": {
+        "average_voltage": 0,
+        "power_factor": 0,
+    },
 }
 
 ctr_data = {
@@ -1012,6 +1026,10 @@ thrshd = OrderedDict(
         "Delay_fan7_error": 0,
         "Delay_fan8_error": 0,
         "Delay_rack_error": 0,
+        "Delay_rack_leakage1_leak": 0,
+        "Delay_rack_leakage1_broken": 0,
+        "Delay_rack_leakage2_leak": 0,
+        "Delay_rack_leakage2_broken": 0,
         "W_TempClntSply_trap": False,
         "A_TempClntSply_trap": False,
         "W_TempClntSplySpare_trap": False,
@@ -1113,6 +1131,10 @@ thrshd = OrderedDict(
         "E_pc1_error_trap": False,
         "E_pc2_error_trap": False,
         "E_plc_trap": False,
+        "E_rack_leakage1_leak_trap": False,
+        "E_rack_leakage1_broken_trap": False,
+        "E_rack_leakage2_leak_trap": False,
+        "E_rack_leakage2_broken_trap": False,
     }
 )
 
@@ -1193,6 +1215,10 @@ time_data = {
         "rack8_error": 0,
         "rack9_error": 0,
         "rack10_error": 0,
+        "rack_leakage1_leak": 0,
+        "rack_leakage1_broken": 0,
+        "rack_leakage2_leak": 0,
+        "rack_leakage2_broken": 0,
     },
     "start": {
         "rack1_broken": 0,
@@ -1225,6 +1251,10 @@ time_data = {
         "rack8_error": 0,
         "rack9_error": 0,
         "rack10_error": 0,
+        "rack_leakage1_leak": 0,
+        "rack_leakage1_broken": 0,
+        "rack_leakage2_leak": 0,
+        "rack_leakage2_broken": 0,
     },
     "end": {
         "rack1_broken": 0,
@@ -1257,6 +1287,10 @@ time_data = {
         "rack8_error": 0,
         "rack9_error": 0,
         "rack10_error": 0,
+        "rack_leakage1_leak": 0,
+        "rack_leakage1_broken": 0,
+        "rack_leakage2_leak": 0,
+        "rack_leakage2_broken": 0,
     },
     "errorlog_start": {
         "rack1": 0,
@@ -1280,7 +1314,10 @@ auto_factory = {"pv1": 80, "pump": 50, "water_min": 20}
 ver_switch = {
     "median_switch": False,
     "coolant_quality_meter_switch": False,
-    "fan_count_switch": False
+    "fan_count_switch": False,
+    "liquid_level_1_switch": False,
+    "liquid_level_2_switch": False,
+    "liquid_level_3_switch": False,
 }
 
 
@@ -1305,7 +1342,7 @@ adjust_factory = {
     "Prsr_FltIn_Offset": 0,
     "Prsr_FltOut_Factor": 500,
     "Prsr_FltOut_Offset": 0,
-    "Clnt_Flow_Factor": 1,
+    "Clnt_Flow_Factor": 2.2,
     "Clnt_Flow_Offset": 0,
     "Ambient_Temp_Factor": 1,
     "Ambient_Temp_Offset": 0,
@@ -1425,6 +1462,10 @@ thrshd_factory = {
     "Delay_power24v1": 0,
     "Delay_power24v2": 0,
     "Delay_rack_error": 0,
+    "Delay_rack_leakage1_broken": 0,
+    "Delay_rack_leakage1_leak": 0,
+    "Delay_rack_leakage2_broken": 0,
+    "Delay_rack_leakage2_leak": 0,
     "E_ATS1_Communication_trap": False,
     "E_ATS2_Communication_trap": False,
     "E_ATS_trap": False,
@@ -1490,6 +1531,10 @@ thrshd_factory = {
     "E_power24v1_trap": False,
     "E_power24v2_trap": False,
     "E_rack_trap": False,
+    "E_rack_leakage1_broken_trap": False,
+    "E_rack_leakage1_leak_trap": False,
+    "E_rack_leakage2_broken_trap": False,
+    "E_rack_leakage2_leak_trap": False,
     "Thr_A_AC_H": 45,
     "Thr_A_AmbientTemp_H": 45,
     "Thr_A_AmbientTemp_L": 18,
@@ -1610,7 +1655,7 @@ thrshd_factory = {
 pid_factory = {
     "temperature": {
         "sample_time_temp": 100,
-        "kp_temp": 50,
+        "kp_temp": 500,
         "ki_time_temp": 10,
         "kd_temp": 0,
         "kd_time_temp": 0,
@@ -3064,12 +3109,12 @@ def read_unit():
 
             if r.bits[0]:
                 setting_limit["control"]["oil_temp_set_up"] = 55.0 * 9.0 / 5.0 + 32.0
-                setting_limit["control"]["oil_temp_set_low"] = 35.0 * 9.0 / 5.0 + 32.0
+                setting_limit["control"]["oil_temp_set_low"] = 25.0 * 9.0 / 5.0 + 32.0
                 setting_limit["control"]["oil_pressure_set_up"] = 750 * 0.145038
                 setting_limit["control"]["oil_pressure_set_low"] = 0
             else:
                 setting_limit["control"]["oil_temp_set_up"] = 55.0
-                setting_limit["control"]["oil_temp_set_low"] = 35.0
+                setting_limit["control"]["oil_temp_set_low"] = 25.0
                 setting_limit["control"]["oil_pressure_set_up"] = 750
                 setting_limit["control"]["oil_pressure_set_low"] = 0
     except Exception as e:
@@ -3537,7 +3582,7 @@ def set_fan1(speed):
 
 def set_fan2(speed):
     base_addr = 20480
-    offsets = [7380, 7400, 7460, 7500]
+    offsets = [7380, 7420, 7460, 7500]
     try:
         with ModbusTcpClient(
             host=modbus_host, port=modbus_port, unit=modbus_slave_id
@@ -3584,6 +3629,7 @@ def read_modbus_data():
         pc2_active, \
         previous_alert_states, \
         previous_error_states, \
+        previous_rack_states, \
         previous_warning_states
     current_date = datetime.now().strftime("%Y-%m-%d")
     last_date = datetime.now().strftime("%Y-%m-%d")
@@ -3596,6 +3642,7 @@ def read_modbus_data():
     error_count = 0
     warning_count = 0
     alert_count = 0
+    rack_count = 0
 
     while True:
         try:
@@ -3612,19 +3659,22 @@ def read_modbus_data():
                     sensorData["err_log"]["error"]["PLC"],
                 )
                 plc_status_cnt = 0
+                prev_plc_error = False  # 連接恢復正常時，重置 prev_plc_error
         except Exception as e:
             if plc_status_cnt < 3:
                 plc_status_cnt += 1
             else:
                 sensorData["error"]["PLC"] = True
-                if sensorData["err_log"]["error"]["PLC"] not in error_data:
-                    error_data.append(sensorData["err_log"]["error"]["PLC"])
-                app.logger.warning(sensorData["err_log"]["error"]["PLC"])
-                record_signal_on(
-                    sensorData["err_log"]["error"]["PLC"].split()[0],
-                    sensorData["err_log"]["error"]["PLC"],
-                )
-                print(f"plc connection error: {e}")
+                if not prev_plc_error:  # 避免重複記錄
+                    if sensorData["err_log"]["error"]["PLC"] not in error_data:
+                        error_data.append(sensorData["err_log"]["error"]["PLC"])
+                    app.logger.warning(sensorData["err_log"]["error"]["PLC"])
+                    record_signal_on(
+                        sensorData["err_log"]["error"]["PLC"].split()[0],
+                        sensorData["err_log"]["error"]["PLC"],
+                    )
+                    prev_plc_error = True  # 記錄錯誤狀態
+                    print(f"plc connection error: {e}")
 
             time.sleep(1)
             continue
@@ -3657,10 +3707,13 @@ def read_modbus_data():
                 ctr_data["mc"]["fan_mc2"] = read_mc3.bits[1]
                 ctr_data["mc"]["fan_mc2_result"] = read_mc3.bits[1]
 
-                read_ver = client.read_coils((8192 + 803), 3)
+                read_ver = client.read_coils((8192 + 803), 6)
                 ver_switch["median_switch"] = read_ver.bits[0]
                 ver_switch["coolant_quality_meter_switch"] = read_ver.bits[1]
                 ver_switch["fan_count_switch"] = read_ver.bits[2]
+                ver_switch["liquid_level_1_switch"] = read_ver.bits[3]
+                ver_switch["liquid_level_2_switch"] = read_ver.bits[4]
+                ver_switch["liquid_level_3_switch"] = read_ver.bits[5]
                 
                 if not os.path.exists(f"{web_path}/json/version.json"):
                     with open(f"{web_path}/json/version.json", "w") as file:
@@ -3740,7 +3793,24 @@ def read_modbus_data():
             print(f"read status data error:{e}")
 
         # sensorData["value"]['fan_freq1']=5
-
+        # 測試用開始
+        try:
+            with ModbusTcpClient(
+                host=modbus_host, port=modbus_port, unit=modbus_slave_id
+            ) as client:
+                value_reg = (len(sensorData["eletricity"].keys())) * 2
+                r = client.read_holding_registers(7000, 4, unit=modbus_slave_id)
+                keys_list = list(sensorData["eletricity"].keys())
+                
+                for j, i in enumerate(range(0, value_reg, 2)):
+                    temp1 = [r.registers[i], r.registers[i + 1]]
+                    decoder = BinaryPayloadDecoder.fromRegisters(
+                        temp1, byteorder=Endian.Big, wordorder=Endian.Little
+                    )
+                    sensorData["eletricity"][keys_list[j]] = decoder.decode_32bit_float()
+        except Exception as e:
+            print(f"read status data error:{e}")
+        # 測試用結束
         try:
             with ModbusTcpClient(
                 host=modbus_host, port=modbus_port, unit=modbus_slave_id
@@ -3757,13 +3827,13 @@ def read_modbus_data():
                             55.0 * 9.0 / 5.0 + 32.0
                         )
                         setting_limit["control"]["oil_temp_set_low"] = (
-                            35.0 * 9.0 / 5.0 + 32.0
+                            25.0 * 9.0 / 5.0 + 32.0
                         )
                         setting_limit["control"]["oil_pressure_set_up"] = 750 * 0.145038
                         setting_limit["control"]["oil_pressure_set_low"] = 0
                     else:
                         setting_limit["control"]["oil_temp_set_up"] = 55.0
-                        setting_limit["control"]["oil_temp_set_low"] = 35.0
+                        setting_limit["control"]["oil_temp_set_low"] = 25.0
                         setting_limit["control"]["oil_pressure_set_up"] = 750.0
                         setting_limit["control"]["oil_pressure_set_low"] = 0
                 else:
@@ -3962,14 +4032,25 @@ def read_modbus_data():
                 inv1_v = inv1.registers[0] / 16000 * 100
                 inv2_v = inv2.registers[0] / 16000 * 100
                 inv3_v = inv3.registers[0] / 16000 * 100
-                fan1_v = fan1.registers[0] / 16000 * 100
-                fan2_v = fan2.registers[0] / 16000 * 100
-                fan3_v = fan3.registers[0] / 16000 * 100
-                fan4_v = fan4.registers[0] / 16000 * 100
-                fan5_v = fan5.registers[0] / 16000 * 100
-                fan6_v = fan6.registers[0] / 16000 * 100
-                fan7_v = fan7.registers[0] / 16000 * 100
-                fan8_v = fan8.registers[0] / 16000 * 100
+                
+                if ver_switch["fan_count_switch"]:
+                    fan1_v = fan1.registers[0] / 16000 * 100
+                    fan2_v = fan2.registers[0] / 16000 * 100
+                    fan3_v = fan3.registers[0] / 16000 * 100
+                    fan4_v = fan5.registers[0] / 16000 * 100
+                    fan5_v = fan6.registers[0] / 16000 * 100
+                    fan6_v = fan7.registers[0] / 16000 * 100
+
+                    
+                else:
+                    fan1_v = fan1.registers[0] / 16000 * 100
+                    fan2_v = fan2.registers[0] / 16000 * 100
+                    fan3_v = fan3.registers[0] / 16000 * 100
+                    fan4_v = fan4.registers[0] / 16000 * 100
+                    fan5_v = fan5.registers[0] / 16000 * 100
+                    fan6_v = fan6.registers[0] / 16000 * 100
+                    fan7_v = fan7.registers[0] / 16000 * 100
+                    fan8_v = fan8.registers[0] / 16000 * 100
                 # journal_logger.info(fan1_v)
                 # journal_logger.info(fan2_v)
                 # journal_logger.info(fan3_v)
@@ -3987,65 +4068,110 @@ def read_modbus_data():
                 if not ctr_data["mc"]["resultMC3"] or not ctr_data["value"]["resultP3"]:
                     inv3_v = 0
                     
-                if (
-                    not ctr_data["mc"]["fan_mc1_result"]
-                    or not ctr_data["value"]["resultFan1"]
-                ):
-                    fan1_v = 0
-                        
-                if (
-                    not ctr_data["mc"]["fan_mc1_result"]
-                    or not ctr_data["value"]["resultFan2"]
-                ):
-                    fan2_v = 0
+                if ver_switch["fan_count_switch"]:
+                    if (
+                        not ctr_data["mc"]["fan_mc1_result"]
+                        or not ctr_data["value"]["resultFan1"]
+                    ):
+                        fan1_v = 0
 
-                if (
-                    not ctr_data["mc"]["fan_mc1_result"]
-                    or not ctr_data["value"]["resultFan3"]
-                ):
-                    fan3_v = 0
-                
-                if (
-                    not ctr_data["mc"]["fan_mc1_result"]
-                    or not ctr_data["value"]["resultFan4"]
-                ):
-                    fan4_v = 0
-                
-                if (
-                    not ctr_data["mc"]["fan_mc2_result"]
-                    or not ctr_data["value"]["resultFan5"]
-                ):
-                    fan5_v = 0
-                
-                if (
-                    not ctr_data["mc"]["fan_mc2_result"]
-                    or not ctr_data["value"]["resultFan6"]
-                ):
-                    fan6_v = 0
-                    
-                if (
-                    not ctr_data["mc"]["fan_mc2_result"]
-                    or not ctr_data["value"]["resultFan7"]
-                ):
-                    fan7_v = 0
-                    
-                if (
-                    not ctr_data["mc"]["fan_mc2_result"]
-                    or not ctr_data["value"]["resultFan8"]
-                ):
-                    fan8_v = 0
+                    if (
+                        not ctr_data["mc"]["fan_mc1_result"]
+                        or not ctr_data["value"]["resultFan2"]
+                    ):
+                        fan2_v = 0
+
+                    if (
+                        not ctr_data["mc"]["fan_mc1_result"]
+                        or not ctr_data["value"]["resultFan3"]
+                    ):
+                        fan3_v = 0
+
+                    if (
+                        not ctr_data["mc"]["fan_mc2_result"]
+                        or not ctr_data["value"]["resultFan4"]
+                    ):
+                        fan4_v = 0
+
+                    if (
+                        not ctr_data["mc"]["fan_mc2_result"]
+                        or not ctr_data["value"]["resultFan5"]
+                    ):
+                        fan5_v = 0
+
+                    if (
+                        not ctr_data["mc"]["fan_mc2_result"]
+                        or not ctr_data["value"]["resultFan6"]
+                    ):
+                        fan6_v = 0
+                else:
+                    if (
+                        not ctr_data["mc"]["fan_mc1_result"]
+                        or not ctr_data["value"]["resultFan1"]
+                    ):
+                        fan1_v = 0
+
+                    if (
+                        not ctr_data["mc"]["fan_mc1_result"]
+                        or not ctr_data["value"]["resultFan2"]
+                    ):
+                        fan2_v = 0
+
+                    if (
+                        not ctr_data["mc"]["fan_mc1_result"]
+                        or not ctr_data["value"]["resultFan3"]
+                    ):
+                        fan3_v = 0
+
+                    if (
+                        not ctr_data["mc"]["fan_mc1_result"]
+                        or not ctr_data["value"]["resultFan4"]
+                    ):
+                        fan4_v = 0
+
+                    if (
+                        not ctr_data["mc"]["fan_mc2_result"]
+                        or not ctr_data["value"]["resultFan5"]
+                    ):
+                        fan5_v = 0
+
+                    if (
+                        not ctr_data["mc"]["fan_mc2_result"]
+                        or not ctr_data["value"]["resultFan6"]
+                    ):
+                        fan6_v = 0
+
+                    if (
+                        not ctr_data["mc"]["fan_mc2_result"]
+                        or not ctr_data["value"]["resultFan7"]
+                    ):
+                        fan7_v = 0
+
+                    if (
+                        not ctr_data["mc"]["fan_mc2_result"]
+                        or not ctr_data["value"]["resultFan8"]
+                    ):
+                        fan8_v = 0
                 
                 ctr_data["inv"]["inv1"] = inv1_v >= 25
                 ctr_data["inv"]["inv2"] = inv2_v >= 25
                 ctr_data["inv"]["inv3"] = inv3_v >= 25
-                ctr_data["inv"]["fan1"] = fan1_v >= 2
-                ctr_data["inv"]["fan2"] = fan2_v >= 2
-                ctr_data["inv"]["fan3"] = fan3_v >= 2
-                ctr_data["inv"]["fan4"] = fan4_v >= 2
-                ctr_data["inv"]["fan5"] = fan5_v >= 2
-                ctr_data["inv"]["fan6"] = fan6_v >= 2
-                ctr_data["inv"]["fan7"] = fan7_v >= 2
-                ctr_data["inv"]["fan8"] = fan8_v >= 2
+                # ctr_data["inv"]["fan1"] = fan1_v >= 2
+                # ctr_data["inv"]["fan2"] = fan2_v >= 2
+                # ctr_data["inv"]["fan3"] = fan3_v >= 2
+                # ctr_data["inv"]["fan4"] = fan4_v >= 2
+                # ctr_data["inv"]["fan5"] = fan5_v >= 2
+                # ctr_data["inv"]["fan6"] = fan6_v >= 2
+                # ctr_data["inv"]["fan7"] = fan7_v >= 2
+                # ctr_data["inv"]["fan8"] = fan8_v >= 2
+                ctr_data["inv"]["fan1"] = fan1_v >= 6
+                ctr_data["inv"]["fan2"] = fan2_v >= 6
+                ctr_data["inv"]["fan3"] = fan3_v >= 6
+                ctr_data["inv"]["fan4"] = fan4_v >= 6
+                ctr_data["inv"]["fan5"] = fan5_v >= 6
+                ctr_data["inv"]["fan6"] = fan6_v >= 6
+                ctr_data["inv"]["fan7"] = fan7_v >= 6
+                ctr_data["inv"]["fan8"] = fan8_v >= 6
         except Exception as e:
             print(f"read inv_en error:{e}")
 
@@ -4065,14 +4191,24 @@ def read_modbus_data():
                 fan = cvt_registers_to_float(r3.registers[0], r3.registers[1])
 
                 r4 = client.read_coils(address=(8192 + 850), count=8)
-                f1 = r4.bits[0]
-                f2 = r4.bits[1]
-                f3 = r4.bits[2]
-                f4 = r4.bits[3]
-                f5 = r4.bits[4]
-                f6 = r4.bits[5]
-                f7 = r4.bits[6]
-                f8 = r4.bits[7]
+                ### 將打勾選項換至4 5 6
+                if ver_switch["fan_count_switch"]:
+                    f1 = r4.bits[0]
+                    f2 = r4.bits[1]
+                    f3 = r4.bits[2]
+                    f4 = r4.bits[4]
+                    f5 = r4.bits[5]
+                    f6 = r4.bits[6]
+
+                else:
+                    f1 = r4.bits[0]
+                    f2 = r4.bits[1]
+                    f3 = r4.bits[2]
+                    f4 = r4.bits[3]
+                    f5 = r4.bits[4]
+                    f6 = r4.bits[5]
+                    f7 = r4.bits[6]
+                    f8 = r4.bits[7]
 
                 ctr_data["value"]["pump_speed"] = ps
                 ctr_data["value"]["pump1_check"] = p1
@@ -4137,8 +4273,27 @@ def read_modbus_data():
 
         if not any(v for k, v in ctr_data["inv"].items() if k.startswith("inv")):
             ctr_data["value"]["resultPS"] = 0
-  ########寫入resultFan 
-        fan_inv_addresses = {"fan1": 7020, "fan2": 7060, "fan3": 7100,"fan4":7140, "fan5":7380, "fan6":7420, "fan7":7460, "fan8":7500}
+        ########寫入resultFan 
+        if ver_switch["fan_count_switch"]:
+            fan_inv_addresses = {
+                "fan1": 7020,
+                "fan2": 7060,
+                "fan3": 7100,
+                "fan4": 7380,
+                "fan5": 7420,
+                "fan6": 7460,
+            }
+        else:
+            fan_inv_addresses = {
+                "fan1": 7020,
+                "fan2": 7060,
+                "fan3": 7100,
+                "fan4": 7140,
+                "fan5": 7380,
+                "fan6": 7420,
+                "fan7": 7460,
+                "fan8": 7500,
+            }
   
         for k, v in ctr_data["inv"].items():
             if k.startswith("fan"):
@@ -4155,7 +4310,8 @@ def read_modbus_data():
                             fs = r.registers[0]
                             fs = fs / 16000 * 100
                             # print(f'fs:{fs}')
-                            if fs < 5:
+                            ###如果速度小於7, 速度就為0
+                            if fs < 7:
                                 fs = 0
                             ctr_data["value"]["resultFan"] = round(fs)
                             break
@@ -4492,6 +4648,70 @@ def read_modbus_data():
             check_cdu_status()  
         except Exception as e:
             print(f"read error issue:{e}")
+            
+        try:
+            with ModbusTcpClient(
+                host=modbus_host, port=modbus_port, unit=modbus_slave_id
+            ) as client:
+                rack_key_len = len(sensorData["rack"].keys())
+                rack_reg = (rack_key_len // 16) + (1 if rack_key_len % 16 != 0 else 0)
+                result = client.read_holding_registers(
+                    1715, rack_reg, unit=modbus_slave_id
+                )
+
+                if not result.isError():
+                    value = (
+                        result.registers[0]
+                        | result.registers[1] << 16
+                        | result.registers[2] << 32
+                    )
+                    binary_string = bin(value)[2:].zfill(rack_key_len)
+                    keys_list = list(sensorData["rack"].keys())
+                    index = -1
+
+                    for key in keys_list:
+                        sensorData["rack"][key] = bool(int(binary_string[index]))
+                        index -= 1
+
+                    for key in keys_list:
+                        if sensorData["rack"][key]:
+                            if sensorData["err_log"]["rack"][key] not in error_data:
+                                error_data.append(sensorData["err_log"]["rack"][key])
+                    rack_count += 1
+
+                    if error_toggle:
+                        if rack_count > 10:
+                            for key in keys_list:
+                                # sensorData["rack"]["rack1_leak"] = False
+                                current_state = sensorData["rack"][key]
+
+                                if key not in previous_rack_states:
+                                    previous_rack_states[key] = False
+
+                                if current_state and not previous_rack_states[key]:
+                                    app.logger.warning(
+                                        sensorData["err_log"]["rack"][key]
+                                    )
+
+                                    record_signal_on(
+                                        sensorData["err_log"]["rack"][key].split()[0],
+                                        sensorData["err_log"]["rack"][key],
+                                    )
+
+                                elif not current_state and previous_rack_states[key]:
+                                    app.logger.info(
+                                        f"{sensorData['err_log']['rack'][key]} Restore"
+                                    )
+
+                                    record_signal_off(
+                                        sensorData["err_log"]["rack"][key].split()[0],
+                                        sensorData["err_log"]["rack"][key],
+                                    )
+                                previous_rack_states[key] = current_state
+                            rack_count = 0
+
+        except Exception as e:
+            print(f"read rack error issue:{e}")
 
         # sensorData["error"] = False
         read_data["control"] = False
@@ -5021,7 +5241,7 @@ def set_operation_mode():
                 {
                     "status": "warning",
                     "title": "Out of Range",
-                    "message": "Temperature setting must be between\n35°C and 55°C (95°F to 131°F).",
+                    "message": "Temperature setting must be between\n25°C and 55°C (77°F to 131°F).",
                 }
             )
         word1, word2 = cvt_float_byte(temp)
@@ -5136,23 +5356,35 @@ def set_operation_mode():
             mc_flag = False
 
             set_p_check([p1, p2, p3])
-            set_f_check([f1, f2, f3, f4, f5, f6, f7, f8])
+            
+            ### 將打勾選項換至4 5 6
+            if ver_switch["fan_count_switch"]:
+                set_f_check([f1, f2, f3, 0, f4, f5, f6, 0])
+            else:
+                set_f_check([f1, f2, f3, f4, f5, f6, f7, f8])
+                
             ### 如果設定值為0, 設定2% 320
             if fan == 0:
                 ### 將傳給PLC的速度設成2
-                set_fan_reg(2)
-                set_fan1(320)
-                set_fan2(320)
+                # set_fan_reg(2)
+                # set_fan1(320)
+                # set_fan2(320)
+                set_fan_reg(6)
+                set_fan1(960)
+                set_fan2(960)
             else:
                 set_fan_reg(float(fan))
 
                 if fan_ol1:
                     flag4 = True
-                    set_fan1(320)
+                    # set_fan1(320)
+                    set_fan1(960)
+                    
 
                 if fan_ol2:
                     flag5 = True
-                    set_fan2(320)
+                    # set_fan2(320)
+                    set_fan2(960)
 
                 if not flag4:
                     final_fan = translate_fan_speed(fan)
@@ -5673,21 +5905,21 @@ def sync_time():
         )
 
         # 重新啟動 webui.service，確保應用程式正確運行
-        result = subprocess.run(
-            ["sudo", "systemctl", "restart", "webui.service"],
-            capture_output=True,
-            text=True,
-        )
-        if result.returncode != 0:
-            return (
-                jsonify(
-                    {
-                        "status": "error",
-                        "message": f"Failed to restart webui service: {result.stderr}",
-                    }
-                ),
-                500,
-            )
+        # result = subprocess.run(
+        #     ["sudo", "systemctl", "restart", "webui.service"],
+        #     capture_output=True,
+        #     text=True,
+        # )
+        # if result.returncode != 0:
+        #     return (
+        #         jsonify(
+        #             {
+        #                 "status": "error",
+        #                 "message": f"Failed to restart webui service: {result.stderr}",
+        #             }
+        #         ),
+        #         500,
+        #     )
 
         op_logger.info(
             f"Time synchronized with {ntp_server} and timezone set to {timezone}."
@@ -5740,7 +5972,7 @@ def set_timeout():
 @app.route("/get_network_info", methods=["GET"])
 @login_required
 def get_network_info():
-    json_formatted_string = []
+    web_formatted_string = []
 
     network_info_list = collect_allnetwork_info()
 
@@ -5749,7 +5981,7 @@ def get_network_info():
     ]
 
     with open(f"{web_path}/json/network.json", "w") as jsonFile:
-        json.dump(json_formatted_string, jsonFile, indent=4)
+        json.dump(web_formatted_string, jsonFile, indent=4)
 
     return jsonify(
         {
@@ -6356,6 +6588,7 @@ def import_settings():
 
                     set_key(f"{web_path}/.env", "USER", USER_DATA["user"])
                     set_key(f"{web_path}/.env", "USER", USER_DATA["kiosk"])
+                    os.chmod(f"{web_path}/.env", 0o666)
 
                 except InvalidToken:
                     return jsonify(
@@ -6586,7 +6819,8 @@ def upload_zip_pc_both():
     # if file.filename != "upload.zip":
     #     return jsonify({"message": "Please upload correct file name"}), 400
 
-    if not file.filename.endswith(".zip"):
+    # if not file.filename.endswith(".zip"):
+    if not file.filename.endswith(".gpg"):
         return jsonify({"message": "Wrong File Type"}), 400
 
     # 定義暫存解壓縮目錄
@@ -6594,7 +6828,8 @@ def upload_zip_pc_both():
     os.makedirs(temp_dir, exist_ok=True)
     
     # 存到本機暫存區
-    local_zip_path = os.path.join(temp_dir, file.filename)
+    local_zip_path = os.path.join(temp_dir, file.filename.replace(".gpg", ".zip"))
+    # local_zip_path = os.path.join(temp_dir, file.filename)
     file.save(local_zip_path)
 
     # 解壓縮 ZIP
@@ -7259,6 +7494,9 @@ def version_switch():
     median_switch = data["median_switch"]
     coolant_quality_meter_switch = data["coolant_quality_meter_switch"]
     fan_count_switch = data["fan_count_switch"]
+    liquid_level_1_switch = data["liquid_level_1_switch"]
+    liquid_level_2_switch = data["liquid_level_2_switch"]
+    liquid_level_3_switch = data["liquid_level_3_switch"]
     
     try:
         with ModbusTcpClient(
@@ -7267,6 +7505,9 @@ def version_switch():
             client.write_coils((8192 + 803), [median_switch])
             client.write_coils((8192 + 804), [coolant_quality_meter_switch])
             client.write_coils((8192 + 805), [fan_count_switch])
+            client.write_coils((8192 + 806), [liquid_level_1_switch])
+            client.write_coils((8192 + 807), [liquid_level_2_switch])
+            client.write_coils((8192 + 808), [liquid_level_3_switch])
         op_logger.info(f"Version setting updated successfully. {data}")
         return jsonify(status="success", message="Version setting updated successfully")
     except Exception as e:
@@ -7661,6 +7902,27 @@ def mc_setting():
 
 update_json_restore_times()
 
+def check_rack_leakage_sensor_status(rack_sensor, inputs, delay):
+    try:
+        if time_data["check"][rack_sensor]:
+            if not inputs:
+                time_data["check"][rack_sensor] = False
+                sensorData["rack"][rack_sensor] = False
+            else:
+                time_data["end"][rack_sensor] = time.perf_counter()
+                passed_time = time_data["end"][rack_sensor] - time_data["start"][rack_sensor]
+
+                if passed_time > thrshd[delay]:
+                    sensorData["rack"][rack_sensor] = True
+        else:
+            if inputs:
+                time_data["start"][rack_sensor] = time.perf_counter()
+                time_data["check"][rack_sensor] = True
+            else:
+                sensorData["rack"][rack_sensor] = False
+    except Exception as e:
+        print(f"check broken error：{e}")
+
 
 def check_rack_error(rack, delay="Delay_rack_error"):
     broken = rack + "_broken"
@@ -7811,7 +8073,10 @@ def read_rack_status():
 
     for key in time_data["errorlog_start"]:
         time_data["errorlog_start"][key] = time.perf_counter()
-
+        
+    rack_enable_count = sum(1 for v in ctr_data["rack_visibility"].values() if v is True)
+    openning_min = 35 + (rack_enable_count - 1) * 5 if rack_enable_count >= 1 else 0
+    
     while True:
         if ctr_data["rack_visibility"]["rack1_enable"]:
             try:
@@ -7821,7 +8086,7 @@ def read_rack_status():
                     r = client_rack1_reg.read_holding_registers(0, 1)
                     result = r.registers[0]
                     sensorData["rack_status"]["rack1_status"] = (
-                        (result - 39321) / 26214 * 100
+                        (result - 39321) / 26214 * openning_min
                     )
                     if sensorData["rack_status"]["rack1_status"] < 0:
                         sensorData["rack_status"]["rack1_status"] = 0
@@ -7868,7 +8133,7 @@ def read_rack_status():
                     r = client_rack2_reg.read_holding_registers(0, 1)
                     result = r.registers[0]
                     sensorData["rack_status"]["rack2_status"] = (
-                        (result - 39321) / 26214 * 100
+                        (result - 39321) / 26214 * openning_min
                     )
                     if sensorData["rack_status"]["rack2_status"] < 0:
                         sensorData["rack_status"]["rack2_status"] = 0
@@ -7892,7 +8157,7 @@ def read_rack_status():
                 pass
 
             try:
-                if sensorData["rack_leak"]["rack2_leak"]:
+                if not sensorData["rack_leak"]["rack2_leak"]:
                     with ModbusTcpClient(host="192.168.3.250", port=502) as client:
                         client.write_coils((8192 + 721), [False])
                     if ctr_data["rack_set"]["rack2_sw"]:
@@ -7915,7 +8180,7 @@ def read_rack_status():
                     r = client_rack3_reg.read_holding_registers(0, 1)
                     result = r.registers[0]
                     sensorData["rack_status"]["rack3_status"] = (
-                        (result - 39321) / 26214 * 100
+                        (result - 39321) / 26214 * openning_min
                     )
                     if sensorData["rack_status"]["rack3_status"] < 0:
                         sensorData["rack_status"]["rack3_status"] = 0
@@ -7930,8 +8195,8 @@ def read_rack_status():
                     host=host["rack3_coil"], port=modbus_port, timeout=0.5
                 ) as client_rack3_coil:
                     r = client_rack3_coil.read_coils(0, 2)
-                    sensorData["rack_leak"]["rack3_leak"] = not r.bits[0]
-                    sensorData["rack_broken"]["rack3_broken"] = not r.bits[1]
+                    sensorData["rack_leak"]["rack3_leak"] =  r.bits[0]
+                    sensorData["rack_broken"]["rack3_broken"] =  r.bits[1]
                     sensorData["rack_no_connection"]["rack3_leak"] = False
             except Exception as e:
                 sensorData["rack_no_connection"]["rack3_leak"] = True
@@ -7939,7 +8204,7 @@ def read_rack_status():
                 pass
 
             try:
-                if sensorData["rack_leak"]["rack3_leak"]:
+                if not sensorData["rack_leak"]["rack3_leak"]:
                     with ModbusTcpClient(host="192.168.3.250", port=502) as client:
                         client.write_coils((8192 + 722), [False])
                     if ctr_data["rack_set"]["rack3_sw"]:
@@ -7962,7 +8227,7 @@ def read_rack_status():
                     r = client_rack4_reg.read_holding_registers(0, 1)
                     result = r.registers[0]
                     sensorData["rack_status"]["rack4_status"] = (
-                        (result - 39321) / 26214 * 100
+                        (result - 39321) / 26214 * openning_min
                     )
                     if sensorData["rack_status"]["rack4_status"] < 0:
                         sensorData["rack_status"]["rack4_status"] = 0
@@ -7977,8 +8242,8 @@ def read_rack_status():
                     host=host["rack4_coil"], port=modbus_port, timeout=0.5
                 ) as client_rack4_coil:
                     r = client_rack4_coil.read_coils(0, 2)
-                    sensorData["rack_leak"]["rack4_leak"] = not r.bits[0]
-                    sensorData["rack_broken"]["rack4_broken"] = not r.bits[1]
+                    sensorData["rack_leak"]["rack4_leak"] = r.bits[0]
+                    sensorData["rack_broken"]["rack4_broken"] = r.bits[1]
                     sensorData["rack_no_connection"]["rack4_leak"] = False
             except Exception as e:
                 sensorData["rack_no_connection"]["rack4_leak"] = True
@@ -7986,7 +8251,7 @@ def read_rack_status():
                 pass
 
             try:
-                if sensorData["rack_leak"]["rack4_leak"]:
+                if not sensorData["rack_leak"]["rack4_leak"]:
                     with ModbusTcpClient(host="192.168.3.250", port=502) as client:
                         client.write_coils((8192 + 723), [False])
                     if ctr_data["rack_set"]["rack4_sw"]:
@@ -8009,7 +8274,7 @@ def read_rack_status():
                     r = client_rack5_reg.read_holding_registers(0, 1)
                     result = r.registers[0]
                     sensorData["rack_status"]["rack5_status"] = (
-                        (result - 39321) / 26214 * 100
+                        (result - 39321) / 26214 * openning_min
                     )
                     if sensorData["rack_status"]["rack5_status"] < 0:
                         sensorData["rack_status"]["rack5_status"] = 0
@@ -8024,8 +8289,8 @@ def read_rack_status():
                     host=host["rack5_coil"], port=modbus_port, timeout=0.5
                 ) as client_rack5_coil:
                     r = client_rack5_coil.read_coils(0, 2)
-                    sensorData["rack_leak"]["rack5_leak"] = not r.bits[0]
-                    sensorData["rack_broken"]["rack5_broken"] = not r.bits[1]
+                    sensorData["rack_leak"]["rack5_leak"] = r.bits[0]
+                    sensorData["rack_broken"]["rack5_broken"] = r.bits[1]
                     sensorData["rack_no_connection"]["rack5_leak"] = False
             except Exception as e:
                 sensorData["rack_no_connection"]["rack5_leak"] = True
@@ -8033,7 +8298,7 @@ def read_rack_status():
                 pass
 
             try:
-                if sensorData["rack_leak"]["rack5_leak"]:
+                if not sensorData["rack_leak"]["rack5_leak"]:
                     with ModbusTcpClient(host="192.168.3.250", port=502) as client:
                         client.write_coils((8192 + 724), [False])
                     if ctr_data["rack_set"]["rack5_sw"]:
@@ -8056,7 +8321,7 @@ def read_rack_status():
                     r = client_rack6_reg.read_holding_registers(0, 1)
                     result = r.registers[0]
                     sensorData["rack_status"]["rack6_status"] = (
-                        (result - 39321) / 26214 * 100
+                        (result - 39321) / 26214 * openning_min
                     )
                     if sensorData["rack_status"]["rack6_status"] < 0:
                         sensorData["rack_status"]["rack6_status"] = 0
@@ -8071,8 +8336,8 @@ def read_rack_status():
                     host=host["rack6_coil"], port=modbus_port, timeout=0.5
                 ) as client_rack6_coil:
                     r = client_rack6_coil.read_coils(0, 2)
-                    sensorData["rack_leak"]["rack6_leak"] = not r.bits[0]
-                    sensorData["rack_broken"]["rack6_broken"] = not r.bits[1]
+                    sensorData["rack_leak"]["rack6_leak"] = r.bits[0]
+                    sensorData["rack_broken"]["rack6_broken"] = r.bits[1]
                     sensorData["rack_no_connection"]["rack6_leak"] = False
             except Exception as e:
                 sensorData["rack_no_connection"]["rack6_leak"] = True
@@ -8080,7 +8345,7 @@ def read_rack_status():
                 pass
 
             try:
-                if sensorData["rack_leak"]["rack5_leak"]:
+                if not sensorData["rack_leak"]["rack6_leak"]:
                     with ModbusTcpClient(host="192.168.3.250", port=502) as client:
                         client.write_coils((8192 + 725), [False])
                     if ctr_data["rack_set"]["rack6_sw"]:
@@ -8103,7 +8368,7 @@ def read_rack_status():
                     r = client_rack7_reg.read_holding_registers(0, 1)
                     result = r.registers[0]
                     sensorData["rack_status"]["rack7_status"] = (
-                        (result - 39321) / 26214 * 100
+                        (result - 39321) / 26214 * openning_min
                     )
                     if sensorData["rack_status"]["rack7_status"] < 0:
                         sensorData["rack_status"]["rack7_status"] = 0
@@ -8118,8 +8383,8 @@ def read_rack_status():
                     host=host["rack7_coil"], port=modbus_port, timeout=0.5
                 ) as client_rack7_coil:
                     r = client_rack7_coil.read_coils(0, 2)
-                    sensorData["rack_leak"]["rack7_leak"] = not r.bits[0]
-                    sensorData["rack_broken"]["rack7_broken"] = not r.bits[1]
+                    sensorData["rack_leak"]["rack7_leak"] = r.bits[0]
+                    sensorData["rack_broken"]["rack7_broken"] = r.bits[1]
                     sensorData["rack_no_connection"]["rack7_leak"] = False
             except Exception as e:
                 sensorData["rack_no_connection"]["rack7_leak"] = True
@@ -8127,7 +8392,7 @@ def read_rack_status():
                 pass
 
             try:
-                if sensorData["rack_leak"]["rack7_leak"]:
+                if not sensorData["rack_leak"]["rack7_leak"]:
                     with ModbusTcpClient(host="192.168.3.250", port=502) as client:
                         client.write_coils((8192 + 726), [False])
                     if ctr_data["rack_set"]["rack7_sw"]:
@@ -8150,7 +8415,7 @@ def read_rack_status():
                     r = client_rack8_reg.read_holding_registers(0, 1)
                     result = r.registers[0]
                     sensorData["rack_status"]["rack8_status"] = (
-                        (result - 39321) / 26214 * 100
+                        (result - 39321) / 26214 * openning_min
                     )
                     if sensorData["rack_status"]["rack8_status"] < 0:
                         sensorData["rack_status"]["rack8_status"] = 0
@@ -8166,8 +8431,8 @@ def read_rack_status():
                     host=host["rack8_coil"], port=modbus_port, timeout=0.5
                 ) as client_rack8_coil:
                     r = client_rack8_coil.read_coils(0, 2)
-                    sensorData["rack_leak"]["rack8_leak"] = not r.bits[0]
-                    sensorData["rack_broken"]["rack8_broken"] = not r.bits[1]
+                    sensorData["rack_leak"]["rack8_leak"] = r.bits[0]
+                    sensorData["rack_broken"]["rack8_broken"] = r.bits[1]
                     sensorData["rack_no_connection"]["rack8_leak"] = False
             except Exception as e:
                 sensorData["rack_no_connection"]["rack8_leak"] = True
@@ -8175,7 +8440,7 @@ def read_rack_status():
                 pass
 
             try:
-                if sensorData["rack_leak"]["rack8_leak"]:
+                if not sensorData["rack_leak"]["rack8_leak"]:
                     with ModbusTcpClient(host="192.168.3.250", port=502) as client:
                         client.write_coils((8192 + 727), [False])
                     if ctr_data["rack_set"]["rack8_sw"]:
@@ -8198,7 +8463,7 @@ def read_rack_status():
                     r = client_rack9_reg.read_holding_registers(0, 1)
                     result = r.registers[0]
                     sensorData["rack_status"]["rack9_status"] = (
-                        (result - 39321) / 26214 * 100
+                        (result - 39321) / 26214 * openning_min
                     )
                     if sensorData["rack_status"]["rack9_status"] < 0:
                         sensorData["rack_status"]["rack9_status"] = 0
@@ -8213,8 +8478,8 @@ def read_rack_status():
                     host=host["rack9_coil"], port=modbus_port, timeout=0.5
                 ) as client_rack9_coil:
                     r = client_rack9_coil.read_coils(0, 2)
-                    sensorData["rack_leak"]["rack9_leak"] = not r.bits[0]
-                    sensorData["rack_broken"]["rack9_broken"] = not r.bits[1]
+                    sensorData["rack_leak"]["rack9_leak"] = r.bits[0]
+                    sensorData["rack_broken"]["rack9_broken"] = r.bits[1]
                     sensorData["rack_no_connection"]["rack9_leak"] = False
             except Exception as e:
                 sensorData["rack_no_connection"]["rack9_leak"] = True
@@ -8222,7 +8487,7 @@ def read_rack_status():
                 pass
 
             try:
-                if sensorData["rack_leak"]["rack9_leak"]:
+                if not sensorData["rack_leak"]["rack9_leak"]:
                     with ModbusTcpClient(host="192.168.3.250", port=502) as client:
                         client.write_coils((8192 + 728), [False])
                     if ctr_data["rack_set"]["rack9_sw"]:
@@ -8245,7 +8510,7 @@ def read_rack_status():
                     r = client_rack10_reg.read_holding_registers(0, 1)
                     result = r.registers[0]
                     sensorData["rack_status"]["rack10_status"] = (
-                        (result - 39321) / 26214 * 100
+                        (result - 39321) / 26214 * openning_min
                     )
                     if sensorData["rack_status"]["rack10_status"] < 0:
                         sensorData["rack_status"]["rack10_status"] = 0
@@ -8261,8 +8526,8 @@ def read_rack_status():
                     host=host["rack10_coil"], port=modbus_port, timeout=0.5
                 ) as client_rack10_coil:
                     r = client_rack10_coil.read_coils(0, 2)
-                    sensorData["rack_leak"]["rack10_leak"] = not r.bits[0]
-                    sensorData["rack_broken"]["rack10_broken"] = not r.bits[1]
+                    sensorData["rack_leak"]["rack10_leak"] = r.bits[0]
+                    sensorData["rack_broken"]["rack10_broken"] = r.bits[1]
                     sensorData["rack_no_connection"]["rack10_leak"] = False
             except Exception as e:
                 sensorData["rack_no_connection"]["rack10_leak"] = True
@@ -8270,7 +8535,7 @@ def read_rack_status():
                 pass
 
             try:
-                if sensorData["rack_leak"]["rack10_leak"]:
+                if not sensorData["rack_leak"]["rack10_leak"]:
                     with ModbusTcpClient(host="192.168.3.250", port=502) as client:
                         client.write_coils((8192 + 729), [False])
                     if ctr_data["rack_set"]["rack10_sw"]:
@@ -8292,8 +8557,42 @@ def read_rack_status():
             rack_key_len = len(sensorData["rack"].keys())
             rack_reg = (rack_key_len // 16) + (1 if rack_key_len % 16 != 0 else 0)
             value_r = [0] * rack_reg
+            with ModbusTcpClient(
+                host=modbus_host, port=modbus_port) as client:
+                rack_leak = client.read_discrete_inputs(36, 4, unit=modbus_slave_id)
+                rack_leakage1_leak = rack_leak.bits[0]
+                rack_leakage1_broken = rack_leak.bits[1]
+                rack_leakage2_leak = rack_leak.bits[2]
+                rack_leakage2_broken = rack_leak.bits[3]
+                
+            check_rack_leakage_sensor_status(
+                "rack_leakage1_leak",
+                rack_leakage1_leak,
+                "Delay_rack_leakage1_leak",
+            )
+            check_rack_leakage_sensor_status(
+                "rack_leakage1_broken",
+                rack_leakage1_broken,
+                "Delay_rack_leakage1_broken",
+            )
+            check_rack_leakage_sensor_status(
+                "rack_leakage2_leak",
+                rack_leakage2_leak,
+                "Delay_rack_leakage2_leak",
+            )
+            check_rack_leakage_sensor_status(
+                "rack_leakage2_broken",
+                rack_leakage2_broken,
+                "Delay_rack_leakage2_broken",
+            )
             for i in range(0, rack_key_len):
                 key = rack_key[i]
+                # 測試用
+                # sensorData["rack"][key] = False
+                # sensorData["rack"]["rack_leakage1_broken"] = True
+                # sensorData["rack"]["rack_leakage1_leak"] = True
+                # sensorData["rack"]["rack_leakage2_broken"] = True
+                # sensorData["rack"]["rack_leakage2_leak"] = True
                 if sensorData["rack"][key]:
                     value_r[i // 16] |= 1 << (i % 16)
 

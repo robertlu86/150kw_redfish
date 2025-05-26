@@ -15,6 +15,8 @@ from pymodbus.constants import Endian
 from pymodbus.payload import BinaryPayloadDecoder, BinaryPayloadBuilder
 from concurrent_log_handler import ConcurrentTimedRotatingFileHandler
 import requests
+import pyzipper
+
 # from flask_limiter import Limiter
 # from flask_limiter.util import get_remote_address
 
@@ -230,17 +232,17 @@ messages = {
         "M300": ["Coolant Pump1 Inverter Overload", False],
         "M301": ["Coolant Pump2 Inverter Overload", False],
         "M302": ["Coolant Pump3 Inverter Overload", False],
-        "M303": ["Fan1 Inverter Overload", False],
-        "M304": ["Fan2 Inverter Overload", False],
+        "M303": ["Fan1 Group1 Overload", False],
+        "M304": ["Fan2 Group2 Overload", False],
         "M305": ["Coolant Pump1 Inverter Error", False],
         "M306": ["Coolant Pump2 Inverter Error", False],
         "M307": ["Coolant Pump3 Inverter Error", False],
-        "M308": ["Factory Power Status", False],
+        "M308": ["Primary Power Broken", False],
         "M309": ["Inverter1 Communication Error", False],
         "M310": ["Inverter2 Communication Error", False],
         "M311": ["Inverter3 Communication Error", False],
         "M312": ["Coolant Flow (F1) Meter Communication Error", False],
-        "M313": ["Ambient Sensor (Ta) Communication Error", False],
+        "M313": ["Ambient Sensor (Ta, RH, TDp) Communication Error", False],
         "M314": ["Relative Humidity (RH) Communication Error", False],
         "M315": ["Dew Point Temperature (TDp) Communication Error", False],
         "M316": ["pH (PH) Sensor Communication Error", False],
@@ -323,6 +325,10 @@ messages = {
         "M427": ["Rack8 error", False],
         "M428": ["Rack9 error", False],
         "M429": ["Rack10 error", False],
+        "M430": ["Rack Leakage Sensor 1 Leak", False],
+        "M431": ["Rack Leakage Sensor 1 Broken", False],
+        "M432": ["Rack Leakage Sensor 2 Leak", False],
+        "M433": ["Rack Leakage Sensor 2 Broken", False],
     },
 }
 
@@ -438,7 +444,7 @@ physical_asset = {
     "FirmwareVersion": "0100",
     "Version": "N/A",
     # "ProductionDate": "20250430",
-    "Manufacturer": "Supermicro",
+    "Manufacturer": "KAORI",
     "Model": "150kw",
     "SerialNumber": "N/A",
     "PartNumber": "N/A",
@@ -2160,6 +2166,10 @@ class ErrorMessages(Resource):
                 "M427": "rack8_error",
                 "M428": "rack9_error",
                 "M429": "rack10_error",
+                "M430": "rack_leakage1_leak",
+                "M431": "rack_leakage1_broken",
+                "M432": "rack_leakage2_leak",
+                "M433": "rack_leakage2_broken",
             }
 
             for msg_key, sensor_key in rack_mapping.items():
@@ -2232,22 +2242,24 @@ TARGET_SERVERS = {
 # 定義上傳 API
 @default_ns.route("/update_firmware")
 #curl -X POST "http://127.0.0.1:5001/api/v1/update_firmware" -F "file=@/path/to/upload.zip"
-
 class UploadZipFile(Resource):
     @default_ns.expect(upload_parser)
     def post(self):
         """上傳 ZIP 並分發到目標伺服器"""
         args = upload_parser.parse_args()
-        file = request.files.get("file")
+        file = request.files.get("file")    
+        superuser_password =  os.getenv("SUPERUSER")
 
         # 驗證檔案是否存在
         if not file:
             return {"message": "No File Part"}, 400
         if file.filename == "":
             return {"message": "No File Selected"}, 400
-        if file.filename != "upload.zip":
-            return {"message": "Please upload correct file name"}, 400
-        if not file.filename.endswith(".zip"):
+        # if file.filename != "upload.zip":
+        #     return {"message": "Please upload correct file name"}, 400
+        # if not file.filename.endswith(".zip"):
+        if not file.filename.endswith(".gpg"):  
+            
             return {"message": "Wrong File Type"}, 400
 
         # 定義暫存解壓縮目錄
@@ -2255,15 +2267,51 @@ class UploadZipFile(Resource):
         os.makedirs(temp_dir, exist_ok=True)
 
         # 存到本機暫存區
-        local_zip_path = os.path.join(temp_dir, file.filename)
+        local_zip_path = os.path.join(temp_dir, file.filename.replace(".gpg", ".zip"))
+        # local_zip_path = os.path.join(temp_dir, file.filename)
         file.save(local_zip_path)
 
         # 解壓縮 ZIP
+        # try:
+        #     with zipfile.ZipFile(local_zip_path, "r") as zip_ref:
+        #         zip_ref.extractall(temp_dir)
+        # except zipfile.BadZipFile:
+        #     return {"message": "Invalid ZIP file"}, 400
+        
+        
+        zip_password = "Itgs50848614"
         try:
-            with zipfile.ZipFile(local_zip_path, "r") as zip_ref:
+            with pyzipper.AESZipFile(local_zip_path, "r", encryption=pyzipper.WZ_AES) as zip_ref:
+
+                # 檢查每個檔案是否加密
+                if not any(info.flag_bits & 0x1 for info in zip_ref.infolist()):
+                    os.remove(local_zip_path)  # 清理未通過檢查的 zip
+                    return {"message": "ZIP file must be password-protected"}, 400
+
+                zip_ref.setpassword(zip_password.encode())
+
+                try:
+                    namelist = zip_ref.namelist()
+                    if not namelist:
+                        os.remove(local_zip_path)
+                        return {"status": "error", "message": "ZIP file is empty"}, 400
+
+                    # 嘗試讀取第一個檔案驗證密碼
+                    zip_ref.read(namelist[0])
+                except RuntimeError:
+                    os.remove(local_zip_path)
+                    return {"status": "error", "message": "Invalid password"}, 400
+                    
                 zip_ref.extractall(temp_dir)
-        except zipfile.BadZipFile:
+
+        except RuntimeError:
+            os.remove(local_zip_path)
+            return {"message": "Wrong password or corrupt zip"}, 400
+
+        except pyzipper.BadZipFile:
+            os.remove(local_zip_path)
             return {"message": "Invalid ZIP file"}, 400
+
 
         upload_results = {}
 
@@ -2274,7 +2322,7 @@ class UploadZipFile(Resource):
                 try:
                     with open(full_file_path, "rb") as f:
                         files = {"file": (os.path.basename(file_path), f, "application/zip")}
-                        response = requests.post(target_url, files=files, auth=("admin", "Supermicro12729477"), verify=False)
+                        response = requests.post(target_url, files=files, auth=("superuser", superuser_password), verify=False)
 
                     upload_results[file_path] = {
                         "status": response.status_code,
@@ -2294,7 +2342,7 @@ class UploadZipFile(Resource):
 
         try:
             # 發送 GET 請求到該 API
-            response = requests.get("http://192.168.3.101/api/v1/reboot", auth=("admin", "Supermicro12729477"), verify=False)
+            response = requests.get("http://192.168.3.101/api/v1/reboot", auth=("superuser", superuser_password), verify=False)
 
             # 檢查回應狀態
             if response.status_code == 200:
@@ -2307,7 +2355,7 @@ class UploadZipFile(Resource):
         time.sleep(5)
         try:
             # 發送 GET 請求到該 API
-            response = requests.get("http://192.168.3.100/api/v1/reboot", auth=("admin", "Supermicro12729477"), verify=False)
+            response = requests.get("http://192.168.3.100/api/v1/reboot", auth=("superuser", superuser_password), verify=False)
 
             # 檢查回應狀態
             if response.status_code == 200:
@@ -2318,6 +2366,269 @@ class UploadZipFile(Resource):
         except requests.RequestException as e:
             print(f"An error occurred: {e}")         
         return {"message": "Upload Completed, Please Restart PC", "results": upload_results}, 200
+
+# 0507新增
+sensor_mapping_output = {
+    "temp_clntSply": "temp_coolant_supply",
+    "temp_clntSplySpare": " temp_coolant_supply_spare",
+    "temp_clntRtn": "temp_coolant_return",
+    "temp_clntRtnSpare": "temp_coolant_return_spare",
+    "prsr_clntSply": "pressure_coolant_supply",
+    "prsr_clntSplySpare": "pressure_coolant_supply_spare",
+    "prsr_clntRtn": "pressure_coolant_return",
+    "prsr_clntRtnSpare": "pressure_coolant_return_spare",
+    "prsr_fltIn": "pressure_filter_in",
+    "prsr_fltOut": "pressure_filter_out",
+    "clnt_flow": "coolant_flow_rate",
+    "ambient_temp": "temperature_ambient",
+    "relative_humid": "humidity_relative",
+    "dew_point": "temperature_dew_point",
+    "pH": "ph_level",
+    "cdct": "conductivity",
+    "tbd": "turbidity",
+    "power": "power_total",
+    "AC": "cooling_capacity",
+    "heat_capacity": "heat_capacity",
+    "power24v1": "power24v1",
+    "power24v2": "power24v2",
+    "power12v1": "power12v1",
+    "power12v2": "power12v2"
+}
+def fan_health_judge(i, sensor):
+    # fan health
+    health = "OK"
+    if sensor["error"][f"Fan{i}_Com"]:
+        health = "Warning"
+    if sensor["error"][f"fan{i}_error"]:
+        health = "Critical"
+    return health    
+
+def fan_state_judge(i, sensor):
+    # fan state
+    if sensor["error"][f"fan{i}_error"] or sensor["error"][f"Fan{i}_Com"]:
+        state = "Absent"
+    elif sensor["value"][f"fan_freq{i}"]:
+        state = "Enabled"
+    else:
+        state = "Disabled"    
+    return state  
+
+sensor_mapping_broken = {
+    "temp_clntSply": "TempClntSply_broken",
+    "temp_clntSplySpare": " TempClntSplySpare_broken",
+    "temp_clntRtn": "TempClntRtn_broken",
+    "temp_clntRtnSpare": "TempClntRtnSpare_broken",
+    "prsr_clntSply": "PrsrClntSply_broken",
+    "prsr_clntSplySpare": "PrsrClntSplySpare_broken",
+    "prsr_clntRtn": "PrsrClntRtn_broken",
+    "prsr_clntRtnSpare": "PrsrClntRtnSpare_broken",
+    "prsr_fltIn": "PrsrFltIn_broken",
+    "prsr_fltOut": "PrsrFltOut_broken",
+    "clnt_flow": "Clnt_Flow_broken",
+    "power24v1": "power24v1",
+    "power24v2": "power24v2",
+    "power12v1": "power12v1",
+    "power12v2": "power12v2"
+    # "AC": "cooling_capacity", # 沒有error
+    # "heat_capacity": "heat_capacity", # 沒有error
+}
+sensor_mapping_com = {
+    "ambient_temp": "Ambient_Temp_Com",
+    "relative_humid": "Relative_Humid_Com",
+    "dew_point": "Dew_Point_Com",
+    "pH": "pH_Com",
+    "cdct": "Cdct_Sensor_Com",
+    "tbd": "Tbd_Com",
+    "power": "Power_Meter_Com",
+}
+dis_reading = {
+    "power24v1",
+    "power24v2",
+    "power12v1",
+    "power12v2"
+}
+def state_judge(key, sensor, value):
+    # all sensor state
+    com_key   = sensor_mapping_com.get(key)
+    broken_key = sensor_mapping_broken.get(key)
+    
+    if sensor["error"].get(com_key) or sensor["error"].get(broken_key):
+        state = "Absent"
+    elif value:
+        state = "Enabled"
+    else:
+        state = "Disabled"    
+    return state
+
+def health_judge(key, sensor):
+    # all sensor health
+    com_key   = sensor_mapping_com.get(key)
+    broken_key = sensor_mapping_broken.get(key)
+
+    health = "OK"
+    if com_key and sensor["error"].get(com_key):
+        health = "Warning"
+    if broken_key and sensor["error"].get(broken_key):
+        health = "Critical"  
+    return health
+
+@default_ns.route("/cdu/components/chassis/summary")
+class SensorsSummary(Resource):
+    '''
+    fan_count_switch true是6個風扇 false是8個風扇
+    state: Enabled(啟用) Disabled(未啟用) Absent(斷線、壞掉)
+    health: OK(正常) Warning(斷線) Critical(壞掉)
+    reading: 風扇轉速
+    '''
+    @default_ns.doc("get_sensor_summary")
+    def get(self):
+        with open(f"{json_path}/version.json", "r") as file:
+            version_josn = json.load(file)
+        # 判斷幾顆風扇
+        fan_count_switch = version_josn["fan_count_switch"]
+        rep = {}
+        try:
+            sensor_data = read_sensor_data()
+            sensor_value = sensor_data["value"]
+            FAN_COUNT = 6 if version_josn["fan_count_switch"] else 8
+
+            # 動態寫入 fan 數量
+            for i in range(1, FAN_COUNT + 1):
+                fan_key = f"fan{i}"
+                # fan 數量判斷取值
+                if fan_count_switch == True and i >= 4:
+                    s = i + 1
+                else:
+                    s = i    
+                fan_speed = sensor_value[f"fan_freq{s}"]    
+                rep[fan_key] = {
+                    "status": {
+                        "state":  fan_state_judge(s, sensor_data) ,
+                        "health": fan_health_judge(s, sensor_data),
+                    }, 
+                    # hardware{}
+                    "reading": fan_speed, 
+                    "ServiceHours": 100,
+                    "ServiceDate": 100,
+                    "HardWareInfo":{}
+                }
+            # 加入其他sensor
+            for key, value in sensor_mapping_output.items():
+                sensor_value_get = sensor_value.get(key)
+                if sensor_value_get != None:
+                    sensor_reading = round(sensor_value_get, 2) if key != "clnt_flow" else round(sensor_value_get)
+                # if key in dis_reading: sensor_reading = None
+                if key not in rep:
+                    rep[value] = {
+                        "status": {
+                            "state": state_judge(key, sensor_data, sensor_reading),
+                            "health": health_judge(key, sensor_data),
+                        },
+                        "reading": sensor_reading,
+                        "ServiceHours": 100,
+                        "ServiceDate": 100,
+                        "HardWareInfo":{}
+                    }
+            
+        except Exception as e:
+            print(f"get sensors data error:{e}")
+            return plc_error()
+
+        return  rep, 200
+        
+thermal_equipment = {
+    "ambient_temp": "temperature_ambient",
+    "relative_humid": "humidity_relative",
+    "dew_point": "temperature_dew_point",    
+    # "leakage1": "leak_deteceor"
+}
+
+def leak_judge(leak_broken, leak_leak):
+    if leak_broken:
+        health = "Critical"
+        state = "Disabled"
+    elif leak_leak:
+        health = "warning"    
+        state = "Enabled"
+    else:
+        health = "OK"    
+        state = "Enabled"  
+          
+    return  {
+            "status": {
+                "state": state,
+                "health": health
+            },
+            "reading": None,
+            "ServiceHours": 100,
+            "ServiceDate": 100,
+            "HardWareInfo":{}
+        }    
+    
+    
+'''
+leak broken -> health:Critical state:Disable
+leak leak -> health:warning state:Enable
+'''
+@default_ns.route("/cdu/components/thermal_equipment/summary")
+class SensorsSummary(Resource):
+    @default_ns.doc("get_thermal_equipment_summary")
+    def get(self):
+        rep = {}
+        try:
+            sensor_data = read_sensor_data()
+            sensor_value = sensor_data["value"]
+            leak_broken = sensor_data["error"]["leakage1_broken"]
+            leak_leak = sensor_data["error"]["leakage1_leak"]
+            
+            for key, value in thermal_equipment.items():
+                raw = sensor_value.get(key, 0)
+                sensor_reading = round(raw, 2) if key != "clnt_flow" else round(raw)
+                if key not in rep:
+                    rep[value] = {
+                        "status": {
+                            "state": state_judge(key, sensor_data, sensor_reading),
+                            "health": health_judge(key, sensor_data),
+                        },
+                        "reading": sensor_reading,
+                        "ServiceHours": 100,
+                        "ServiceDate": 100,
+                        "HardWareInfo":{}
+                    }
+                    
+            rep["leak_detector"] = leak_judge(leak_broken, leak_leak)
+                            
+        except Exception as e:
+            print(f"get sensors data error:{e}")
+            return plc_error()        
+        
+        return rep    
+# 0512新增
+def get_version_json():
+    try:
+        with open(f"{web_path}/fw_info_version.json", "r") as json_file:
+            data = json.load(json_file)
+            return data
+    except Exception as e:
+        print(f"read fw_info_version error: {e}")
+        return e
+
+def get_fw_info():
+    try:
+        with open(f"{web_path}/fw_info.json", "r") as json_file:
+            data = json.load(json_file)
+            return data
+    except Exception as e:
+        print(f"read fw_info error: {e}")
+        return e
+
+@default_ns.route("/cdu/components/display/version")
+class DisplayVersion(Resource): 
+    def get(self):
+        rep = {}  
+        rep["version"] = get_version_json()
+        rep["fw_info"] = get_fw_info()
+        return rep, 200
 
 
 api.add_namespace(default_ns)

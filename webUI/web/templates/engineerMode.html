@@ -997,7 +997,7 @@ block styles %}
 
             <div class="row">
                 <div class="col-3">
-                    <p>Dew Point Temperature (TDp):</p>
+                    <p>Dew Point Temperature (TDp)_T1-TDP:</p>
                 </div>
                 <div class="col-9 content_box">
                     <div class="col-1">
@@ -1258,7 +1258,7 @@ block styles %}
             </div>
             <div class="row">
                 <div class="col-3">
-                    <p>[Device] Fan OverLoad1:</p>
+                    <p>[Device] Fan Group 1 OverLoad:</p>
                 </div>
                 <div class="col-9 content_box">
                     <div class="col-1"></div>
@@ -1280,7 +1280,7 @@ block styles %}
             </div>
             <div class="row">
                 <div class="col-3">
-                    <p>[Device] Fan OverLoad2:</p>
+                    <p>[Device] Fan Group 2 OverLoad:</p>
                 </div>
                 <div class="col-9 content_box">
                     <div class="col-1"></div>
@@ -1621,7 +1621,7 @@ block styles %}
             </div>
             <div class="row">
                 <div class="col-3">
-                    <p>[Communication] ATS1:</p>
+                    <p>[Communication] ATS:</p>
                 </div>
                 <div class="col-9 content_box">
                     <div class="col-1"></div>
@@ -1641,7 +1641,7 @@ block styles %}
                     </div>
                 </div>
             </div>
-            <div class="row">
+            <div class="row" id="ATS2_comm_set">
                 <div class="col-3">
                     <p>[Communication] ATS2:</p>
                 </div>
@@ -2651,7 +2651,94 @@ block styles %}
                     <div class="col-1"></div>
                 </div>
             </div>
-
+            <div class="row">
+                <div class="col-3">
+                    <p>Rack Leakage Sensor 1 Leak:</p>
+                </div>
+                <div class="col-9 content_box">
+                    <div class="col-1"></div>
+                    <div class="col-1"></div>
+                    <div class="col-1"></div>
+                    <div class="col-1"></div>
+                    <div class="col-1"></div>
+                    <div class="col-1"></div>
+                    <div class="col-1"></div>
+                    <div class="col-1"></div>
+                    <div class="col-1"></div>
+                    <div class="col-1 trap_box">
+                        <input class="form-check-input toggle trap" type="checkbox" id="E_rack_leakage1_leak_trap" />
+                    </div>
+                    <div class="col-1">
+                        <input id="Delay_rack_leakage1_leak" class="form-control delay keyboard_onlyNumber" type="text" placeholder="" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-3">
+                    <p>Rack Leakage Sensor 1 Broken:</p>
+                </div>
+                <div class="col-9 content_box">
+                    <div class="col-1"></div>
+                    <div class="col-1"></div>
+                    <div class="col-1"></div>
+                    <div class="col-1"></div>
+                    <div class="col-1"></div>
+                    <div class="col-1"></div>
+                    <div class="col-1"></div>
+                    <div class="col-1"></div>
+                    <div class="col-1"></div>
+                    <div class="col-1 trap_box">
+                        <input class="form-check-input toggle trap" type="checkbox" id="E_rack_leakage1_broken_trap" />
+                    </div>
+                    <div class="col-1">
+                        <input id="Delay_rack_leakage1_broken" class="form-control delay keyboard_onlyNumber" type="text" placeholder="" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-3">
+                    <p>Rack Leakage Sensor 2 Leak:</p>
+                </div>
+                <div class="col-9 content_box">
+                    <div class="col-1"></div>
+                    <div class="col-1"></div>
+                    <div class="col-1"></div>
+                    <div class="col-1"></div>
+                    <div class="col-1"></div>
+                    <div class="col-1"></div>
+                    <div class="col-1"></div>
+                    <div class="col-1"></div>
+                    <div class="col-1"></div>
+                    <div class="col-1 trap_box">
+                        <input class="form-check-input toggle trap" type="checkbox" id="E_rack_leakage2_leak_trap" />
+                    </div>
+                    <div class="col-1">
+                        <input id="Delay_rack_leakage2_leak" class="form-control delay keyboard_onlyNumber" type="text" placeholder="" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-3">
+                    <p>Rack Leakage Sensor 2 Broken:</p>
+                </div>
+                <div class="col-9 content_box">
+                    <div class="col-1"></div>
+                    <div class="col-1"></div>
+                    <div class="col-1"></div>
+                    <div class="col-1"></div>
+                    <div class="col-1"></div>
+                    <div class="col-1"></div>
+                    <div class="col-1"></div>
+                    <div class="col-1"></div>
+                    <div class="col-1"></div>
+                    <div class="col-1 trap_box">
+                        <input class="form-check-input toggle trap" type="checkbox" id="E_rack_leakage2_broken_trap" />
+                    </div>
+                    <div class="col-1">
+                        <input id="Delay_rack_leakage2_broken" class="form-control delay keyboard_onlyNumber" type="text" placeholder="" />
+                    </div>
+                </div>
+            </div>
             <!-- button -->
             <div class="row button_box">
                 <div class="col-4"></div>
@@ -2896,6 +2983,7 @@ block styles %}
     </div>
     {% endif %}
 
+    {% if (user == 'admin') or (user == 'superuser') %}
     <div class="screen_setting title" data-default="collapsed" data-label="Status Indicator Setting">
         <div class="data-before-trigger"></div>
         <div class="content">
@@ -2919,7 +3007,9 @@ block styles %}
             </div>
         </div>
     </div>
+    {% endif %}
 
+    {% if (user == 'superuser') %}
     <div class="switch_version title" data-default="collapsed" data-label="Switch Version">
         <div class="data-before-trigger"></div>
         <div class="content">
@@ -2956,7 +3046,39 @@ block styles %}
                     </select>
                 </div>
             </div>
-
+            <div class="row">
+                <div class="col-4">
+                    <p>Liquid Level 1:</p>
+                </div>
+                <div class="col-2 sideNum">
+                    <select class="form-select" id="liquid_level_1_switch">
+                        <option value="old">Disabled</option>
+                        <option value="new">Enable</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <p>Liquid Level 2:</p>
+                </div>
+                <div class="col-2 sideNum">
+                    <select class="form-select" id="liquid_level_2_switch">
+                        <option value="old">Disabled</option>
+                        <option value="new">Enable</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <p>Liquid Level 3:</p>
+                </div>
+                <div class="col-2 sideNum">
+                    <select class="form-select" id="liquid_level_3_switch">
+                        <option value="old">Disabled</option>
+                        <option value="new">Enable</option>
+                    </select>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-4"></div>
                 <div class="col-4">
@@ -2967,6 +3089,7 @@ block styles %}
             </div>
         </div>
     </div>
+    {% endif %}
 
     {% if (user == 'admin') or (user == 'superuser') %}
 
@@ -3064,7 +3187,7 @@ block styles %}
             </div> -->
 
             <!-- Rack 6 -->
-            <div class="row">
+            <div class="row"  style="display: none"style="display: none">
                 <div class="col-4">
                     <p>Rack 6 Enable:</p>
                 </div>
@@ -3082,7 +3205,7 @@ block styles %}
             </div> -->
 
             <!-- Rack 7 -->
-            <div class="row">
+            <div class="row" style="display: none">
                 <div class="col-4">
                     <p>Rack 7 Enable:</p>
                 </div>
@@ -3100,7 +3223,7 @@ block styles %}
             </div> -->
 
             <!-- Rack 8 -->
-            <div class="row">
+            <div class="row" style="display: none">
                 <div class="col-4">
                     <p>Rack 8 Enable:</p>
                 </div>
@@ -3118,7 +3241,7 @@ block styles %}
             </div> -->
 
             <!-- Rack 9 -->
-            <div class="row">
+            <div class="row" style="display: none">
                 <div class="col-4">
                     <p>Rack 9 Enable:</p>
                 </div>
@@ -3136,7 +3259,7 @@ block styles %}
             </div> -->
 
             <!-- Rack 10 -->
-            <div class="row">
+            <div class="row" style="display: none">
                 <div class="col-4">
                     <p>Rack 10 Enable:</p>
                 </div>
@@ -3239,7 +3362,7 @@ block styles %}
         );
         jQuery(".rack_setting").attr("data-before", "Rack Enable Setting ▲");
         jQuery(".switch_version").attr("data-before", "Switch Version ▲");
-
+        $("#ATS2_comm_set").hide();
         $.ajax({
             url: "/get_data_engineerMode",
             method: "GET",
@@ -3423,23 +3546,25 @@ block styles %}
                 },
             });
         }
-
-        $.ajax({
-            url: "/get_timeout",
-            method: "GET",
-            success: function (data) {
-                for (var key in data) {
-                    if (data.hasOwnProperty(key)) {
-                        var value = data[key];
-                        var element = document.getElementById(key);
-                        element.value = value;
+        if(userType == "admin" || userType == "superuser"){
+            $.ajax({
+                url: "/get_timeout",
+                method: "GET",
+                success: function (data) {
+                    for (var key in data) {
+                        if (data.hasOwnProperty(key)) {
+                            var value = data[key];
+                            var element = document.getElementById(key);
+                            element.value = value;
+                        }
                     }
-                }
-            },
-            error: function (error) {
-                console.error("Error fetching data:", error);
-            },
-        });
+                },
+                error: function (error) {
+                    console.error("Error fetching data:", error);
+                },
+            });
+        }
+        
         $("#adjust_apply").click(function () {
             var inputs = {};
             $(".adjust").each(function () {
@@ -4753,6 +4878,9 @@ block styles %}
             let median_switch = $("#median_switch").val();
             let coolant_quality_meter_switch = $("#coolant_quality_meter_switch").val();
             let fan_count_switch = $("#fan_count_switch").val();
+            let liquid_level_3_switch = $("#liquid_level_3_switch").val();
+            let liquid_level_2_switch = $("#liquid_level_2_switch").val();
+            let liquid_level_1_switch = $("#liquid_level_1_switch").val();
 
             if (median_switch == "old") {
                 median_switch = true;
@@ -4771,11 +4899,30 @@ block styles %}
             } else {
                 fan_count_switch = false;
             }
+            if (liquid_level_1_switch == "old") {
+                liquid_level_1_switch = true;
+            } else {
+                liquid_level_1_switch = false;
+            }
+            if (liquid_level_2_switch == "old") {
+                liquid_level_2_switch = true;
+            } else {
+                liquid_level_2_switch = false;
+            }
+            if (liquid_level_3_switch == "old") {
+                liquid_level_3_switch = true;
+            } else {
+                liquid_level_3_switch = false;
+            }
+
 
             combined_data = {
                 median_switch: median_switch,
                 coolant_quality_meter_switch: coolant_quality_meter_switch,
-                fan_count_switch: fan_count_switch
+                fan_count_switch: fan_count_switch,
+                liquid_level_1_switch: liquid_level_1_switch,
+                liquid_level_2_switch: liquid_level_2_switch, 
+                liquid_level_3_switch: liquid_level_3_switch
             };
 
             console.log(combined_data);

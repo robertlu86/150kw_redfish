@@ -216,7 +216,7 @@ check_key_list = [
         "Fan8Error",
         "LowCoolantLevelWarning",
         "ControlUnit",
-        ""
+        "",
     ],
     [
         "Rack1Broken",
@@ -251,6 +251,24 @@ check_key_list = [
         "Rack8Error",
         "Rack9Error",
         "Rack10Error",
+        "RackLeakage1Leak",
+        "RackLeakage1Broken",
+    ],
+    [
+        "RackLeakage2Leak",
+        "RackLeakage2Broken",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
         "",
         "",
     ],
@@ -333,17 +351,17 @@ warning_alert_list = [
         "M300 Coolant Pump1 Inverter Overload",
         "M301 Coolant Pump2 Inverter Overload",
         "M302 Coolant Pump3 Inverter Overload",
-        "M303 Fan1 Inverter Overload",
-        "M304 Fan2 Inverter Overload",
+        "M303 Fan1 Group1 Overload",
+        "M304 Fan2 Group2 Overload",
         "M305 Coolant Pump1 Inverter Error",
         "M306 Coolant Pump2 Inverter Error",
         "M307 Coolant Pump3 Inverter Error",
-        "M308 Factory Power Status",
+        "M308 Primary Power Broken",
         "M309 Inverter1 Communication Error",
         "M310 Inverter2 Communication Error",
         "M311 Inverter3 Communication Error",
         # "M312 Coolant Flow (F1) Meter Communication Error",
-        "M313 Ambient Sensor (Ta) Communication Error",
+        "M313 Ambient Sensor (Ta, RH, TDp) Communication Error",
         "M314 Relative Humidity (RH) Communication Error",
         "M315 Dew Point Temperature (TDp) Communication Error",
         "M316 pH (PH) Sensor Communication Error",
@@ -400,7 +418,7 @@ warning_alert_list = [
         "M361 FAN 8 Alarm Status Error",
         "M362 Stop Due to Low Coolant Level",
         "M363 PLC Communication Broken Error",
-        ""
+        "",
     ],
     [
         "M400 Rack1 broken",
@@ -435,6 +453,24 @@ warning_alert_list = [
         "M427 Rack8 error",
         "M428 Rack9 error",
         "M429 Rack10 error",
+        "M430 Rack Leakage Sensor 1 Leak",
+        "M431 Rack Leakage Sensor 1 Broken",
+    ],
+    [
+        "M432 Rack Leakage Sensor 2 Leak",
+        "M433 Rack Leakage Sensor 2 Broken",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
         "",
         "",
     ],
@@ -584,7 +620,7 @@ def convert_float_to_registers(float_data):
 
 
 def word_to_bool_list(words):
-    bit_lengths = [16] * 17
+    bit_lengths = [16] * 18
     all_bool_lists = []
     word_index = 0
     for bits in bit_lengths:
@@ -602,7 +638,7 @@ def word_to_bool_list(words):
 def send_snmp_trap(oid, target_ip, severity, port=SNMP_TRAP_PORT, value="0"):
     community = snmp_data.get("read_community", "")
     v3_switch = snmp_data.get("v3_switch")
-    oid_severity = (1, 3, 6, 1, 4, 1, 10876, 1, 1, 2, 2, 1)
+    oid_severity = (1, 3, 6, 1, 4, 1, 10876, 301, 1, 2, 2, 1)
 
     if v3_switch:
         errorIndication, errorStatus, errorIndex, varBinds = next(
@@ -650,7 +686,7 @@ def send_snmp_trap(oid, target_ip, severity, port=SNMP_TRAP_PORT, value="0"):
 
 
 def trap(trap_bool_lists, check_switch):
-    base_oid = (1, 3, 6, 1, 4, 1, 10876, 1, 1, 2, 1)
+    base_oid = (1, 3, 6, 1, 4, 1, 10876, 301, 1, 2, 1)
     global index
     index = 0
 
@@ -671,7 +707,7 @@ def trap(trap_bool_lists, check_switch):
     level2 = m2_count + m1_count
     level3 = m3_count + m2_count + m1_count
     level4 = m4_count + m3_count + m2_count + m1_count
-
+    
     size = m4_count + m3_count + m2_count + m1_count
     base_offsets = [n * 16 for n in range(size)]
 
@@ -679,6 +715,7 @@ def trap(trap_bool_lists, check_switch):
     level2_reg = level2 * 16
     level3_reg = level3 * 16
     level4_reg = level4 * 16
+    
 
     for i, trap_bool_list in enumerate(trap_bool_lists):
         if i < level1:
@@ -689,6 +726,7 @@ def trap(trap_bool_lists, check_switch):
             severity_level = 3
         elif level3 <= i < level4:
             severity_level = 4
+
         else:
             severity_level = 0
         for j, bool_value in enumerate(trap_bool_list):
@@ -696,13 +734,21 @@ def trap(trap_bool_lists, check_switch):
 
             try:
                 if bool_value:
-                    oid = base_oid + (base_offsets[i] + j + 1,)
+                    if "Rack" in a_name:
+                        oid = base_oid + (base_offsets[i] + j,)
+                    else:
+                        oid = base_oid + (base_offsets[i] + j + 1,)
+                    # oid = base_oid + (base_offsets[i] + j + 1,)
                     if index < level1_reg:
                         if data_details["sensor_value_data"][a_name]["Warning"]:
                             # messages(oid, warning_alert_list[i][j])
-                            if check_switch and (a_name == "pH" or a_name == "Conductivity" or a_name == "Turbidity"):
+                            if check_switch and (
+                                a_name == "pH"
+                                or a_name == "Conductivity"
+                                or a_name == "Turbidity"
+                            ):
                                 continue
-                            
+
                             send_snmp_trap(
                                 oid,
                                 SNMP_TRAP_RECEIVER_IP,
@@ -712,9 +758,13 @@ def trap(trap_bool_lists, check_switch):
                     elif level1_reg <= index < level2_reg:
                         if data_details["sensor_value_data"][a_name]["Alert"]:
                             # messages(oid, warning_alert_list[i][j])
-                            if check_switch and (a_name == "pH" or a_name == "Conductivity" or a_name == "Turbidity"):
+                            if check_switch and (
+                                a_name == "pH"
+                                or a_name == "Conductivity"
+                                or a_name == "Turbidity"
+                            ):
                                 continue
-                            
+
                             send_snmp_trap(
                                 oid,
                                 SNMP_TRAP_RECEIVER_IP,
@@ -740,8 +790,28 @@ def trap(trap_bool_lists, check_switch):
                                 value=f"{warning_alert_list[i][j]}",
                             )
                     elif level3_reg <= index < level4_reg:
-                        if data_details["devices"]["RackError"]:
-                            # messages(oid, warning_alert_list[i][j])
+                        # journal_logger.info(f"有進到rack")
+                        # journal_logger.info(a_name)
+                        # journal_logger.info(oid)
+                        # journal_logger.info(f"{warning_alert_list[i][j]}")
+                        # journal_logger.info(
+                        #     f"data_details:{data_details['devices'][a_name]}"
+                        # )
+                        if a_name in [
+                            "RackLeakage1Leak",
+                            "RackLeakage1Broken",
+                            "RackLeakage2Leak",
+                            "RackLeakage2Broken",
+                        ]:
+                            if data_details["devices"][a_name]:
+                                send_snmp_trap(
+                                    oid,
+                                    SNMP_TRAP_RECEIVER_IP,
+                                    severity=severity_level,
+                                    value=f"{warning_alert_list[i][j]}",
+                                )
+                        elif data_details["devices"]["RackError"]:
+                            # messages(a_name, oid, warning_alert_list[i][j])
                             send_snmp_trap(
                                 oid,
                                 SNMP_TRAP_RECEIVER_IP,
@@ -764,11 +834,15 @@ def Mbus_get():
         ) as file:
             data_details = json.load(file)
 
-        with open(f"{os.path.dirname(log_path)}/webUI/web/json/version.json", "r") as file:
+        with open(
+            f"{os.path.dirname(log_path)}/webUI/web/json/version.json", "r"
+        ) as file:
             version_data = json.load(file)
-            check_switch = version_data["coolant_quality_meter_switch"] # Enable = false、 Disabled = true
-        
-        if cnt > 5:
+            check_switch = version_data[
+                "coolant_quality_meter_switch"
+            ]  # Enable = false、 Disabled = true
+
+        if cnt > 14:
             try:
                 with ModbusTcpClient(
                     host=MODBUS_SERVER_IP, port=MODBUS_SERVER_PORT
@@ -792,24 +866,32 @@ def Mbus_get():
                     else:
                         ats_list = ["NG", "NG"]
 
-                    trap_list = client.read_holding_registers(1700, 17)
+                    trap_list = client.read_holding_registers(1700, 18)
                     if not trap_list.isError():
                         trap_bool_lists = word_to_bool_list(trap_list.registers)
                         error_section = [
                             trap_bool_lists[i]
-                            for i in [0, 1, 5, 6, 8, 9, 10, 11, 15, 16]
+                            for i in [0, 1, 5, 6, 8, 9, 10, 11, 15, 16, 17]
                         ]
                         trap(error_section, check_switch)
                 cnt = 0
             except Exception as e:
-                print(f"trap list error: {e}")
+                journal_logger.info(f"trap list error: {e}")
+                ###增加Plc異常發送trap
+                if data_details["devices"]["ControlUnit"]:
+                    send_snmp_trap(
+                        (1, 3, 6, 1, 4, 1, 10876, 301, 1, 2, 1, 127),
+                        SNMP_TRAP_RECEIVER_IP,
+                        severity=3,
+                        value="363 PLC Communication Broken Error",
+                    )
 
         cnt += 1
         time.sleep(1)
 
 
 def mib(jsondata):
-    oid = (1, 3, 6, 1, 4, 1, 10876, 1, 1, 1, 4, 1, 1, 0)
+    oid = (1, 3, 6, 1, 4, 1, 10876, 301, 1, 1, 4, 1, 1, 0)
     sensor_len = len(sensor)
     ats_start = sensor_len + 1
     ats_end = sensor_len + 2
@@ -882,7 +964,17 @@ def mib(jsondata):
                             (pMod.apiPDU.setNoSuchInstanceError, errorIndex)
                         )
                         break
-
+            # elif reqPDU.isSameTypeWith(pMod.GetNextRequestPDU()):
+            #     for oid, val in pMod.apiPDU.getVarBinds(reqPDU):
+            #         next_oids = sorted(k for k in mibInstrIdx if k > oid)
+            #         if next_oids:
+            #             next_oid = next_oids[0]
+            #             varBinds.append((next_oid, mibInstrIdx[next_oid](msgVer)))
+            #         else:
+            #             pendingErrors.append(
+            #                 (pMod.apiPDU.setNoSuchInstanceError, errorIndex)
+            #             )
+            #             break
             else:
                 pMod.apiPDU.setErrorStatus(rspPDU, "genErr")
             pMod.apiPDU.setVarBinds(rspPDU, varBinds)
