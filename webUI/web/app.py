@@ -57,8 +57,8 @@ else:
 if onLinux:
     modbus_host = os.environ.get("MODBUS_IP")
 else:
-    modbus_host = "192.168.3.250"
-    # modbus_host = "127.0.0.1"
+    # modbus_host = "192.168.3.250"
+    modbus_host = "127.0.0.1"
 
 modbus_port = 502
 modbus_slave_id = 1

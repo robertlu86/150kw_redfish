@@ -115,6 +115,13 @@ sudo chmod +x "$TARGET_SCRIPT" && "$TARGET_SCRIPT"
 # sudo chmod +x "$TARGET_SCRIPT" && "$TARGET_SCRIPT"
 
 
+###上傳後降低資料夾權限
+sudo chown -R user:user /home/user/service
+
+###複製nginx default進入電腦
+# Copy the default Nginx configuration to /etc/nginx/sites-available/
+sudo cp /home/user/service/nginx/config/default /etc/nginx/sites-available/default
+sudo cp /home/user/service/nginx/config/nginx.conf /etc/nginx/
 
 # sudo systemctl daemon-reload
 # sudo systemctl restart plc
