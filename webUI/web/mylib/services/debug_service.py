@@ -38,6 +38,7 @@ class DebugService(BaseService):
     def report_ls_al_service_sidecar_redfish(self):
         return self.exec_command("ls -al /home/user/service/redfish-server/sidecar-redfish")
 
+
     def report_pip_list_of_sidecar_redfish(self):
         return self.exec_command("source /home/user/service/redfish-server/redfish_venv/bin/activate; pip list")
 
