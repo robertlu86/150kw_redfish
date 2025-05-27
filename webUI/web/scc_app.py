@@ -1578,7 +1578,7 @@ physical_asset = {
     "FirmwareVersion": "0100",
     "Version": "N/A",
     # "ProductionDate": "20250430",
-    "Manufacturer": "KAORI",
+    "Manufacturer": "Supermicro",
     "Model": "150kw",
     "SerialNumber": "N/A",
     "PartNumber": "N/A",

@@ -8133,7 +8133,7 @@ def read_rack_status():
             except Exception as e:
                 print(f"rack1 set control error: {e}")
 
-            check_rack_error("rack1")
+            # check_rack_error("rack1")
 
         if ctr_data["rack_visibility"]["rack2_enable"]:
             try:
@@ -8180,7 +8180,7 @@ def read_rack_status():
             except Exception as e:
                 print(f"rack2 set control error: {e}")
 
-            check_rack_error("rack2")
+            # check_rack_error("rack2")
 
         if ctr_data["rack_visibility"]["rack3_enable"]:
             try:
@@ -8227,7 +8227,7 @@ def read_rack_status():
             except Exception as e:
                 print(f"rack3 set control error: {e}")
 
-            check_rack_error("rack3")
+            # check_rack_error("rack3")
 
         if ctr_data["rack_visibility"]["rack4_enable"]:
             try:
@@ -8274,7 +8274,7 @@ def read_rack_status():
             except Exception as e:
                 print(f"rack4 set control error: {e}")
 
-            check_rack_error("rack4")
+            # check_rack_error("rack4")
 
         if ctr_data["rack_visibility"]["rack5_enable"]:
             try:
@@ -8321,7 +8321,7 @@ def read_rack_status():
             except Exception as e:
                 print(f"rack5 set control error: {e}")
 
-            check_rack_error("rack5")
+            # check_rack_error("rack5")
 
         if ctr_data["rack_visibility"]["rack6_enable"]:
             try:
@@ -8368,7 +8368,7 @@ def read_rack_status():
             except Exception as e:
                 print(f"rack5 set control error: {e}")
 
-            check_rack_error("rack6")
+            # check_rack_error("rack6")
 
         if ctr_data["rack_visibility"]["rack7_enable"]:
             try:
@@ -8415,7 +8415,7 @@ def read_rack_status():
             except Exception as e:
                 print(f"rack7 set control error: {e}")
 
-            check_rack_error("rack7")
+            # check_rack_error("rack7")
 
         if ctr_data["rack_visibility"]["rack8_enable"]:
             try:
@@ -8463,7 +8463,7 @@ def read_rack_status():
             except Exception as e:
                 print(f"rack8 set control error: {e}")
 
-            check_rack_error("rack8")
+            # check_rack_error("rack8")
 
         if ctr_data["rack_visibility"]["rack9_enable"]:
             try:
@@ -8510,7 +8510,7 @@ def read_rack_status():
             except Exception as e:
                 print(f"rack9 set control error: {e}")
 
-            check_rack_error("rack9")
+            # check_rack_error("rack9")
 
         if ctr_data["rack_visibility"]["rack10_enable"]:
             try:
@@ -8558,9 +8558,18 @@ def read_rack_status():
             except Exception as e:
                 print(f"rack10 set control error: {e}")
 
-            check_rack_error("rack10")
-
-        send_error_log()
+            # check_rack_error("rack10")
+        keys_list = list(ctr_data["rack_visibility"])
+        index = 1
+        for key in keys_list:
+            if ctr_data["rack_visibility"][key]:
+                check_rack_error(f"rack{index}")
+            elif not ctr_data["rack_visibility"][key]:
+                sensorData["rack"][f"rack{index}_broken"] = False
+                sensorData["rack"][f"rack{index}_leak"] = False
+                sensorData["rack"][f"rack{index}_error"] = False    
+            index += 1
+        # send_error_log()
 
         try:
             rack_key = list(sensorData["rack"].keys())

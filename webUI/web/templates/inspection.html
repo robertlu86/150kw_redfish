@@ -264,7 +264,7 @@
                             <td class="w16 tdCenterAlign" id="f1_status">*</td>
                             <td class="w16 tdCenterAlign" id="f1_result">*</td>
                             <!-- <td class="w16 tdCenterAlign" id="f1_stat"></td> -->
-                            <td class="w16 tdCenterAlign">100 ~ 136</td>
+                            <td class="w16 tdCenterAlign" id="f1_expect">100 ~ 136</td>
                             <td class="w16 tdCenterAlign" id="f1_measure"></td>
                             <td class="w16 tdCenterAlign unit_flow">-</td>
                         </tr>
@@ -1193,7 +1193,8 @@
                 let sensor_data = data["sensor_data"];
                 let measure_data = data["measure_data"];
                 let inspection_time_last_check = data["inspection_time_last_check"];
-    
+                const currentData = window.sharedData.data;
+                check_f1_expect_value(currentData);
                 for (let key in status_data) {
                     if (status_data.hasOwnProperty(key)) {
                         let value = status_data[key];
@@ -1353,7 +1354,20 @@
                     console.error("Error fetching data:", error);
                 },
             });
-    
+            
+            function check_f1_expect_value(data){
+                let t2_value = data["value"]["temp_clntRtn"];
+                if(t2_value > 45 && t2_value <= 55){
+                    $("#f1_expect").text("100 ~ 130");
+                }else if(t2_value > 35 && t2_value <= 45){
+                    $("#f1_expect").text("80 ~ 110");
+                }else if(t2_value > 25 && t2_value <= 35){
+                    $("#f1_expect").text("60 ~ 90");
+                }else if(t2_value > 15 && t2_value <= 25){
+                    $("#f1_expect").text("40 ~ 70");
+                }
+            }
+
             async function fetch_data_version() {
                 while (true) {
                     try {

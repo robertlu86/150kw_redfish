@@ -4889,7 +4889,14 @@ def control():
                                 write_measured_data(7, max_f1)
                                 print(f"F1 結果：{max_f1}")
 
-                                inspection_data["result"]["f1"] = not (136 > max_f1 > 100)
+                                if all_sensors_dict["Temp_ClntSply"] > 45 and all_sensors_dict["Temp_ClntSply"] <= 55:
+                                    inspection_data["result"]["f1"] = not (130 > max_f1 > 100)
+                                elif all_sensors_dict["Temp_ClntSply"] > 35 and all_sensors_dict["Temp_ClntSply"] <= 45:
+                                    inspection_data["result"]["f1"] = not (80 > max_f1 > 110)
+                                elif all_sensors_dict["Temp_ClntSply"] > 25 and all_sensors_dict["Temp_ClntSply"] <= 35:
+                                    inspection_data["result"]["f1"] = not (60 > max_f1 > 90)
+                                elif all_sensors_dict["Temp_ClntSply"] > 15 and all_sensors_dict["Temp_ClntSply"] <= 25:
+                                    inspection_data["result"]["f1"] = not (40 > max_f1 > 70)
 
                                 change_progress("f1", "finish")
                                 send_all(3, "f1")
