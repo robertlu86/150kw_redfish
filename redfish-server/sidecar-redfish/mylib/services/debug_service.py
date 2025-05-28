@@ -1,15 +1,6 @@
 import os
 import platform
-# from mylib.services.base_service import BaseService
-if platform.system() == "Linux":
-    onLinux = True
-else:
-    onLinux = False
-
-if onLinux:
-    from web.mylib.services.base_service import BaseService
-else:
-    from mylib.services.base_service import BaseService
+from mylib.services.base_service import BaseService
 
 class DebugService(BaseService):
     def __init__(self):
@@ -47,7 +38,6 @@ class DebugService(BaseService):
     def report_ls_al_service_sidecar_redfish(self):
         return self.exec_command("ls -al /home/user/service/redfish-server/sidecar-redfish")
 
-
     def report_pip_list_of_sidecar_redfish(self):
         return self.exec_command("source /home/user/service/redfish-server/redfish_venv/bin/activate; pip list")
 
@@ -58,16 +48,23 @@ class DebugService(BaseService):
         return f"curl -k '{uri}' -H 'accept: application/json' -u admin:admin --connect-timeout 5"
 
     def try_redfish_api(self):
-        return self.exec_command(self._build_curl_get_command("https://127.0.0.1:5101/redfish/v1/"))
+        host = os.getenv("ITG_REDFISH_API_HOST", "127.0.0.1")
+        port = os.getenv("ITG_REDFISH_API_PORT", "5101")
+        return self.exec_command(self._build_curl_get_command(f"https://{host}:{port}/redfish/v1/"))
     
     def try_redfish_api_Sensor_Fan1(self):
-        return self.exec_command(self._build_curl_get_command("https://127.0.0.1:5101/redfish/v1/Chassis/1/Sensors/Fan1"))
+        host = os.getenv("ITG_REDFISH_API_HOST", "127.0.0.1")
+        port = os.getenv("ITG_REDFISH_API_PORT", "5101")
+        return self.exec_command(self._build_curl_get_command(f"https://{host}:{port}/redfish/v1/Chassis/1/Sensors/Fan1"))
 
     def try_redfish_api_PrimaryFlowLitersPerMinute(self):
-        return self.exec_command(self._build_curl_get_command("https://127.0.0.1:5101/redfish/v1/Chassis/1/Sensors/PrimaryFlowLitersPerMinute"))
+        host = os.getenv("ITG_REDFISH_API_HOST", "127.0.0.1")
+        port = os.getenv("ITG_REDFISH_API_PORT", "5101")
+        return self.exec_command(self._build_curl_get_command(f"https://{host}:{port}/redfish/v1/Chassis/1/Sensors/PrimaryFlowLitersPerMinute"))
 
     def try_restapi(self):
-        return self.exec_command(self._build_curl_get_command("http://127.0.0.1:5001/api/v1/cdu"))
+        host_port = os.getenv("ITG_REST_HOST", "http://127.0.0.1:5001")
+        return self.exec_command(self._build_curl_get_command(f"{host_port}/api/v1/cdu"))
 
     
         

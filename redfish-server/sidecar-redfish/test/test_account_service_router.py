@@ -81,7 +81,7 @@ accountservice_testcases = [
 #     return tmp_account_name
 
 def test_create_account_with_invalid_password(client, basic_auth_header):
-    """測試 create_account API (invalid password): /redfish/v1/AccountService/Accounts/"""
+    """[TestCase] create_account API (invalid password): /redfish/v1/AccountService/Accounts/"""
     endpoint = "/redfish/v1/AccountService/Accounts/" # 最後的"/"很重要，否則得到308
     logging.info(f"Endpoint: {endpoint}")
 
@@ -95,7 +95,7 @@ def test_create_account_with_invalid_password(client, basic_auth_header):
 
 @pytest.mark.dependency()
 def test_create_account(client, basic_auth_header):
-    """測試 create_account API: /redfish/v1/AccountService/Accounts/
+    """[TestCase] create_account API: /redfish/v1/AccountService/Accounts/
     @Http request : 
         curl --location 'https://127.0.0.1:5101/redfish/v1/AccountService/Accounts/' 
         --header 'Content-Type: application/json' 
@@ -116,7 +116,7 @@ def test_create_account(client, basic_auth_header):
 
 @pytest.mark.dependency(depends=["test_create_account"])
 def test_create_account_again(client, basic_auth_header):
-    """測試 create_account API (account already exists): /redfish/v1/AccountService/Accounts/
+    """[TestCase] create_account API (account already exists): /redfish/v1/AccountService/Accounts/
     """
     endpoint = "/redfish/v1/AccountService/Accounts/"
     logging.info(f"Endpoint: {endpoint}")
@@ -130,7 +130,7 @@ def test_create_account_again(client, basic_auth_header):
     
 @pytest.mark.dependency(depends=["test_create_account"])
 def test_get_account(client, basic_auth_header):
-    """測試 get_account API: /redfish/v1/AccountService/Accounts/<account_id>/"""
+    """[TestCase] get_account API: /redfish/v1/AccountService/Accounts/<account_id>/"""
     endpoint = f"/redfish/v1/AccountService/Accounts/{tmp_account_name}/"
     logging.info(f"Endpoint: {endpoint}")
 
@@ -146,7 +146,7 @@ def test_get_account(client, basic_auth_header):
     
 # @pytest.mark.dependency(depends=["test_get_account"])
 # def test_update_account(client, basic_auth_header):
-#     """測試 update_service API: /redfish/v1/AccountService/Accounts/<account_id>"""
+#     """[TestCase] update_service API: /redfish/v1/AccountService/Accounts/<account_id>"""
 #     endpoint = f"/redfish/v1/AccountService/Accounts/{tmp_account_name}"
 #     print(f"Endpoint: {endpoint}")
     
@@ -154,7 +154,7 @@ def test_get_account(client, basic_auth_header):
             
 @pytest.mark.dependency(depends=["test_get_account"])
 def test_delete_account(client, basic_auth_header):
-    """測試 delete_account API: /redfish/v1/AccountService/Accounts/<account_id>/"""
+    """[TestCase] delete_account API: /redfish/v1/AccountService/Accounts/<account_id>/"""
     endpoint = f"/redfish/v1/AccountService/Accounts/{tmp_account_name}/"
     logging.info(f"Endpoint: {endpoint}")
     
@@ -165,7 +165,7 @@ def test_delete_account(client, basic_auth_header):
 
 @pytest.mark.dependency(depends=["test_delete_account"])
 def test_get_deleted_account(client, basic_auth_header):
-    """測試 get_account API (deleted account): /redfish/v1/AccountService/Accounts/<account_id>/"""
+    """[TestCase] get_account API (deleted account): /redfish/v1/AccountService/Accounts/<account_id>/"""
     endpoint = f"/redfish/v1/AccountService/Accounts/{tmp_account_name}/"
     logging.info(f"Endpoint: {endpoint}")
     
@@ -176,7 +176,7 @@ def test_get_deleted_account(client, basic_auth_header):
     assert response.status_code == 404
 
 def test_delete_nonexistaccount(client, basic_auth_header):
-    """測試 delete_account API (non exist account): /redfish/v1/AccountService/Accounts/<account_id>/"""
+    """[TestCase] delete_account API (non exist account): /redfish/v1/AccountService/Accounts/<account_id>/"""
     endpoint = f"/redfish/v1/AccountService/Accounts/{tmp_account_name}-nonexist/"
     logging.info(f"Endpoint: {endpoint}")
     
@@ -188,7 +188,7 @@ def test_delete_nonexistaccount(client, basic_auth_header):
  
 @pytest.mark.parametrize('testcase', accountservice_testcases)
 def test_accountservice_api(client, basic_auth_header, testcase):
-    """測試 accountservice GET API"""
+    """[TestCase] accountservice GET API"""
     print(f"Endpoint: {testcase['endpoint']}")
     response = client.get(testcase['endpoint'], headers=basic_auth_header)
     assert response.status_code == 200

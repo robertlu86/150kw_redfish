@@ -12,13 +12,14 @@ root_data={
     "RedfishVersion": "1.14.0",
     "Vendor": "Supermicro",
     "ServiceIdentification": "ServiceRoot",
-    "UUID": "00000000-0000-0000-0000-e45f013e98f8",
+    "UUID": "00000000-0000-0000-0000-e45f013e98f8", # Mac address
     "Product": "TBD",
     "ProtocolFeaturesSupported": {
         "FilterQuery": False,
         "SelectQuery": False,
         "ExcerptQuery": False,
         "OnlyMemberQuery": False,
+        "MultipleHTTPRequests": False,
         "ExpandQuery": {
             "Links": False,
             "NoLinks": False,
@@ -38,10 +39,10 @@ root_data={
     # 要新增
     "EventService": {"@odata.id": "/redfish/v1/EventService"},
     "CertificateService": {"@odata.id": "/redfish/v1/CertificateService"},
-    "Systems": {"@odata.id": "/redfish/v1/Systems"},
+    # "Systems": {"@odata.id": "/redfish/v1/Systems"},
     "ComponentIntegrity": {"@odata.id": "/redfish/v1/ComponentIntegrity"},
+    # "Product": {"@odata.id": "/redfish/v1/Product"}, 
     # "Registry": {"@odata.id": "/redfish/v1/Registry"},
-    # "Product": {"@odata.id": "/redfish/v1/Product"},
     "Links": {
         "Sessions": {
             "@odata.id": "/redfish/v1/SessionService/Sessions"
@@ -64,7 +65,7 @@ odata_data = {
     # 要新增
     { "@odata.id": "/redfish/v1/CertificateService"},
     {"@odata.id": "/redfish/v1/EventService"},
-    {"@odata.id": "/redfish/v1/Systems"},
+    # {"@odata.id": "/redfish/v1/Systems"},
     {"@odata.id": "/redfish/v1/ComponentIntegrity"},
     # {"@odata.id": "/redfish/v1/Registry"}, # 未新增 metadata
     # {"@odata.id": "/redfish/v1/Product"}, # 未新增 metadata

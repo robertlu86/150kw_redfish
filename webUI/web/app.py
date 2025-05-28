@@ -34,7 +34,9 @@ from pymodbus.constants import Endian
 from pymodbus.payload import BinaryPayloadDecoder
 from logging.handlers import RotatingFileHandler
 from concurrent_log_handler import ConcurrentTimedRotatingFileHandler
-from mylib.services.debug_service import DebugService
+# from mylib.services.debug_service import DebugService
+
+
 
 load_dotenv()
 app = Flask(__name__)
@@ -76,6 +78,12 @@ previous_alert_states = {}
 previous_error_states = {}
 previous_rack_states = {}
 prev_plc_error = False
+
+if onLinux:
+    from web.mylib.services.debug_service import DebugService
+else:
+    from mylib.services.debug_service import DebugService
+
 if onLinux:
     from web.auth import (
         USER_DATA,

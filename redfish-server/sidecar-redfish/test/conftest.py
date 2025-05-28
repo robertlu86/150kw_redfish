@@ -4,11 +4,13 @@ conftest.py 是 pytest 的特殊設定檔，用來集中定義「測試共用的
 '''
 import os
 import sys
+import json
 from dotenv import load_dotenv
 proj_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(proj_root)
 print(f"Testing with .env-test: {os.path.join(proj_root, '.env-test')}")
 load_dotenv(dotenv_path=f"{os.path.join(proj_root, '.env-test')}", verbose=True, override=True)
+os.environ['IS_TESTING_MODE'] = 'True'
 
 import base64
 import pytest
@@ -42,7 +44,9 @@ def basic_auth_header():
             "Authorization": f"Basic {token}",
             "Content-Type": "application/json"
         }
-    return make_basic_auth_header("admin", "admin")
+    username = os.getenv("ADMIN_USERNAME", "admin")
+    password = os.getenv("ADMIN_PASSWORD", "admin")
+    return make_basic_auth_header(username, password)
 
 @pytest.fixture(autouse=True)
 def log_docstring_for_testcase(request):
@@ -63,4 +67,24 @@ def common_payload():
     payload = {}
     return payload
 
+def print_response_details(response, **kwargs):
+    """Print response details."""
+    print(f"Request Method: {response.request.method}")
+    print(f"Request URL: {response.request.url}")
+    print(f"Request Headers: ")
+    for header in response.request.headers:
+        print(f"  * {header[0]}: {header[1]}")
+    
+    print(f"Response Status Code: {response.status_code}")
+    print(f"Response Headers: ")
+    for header in response.headers:
+        print(f"  * {header[0]}: {header[1]}")
+    print(f"Response Body: ")
+    print(json.dumps(response.json, indent=2, ensure_ascii=False))
+    # print(json.dumps(json.loads(response.data.decode('utf-8')), indent=2))
 
+    print(f"Other information: ")
+    if kwargs:
+        for key, value in kwargs.items():
+            print(f"  * {key}: {value}")
+        

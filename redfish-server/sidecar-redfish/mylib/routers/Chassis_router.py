@@ -7,8 +7,8 @@ from mylib.utils.load_api import load_raw_from_api
 from mylib.utils.load_api import CDU_BASE
 import requests
 import os
-from dotenv import load_dotenv
 from typing import Dict
+from mylib.common.my_resource import MyResource
 
 
 Chassis_ns = Namespace('', description='Chassis Collection')
@@ -35,13 +35,15 @@ Chassis_data_1 = {
     # 標準硬體資訊
     "ChassisType": "RackMount",
     "Manufacturer": "Supermicro",
-    "Model": "YellowCat1000",
-    "SerialNumber": "24701 011001",
-    "PartNumber": "TBD",
-    "AssetTag": "TBD",
-    "UUID": "00000000-0000-0000-0000-e45f013e98f8",
+    "Model": "CDU 150kW",
+    "SerialNumber": "130001",
+    "PartNumber": "LCS-SCDU-1K3LR001",
+    "UUID": "00000000-0000-0000-0000-e45f013e98f8", # 機殼 UUID (未做)
+    "AssetTag": "TBD", #  (未做)
+    "SKU": "TBD", # 機殼硬體版本或型號 (未做)
+    "Version": "TBD", # 機殼軟體版本或型號 (未做)
     
-    # 狀態與指示燈
+    # 狀態與指示燈 (status 未做)
     "PowerState": "On",
     "LocationIndicatorActive": True,
     "Status": {
@@ -55,12 +57,12 @@ Chassis_data_1 = {
     "EnvironmentMetrics": {"@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/EnvironmentMetrics"},
     # ==============0514新增=============
     # "Fans":{"@odata.id": "/redfish/v1/Chassis/1/ThermalSubsystem/Fans"},
-    "Drives": {"@odata.id": "/redfish/v1/Chassis/1/Drives"},
+    # "Drives": {"@odata.id": "/redfish/v1/Chassis/1/Drives"},
     "NetworkAdapters": {"@odata.id": "/redfish/v1/Chassis/1/NetworkAdapters"},
-    "PCIeDevices": {"@odata.id": "/redfish/v1/Chassis/1/PCIeDevices"},
-    "Power": {"@odata.id": "/redfish/v1/Chassis/1/Power"},
-    "Thermal": {"@odata.id": "/redfish/v1/Chassis/1/Thermal"},
-    "TrustedComponents": {"@odata.id": "/redfish/v1/Chassis/1/TrustedComponents"},
+    # "PCIeDevices": {"@odata.id": "/redfish/v1/Chassis/1/PCIeDevices"},
+    # "Power": {"@odata.id": "/redfish/v1/Chassis/1/Power"},
+    # "Thermal": {"@odata.id": "/redfish/v1/Chassis/1/Thermal"},
+    # "TrustedComponents": {"@odata.id": "/redfish/v1/Chassis/1/TrustedComponents"},
 
     # ==============0514新增=============
     
@@ -68,25 +70,33 @@ Chassis_data_1 = {
     "Sensors": {"@odata.id": "/redfish/v1/Chassis/1/Sensors"},
     "Controls": {"@odata.id": "/redfish/v1/Chassis/1/Controls"},
     
-    # OEM 擴充
-    "Oem": {
-        "LeakDetection": {"@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/LeakDetection"},
-        "Pumps": {"@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Pumps"},
-        "PrimaryCoolantConnectors": {"@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/PrimaryCoolantConnectors"},
-        "Reservoirs": {"@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Reservoirs"},
-    },
+
     # Links 關聯
     "Links": {
         "ManagedBy": [{"@odata.id": "/redfish/v1/Managers/CDU"}],
         "CoolingUnits": [{"@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1"}],
-        "ComputerSystems": [{"@odata.id": "/redfish/v1/Systems/1"}], # 未確認
-        "CooledBy": [{}], # 未做
-        "PoweredBy": [{}], # 未做
+        # "ComputerSystems": [{"@odata.id": "/redfish/v1/Systems/1"}], # 未確認
+        # "CooledBy": [{}], # 未做
+        # "PoweredBy": [{}], # 未做
     },
+    "Actions": {},
     "@Redfish.WriteableProperties": [
         "LocationIndicatorActive",
     ],
-    
+    # OEM 擴充
+    "Oem": {
+        "supermirco": {
+            "@odata.type": "#Oem.Chassis.v1_26_0.Chassis",
+            "LeakDetection": {"@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/LeakDetection"},
+            "Pumps": {"@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Pumps"},
+            "PrimaryCoolantConnectors": {"@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/PrimaryCoolantConnectors"},
+            "Reservoirs": {"@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Reservoirs"},
+            "Main MC": {
+                "State":True
+            }
+        }
+ 
+    },
 }
 
 Controls_data = {
@@ -156,6 +166,7 @@ PowerSubsystem_data = {
     "Name": "Chassis Power Subsystem",
     "Description":   "Chassis Power Subsystem",
     
+    # TBD
     "Status": {
         "State": "Enabled", 
         "Health": "OK"
@@ -166,28 +177,28 @@ PowerSubsystem_data = {
     # 24v 240w 12v 120w
     "CapacityWatts": 360,
     
-    # 本次與下游元件協商分配與請求的功率
+    # 本次與下游元件協商分配與請求的功率 TBD
     "Allocation": {
         "AllocatedWatts": 80.0,
         "RequestedWatts": 90.0
     },
     
-    "PowerSupplyRedundancy": [
-        {
-            "RedundancyType": "Failover",
-            "MaxSupportedInGroup": 2,
-            "MinNeededInGroup": 1,
-            "RedundancyGroup": [
-                {
-                    "@odata.id": "/redfish/v1/Chassis/1/PowerSubsystem/PowerSupplies/1",
-                },
-            ],
-            "Status": {
-                "State": "UnavailableOffline",
-                "Health": "OK"
-            }
-        }
-    ],
+    # "PowerSupplyRedundancy": [
+    #     {
+    #         "RedundancyType": "Failover",
+    #         "MaxSupportedInGroup": 2,
+    #         "MinNeededInGroup": 1,
+    #         "RedundancyGroup": [
+    #             {"@odata.id": "/redfish/v1/Chassis/1/PowerSubsystem/PowerSupplies/1"},
+    #             {"@odata.id": "/redfish/v1/Chassis/1/PowerSubsystem/PowerSupplies/2"}
+    #         ],
+    #         # TBD
+    #         "Status": {
+    #             "State": "UnavailableOffline",
+    #             "Health": "OK"
+    #         }
+    #     }
+    # ],
     
     # 與各個電源模組的關聯
     "PowerSupplies": {
@@ -201,13 +212,14 @@ PowerSubsystem_data = {
 ThermalSubsystem_data = {
     "@odata.context": "/redfish/v1/$metadata#ThermalSubsystem.ThermalSubsystem",
     "@odata.id": "/redfish/v1/Chassis/1/ThermalSubsystem",
-    "@odata.type": "#ThermalSubsystem.v1_3_2.ThermalSubsystem",
+    "@odata.type": "#ThermalSubsystem.v1_3_3.ThermalSubsystem",
     "Id": "ThermalSubsystem",
     "Name": "Thermal Subsystem",
     "Fans": {"@odata.id": "/redfish/v1/Chassis/1/ThermalSubsystem/Fans"},
     "ThermalMetrics": {
         "@odata.id": "/redfish/v1/Chassis/1/ThermalSubsystem/ThermalMetrics"
     },
+    # TBD 備用
     "FanRedundancy": [
         {
             "MaxSupportedInGroup": 2,
@@ -240,10 +252,41 @@ ThermalSubsystem_data = {
             }
         }
     ],
+    # TBD
     "Status": {"State": "Enabled", "Health": "OK"},
     "Oem": {},
 }
 
+class MyBaseChassis(MyResource):
+    def __init__(self, *args, **kwargs):
+        self.chassis_count = 1
+        self.power_supply_count = int(os.getenv("REDFISH_POWERSUPPLY_COLLECTION_CNT", 1))
+        self.fan_count = int(os.getenv("REDFISH_FAN_COLLECTION_CNT", 1))
+    
+    def _validate_request(self):
+        try:
+            chassis_id = request.view_args.get("chassis_id")
+            power_supply_id = request.view_args.get("power_supply_id")
+            fan_id = request.view_args.get("fan_id")
+            if not self._is_valid_id(chassis_id, self.chassis_count):
+                abort(HTTPStatus.NOT_FOUND, description=f"chassis_id, {chassis_id}, not found")
+            
+            if not self._is_valid_id(power_supply_id, self.power_supply_count):
+                abort(HTTPStatus.NOT_FOUND, description=f"power_supply_id, {power_supply_id}, not found")
+            
+            if not self._is_valid_id(fan_id, self.fan_count):
+                abort(HTTPStatus.NOT_FOUND, description=f"fan_id, {fan_id}, not found")
+        except Exception as e:
+            abort(HTTPStatus.NOT_FOUND, description=f"[Unexpected Error] {e}")
+    
+    def _is_valid_id(self, id: str, max_value: int):
+        if id: # request有傳id進來才檢查
+            if not id.isdigit():
+                return False
+            if not (0 < int(id) <= max_value):
+                return False
+        return True
+        
 
 # def get_thermal_subsystem_fans_data():
 #     fan_cnt = int(os.getenv("REDFISH_FAN_COLLECTION_CNT", 8))
@@ -308,6 +351,9 @@ ThermalSubsystem_data = {
 #         Fans_data[f"Fan{i}"] = item
 #     return Fans_data, ThermalSubsystem_Fans_data 
 
+
+
+
 #================================================
 # 共用資源
 #================================================
@@ -335,6 +381,11 @@ class Chassis(Resource):
 class Chassis1(Resource):
     # # @requires_auth
     def get(self):
+        version_data = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/display/version")["fw_info"]
+        Chassis_data_1["Model"] = version_data["Model"]
+        Chassis_data_1["SerialNumber"] = version_data["SN"]
+        Chassis_data_1["PartNumber"] = version_data["PartNumber"]
+        Chassis_data_1["Oem"]["supermirco"]["Main MC"]["State"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/mc")["main_mc"]
         return Chassis_data_1
 #================================================
 # 控制介面（Controls）
@@ -677,29 +728,15 @@ class PowerSupplies(Resource):
         return rep
 
 @Chassis_ns.route("/Chassis/<chassis_id>/PowerSubsystem/PowerSupplies/<power_supply_id>")
-class PowerSuppliesById(Resource):
-    def abort_if_uri_not_exist(self, power_supply_id: int):
-        if not (1 <= power_supply_id <= int(os.getenv("REDFISH_POWERSUPPLY_COLLECTION_CNT", 1))):
-            abort(HTTPStatus.NOT_FOUND, description=f"Power supply id, {power_supply_id}, not found")
-    
+class PowerSuppliesById(MyBaseChassis):
     # @requires_auth
     def get(self, chassis_id: str, power_supply_id: str):
-        self.abort_if_uri_not_exist(int(power_supply_id))
         chassis_service = RfChassisService()
         # TBD
         rep = chassis_service.fetch_PowerSubsystem_PowerSupplies(chassis_id, power_supply_id)
+        #  ['AC100To127V', 'AC100To240V', 'AC100To277V', 'AC120V', 'AC200To240V', 'AC200To277V', 'AC208V', 'AC230V', 'AC240V', 'AC240AndDC380V', 'AC277V', 'AC277AndDC380V', 'AC400V', 'AC480V', 'DC48V', 'DC240V', 'DC380V', 'DCNeg48V', 'DC16V', 'DC12V', 'DC9V', 'DC5V', 'DC3_3V', 'DC1_8V']
         rep["Metrics"] = {"@odata.id": f"/redfish/v1/Chassis/{chassis_id}/PowerSubsystem/PowerSupplies/{power_supply_id}/Metrics"}
         rep["Assembly"] = {"@odata.id": f"/redfish/v1/Chassis/{chassis_id}/PowerSubsystem/PowerSupplies/{power_supply_id}/Assembly"}
-        # rep["FirmwareVersion"] = "1"
-        # rep["HotPluggable"] = False
-        # rep["InputNominalVoltageType"] = "AC"
-        # rep["InputNominalVoltageType"] = "AC240V"
-        # rep["LineInputStatus"] = "Normal"
-        # rep["Manufacturer"] = "Supermicro"
-        # rep["PartNumber"] = "PN-PSU-100"
-        # rep["PowerCapacityWatts"] = 1000
-        # rep["PowerSupplyType"] = "AC"
-        # rep["SerialNumber"] = "SN12345678"
      
         return rep
     
@@ -746,8 +783,8 @@ FanSwitch_patch = Chassis_ns.model('FanSwitchpatch', {
     'fan_switch': fields.Boolean(
         required=True,
         description='Fan_Switch',
-        default=True,   # 這裡設定預設值
-        example=True,   # 也可加 example，讓 UI 顯示範例
+        default=True,   # 設定預設值
+        example=True,   # 讓 UI 顯示範例
     ),
 })
 
@@ -767,21 +804,22 @@ class ThermalSubsystem_Fans(Resource):
 
 
 @Chassis_ns.route("/Chassis/<chassis_id>/ThermalSubsystem/Fans/<string:fan_id>")
-class ThermalSubsystem_Fans_by_id(Resource):
-    def abort_if_uri_not_exist(self, fan_id: int):
-        if not (1 <= fan_id <= int(os.getenv("REDFISH_FAN_COLLECTION_CNT", 1))):
-            abort(HTTPStatus.NOT_FOUND, description=f"Fan id, {fan_id}, not found")
-
+class ThermalSubsystem_Fans_by_id(MyBaseChassis):
     # @requires_auth
     def get(self, fan_id, chassis_id):
-        self.abort_if_uri_not_exist(int(fan_id))
-        # fan_data = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/chassis/summary")[f"fan{fan_id}"]
-        # rep = Fans_data[f"Fan{fan_id}"]
-        # rep["Status"]["State"] = fan_data["status"]["state"]
-        # rep["Status"]["Health"] = fan_data["status"]["health"]
-
         ThermalSubsystem_Fans_by_id = RfChassisService()
         rep = ThermalSubsystem_Fans_by_id.get_thermal_subsystem_fans_data(chassis_id, fan_id)
+        # 要優化
+        fan_mc_id = 1 if int(fan_id) <= 3 else 2
+        rep["Oem"] = {
+            "Supermicro": {
+                "@odata.type": "#Supermicro.Fan.v1_5_2.Fan",
+                f"Fan{fan_id} MC": {
+                    "fan MC":load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/mc")[f"fan_mc{fan_mc_id}"]
+                }
+            }
+            
+        }
         return  rep, 200
     
     @Chassis_ns.expect(FanSwitch_patch, validate=True)
@@ -1093,38 +1131,38 @@ TrustedComponents_data = {
 # ================
 # Drvives
 # ================
-@Chassis_ns.route("/Chassis/<chassis_id>/Drives")
-class Drives(Resource):
-    # @requires_auth
-    def get(self, chassis_id):
-        return Drives_data
+# @Chassis_ns.route("/Chassis/<chassis_id>/Drives")
+# class Drives(Resource):
+#     # @requires_auth
+#     def get(self, chassis_id):
+#         return Drives_data
     
-@Chassis_ns.route("/Chassis/<string:chassis_id>/Drives/<string:drive_id>")
-class Drive(Resource):
-    def get(self, chassis_id, drive_id):
-        return {
-            "@odata.context": "/redfish/v1/$metadata#Drive.v1_21_0.Drive",
-            "@odata.id": f"/redfish/v1/Chassis/{chassis_id}/Drives/{drive_id}",
-            "@odata.type": "#Drive.v1_21_0.Drive",
+# @Chassis_ns.route("/Chassis/<string:chassis_id>/Drives/<string:drive_id>")
+# class Drive(Resource):
+#     def get(self, chassis_id, drive_id):
+#         return {
+#             "@odata.context": "/redfish/v1/$metadata#Drive.v1_21_0.Drive",
+#             "@odata.id": f"/redfish/v1/Chassis/{chassis_id}/Drives/{drive_id}",
+#             "@odata.type": "#Drive.v1_21_0.Drive",
             
-            "Id": drive_id,
-            "Name": f"Drive {drive_id}",
+#             "Id": drive_id,
+#             "Name": f"Drive {drive_id}",
             
-            "BlockSizeBytes": 512,
-            "CapacityBytes": 1000000000000,
-            "Status": {"State": "Enabled", "Health": "OK"},
+#             "BlockSizeBytes": 512,
+#             "CapacityBytes": 1000000000000,
+#             "Status": {"State": "Enabled", "Health": "OK"},
             
-            "Manufacturer": "Supermicro",
-            "MediaType": "HDD",
-            "Model": "TBD",
-            "PhysicalLocation": {},
-            "LocationIndicatorActive": True,
-            "Protocol": "SAS",
-            "Revision": "TBD",
-            "SerialNumber": "TBD",
+#             "Manufacturer": "Supermicro",
+#             "MediaType": "HDD",
+#             "Model": "TBD",
+#             "PhysicalLocation": {},
+#             "LocationIndicatorActive": True,
+#             "Protocol": "SAS",
+#             "Revision": "TBD",
+#             "SerialNumber": "TBD",
             
             
-        }    
+#         }    
     
 # ================
 # NetworkAdapters
@@ -1147,8 +1185,8 @@ class NetworkAdapters(Resource):
             "Id": NetworkAdapter_id,
             "Name": f"NetworkAdapter {NetworkAdapter_id}",
             
-            "PartNumber": "TBD",
-            "SerialNumber": "TBD",
+            "PartNumber": "Transcend-TS2TMTS970T-I",
+            "SerialNumber": "MAC",
             "Ports": {"@odata.id": f"/redfish/v1/Chassis/{chassis_id}/NetworkAdapters/{NetworkAdapter_id}/Ports"}
         }    
         
@@ -1187,7 +1225,7 @@ class NetworkAdapters(Resource):
             "Ethernet": {
                 "LLDPEnabled": True,
                 "LLDPReceive": {
-                    "ChassisId": "TBD",
+                    "ChassisId": "TBD", # 放MAC
                     "ChassisIdSubtype": "ChassisComp",
                     "ManagementAddressIPv4": "192.168.1.100",
                     "ManagementAddressMAC": "00:11:22:33:44:55",
@@ -1208,100 +1246,119 @@ class NetworkAdapters(Resource):
 # ================
 # PCIeDevices
 # ================    
-@Chassis_ns.route("/Chassis/<chassis_id>/PCIeDevices")
-class PCIeDevices(Resource):
-    # @requires_auth
-    def get(self, chassis_id):
-        return PCIeDevices_data 
+# @Chassis_ns.route("/Chassis/<chassis_id>/PCIeDevices")
+# class PCIeDevices(Resource):
+#     # @requires_auth
+#     def get(self, chassis_id):
+#         return PCIeDevices_data 
     
-@Chassis_ns.route("/Chassis/<chassis_id>/PCIeDevices/<string:PCIeDevices_id>") 
-class PCIeDevices(Resource):
-    # @requires_auth
-    def get(self, chassis_id, PCIeDevices_id):
-        return {
-            "@odata.context": "/redfish/v1/$metadata#PCIeDevices.v1_18_0.PCIeDevices",
-            "@odata.id": f"/redfish/v1/Chassis/{chassis_id}/PCIeDevices/{PCIeDevices_id}",
-            "@odata.type": "#PCIeDevice.v1_18_0.PCIeDevice",
-            "Id": PCIeDevices_id,
-            "Name": f"PCIeDevices {PCIeDevices_id}",
+# @Chassis_ns.route("/Chassis/<chassis_id>/PCIeDevices/<string:PCIeDevices_id>") 
+# class PCIeDevices(Resource):
+#     # @requires_auth
+#     def get(self, chassis_id, PCIeDevices_id):
+#         return {
+#             "@odata.context": "/redfish/v1/$metadata#PCIeDevices.v1_18_0.PCIeDevices",
+#             "@odata.id": f"/redfish/v1/Chassis/{chassis_id}/PCIeDevices/{PCIeDevices_id}",
+#             "@odata.type": "#PCIeDevice.v1_18_0.PCIeDevice",
+#             "Id": PCIeDevices_id,
+#             "Name": f"PCIeDevices {PCIeDevices_id}",
             
-            "DeviceType": "SingleFunction",
-            "FirmwareVersion": "1",
-            "Manufacturer": "Supermicro",
-            "Model": "TBD",
-            "PartNumber": "TBD",
-            "SerialNumber": "TBD",
-            "Slot": None,
-            "Status": {"State": "Enabled", "Health": "OK"},
+#             "DeviceType": "SingleFunction",
+#             "FirmwareVersion": "1",
+#             "Manufacturer": "Supermicro",
+#             "Model": "TBD",
+#             "PartNumber": "TBD",
+#             "SerialNumber": "TBD",
+#             "Slot": None,
+#             "Status": {"State": "Enabled", "Health": "OK"},
             
-            "PCIeFunctions": {"@odata.id": f"/redfish/v1/Chassis/{chassis_id}/PCIeDevices/{PCIeDevices_id}/PCIeFunctions"}
-        }       
+#             "PCIeFunctions": {"@odata.id": f"/redfish/v1/Chassis/{chassis_id}/PCIeDevices/{PCIeDevices_id}/PCIeFunctions"}
+#         }       
  
-@Chassis_ns.route("/Chassis/<string:chassis_id>/PCIeDevices/<string:device_id>/PCIeFunctions")
-class PCIeFunctionCollection(Resource):
-    def get(self, chassis_id, device_id):
-        # 假设只有一个功能 ID = "1"
-        members = [
-            {"@odata.id": f"/redfish/v1/Chassis/{chassis_id}/PCIeDevices/{device_id}/PCIeFunctions/1"}
-        ]
-        return {
-            "@odata.context": "/redfish/v1/$metadata#PCIeFunctionCollection.PCIeFunctionCollection",
-            "@odata.id": f"/redfish/v1/Chassis/{chassis_id}/PCIeDevices/{device_id}/PCIeFunctions",
-            "@odata.type": "#PCIeFunctionCollection.PCIeFunctionCollection",
-            "Name": "PCIe Function Collection",
-            "Members@odata.count": len(members),
-            "Members": members,
-            "Oem": {}
-        }       
+# @Chassis_ns.route("/Chassis/<string:chassis_id>/PCIeDevices/<string:device_id>/PCIeFunctions")
+# class PCIeFunctionCollection(Resource):
+#     def get(self, chassis_id, device_id):
+#         # 假设只有一个功能 ID = "1"
+#         members = [
+#             {"@odata.id": f"/redfish/v1/Chassis/{chassis_id}/PCIeDevices/{device_id}/PCIeFunctions/1"}
+#         ]
+#         return {
+#             "@odata.context": "/redfish/v1/$metadata#PCIeFunctionCollection.PCIeFunctionCollection",
+#             "@odata.id": f"/redfish/v1/Chassis/{chassis_id}/PCIeDevices/{device_id}/PCIeFunctions",
+#             "@odata.type": "#PCIeFunctionCollection.PCIeFunctionCollection",
+#             "Name": "PCIe Function Collection",
+#             "Members@odata.count": len(members),
+#             "Members": members,
+#             "Oem": {}
+#         }       
 
-@Chassis_ns.route("/Chassis/<string:chassis_id>/PCIeDevices/<string:device_id>/PCIeFunctions/<string:function_id>")
-class PCIeFunction(Resource):
-    def get(self, chassis_id, device_id, function_id):
-        return {
-            "@odata.context": "/redfish/v1/$metadata#PCIeFunction.v1_6_0.PCIeFunction",
-            "@odata.id": f"/redfish/v1/Chassis/{chassis_id}/PCIeDevices/{device_id}/PCIeFunctions/{function_id}",
-            "@odata.type": "#PCIeFunction.v1_6_0.PCIeFunction",
+# @Chassis_ns.route("/Chassis/<string:chassis_id>/PCIeDevices/<string:device_id>/PCIeFunctions/<string:function_id>")
+# class PCIeFunction(Resource):
+#     def get(self, chassis_id, device_id, function_id):
+#         return {
+#             "@odata.context": "/redfish/v1/$metadata#PCIeFunction.v1_6_0.PCIeFunction",
+#             "@odata.id": f"/redfish/v1/Chassis/{chassis_id}/PCIeDevices/{device_id}/PCIeFunctions/{function_id}",
+#             "@odata.type": "#PCIeFunction.v1_6_0.PCIeFunction",
             
-            "Id": str(function_id),
-            "Name": f"PCIe Function {function_id}",
-            "FunctionId": int(function_id),
+#             "Id": str(function_id),
+#             "Name": f"PCIe Function {function_id}",
+#             "FunctionId": int(function_id),
             
-            # 要用十六進位
-            "DeviceClass": "UnclassifiedDevice",
-            "DeviceId": "0x1B64",
-            "SubsystemId": "0x0000",
-            "SubsystemVendorId": "0x15D9",
-            "VendorId": "0x15D9",
+#             # 要用十六進位
+#             "DeviceClass": "UnclassifiedDevice",
+#             "DeviceId": "0x1B64",
+#             "SubsystemId": "0x0000",
+#             "SubsystemVendorId": "0x15D9",
+#             "VendorId": "0x15D9",
 
-            "Oem": {}
-        }
+#             "Oem": {}
+#         }
 # ================
 # Power
 # ================ 
-@Chassis_ns.route("/Chassis/<chassis_id>/Power")
-class Power(Resource):
-    # @requires_auth
-    def get(self, chassis_id):
-        return Power_data    
+# @Chassis_ns.route("/Chassis/<chassis_id>/Power")
+# class Power(Resource):
+#     # @requires_auth
+#     def get(self, chassis_id):
+#         return Power_data    
 
 
-@Chassis_ns.route("/Chassis/<chassis_id>/PowerSubsystem/PowerSupplies/<string:PowerSupply_id>/Metrics")
-class Power(Resource):
+# @Chassis_ns.route("/Chassis/<chassis_id>/Power/PowerSupplies/<power_supply_id>")
+# class PowerSuppliesById(Resource):
+#     def abort_if_uri_not_exist(self, power_supply_id: int):
+#         if not (1 <= power_supply_id <= int(os.getenv("REDFISH_POWERSUPPLY_COLLECTION_CNT", 1))):
+#             abort(HTTPStatus.NOT_FOUND, description=f"Power supply id, {power_supply_id}, not found")
+    
+#     # @requires_auth
+#     def get(self, chassis_id: str, power_supply_id: str):
+#         self.abort_if_uri_not_exist(int(power_supply_id))
+#         chassis_service = RfChassisService()
+#         # TBD
+#         rep = chassis_service.fetch_PowerSubsystem_PowerSupplies(chassis_id, power_supply_id)
+#         rep["Metrics"] = {"@odata.id": f"/redfish/v1/Chassis/{chassis_id}/PowerSubsystem/PowerSupplies/{power_supply_id}/Metrics"}
+#         rep["Assembly"] = {"@odata.id": f"/redfish/v1/Chassis/{chassis_id}/PowerSubsystem/PowerSupplies/{power_supply_id}/Assembly"}
+     
+#         return rep
+
+
+ 
+@Chassis_ns.route("/Chassis/<chassis_id>/PowerSubsystem/PowerSupplies/<string:power_supply_id>/Metrics")
+class PowerSuppliesMetrics(MyBaseChassis):
     # @requires_auth
-    def get(self, chassis_id, PowerSupply_id):
+    def get(self, chassis_id, power_supply_id):
         power_Metrics_data = {
             "@odata.context": "/redfish/v1/$metadata#PowerSupplyMetrics.PowerSupplyMetrics",
-            "@odata.id": f"/redfish/v1/Chassis/{chassis_id}/PowerSubsystem/PowerSupplies/{PowerSupply_id}/Metrics",
+            "@odata.id": f"/redfish/v1/Chassis/{chassis_id}/PowerSubsystem/PowerSupplies/{power_supply_id}/Metrics",
             "@odata.type": "#PowerSupplyMetrics.v1_1_2.PowerSupplyMetrics",
             
-            "Id": f"PowerSupplyMetrics{PowerSupply_id}",
+            "Id": f"PowerSupplyMetrics{power_supply_id}",
             "Name": "Chassis Power Supply Metrics",
             
-            "FrequencyHz":{"@odata.id": f"/redfish/v1/Chassis/{chassis_id}/Sensors/FrequencyHz"},
-            "InputCurrentAmps":{"@odata.id": f"/redfish/v1/Chassis/{chassis_id}/Sensors/InputCurrentAmps"},
-            "InputPowerWatts":{"@odata.id": f"/redfish/v1/Chassis/{chassis_id}/Sensors/InputPowerWatts"},
-            "InputVoltage":{"@odata.id": f"/redfish/v1/Chassis/{chassis_id}/Sensors/InputVoltage"},
-            "OutputPowerWatts":{"@odata.id": f"/redfish/v1/Chassis/{chassis_id}/Sensors/OutputPowerWatts"},
+            # "FrequencyHz":{"@odata.id": f"/redfish/v1/Chassis/{chassis_id}/Sensors/FrequencyHz"},
+            # "InputCurrentAmps":{"@odata.id": f"/redfish/v1/Chassis/{chassis_id}/Sensors/InputCurrentAmps"},
+            # "InputPowerWatts":{"@odata.id": f"/redfish/v1/Chassis/{chassis_id}/Sensors/InputPowerWatts"},
+            # "InputVoltage":{"@odata.id": f"/redfish/v1/Chassis/{chassis_id}/Sensors/InputVoltage"},
+            # "OutputPowerWatts":{"@odata.id": f"/redfish/v1/Chassis/{chassis_id}/Sensors/OutputPowerWatts"},
             "Status": {
                 "State": "Enabled",
                 "Health": "OK"
@@ -1314,12 +1371,12 @@ class Power(Resource):
 # ================
 # Thermal
 # ================ 
-Thermal_sub = "/Chassis/<chassis_id>/Thermal"
-@Chassis_ns.route("/Chassis/<chassis_id>/Thermal")    
-class Thermal(Resource):
-    # @requires_auth
-    def get(self, chassis_id):
-        return Thermal_data
+# Thermal_sub = "/Chassis/<chassis_id>/Thermal"
+# @Chassis_ns.route("/Chassis/<chassis_id>/Thermal")    
+# class Thermal(Resource):
+#     # @requires_auth
+#     def get(self, chassis_id):
+#         return Thermal_data
 
 @Chassis_ns.route("/Chassis/<string:chassis_id>/ThermalSubsystem/ThermalMetrics")
 class ThermalMetrics(Resource):
@@ -1338,49 +1395,49 @@ class ThermalMetrics(Resource):
         }
         return ThermalMetrics_data
 
-@Chassis_ns.route("/Chassis/<chassis_id>/Thermal/Temperatures")
-class Temperatures(Resource):
-    # @requires_auth
-    def get(self, chassis_id):
-        Temperatures_data = {
-            "@odata.context": "/redfish/v1/$metadata#TemperatureCollection.TemperatureCollection",
-            "@odata.id": f"/redfish/v1/Chassis/{chassis_id}/Thermal/Temperatures",
-            "@odata.type": "#TemperatureCollection.TemperatureCollection",
-            "Name": "Chassis Temperatures",
-        }
-        return Temperatures_data
+# @Chassis_ns.route("/Chassis/<chassis_id>/Thermal/Temperatures")
+# class Temperatures(Resource):
+#     # @requires_auth
+#     def get(self, chassis_id):
+#         Temperatures_data = {
+#             "@odata.context": "/redfish/v1/$metadata#TemperatureCollection.TemperatureCollection",
+#             "@odata.id": f"/redfish/v1/Chassis/{chassis_id}/Thermal/Temperatures",
+#             "@odata.type": "#TemperatureCollection.TemperatureCollection",
+#             "Name": "Chassis Temperatures",
+#         }
+#         return Temperatures_data
 # ================
 # TrustedComponents
 # ================ 
-@Chassis_ns.route("/Chassis/<chassis_id>/TrustedComponents")
-class TrustedComponents(Resource):
-    # @requires_auth
-    def get(self, chassis_id):
-        return TrustedComponents_data 
+# @Chassis_ns.route("/Chassis/<chassis_id>/TrustedComponents")
+# class TrustedComponents(Resource):
+#     # @requires_auth
+#     def get(self, chassis_id):
+#         return TrustedComponents_data 
     
 
-@Chassis_ns.route("/Chassis/<chassis_id>/TrustedComponents/<string:TrustedComponents_id>")
-class TrustedComponents(Resource):
-    # @requires_auth
-    def get(self, chassis_id, TrustedComponents_id):
-        TrustedComponents_component_data = {
-            "@odata.context": "/redfish/v1/$metadata#TrustedComponent.TrustedComponent",
-            "@odata.id": f"/redfish/v1/Chassis/{chassis_id}/TrustedComponents/{TrustedComponents_id}",
-            "@odata.type": "#TrustedComponent.v1_3_2.TrustedComponent",
+# @Chassis_ns.route("/Chassis/<chassis_id>/TrustedComponents/<string:TrustedComponents_id>")
+# class TrustedComponents(Resource):
+#     # @requires_auth
+#     def get(self, chassis_id, TrustedComponents_id):
+#         TrustedComponents_component_data = {
+#             "@odata.context": "/redfish/v1/$metadata#TrustedComponent.TrustedComponent",
+#             "@odata.id": f"/redfish/v1/Chassis/{chassis_id}/TrustedComponents/{TrustedComponents_id}",
+#             "@odata.type": "#TrustedComponent.v1_3_2.TrustedComponent",
             
-            "Id": str(TrustedComponents_id),
-            "Name": "Chassis Trusted Components",
+#             "Id": str(TrustedComponents_id),
+#             "Name": "Chassis Trusted Components",
             
-            "Certificates": {"@odata.id": f"/redfish/v1/CertificateService/Certificates"},
-            "FirmwareVersion": "1.0.0",
-            "Manufacturer": "supermicro",
-            "Model": "Chassis",
-            "PartNumber": "TBD",
-            "SerialNumber": "TBD",
-            "Status": {
-                "State": "Enabled",
-                "Health": "OK"
-            },
-            "TrustedComponentType": "Discrete",
-        }
-        return TrustedComponents_component_data         
+#             "Certificates": {"@odata.id": f"/redfish/v1/CertificateService/Certificates"},
+#             "FirmwareVersion": "1.0.0",
+#             "Manufacturer": "supermicro",
+#             "Model": "Chassis",
+#             "PartNumber": "TBD",
+#             "SerialNumber": "TBD",
+#             "Status": {
+#                 "State": "Enabled",
+#                 "Health": "OK"
+#             },
+#             "TrustedComponentType": "Discrete",
+#         }
+#         return TrustedComponents_component_data         

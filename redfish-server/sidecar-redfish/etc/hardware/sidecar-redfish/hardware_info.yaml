@@ -1,13 +1,49 @@
 ---
 ProjectName: "sidecar-redfish"
-PowerSupply:
-  FirmwareVersion: "1.0"
-  HotPluggable: true
-  InputNominalVoltageType: "AC240V"
-  LineInputStatus: "Normal"
-  Manufacturer: "Supermicro"
-  PartNumber: "123456"
-  PowerCapacityWatts: 1000
-  PowerSupplyType: "AC"
-  SerialNumber: "12345678"
-  
+PowerSupplies:
+  "1":
+    FirmwareVersion: "0"
+    HotPluggable: false
+    InputNominalVoltageType: "AC400V" 
+    Manufacturer: "Supermicro"
+    PartNumber: "WDR-240-24"
+    SerialNumber: "TBD"
+    PowerCapacityWatts: 240
+    PowerSupplyType: "AC"
+
+  "2":  
+    FirmwareVersion: "0"
+    HotPluggable: false
+    InputNominalVoltageType: "AC400V" 
+    Manufacturer: "Supermicro"
+    PartNumber: "WDR-240-24"
+    SerialNumber: "TBD"
+    PowerCapacityWatts: 240
+    PowerSupplyType: "AC"
+
+  "3":  
+    FirmwareVersion: "0"
+    HotPluggable: false
+    InputNominalVoltageType: "AC400V" 
+    Manufacturer: "Supermicro"
+    PartNumber: "WDR-120-12"
+    SerialNumber: "TBD"
+    PowerCapacityWatts: 120
+    PowerSupplyType: "AC"  
+
+  "4": 
+    FirmwareVersion: "0"
+    HotPluggable: false
+    InputNominalVoltageType: "AC400V" 
+    Manufacturer: "Supermicro"
+    PartNumber: "WDR-120-12"
+    SerialNumber: "TBD"
+    PowerCapacityWatts: 120
+    PowerSupplyType: "AC" 
+CDU:
+  Manufacturer: KAORI
+  Model: 200KW SideCar L/A Colling CDU
+  SerialNumber: 02753000A-XXXX
+  PartNumber: LCS-SCDU-200AR001
+  FirmwareVersion: ""
+  Version: ""

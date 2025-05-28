@@ -33,6 +33,15 @@ from mylib.db.extensions import ext_engine
 from mylib.db.db_util import init_orm
 from mylib.common.proj_error import ProjError
 from mylib.auth.rf_auth import check_basic_auth,check_session_auth, AuthStatus
+from mylib.services.debug_service import DebugService
+
+class CustomApi(Api):
+    def handle_validation_error(self, error, bundle_errors):
+        return {
+            "code": HTTPStatus.BAD_REQUEST,
+            "message": "Validation Failed",
+            "errors": error.data.get('errors', {})
+        }, HTTPStatus.BAD_REQUEST
 
 app = Flask(__name__)
 
@@ -61,6 +70,10 @@ def redfish_root():
     return jsonify({
         "v1": "/redfish/v1/"
     })
+
+@app.route('/debug', methods=['GET'])
+def debug():
+    return jsonify(DebugService().load_report())
 
 # 引入資料夾中的所有路由模組
 from mylib.routers.root_router        import root_ns
@@ -93,8 +106,8 @@ api.add_namespace(CertificateService_ns, path='/redfish/v1')
 from mylib.routers.EventService_couter import EventService_ns
 api.add_namespace(EventService_ns, path='/redfish/v1')
 
-from mylib.routers.systems_router import system_ns
-api.add_namespace(system_ns, path='/redfish/v1')
+# from mylib.routers.systems_router import system_ns
+# api.add_namespace(system_ns, path='/redfish/v1')
 
 from mylib.routers.ComponentIntegrity_router import ComponentIntegrity_ns
 api.add_namespace(ComponentIntegrity_ns, path='/redfish/v1')
@@ -113,7 +126,7 @@ def examples():
 
 def check_auth(username, password):
     """檢查是否為有效的用戶名和密碼"""
-    return username == "admin" and password == "admin"
+    return username == os.getenv("ADMIN_USERNAME") and password == os.getenv("ADMIN_PASSWORD")
 
 def authenticate():
     """請求身份驗證"""

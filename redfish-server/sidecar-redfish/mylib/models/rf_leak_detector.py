@@ -17,8 +17,8 @@ from mylib.models.rf_base_model import RfResourceBaseModel
 from mylib.models.rf_status_model import RfStatusModel, RfStatusHealth, RfStatusState
 
 class RfLeakDetectorModel(RfResourceBaseModel):
-    Id: str = Field(default="1")
-    Status: RfStatusModel = Field(default=RfStatusModel())
+    # Id: str = Field(default="1")
+    # Status: RfStatusModel = Field(default=RfStatusModel())
     
     
     model_config = ConfigDict(
@@ -41,9 +41,9 @@ class RfLeakDetectorModel(RfResourceBaseModel):
         """
         super().__init__(**kwargs)
         self.odata_id = f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/LeakDetection/LeakDetectors"
-        self.odata_type = "#LeakDetectors.v1_6_0.LeakDetectors"
+        self.odata_type = "#LeakDetectorCollection.LeakDetectorCollection"
         self.Name = "LeakDetectors"
-        self.Id = cdu_id
+        # self.Id = cdu_id
 
 
 

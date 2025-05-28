@@ -20,34 +20,17 @@ CertificateService_data = {
     "Actions": {
         "#CertificateService.GenerateCSR": {
             "target": "/redfish/v1/CertificateService/Actions/CertificateService.GenerateCSR",
+            "@Redfish.ActionInfo": "/redfish/v1/CertificateService/GenerateCSRActionInfo",
             "title": "Generate CSR"
         },
         "#CertificateService.ReplaceCertificate": {
             "target": "/redfish/v1/CertificateService/Actions/CertificateService.ReplaceCertificate",
             "title": "Replace an existing certificate"
-        }
+        },
     },   
     
-    "Oem": {
-        "Certificates": {
-            "@odata.id": "/redfish/v1/CertificateService/Certificates"
-        },
-    }
+    "Oem": {}
 }
-
-Certificates_data = {
-    "@odata.id": "/redfish/v1/CertificateService/Certificates",
-    "@odata.type": "#CertificateCollection.CertificateCollection",
-    "@odata.context": "/redfish/v1/$metadata#CertificateCollection.CertificateCollection",
-    
-    "Name": "Certificate Collection",
-    "Members@odata.count": 1,
-    "Members": [
-        { "@odata.id": "/redfish/v1/CertificateService/Certificates/1" }
-    ],
-    "@Redfish.SupportedCertificates": ["PEM"]
-}
-
 
 CertificateLocations_data = {
     "@odata.context": "/redfish/v1/$metadata#CertificateLocations.CertificateLocations",
@@ -56,27 +39,38 @@ CertificateLocations_data = {
     
     "Id": "CertificateLocations",
     "Name": "Certificate Location Collection",
-    "Links": {},
+    "Links": {
+        "Certificates": [
+            # { "@odata.id": "/redfish/v1/CertificateService/Certificates/1" },
+        ]
+    },
     "Members@odata.count": 0,
     "Oem": {}
 }
 
-
-Certificate_data1 = {
-    "@odata.id": "/redfish/v1/CertificateService/Certificates/<id>",
-    "@odata.type": "#Certificate.v1_9_0.Certificate",
-    "@odata.context": "/redfish/v1/$metadata#Certificate.Certificate",
+GenerateCSRActionInfo_data = {
+    "@odata.id": "/redfish/v1/CertificateService/GenerateCSRActionInfo",
+    "@odata.type": "#ActionInfo.v1_4_2.ActionInfo",
     
-    "Id": "<id>",
-    "Name": "Default Certificate",
+    "Id": "GenerateCSRActionInfo",
+    "Name": "GenerateCSR Action Info",
+    "Description": "Defines the parameters required for generating a CSR.",
     
-    "ValidNotBefore": "2025-01-01T00:00:00Z",
-    "ValidNotAfter":  "2035-01-01T00:00:00Z",
-    "KeyUsage": [
-        "KeyEncipherment",
-        "ServerAuthentication"
-    ],
-    "Oem": {}
+    "Parameters": [
+        {
+            "Name": "CertificateCollection",
+            "Required": True,
+            "DataType": "String",
+            "AllowableValues": [
+                "/redfish/v1/CertificateService/Certificates"
+            ]
+        },
+        {
+            "Name": "CommonName",
+            "Required": True,
+            "DataType": "String"
+        },
+    ]
 }
 
 @CertificateService_ns.route("/CertificateService")
@@ -87,15 +81,6 @@ class CertificateService(Resource):
         
         return CertificateService_data
 
-@CertificateService_ns.route("/CertificateService/Certificates")
-class Certificates(Resource):
-    # # @requires_auth
-    @CertificateService_ns.doc("Certificates")
-    def get(self):
-        
-        return Certificates_data
-    
-    
 @CertificateService_ns.route("/CertificateService/CertificateLocations")
 class CertificateLocations(Resource):
     # # @requires_auth
@@ -103,13 +88,13 @@ class CertificateLocations(Resource):
     def get(self):
         
         return CertificateLocations_data
-    
-@CertificateService_ns.route("/CertificateService/Certificates/<int:id>")
-class Certificate(Resource):
+
+@CertificateService_ns.route("/CertificateService/GenerateCSRActionInfo")
+class GenerateCSRActionInfo(Resource):
     # # @requires_auth
-    @CertificateService_ns.doc("Certificate")
-    def get(self, id):
-        Certificate_data1["@odata.id"] = f"/redfish/v1/CertificateService/Certificates/{id}",
-        Certificate_data1["Id"] = str(id)
+    @CertificateService_ns.doc("GenerateCSRActionInfo")
+    def get(self):
         
-        return Certificate_data1
+        return GenerateCSRActionInfo_data
+    
+

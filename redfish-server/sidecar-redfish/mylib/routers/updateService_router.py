@@ -30,7 +30,7 @@ FirmwareInventory_data = {
     "@odata.type": "#SoftwareInventoryCollection.SoftwareInventoryCollection",
     "Name": "Firmware Inventory",
 
-    "Members@odata.count": 2,
+    "Members@odata.count": 2, # 未串
     "Members": [{
         "@odata.id": "/redfish/v1/UpdateService/FirmwareInventory/WebInterface",
         # "@odata.id": "/redfish/v1/UpdateService/FirmwareInventory/PLC",
@@ -43,12 +43,19 @@ WebInterface_data = {
     "@odata.type": "#SoftwareInventory.v1_3_0.SoftwareInventory",
     "Id": "WebInterface",
     "Name": "Web Interface firmware",
+    "Manufacturer": "supermicro",
     # 更新日
-    "ReleaseDate": "2025/02/21T06:02:08Z", # 未串
+    "ReleaseDate": "2025-02-21T06:02:08Z", # 未串
     # 是否可更新
     "Updateable": True,    
     "Version": "1502",
     "SoftwareId": "WEB-INTERFACE",
+    "Oem": {
+        "supermicro": {
+            "@odata.type": "#SMC.WebInterface.v1_0_0.WebInterface",
+            "Redfish": "1.0.0",
+        }
+    }
 }
 
 
@@ -62,7 +69,7 @@ WebInterface_data = {
 # }
 
 # FirmwareInventoryPLC_data = {
-#     "@odata.type": "#PLC.v0107.PLC",
+#     "@odata.type": "#PLC.PLC",
 #     "Id": "PLC",
 #     "Name": "PLC version",
 #     "Version": "0107",
@@ -85,7 +92,8 @@ class FirmwareInventory(Resource):
 @update_ns.route("/UpdateService/FirmwareInventory/WebInterface")
 class FirmwareInventoryWebInterface(Resource):
     def get(self):
-        WebInterface_data["Version"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/display/version")["version"]["WebUI"]
+        WebInterface_data["Version"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/display/version")["fw_info"]["WebUI"]
+        WebInterface_data["Oem"]["supermicro"]["Redfish"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/display/version")["fw_info"]["Redfish"]
         return WebInterface_data  
 
 from werkzeug.datastructures import FileStorage
@@ -131,7 +139,7 @@ class ActionsUpdateCduSimpleUpdatee(Resource):
             return {"error": "No file uploaded"}, 400
         
         files = {"file": (file.filename, file.stream, file.mimetype)}
-        print("files:", files)
+        # print("files:", files)
         try:
             r = requests.post(ORIGIN_UPLOAD_API, files=files, timeout=(10, None))
             r.raise_for_status()

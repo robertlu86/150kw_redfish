@@ -17,9 +17,9 @@ TelemetryService_data = {
     "MetricReportDefinitions": {
         "@odata.id": "/redfish/v1/TelemetryService/MetricReportDefinitions"
     },
-    "Triggers": {
-        "@odata.id": "/redfish/v1/TelemetryService/Triggers"
-    },
+    # "Triggers": {
+    #     "@odata.id": "/redfish/v1/TelemetryService/Triggers"
+    # },
     "Oem": {}
 }
 
@@ -126,9 +126,9 @@ class MetricReports_3(Resource):
 # 0513新增
 METRIC_DEFS = [
     {
-      "Id": "Fan_Speed",
+      "Id": "test1",
       "Name": "fan speed",
-      "MetricDataType": True,
+      "MetricDataType": "String",
       "Units": "RPM",
     }
 ]
@@ -136,19 +136,19 @@ REPORT_DEFS = [
     {
       "Id": "PeriodicReport",
       "Name": "PeriodicReport",
-      "MetricReportType": "Periodic",
-      "Interval": "PT60S",
+    #   "MetricReportType": "Periodic",
+    #   "Interval": "PT60S",
       "Metrics": [{"@odata.id": f"/redfish/v1/TelemetryService/MetricDefinitions/{m['Id']}"} for m in METRIC_DEFS]
     }
 ]
-TRIGGERS = [
-    {
-      "Id": "HighTemp",
-      "Name": "HighTemp",
-      "Metric": {"@odata.id": "/redfish/v1/TelemetryService/MetricDefinitions/CPU_Temp"},
-      "Condition": { "Comparison": "GreaterThan", "Value": 85 }
-    }
-]
+# TRIGGERS = [
+#     {
+#       "Id": "HighTemp",
+#       "Name": "HighTemp",
+#       "Metric": {"@odata.id": "/redfish/v1/TelemetryService/MetricDefinitions/CPU_Temp"},
+#       "Condition": { "Comparison": "GreaterThan", "Value": 85 }
+#     }
+# ]
 
 # MetricDefinitions Collection
 @TelemetryService_ns.route('/TelemetryService/MetricDefinitions')
@@ -207,28 +207,28 @@ class MetricReportDef(Resource):
         return {"error": "Not found"}, 404
 
 # Triggers Collection
-@TelemetryService_ns.route('/TelemetryService/Triggers')
-class TriggerCollection(Resource):
-    def get(self):
-        members = [{"@odata.id": f"/redfish/v1/TelemetryService/Triggers/{t['Id']}"} for t in TRIGGERS]
-        return {
-            "@odata.context": "/redfish/v1/$metadata#TriggerCollection.TriggerCollection",
-            "@odata.id": "/redfish/v1/TelemetryService/Triggers",
-            "@odata.type": "#TriggerCollection.TriggerCollection",
-            "Name": "Trigger Collection",
-            "Members@odata.count": len(members),
-            "Members": members
-        }, 200
+# @TelemetryService_ns.route('/TelemetryService/Triggers')
+# class TriggerCollection(Resource):
+#     def get(self):
+#         members = [{"@odata.id": f"/redfish/v1/TelemetryService/Triggers/{t['Id']}"} for t in TRIGGERS]
+#         return {
+#             "@odata.context": "/redfish/v1/$metadata#TriggerCollection.TriggerCollection",
+#             "@odata.id": "/redfish/v1/TelemetryService/Triggers",
+#             "@odata.type": "#TriggerCollection.TriggerCollection",
+#             "Name": "Trigger Collection",
+#             "Members@odata.count": len(members),
+#             "Members": members
+#         }, 200
 
 # Individual Trigger
-@TelemetryService_ns.route('/TelemetryServiceTriggers/<string:trigger_id>')
-class Trigger(Resource):
-    def get(self, trigger_id):
-        for t in TRIGGERS:
-            if t['Id'] == trigger_id:
-                t = t.copy()
-                t["@odata.context"] = "/redfish/v1/$metadata#Trigger.Trigger"
-                t["@odata.id"] = f"/redfish/v1/TelemetryService/Triggers/{trigger_id}"
-                t["@odata.type"] = "#Trigger.v1_0_0.Trigger"
-                return t, 200
-        return {"error": "Not found"}, 404      
+# @TelemetryService_ns.route('/TelemetryServiceTriggers/<string:trigger_id>')
+# class Trigger(Resource):
+#     def get(self, trigger_id):
+#         for t in TRIGGERS:
+#             if t['Id'] == trigger_id:
+#                 t = t.copy()
+#                 t["@odata.context"] = "/redfish/v1/$metadata#Trigger.Trigger"
+#                 t["@odata.id"] = f"/redfish/v1/TelemetryService/Triggers/{trigger_id}"
+#                 t["@odata.type"] = "#Trigger.v1_0_0.Trigger"
+#                 return t, 200
+#         return {"error": "Not found"}, 404      

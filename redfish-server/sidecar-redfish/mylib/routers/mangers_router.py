@@ -1,5 +1,7 @@
 from flask import request
 from flask_restx import Namespace, Resource
+from mylib.utils.load_api import load_raw_from_api 
+from mylib.utils.load_api import CDU_BASE
 
 managers_ns = Namespace('', description='Chassis Collection')
 
@@ -9,7 +11,7 @@ managers_data = {
     "@odata.context": "/redfish/v1/$metadata#ManagerCollection.ManagerCollection",
     
     "Name": "Manager Collection",
-    "Description":    "所有管理控制器（Manager）資源的集合",
+    "Description":    "The collection of all available Manager resources on the system.",
     
     "Members@odata.count": 1,
     "Members": [
@@ -31,17 +33,18 @@ managers_cdu_data =    {
     
     "ManagerType": "ManagementController",
     
+    # 製造商與韌體資訊
+    "Manufacturer": "Supermicro",
+    "PartNumber": "LCS-SCDU-200AR001",
+    "Model": "200KW-SideCar-L/A-Colling-CDU",
+    "FirmwareVersion": "1502",# webUI1版本
+    "SerialNumber":"LCS-SCDU-200AR001", # 讀WebUI的FW Status，不是固定值
     "UUID": "00000000-0000-0000-0000-e45f013e98f8",
     "ServiceEntryPointUUID": "92384634-2938-2342-8820-489239905423",
     
-    # 製造商與韌體資訊
-    "Model": "Joo Janta 200",
-    "FirmwareVersion": "1502",
-    "Manufacturer": "Supermicro",
-    
     # 時間與時區
-    "DateTime": "2025/02/21T06:02:08Z", # 有規範怎麼寫
-    "DateTimeLocalOffset": "+00:00", # 有規範怎麼寫
+    "DateTime": "2025-02-21T06:02:08Z", # 有規範怎麼寫 ok
+    "DateTimeLocalOffset": "+00:00", # 有規範怎麼寫 ok
     "LastResetTime": "2025-01-24T07:08:48Z",
     
     # 自動夏令時間（DST）設定
@@ -255,6 +258,13 @@ managers_cdu_data =    {
                 "GracefulRestart"
             ]
         },
+        "#Manager.Reset": {
+            "target": "/redfish/v1/Managers/CDU/Actions/Manager.Shutdown",
+            "ShutdownType@Redfish.AllowableValues": [
+                "ForceRestart",
+                "GracefulRestart"
+            ]
+        },
         "Oem": {}
     },
     "Oem": {
@@ -280,9 +290,9 @@ ethernet_interfaces_data = {
     "Oem": {},
 }
 
-# --------------------------------------------
-# managers
-# -------------------------------------------- 
+#====================================================== 
+# Managers
+#====================================================== 
 @managers_ns.route("/Managers")
 class Managers(Resource):
     # # @requires_auth
@@ -290,16 +300,24 @@ class Managers(Resource):
     def get(self):
         
         return managers_data
-       
+import datetime       
 @managers_ns.route("/Managers/CDU")
 class ManagersCDU(Resource):
     # # @requires_auth
     @managers_ns.doc("managers_cdu")
     def get(self):
-        
-        return managers_cdu_data
+        local_now = datetime.datetime.now().astimezone().replace(microsecond=0)
 
-#=========================================protocol暫存==================================================
+        locol_time = local_now.strftime('%Y-%m-%dT%H:%M:%S')
+
+        rep = managers_cdu_data
+        rep['DateTime'] = locol_time + "Z"
+        rep['DateTimeLocalOffset'] = local_now.strftime('%z')[:3] + ':' + local_now.strftime('%z')[3:]
+        return rep, 200
+
+#====================================================== 
+# NetworkProtocol
+#====================================================== 
 network_proto = {
     "@odata.id": "/redfish/v1/Managers/CDU/NetworkProtocol",
     "@odata.type": "#ManagerNetworkProtocol.v1_8_0.ManagerNetworkProtocol",
@@ -309,13 +327,36 @@ network_proto = {
     "Id": "NetworkProtocol",
     "Description": "CDU Management Interface Network Protocol Settings",
     
+    "HostName": "TBD",
+    "FQDN": "TBD",
+    "HTTPS": {
+        "ProtocolEnabled": True,
+        "Port": 443,
+        "Certificates": {
+            "@odata.id": "/redfish/v1/Managers/CDU/NetworkProtocol/HTTPS/Certificates"
+        }
+    },
+    "DHCP": {
+        "ProtocolEnabled": True,
+        "Port": 67,
+    },
+    "SSH": {
+        "ProtocolEnabled": True,
+        "Port": 22,
+    },
+    "SNMP": {
+        "ProtocolEnabled": True,
+        "Port": 161
+    },
     "NTP": {
-        "NTPServers": ["time.google.com", "time1.google.com"]
+        "ProtocolEnabled": True,
+        "NTPServers": ["time.google.com","pool.ntp.org"],
+        "Port": 123,
     },
 
     "Oem": {}
 }
-#@managers_ns.route("/Managers/CDU/NetworkProtocol")直接被取代了
+
 @managers_ns.route("/Managers/CDU/NetworkProtocol")
 class ManagersCDUNetworkProtocol(Resource):
 
@@ -337,7 +378,71 @@ class ManagersCDUNetworkProtocol(Resource):
         # Redfish 允許 200 (附帶新 resource) 或 204
         return "", 204
 
-#=========================================protocol暫存==================================================
+@managers_ns.route("/Managers/CDU/NetworkProtocol/HTTPS/Certificates")
+class ManagersCDUNetworkProtocolHTTPS(Resource):
+    @managers_ns.doc("managers_cdu_network_protocol_https_certificates")
+    # @requires_auth
+    def get(self):
+        network_Certificates_data = {
+            "@odata.id": "/redfish/v1/Managers/CDU/NetworkProtocol/HTTPS/Certificates",
+            "@odata.type": "#CertificateCollection.CertificateCollection",
+            "@odata.context": "/redfish/v1/$metadata#CertificateCollection.CertificateCollection",
+            
+            "Name": "Certificate Collection",
+            "Members@odata.count": 1,
+            "Members": [
+                {
+                    "@odata.id": "/redfish/v1/Managers/CDU/NetworkProtocol/HTTPS/Certificates/1"
+                }
+            ]
+        }
+        return network_Certificates_data
+    
+@managers_ns.route("/Managers/CDU/NetworkProtocol/HTTPS/Certificates/<string:cert_id>")
+class ManagersCDUNetworkProtocolHTTPSCertificates(Resource):
+    @managers_ns.doc("managers_cdu_network_protocol_https_certificates")
+    # @requires_auth
+    def get(self, cert_id):
+        certificate_1_data = {
+            "@odata.id": f"/redfish/v1/Managers/CDU/NetworkProtocol/HTTPS/Certificates/{cert_id}",
+            "@odata.type": "#Certificate.v1_9_0.Certificate",
+            "@odata.context": "/redfish/v1/$metadata#Certificate.v1_9_0.Certificate",
+            
+            "Id": cert_id,
+            "Name": f"Certificate {cert_id}",
+            
+            "CertificateString": "TBD",
+            "CertificateType": "PEM",
+            "Issuer": {
+                "DisplayString": "CN=Example CA",
+            },
+            "KeyUsage": [
+                "DigitalSignature",
+            ],
+            "Subject": {
+                "DisplayString": "CN=example.com",
+            },
+            "ValidNotAfter": "2025-01-01T00:00:00Z",
+            "ValidNotBefore": "2024-01-01T00:00:00Z",
+            
+            "Actions": {
+                "#Certificate.Renew": {
+                    "target":    "/redfish/v1/.../Certificates/1/Actions/Certificate.Renew",
+                    "title":     "Renew Certificate",
+                    "@Redfish.ActionInfo": "/redfish/v1/.../Certificates/1/Actions/Certificate.RenewActionInfo"
+                },
+                "#Certificate.Rekey": {
+                    "target":    "/redfish/v1/.../Certificates/1/Actions/Certificate.Rekey",
+                    "title":     "Rekey Certificate",
+                    "@Redfish.ActionInfo": "/redfish/v1/.../Certificates/1/Actions/Certificate.RekeyActionInfo"
+                }
+            }
+            
+        }
+        return certificate_1_data   
+#====================================================== 
+# EthernetInterfaces
+#====================================================== 
 @managers_ns.route("/Managers/CDU/EthernetInterfaces", strict_slashes=False)
 class ManagersCDUEthernetInterfaces(Resource):
     # # @requires_auth
@@ -351,15 +456,18 @@ class ManagersCDUEthernetInterfacesMain(Resource):
     # # @requires_auth
     @managers_ns.doc("managers_cdu_ethernet_interfaces")
     def get(self, ethernet_interfaces_id):
+        ethernet_data = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/network")[ethernet_interfaces_id]
+        print(ethernet_data)
         ethernet_interfaces_main_data ={
             "@odata.id": f"/redfish/v1/Managers/CDU/EthernetInterfaces/{ethernet_interfaces_id}",
             "@odata.type": "#EthernetInterface.v1_12_4.EthernetInterface",
             "@odata.context": "/redfish/v1/$metadata#EthernetInterface.v1_12_4.EthernetInterface",
             
             "Id": str(ethernet_interfaces_id),
-            "Name": "Manager Ethernet Interface",
-            "Description": "Primary Network Interface of the CDU Management Controller",
+            "Name": f"Manager Ethernet Interface {ethernet_interfaces_id}",
+            "Description": "Network Interface of the CDU Management Controller",
             
+            # TBD 不知道怎麼判斷
             "Status": {
                 "State": "Enabled",
                 "Health": "OK"
@@ -367,12 +475,12 @@ class ManagersCDUEthernetInterfacesMain(Resource):
             
             "LinkStatus": "LinkUp",
             "InterfaceEnabled": True,
-            "PermanentMACAddress": "e4-5f-01-3e-98-f8",
+            "PermanentMACAddress": "e4-5f-01-3e-98-f8", # profile不用
             "MACAddress": "e4-5f-01-3e-98-f8",
             "SpeedMbps": 1000,
-            "AutoNeg": True,
-            "FullDuplex": True,
-            "MTUSize": 1500,
+            "AutoNeg": True, # profile不用
+            "FullDuplex": True, # profile不用
+            "MTUSize": 1500, # profile不用
             
             # 可由 client 修改的欄位
             "@Redfish.WriteableProperties": [
@@ -385,10 +493,10 @@ class ManagersCDUEthernetInterfacesMain(Resource):
                 "IPv6StaticAddresses"
             ],
             
-            "HostName": "aaaa",
+            "HostName": "localhost",
             "FQDN": None,
 
-            # VLAN 設定
+            # VLAN 設定 profile不用
             "VLAN": {
                 "VLANEnable": False,
                 "VLANId": None
@@ -396,17 +504,23 @@ class ManagersCDUEthernetInterfacesMain(Resource):
             # IPv4 位址清單
             "IPv4Addresses": [
                 {
-                    "Address": "10.163.65.58",
-                    "SubnetMask": "255.255.248.0",
-                    "AddressOrigin": "DHCP",
-                    "Gateway": "10.163.71.254",
+                    "Address": ethernet_data["IPv4Address"], 
+                    "SubnetMask": ethernet_data["v4Subnet"], 
+                    "AddressOrigin": "DHCP", 
+                    "Gateway": ethernet_data["v4DefaultGateway"],
                     "Oem": {
+                        "Supermicro": {
+                            "Ipv4DHCP": {"Enabled": ethernet_data["v4dhcp_en"]},
+                            "Ipv4DNS": {"Auto": ethernet_data["v4AutoDNS"]},
+                            "Ipv4DNSPrimary": {"Address":ethernet_data["v4DNSPrimary"]},
+                            "Ipv4DNSSecondary": {"Address":ethernet_data["v4DNSOther"]}
+                        }
                     }
                 }
             ],
-            
+            # profile不用跑ipv6
             "MaxIPv6StaticAddresses": 1,
-            # IPv6 位址清單
+            # IPv6 位址清單 
             "IPv6AddressPolicyTable": [
                 {
                     "Prefix": "::1/128",
@@ -421,18 +535,23 @@ class ManagersCDUEthernetInterfacesMain(Resource):
             # IPv6 位址優先權表
             "IPv6Addresses": [
                 {
-                    "Address": "fe80::e65f:1ff:fe3e:98f8",
-                    "PrefixLength": 64,
-                    "AddressOrigin": "DHCPv6",
-                    "AddressState": "Preferred",
+                    "Address": ethernet_data["IPv6Address"],
+                    "PrefixLength": ethernet_data["v6Subnet"],
+                    "AddressOrigin": "DHCPv6", 
+                    "AddressState": "Preferred", 
                     "Oem": {
+                        "Ipv6Gateway": ethernet_data["v6DefaultGateway"],
+                        "Ipv6DHCP": ethernet_data["v6dhcp_en"],
+                        "Ipv6DNS": ethernet_data["v6AutoDNS"],
+                        "Ipv6DNSPrimary": ethernet_data["v6DNSPrimary"],
+                        "Ipv6DNSSecondary": ethernet_data["v6DNSOther"]
                     }
                 }
             ],
             
             # DNS 伺服器
             "NameServers": [
-                "aaaa.dmtf.org"
+                "localhost"
             ],
             
             "Oem": {},
@@ -481,7 +600,18 @@ class LogServicesId(Resource):
             
             "Entries": { "@odata.id": f"/redfish/v1/Managers/CDU/LogServices/{log_id}/Entries" },
             "LogEntryType": "Event",
+            "DateTime": "2021-01-01T00:00:00Z",
+            "DateTimeLocalOffset": "+08:00",
+            "MaxNumberOfRecords": 1000,
+            "OverWritePolicy": "WrapsWhenFull",
+            "ServiceEnabled": False,
+            "Status": { "State": "Enabled", "Health": "OK" },
             
+            "Actions": {
+                "#LogService.ClearLog": {
+                    "target": f"/redfish/v1/Managers/CDU/LogServices/{log_id}/Actions/LogService.ClearLog",
+                }
+            },
             "Oem": {}
         }
         
@@ -490,8 +620,8 @@ class LogServicesId(Resource):
 @managers_ns.route("/Managers/CDU/LogServices/<string:log_id>/Entries")
 class LogServicesIdEntries(Resource):
     # @requires_auth
-    @managers_ns.doc("LogServices")
-    def get(self,log_id):
+    @managers_ns.doc("LogServicesEntries")
+    def get(self, log_id):
         LogServices_Entries__data = {
             "@odata.id": f"/redfish/v1/Managers/CDU/LogServices/{log_id}/Entries",
             "@odata.type": "#LogEntryCollection.LogEntryCollection",
@@ -502,7 +632,14 @@ class LogServicesIdEntries(Resource):
             
             "Members@odata.count": 1,
             "Members": [
-                {"@odata.id": f"/redfish/v1/Managers/CDU/LogServices/{log_id}/Entries/1"}
+                { 
+                    # service validator 只能讀到這邊 要研究為甚麼
+                    "@odata.id": "/redfish/v1/Managers/CDU/LogServices/1/Entries/1",
+                    
+                    "Id": "1",
+                    "Name": "Log Entry 1",
+                    "EntryType": "Event",
+                }
             ],
             "Oem": {}
         }
@@ -512,7 +649,7 @@ class LogServicesIdEntries(Resource):
 @managers_ns.route("/Managers/CDU/LogServices/<string:log_id>/Entries/<string:entry_id>")
 class LogServicesIdEntriesId(Resource):
     # @requires_auth
-    @managers_ns.doc("LogServices")
+    @managers_ns.doc("LogServicesId")
     def get(self, log_id, entry_id):
         LogServices_Entries_id_data = {
             "@odata.id": f"/redfish/v1/Managers/CDU/LogServices/{log_id}/Entries/{entry_id}",
@@ -524,6 +661,10 @@ class LogServicesIdEntriesId(Resource):
             "Description": "System Event and Error Log Service",
             
             "EntryType": "Event",
+            "Created": "2021-01-01T00:00:00Z",
+            "MessageId": "CDU001",
+            "Message": "CDU Network Interface Module started successfully.",
+            "Severity": "Critical",
             
             "Oem": {}
         }    
@@ -574,7 +715,7 @@ class ManagerHostInterfaces(Resource):
             "Name": "Manager Host Interface Collection",
             "Members@odata.count": 1,
             "Members": [
-                { "@odata.id": f"/redfish/v1/Managers/CDU/HostInterfaces/1" }
+                { "@odata.id": f"/redfish/v1/Managers/CDU/HostInterfaces/Main" }
             ],
             "Oem": {}
         }
@@ -590,8 +731,57 @@ class ManagerHostInterface(Resource):
 
             "Id": hi_id,
             "Name": f"Host Interface {hi_id}",
+            
+            "HostEthernetInterfaces": {
+                "@odata.id": f"/redfish/v1/Managers/CDU/EthernetInterfaces"
+            },
+            "ManagerEthernetInterface": {
+                "@odata.id": f"/redfish/v1/Managers/CDU/EthernetInterfaces/{hi_id}"
+            },
+            "InterfaceEnabled": True,
+            "NetworkProtocol": {            
+                "@odata.id": f"/redfish/v1/Managers/CDU/NetworkProtocol"
+            },
             "Status": { "State": "Enabled", "Health": "OK" },
+            
+            
 
             "Oem": {}
     }     
         return HostInterfaces_id_data
+
+# @managers_ns.route("/Managers/CDU/ActionRequirements")
+# class ManagerActionRequirements(Resource):
+#     def get(self):
+#         ActionRequirements_data = {
+#             "@odata.id": "/redfish/v1/Managers/CDU/ActionRequirements",
+#             "@odata.type": "#ActionRequirementsCollection.ActionRequirementsCollection",
+#             "Name": "Action Requirements",
+#             "Members@odata.count": 1,
+#             "Members": [
+#                 { "@odata.id": "/redfish/v1/Managers/CDU/ActionRequirements/SetMode" }
+#             ]
+#         }
+        
+#         return ActionRequirements_data
+
+
+# @managers_ns.route("/Managers/CDU/ActionRequirements/SetMode")
+# class ManagerSetMode(Resource):
+#     def get(self):
+#         ActionRequirements_SetMode_data = {
+#             "@odata.id": "/redfish/v1/Managers/CDU/ActionRequirements/SetMode",
+#             "@odata.type": "#ActionRequirements.v1_0_0.ActionRequirements",
+#             "Name": "SetMode Action Requirements",
+#             "Action": "#Pump.SetMode",
+#             "Parameters": [
+#                 {
+#                 "Name": "Mode",
+#                 "Required": True,
+#                 "DataType": "String",
+#                 "AllowableValues": ["Enabled", "Disabled"]
+#                 }
+#             ]
+#         }
+        
+#         return ActionRequirements_SetMode_data

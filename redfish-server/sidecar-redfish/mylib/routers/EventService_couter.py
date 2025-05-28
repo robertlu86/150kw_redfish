@@ -15,12 +15,19 @@ EventService_data = {
         "State": "Enabled",
         "Health": "OK"
     },
+    "ExcludeMessageId": False,
+    "ExcludeRegistryPrefix": False,
+    "IncludeOriginOfConditionSupported": False,
+    "SubordinateResourcesSupported": False,
     "ServiceEnabled": True,
     "DeliveryRetryAttempts": 3,
     "DeliveryRetryIntervalSeconds": 60,
     "EventTypesForSubscription": ["StatusChange"],
     "ServerSentEventUri": "TBD",
-    "SSEFilterPropertiesSupported": {},
+    "SSEFilterPropertiesSupported": {
+        "RegistryPrefix": True,
+        "ResourceType": True
+    },
     "ResourceTypes": ["Certificate"],
     "RegistryPrefixes":[
         "Base",
@@ -81,6 +88,20 @@ class Subscriptions(Resource):
             # "EventTypes": ["StatusChange", "ResourceUpdated", "ResourceAdded", "ResourceRemoved", "StatusChange", "ResourceUpdated", "ResourceAdded", "ResourceRemoved"],
             "Context": "TBD",
             "DeliveryRetryPolicy": "RetryForever",
+            "Destination": "TBD", 
+            "Protocol": "Redfish",
+            "EventFormatType": "Event",
+            "RegistryPrefixes": [
+                "Base",
+                "EventRegistry"
+            ],
+            "ResourceTypes": [
+                "Certificate"
+            ],
+            "Status": {
+                "State": "Enabled",
+                "Health": "OK"
+            },
             
             "Oem": {}
         }

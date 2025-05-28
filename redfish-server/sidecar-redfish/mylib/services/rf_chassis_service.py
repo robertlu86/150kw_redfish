@@ -147,10 +147,12 @@ class RfChassisService(BaseService):
         else:
             id_name_dict = self.__read_power_supply_id_name_dict()
             power_supply_name = id_name_dict[power_supply_id]
+            
             m = RfPowerSupplyModel(
                 chassis_id=chassis_id,
                 Id = power_supply_id,
-                **hardware_info.get("PowerSupply", {})
+                # **hardware_info.get("PowerSupply", {})
+                **hardware_info["PowerSupplies"][power_supply_id]
                 # Status = RfStatusModel(Health=RfStatusHealth.OK, State=RfStatusState.Enabled)
             )
             m.Status = RfStatusModel.from_dict(summary_info.get(power_supply_name).get("status", {}))
@@ -332,10 +334,10 @@ class RfChassisService(BaseService):
             "@odata.type": "#Fan.v1_5_0.Fan",
             "@odata.context": "/redfish/v1/$metadata#Fan.v1_5_0.Fan",
             "PhysicalContext": "Chassis",
-            "PartNumber": "PN-FAN-100",
-            "SerialNumber": "SN12345678", 
+            "PartNumber": "578-5010007",
+            "SerialNumber": "SN12345678", # 風扇本體序號 去哪讀
             "Manufacturer": "Supermicro",
-            "Model": "FAN-42",
+            "Model": "K3G310-PV69-03-42",
             "SparePartNumber": "SPN-FAN-100",
             "Status": {"State": "Enabled", "Health": "OK"},
             "Location": {
@@ -363,5 +365,6 @@ class RfChassisService(BaseService):
 
         item["Status"]["State"] = sensor_value_json["fan" + str(fan_id)]["status"]["state"]
         item["Status"]["Health"] = sensor_value_json["fan" + str(fan_id)]["status"]["health"]
+
             
         return item 

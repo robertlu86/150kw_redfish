@@ -22,7 +22,7 @@ class RfEnvironmentMetricsModel(RfResourceBaseModel):
         default="/redfish/v1/$metadata#EnvironmentMetrics.v1_3_2.EnvironmentMetrics", 
         alias="@odata.context"
     )
-    Description: Optional[str] = Field(default="冷卻分配單元環境感測指標")
+    Description: Optional[str] = Field(default="Environmental Metrics of the Coolant Distribution Unit (CDU)")
 
     # 溫度（Celsius）
     TemperatureCelsius: Optional[dict] = Field(default={
@@ -44,6 +44,16 @@ class RfEnvironmentMetricsModel(RfResourceBaseModel):
         "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/AbsoluteHumidity",
         "Reading": 0.0
     })
+    # ===========================0526新增 profile需求===========================
+    EnergykWh: Optional[dict] = Field(default={
+        "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/EnergykWh",
+        "Reading": 0.0
+    })
+    PowerWatts: Optional[dict] = Field(default={
+        "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/PowerWatts",
+        "Reading": 0.0
+    })
+    # ===========================0526新增 profile需求===========================
     Oem: Optional[dict] = Field(default={})
     
     model_config = ConfigDict(
