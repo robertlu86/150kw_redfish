@@ -898,6 +898,10 @@ device_delay = {
     "Delay_Fan7Error": False,
     "Delay_Fan8Error": False,
     "Delay_RackError": False,
+    "Delay_RackLeakageSensor1Leak": False,
+    "Delay_RackLeakageSensor1Broken": False,
+    "Delay_RackLeakageSensor2Leak": False,
+    "Delay_RackLeakageSensor2Broken": False,
 }
 
 sensor_delay = {
@@ -1619,6 +1623,34 @@ devices = {
         "Status": "Good",
         "TrapEnabled": True,
     },
+    "RackLeakageSensor1Leak": {
+        "Name": "RackLeakageSensor1Leak",
+        "DisplayName": "Rack Leakage Sensor 1 Leak",
+        "Status": "Good",
+        "TrapEnabled": True,
+        "DelayTime": 0,
+    },
+    "RackLeakageSensor1Broken": {
+        "Name": "RackLeakageSensor1Broken",
+        "DisplayName": "Rack Leakage Sensor 1 Broken",
+        "Status": "Good",
+        "TrapEnabled": True,
+        "DelayTime": 0,
+    },
+    "RackLeakageSensor2Leak": {
+        "Name": "RackLeakageSensor2Leak",
+        "DisplayName": "Rack Leakage Sensor 2 Leak",
+        "Status": "Good",
+        "TrapEnabled": True,
+        "DelayTime": 0,
+    },
+    "RackLeakageSensor2Broken": {
+        "Name": "RackLeakageSensor2Broken",
+        "DisplayName": "Rack Leakage Sensor 2 Broken",
+        "Status": "Good",
+        "TrapEnabled": True,
+        "DelayTime": 0,
+    },
 }
 
 physical_asset = {
@@ -1753,6 +1785,10 @@ trap_mapping = {
     "E_PC1Error": 8192 + 2098,
     "E_PC2Error": 8192 + 2099,
     "E_ControlUnit": 8192 + 2100,
+    "E_RackLeakageSensor1Leak": 8192 + 2101,
+    "E_RackLeakageSensor1Broken": 8192 + 2102,
+    "E_RackLeakageSensor2Leak": 8192 + 2103,
+    "E_RackLeakageSensor2Broken": 8192 + 2104,
 }
 
 
@@ -3044,9 +3080,21 @@ def set_sensor_config():
 
         response_data = {"Name": sensor}
 
-        warning = {"TrapEnabled": w_trap, "MinValue": w_min, "MaxValue": w_max}
+        warning = {
+            "TrapEnabled": w_trap,
+            "MinValue": w_min,
+            "MinRstValue": w_rst_min,
+            "MaxValue": w_max,
+            "MaxRstValue": w_rst_max,
+        }
 
-        alert = {"TrapEnabled": a_trap, "MinValue": a_min, "MaxValue": a_max}
+        alert = {
+            "TrapEnabled": a_trap,
+            "MinValue": a_min,
+            "MinRstValue": a_rst_min,
+            "MaxValue": a_max,
+            "MaxRstValue": a_rst_max,
+        }
 
         filter_warning = {
             key: value for key, value in warning.items() if value is not None
@@ -3300,7 +3348,12 @@ def get_devices():
     """GET Device Information"""
 
     exclude_keys = ["ControlUnit", "PC1Error", "PC2Error", "LowCoolantLevelWarning"]
-
+    rack_leakage_sensor_keys = [
+        "RackLeakageSensor1Leak",
+        "RackLeakageSensor1Broken",
+        "RackLeakageSensor2Leak",
+        "RackLeakageSensor2Broken",
+    ]
     try:
         with ModbusTcpClient(host=modbus_host, port=modbus_port) as client:
             start_addr = len(sensor_thrshd.keys()) * 2 + len(sensor_delay.keys())
@@ -3310,7 +3363,10 @@ def get_devices():
 
             for i, key in enumerate(devices.keys()):
                 if key not in exclude_keys:
-                    devices[key]["DelayTime"] = r.registers[i]
+                    if key not in rack_leakage_sensor_keys:
+                        devices[key]["DelayTime"] = r.registers[i]
+                    else:
+                        devices[key]["DelayTime"] = r.registers[i - 4]
 
     except Exception as e:
         print(f"read delay plc error: {e}")
@@ -3463,6 +3519,18 @@ def get_devices():
         for k, v in mapping.items():
             devices[k]["Status"] = "Error" if g.sensorData["error"][v] else "Good"
 
+    except Exception as e:
+        print(f"change status: {e}")
+
+    try:
+        mapping = {
+            "RackLeakageSensor1Leak": "rack_leakage1_leak",
+            "RackLeakageSensor1Broken": "rack_leakage1_broken",
+            "RackLeakageSensor2Leak": "rack_leakage2_leak",
+            "RackLeakageSensor2Broken": "rack_leakage2_broken",
+        }
+        for k, v in mapping.items():
+            devices[k]["Status"] = "Error" if g.sensorData["rack"][v] else "Good"
     except Exception as e:
         print(f"change status: {e}")
 
