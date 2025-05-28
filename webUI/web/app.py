@@ -2633,7 +2633,7 @@ def change_to_imperial():
 
     for key in thrshd.keys():
         value = thrshd[key]
-        if index < thr_count:
+        if index < int(thr_count / 2):
             word1, word2 = cvt_float_byte(value)
             registers.append(word2)
             registers.append(word1)
