@@ -600,7 +600,7 @@ styles %}
                     </tr>
 
                     {% if (user == 'admin') or (user == 'superuser') %}
-                    <tr id="AC_status_set" style="display:none;">
+                    <tr id="AC_status_set">
                         <td class="tdCenterAlign" scope="row">
                             Average Current
                         </td>
@@ -608,6 +608,24 @@ styles %}
                         <td id="AC" scope="row"></td>
                         <td scope="row">A</td>
                     </tr>
+                    <!--測試用開始-->
+                    <tr>
+                        <td class="tdCenterAlign" scope="row">
+                            Average Voltage
+                        </td>
+                        <td id="average_voltage_status" class="tdCenterAlign" scope="row"></td>
+                        <td id="average_voltage" scope="row"></td>
+                        <td scope="row">V</td>
+                    </tr>
+                    <tr>
+                        <td class="tdCenterAlign" scope="row">
+                            Apparent Power
+                        </td>
+                        <td id="power_factor_status" class="tdCenterAlign" scope="row"></td>
+                        <td id="power_factor" scope="row"></td>
+                        <td scope="row">kVA</td>
+                    </tr>
+                    <!--測試用結束-->
                     {% endif %}
                     <tr>
                         <td class="tdCenterAlign" scope="row">Heat Capacity</td>
@@ -1195,7 +1213,7 @@ styles %}
 
         function current_data(data) {
             // console.log(data);
-            $("#AC_status_set").hide();
+            //$("#AC_status_set").hide();
             // $("#inv1_freq").text(150)
             for (let key in data["value"]) {
                 if (data["value"].hasOwnProperty(key)) {
@@ -1272,6 +1290,18 @@ styles %}
                 }
             }*/
 
+             // 測試用開始
+            for (let key in data["eletricity"]) {
+                if (data["eletricity"].hasOwnProperty(key)) {
+                    let value = data["eletricity"][key];
+                    $(`#${key}`).css("color", "black");
+                    $(`#${key}_status`).css("color", "black").text("Valid");
+                    $("#" + key).text(
+                            value.toFixed(userType == "superuser" ? 2 : 1)
+                        );
+                }
+            }
+            // 測試用結束
             for (let key in data["unit"]) {
                 if (data["unit"].hasOwnProperty(key)) {
                     let value = data["unit"][key];

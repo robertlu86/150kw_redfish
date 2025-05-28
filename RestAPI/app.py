@@ -2235,7 +2235,7 @@ upload_parser.add_argument("file", location="files", required=True, help="請上
 
 # 目標 API 端點
 TARGET_SERVERS = {
-    "upload/main/service.zip": "http://192.168.3.137:5501/api/v1/upload_zip",
+    "upload/main/service.zip": "http://192.168.3.100:5501/api/v1/upload_zip",
     "upload/spare/service.zip": "http://192.168.3.101:5501/api/v1/upload_zip",
 }
 
@@ -2257,7 +2257,9 @@ class UploadZipFile(Resource):
             return {"message": "No File Selected"}, 400
         # if file.filename != "upload.zip":
         #     return {"message": "Please upload correct file name"}, 400
-        if not file.filename.endswith(".zip"):
+        # if not file.filename.endswith(".zip"):
+        if not file.filename.endswith(".gpg"):  
+            
             return {"message": "Wrong File Type"}, 400
 
         # 定義暫存解壓縮目錄
@@ -2265,7 +2267,8 @@ class UploadZipFile(Resource):
         os.makedirs(temp_dir, exist_ok=True)
 
         # 存到本機暫存區
-        local_zip_path = os.path.join(temp_dir, file.filename)
+        local_zip_path = os.path.join(temp_dir, file.filename.replace(".gpg", ".zip"))
+        # local_zip_path = os.path.join(temp_dir, file.filename)
         file.save(local_zip_path)
 
         # 解壓縮 ZIP

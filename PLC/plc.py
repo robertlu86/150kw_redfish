@@ -17,7 +17,6 @@ from pymodbus.constants import Endian
 from concurrent_log_handler import ConcurrentTimedRotatingFileHandler
 
 
-
 if platform.system() == "Linux":
     project_root = os.path.dirname(os.getcwd())
     env_path = os.path.join(project_root, "webUI/web/.env")
@@ -183,7 +182,11 @@ bit_input_regs = {
     "fan7_error": None,
     "fan8_error": None,
 }
+# 測試用開始
+raw_485_data_eletricity = {"average_voltage": 0, "power_factor": 0}
 
+raw_485_comm_eletricity = {"average_voltage": False, "power_factor": False}
+# 測試用結束
 raw_485_data = {
     "Clnt_Flow": 0,
     "AmbientTemp": 0,
@@ -197,7 +200,7 @@ raw_485_data = {
     "Inv1_Freq": 0,
     "Inv2_Freq": 0,
     "Inv3_Freq": 0,
-    "Heat_Capacity":0,
+    "Heat_Capacity": 0,
     "ATS1": False,
     "ATS2": False,
     "Fan1Com": 0,
@@ -368,14 +371,14 @@ inspection_data = {
         "power24v2": False,
         "power12v1": False,
         "power12v2": False,
-        "fan1_speed" : False,
-        "fan2_speed" : False,
-        "fan3_speed" : False,
-        "fan4_speed" : False,
-        "fan5_speed" : False,
-        "fan6_speed" : False,
-        "fan7_speed" : False,
-        "fan8_speed" : False,
+        "fan1_speed": False,
+        "fan2_speed": False,
+        "fan3_speed": False,
+        "fan4_speed": False,
+        "fan5_speed": False,
+        "fan6_speed": False,
+        "fan7_speed": False,
+        "fan8_speed": False,
         "Inv1_OverLoad": [],
         "Inv2_OverLoad": [],
         "Inv3_OverLoad": [],
@@ -438,14 +441,14 @@ inspection_data = {
         "power24v2": 1,
         "power12v1": 1,
         "power12v2": 1,
-        "fan1_speed" : 1,
-        "fan2_speed" : 1,
-        "fan3_speed" : 1,
-        "fan4_speed" : 1,
-        "fan5_speed" : 1,
-        "fan6_speed" : 1,
-        "fan7_speed" : 1,
-        "fan8_speed" : 1,
+        "fan1_speed": 1,
+        "fan2_speed": 1,
+        "fan3_speed": 1,
+        "fan4_speed": 1,
+        "fan5_speed": 1,
+        "fan6_speed": 1,
+        "fan7_speed": 1,
+        "fan8_speed": 1,
         "Inv1_OverLoad": 1,
         "Inv2_OverLoad": 1,
         "Inv3_OverLoad": 1,
@@ -866,7 +869,7 @@ status_data = {
     "TempClntSplySpare": 0,
     "TempClntRtn": 0,
     "TempClntRtnSpare": 0,
-    "space":0,
+    "space": 0,
     "PrsrClntSply": 0,
     "PrsrClntSplySpare": 0,
     "PrsrClntRtn": 0,
@@ -1518,6 +1521,7 @@ def change_progress(key, status):
     elif status == "cancel":
         inspection_data["prog"][key] = 1
 
+
 ###inspection現在的狀態
 def send_all(number, key):
     try:
@@ -1529,10 +1533,11 @@ def send_all(number, key):
 
             result = [1 if inspection_data["result"][key] else 0]
             # client.write_registers((750 + number), result)
-            
+
             client.write_registers((2000 + number), result)
     except Exception as e:
         print(f"result write-in:{e}")
+
 
 # def send_all_overload(number, key):
 #     try:
@@ -1547,6 +1552,7 @@ def send_all(number, key):
 #             client.write_registers((2000 + number), result)
 #     except Exception as e:
 #         print(f"result write-in:{e}")
+
 
 def send_progress(number, key):
     try:
@@ -1624,7 +1630,7 @@ def status_check():
         ) as client:
             ad_count = len(ad_sensor_value.keys())
             serial_count = len(serial_sensor_value.keys())
-            all_count = (ad_count*2) + (serial_count * 2)
+            all_count = (ad_count * 2) + (serial_count * 2)
             # print(f"allcount:{all_count}")
 
             r = client.read_holding_registers(5000, all_count, unit=modbus_slave_id)
@@ -1634,7 +1640,7 @@ def status_check():
             else:
                 key_list = list(status_data.keys())
                 # print(f"key_list:{key_list}")
-                
+
                 j = 0
 
                 for i in range(0, all_count, 2):
@@ -1646,7 +1652,7 @@ def status_check():
                     status_data[key_list[j]] = decoded_value_big_endian
                     # print(f"{[key_list[j]]}:{status_data[key_list[j]]}")
                     j += 1
-                    
+
     except Exception as e:
         print(f"read status data error：{e}")
 
@@ -1789,7 +1795,7 @@ def check_both_warning_p3(
     status = status_data[short_key]
     # inv["inv1"] = True
     prefix = "W_" if type == "W" else "A_"
-    try:       
+    try:
         if time_data["check"][prefix + short_key]:
             if (
                 thrshd_data[rst_key_low] < status and status < thrshd_data[rst_key_high]
@@ -1797,7 +1803,7 @@ def check_both_warning_p3(
                 time_data["check"][prefix + short_key] = False
                 time_data["condition"]["high"][prefix + short_key] = False
                 time_data["condition"]["low"][prefix + short_key] = False
-                
+
             else:
                 if status > thrshd_data[thr_key_high]:
                     time_data["end"][prefix + short_key] = time.perf_counter()
@@ -1806,8 +1812,7 @@ def check_both_warning_p3(
                         time_data["end"][prefix + short_key]
                         - time_data["start"][prefix + short_key]
                     )
-   
-                    
+
                     if passed_time > thrshd_data[delay_key]:
                         time_data["condition"]["high"][prefix + short_key] = True
 
@@ -2045,7 +2050,6 @@ def check_level(delay, value_key, criteria):
         except Exception as e:
             print(f"check level error：{e}")
     else:
-        
         try:
             if time_data["check"][delay]:
                 if not level_sw[value_key]:
@@ -2066,7 +2070,6 @@ def check_level(delay, value_key, criteria):
                     warning_data["error"][value_key] = False
         except Exception as e:
             print(f"check level error：{e}")
-        
 
 
 def check_pressure_diff_error(thr_key, rst_key, delay_key, type):
@@ -2158,6 +2161,7 @@ def check_communication(short_key, delay, criteria):
                     warning_data["error"][short_key + "_communication"] = False
         except Exception as e:
             print(f"communication error：{e}")
+
 
 def check_broken(key):
     broken_mapping = {
@@ -2302,15 +2306,17 @@ def check_dewPt_warning(thr_key, rst_key, delay_key, type):
 
 def set_warning_registers(mode):
     global thrshd_data, status_data, x, warning_light
-    
+
     ####檢查各上下限並送出警告
-    
+
     thr_check()
     status_check()
 
     ###切換水質計開關邏輯
     if not ver_switch["coolant_quality_meter_switch"]:
-        check_communication("conductivity", "Delay_Conductivity_Sensor_Communication", True)
+        check_communication(
+            "conductivity", "Delay_Conductivity_Sensor_Communication", True
+        )
         check_communication("pH", "Delay_pH_Sensor_Communication", True)
         check_communication("turbidity", "Delay_Turbidity_Sensor_Communication", True)
         check_level("Delay_power12v1", "power12v1", True)
@@ -2370,28 +2376,27 @@ def set_warning_registers(mode):
         )
     else:
         ###賦歸回false以免繼續傳warning_data
-        warning_data['warning']['pH_Low']= False
-        warning_data['warning']['pH_High']= False
-        warning_data['warning']['Cdct_Low']= False
-        warning_data['warning']['Cdct_High']= False
-        warning_data['warning']['Tbt_Low']= False
-        warning_data['warning']['Tbt_High']= False
-        
-        warning_data['alert']['pH_Low']= False
-        warning_data['alert']['pH_High']= False
-        warning_data['alert']['Cdct_Low']= False
-        warning_data['alert']['Cdct_High']= False
-        warning_data['alert']['Tbt_Low']= False
-        warning_data['alert']['Tbt_High']= False
-        
-        warning_data['error']['pH_communication']= False
-        warning_data['error']['conductivity_communication']= False
-        warning_data['error']['turbidity_communication']= False
-        warning_data['error']['power12v1']= False
-        warning_data['error']['power12v2']= False
+        warning_data["warning"]["pH_Low"] = False
+        warning_data["warning"]["pH_High"] = False
+        warning_data["warning"]["Cdct_Low"] = False
+        warning_data["warning"]["Cdct_High"] = False
+        warning_data["warning"]["Tbt_Low"] = False
+        warning_data["warning"]["Tbt_High"] = False
+
+        warning_data["alert"]["pH_Low"] = False
+        warning_data["alert"]["pH_High"] = False
+        warning_data["alert"]["Cdct_Low"] = False
+        warning_data["alert"]["Cdct_High"] = False
+        warning_data["alert"]["Tbt_Low"] = False
+        warning_data["alert"]["Tbt_High"] = False
+
+        warning_data["error"]["pH_communication"] = False
+        warning_data["error"]["conductivity_communication"] = False
+        warning_data["error"]["turbidity_communication"] = False
+        warning_data["error"]["power12v1"] = False
+        warning_data["error"]["power12v2"] = False
     ###切換水質計開關邏輯 結束
-        
-        
+
     ###切換fan count邏輯
     if ver_switch["fan_count_switch"]:
         check_communication("Fan1Com", "Delay_Fan1Com_Communication", True)
@@ -2402,7 +2407,6 @@ def set_warning_registers(mode):
         check_communication("Fan5Com", "Delay_Fan5Com_Communication", True)
         check_communication("Fan6Com", "Delay_Fan6Com_Communication", True)
 
-        
         check_input("Delay_fan1_error", "fan1_error", False)
         check_input("Delay_fan2_error", "fan2_error", False)
         check_input("Delay_fan3_error", "fan3_error", False)
@@ -2410,17 +2414,16 @@ def set_warning_registers(mode):
         check_input("Delay_fan4_error", "fan4_error", False)
         check_input("Delay_fan5_error", "fan5_error", False)
         check_input("Delay_fan6_error", "fan6_error", False)
-        
-        
+
     else:
-        warning_data['error']["Fan1Com_communication"] = False
-        warning_data['error']["Fan2Com_communication"] = False
-        warning_data['error']["Fan3Com_communication"] = False
-        warning_data['error']["Fan4Com_communication"] = False
-        warning_data['error']["Fan5Com_communication"] = False
-        warning_data['error']["Fan6Com_communication"] = False
-        warning_data['error']["Fan7Com_communication"] = False
-        warning_data['error']["Fan8Com_communication"] = False
+        warning_data["error"]["Fan1Com_communication"] = False
+        warning_data["error"]["Fan2Com_communication"] = False
+        warning_data["error"]["Fan3Com_communication"] = False
+        warning_data["error"]["Fan4Com_communication"] = False
+        warning_data["error"]["Fan5Com_communication"] = False
+        warning_data["error"]["Fan6Com_communication"] = False
+        warning_data["error"]["Fan7Com_communication"] = False
+        warning_data["error"]["Fan8Com_communication"] = False
         check_input("Delay_fan1_error", "fan1_error", False)
         check_input("Delay_fan2_error", "fan2_error", False)
         check_input("Delay_fan3_error", "fan3_error", False)
@@ -2430,21 +2433,20 @@ def set_warning_registers(mode):
         check_input("Delay_fan7_error", "fan7_error", False)
         check_input("Delay_fan8_error", "fan8_error", False)
     ###切換fan count邏輯 結束
-    
-    
+
     check_communication("Inv1_Freq", "Delay_Inverter1_Communication", True)
     check_communication("Inv2_Freq", "Delay_Inverter2_Communication", True)
     check_communication("Inv3_Freq", "Delay_Inverter3_Communication", True)
-    
+
     ### 跟RH TDp為同一個
     check_communication("AmbientTemp", "Delay_AmbientTemp_Communication", True)
-    
+
     # check_communication("RelativeHumid", "Delay_RelativeHumid_Communication", True)
     # check_communication("DewPoint", "Delay_DewPoint_Communication", True)
-    
+
     ###flow_rate不再從485抓
     # check_communication("coolant_flow_rate", "Delay_Coolant_Flow_Meter_Communication")
-    
+
     check_communication("ATS1", "Delay_ATS1_Communication", True)
     # check_communication("ATS2", "Delay_ATS2_Communication", True)
 
@@ -4219,7 +4221,20 @@ def control():
                     client.write_registers(5000, registers)
             except Exception as e:
                 print(f"write into thrshd error: {e}")
+            # 測試用開始
+            registers_eletricity = []
+            for key in raw_485_data_eletricity:
+                value = raw_485_data_eletricity[key]
+                word1, word2 = cvt_float_byte(value)
+                registers_eletricity.append(word2)
+                registers_eletricity.append(word1)
 
+            try:
+                with ModbusTcpClient(host=modbus_host, port=modbus_port) as client:
+                    client.write_registers(7000, registers_eletricity)
+            except Exception as e:
+                print(f"write into thrshd error: {e}")
+            # 測試用結束
             trigger_overload_from_oc_detection()
 
             if mode in ["auto", "stop"]:
@@ -4799,9 +4814,15 @@ def control():
 
                             write_measured_data(7, max_f1)
                             print(f"F1 結果：{max_f1}")
-
-                            inspection_data["result"]["f1"] = not (136 > max_f1 > 100)
-
+                            if all_sensors_dict["Temp_ClntSply"] > 45 and all_sensors_dict["Temp_ClntSply"] <= 55:
+                                inspection_data["result"]["f1"] = not (130 > max_f1 > 100)
+                            elif all_sensors_dict["Temp_ClntSply"] > 35 and all_sensors_dict["Temp_ClntSply"] <= 45:
+                                inspection_data["result"]["f1"] = not (80 > max_f1 > 110)
+                            elif all_sensors_dict["Temp_ClntSply"] > 25 and all_sensors_dict["Temp_ClntSply"] <= 35:
+                                inspection_data["result"]["f1"] = not (60 > max_f1 > 90)
+                            elif all_sensors_dict["Temp_ClntSply"] > 15 and all_sensors_dict["Temp_ClntSply"] <= 25:
+                                inspection_data["result"]["f1"] = not (40 > max_f1 > 70)
+                            
                             change_progress("f1", "finish")
                             send_all(3, "f1")
 
@@ -5165,7 +5186,7 @@ def control():
                                             send_progress(50 + i, key_name)
                                         elif key == "Fan":
                                             change_progress(key_name, "standby")
-                                            send_progress(53 + i, key_name)   
+                                            send_progress(53 + i, key_name)
 
                                 for k, key in enumerate(raw_485_comm):
                                     key_name = f"{key}_com"
@@ -5176,33 +5197,43 @@ def control():
                                     send_all(15 + k, key_name)
                                 inspection_data["step"] += 1
                                 inspection_data["end_time"] = time.time()
-                                inspection_data["mid_time"] = inspection_data["end_time"]    
-                                    
+                                inspection_data["mid_time"] = inspection_data[
+                                    "end_time"
+                                ]
+
                         if inspection_data["step"] == 8:
                             print(f"8. 測inv/fan OverLoad：{error_check_time} 秒")
-                            
+
                             inspection_data["end_time"] = time.time()
                             diff = (
                                 inspection_data["end_time"]
                                 - inspection_data["mid_time"]
                             )
-                            
+
                             if int(diff) % 4 == 0 and diff <= error_check_time:
                                 for key, index_list in overload_index.items():
                                     for i in index_list:
                                         if key == "Inv":
                                             key_name = f"Inv{i}_OverLoad"
-                                            value = (1 if warning_data["error"][key_name] else 0)
+                                            value = (
+                                                1
+                                                if warning_data["error"][key_name]
+                                                else 0
+                                            )
                                             inspection_data["result"][key_name].append(
                                                 not value
                                             )
                                         elif key == "Fan":
                                             key_name = f"Fan_OverLoad{i}"
-                                            value = (1 if warning_data["error"][key_name] else 0)
+                                            value = (
+                                                1
+                                                if warning_data["error"][key_name]
+                                                else 0
+                                            )
                                             inspection_data["result"][key_name].append(
                                                 not value
                                             )
-                            if int(diff) > error_check_time: 
+                            if int(diff) > error_check_time:
                                 for key, index_list in error_index.items():
                                     for i in index_list:
                                         if key == "Inv":
@@ -5213,72 +5244,88 @@ def control():
                                             key_name = f"fan{i}_error"
                                             change_progress(key_name, "standby")
                                             send_progress(58 + i, key_name)
-                                
+
                                 for key, index_list in overload_index.items():
                                     for i in index_list:
                                         if key == "Inv":
                                             key_name = f"Inv{i}_OverLoad"
-                                            inspection_data["result"][key_name] = not any(
+                                            inspection_data["result"][
+                                                key_name
+                                            ] = not any(
                                                 inspection_data["result"][key_name]
                                             )
                                             change_progress(key_name, "finish")
                                             send_all(50 + i, key_name)
                                         elif key == "Fan":
                                             key_name = f"Fan_OverLoad{i}"
-                                            inspection_data["result"][key_name] = not any(
+                                            inspection_data["result"][
+                                                key_name
+                                            ] = not any(
                                                 inspection_data["result"][key_name]
                                             )
                                             change_progress(key_name, "finish")
                                             send_all(53 + i, key_name)
                                 inspection_data["step"] += 1
                                 inspection_data["end_time"] = time.time()
-                                inspection_data["mid_time"] = inspection_data["end_time"]
-                            
-                            
+                                inspection_data["mid_time"] = inspection_data[
+                                    "end_time"
+                                ]
+
                         if inspection_data["step"] == 9:
                             print(f"9. 測inv/fan error：{error_check_time} 秒")
-                            
+
                             inspection_data["end_time"] = time.time()
                             diff = (
                                 inspection_data["end_time"]
                                 - inspection_data["mid_time"]
                             )
-                            
+
                             if int(diff) % 4 == 0 and diff <= error_check_time:
                                 for key, index_list in error_index.items():
                                     for i in index_list:
                                         if key == "Inv":
                                             key_name = f"Inv{i}_Error"
-                                            value = (1 if warning_data["error"][key_name] else 0)
+                                            value = (
+                                                1
+                                                if warning_data["error"][key_name]
+                                                else 0
+                                            )
                                             inspection_data["result"][key_name].append(
                                                 not value
                                             )
                                         elif key == "fan":
                                             key_name = f"fan{i}_error"
-                                            value = (1 if warning_data["error"][key_name] else 0)
+                                            value = (
+                                                1
+                                                if warning_data["error"][key_name]
+                                                else 0
+                                            )
                                             inspection_data["result"][key_name].append(
                                                 not value
                                             )
                             if int(diff) > error_check_time:
-                                inspection_data["step"] = 12   
+                                inspection_data["step"] = 12
                                 for key, index_list in error_index.items():
                                     for i in index_list:
                                         if key == "Inv":
                                             key_name = f"Inv{i}_Error"
-                                            inspection_data["result"][key_name] = not any(
+                                            inspection_data["result"][
+                                                key_name
+                                            ] = not any(
                                                 inspection_data["result"][key_name]
                                             )
                                             change_progress(key_name, "finish")
                                             send_all(55 + i, key_name)
                                         elif key == "fan":
                                             key_name = f"fan{i}_error"
-                                            inspection_data["result"][key_name] = not any(
+                                            inspection_data["result"][
+                                                key_name
+                                            ] = not any(
                                                 inspection_data["result"][key_name]
                                             )
                                             change_progress(key_name, "finish")
                                             send_all(58 + i, key_name)
-                                            
-                            
+
                         if inspection_data["step"] == 12:
                             print("12. 最後收尾")
 
@@ -5407,10 +5454,8 @@ def control():
                     diff = 0
                     print("結束囉")
 
-
             ### inspection 部分結束
-            
-        
+
             # for i in range(1, 4):
             #     if (
             #         not bit_output_regs[f"mc{i}"]
@@ -5423,8 +5468,6 @@ def control():
             #         elif i == 3:
             #             clear_p3_speed()
 
-            
-
             try:
                 output_value = list(bit_output_regs.values())
                 light_value = list(color_light.values())
@@ -5434,7 +5477,7 @@ def control():
                     client.write_coils((8192 + 700), [oc_issue])
             except Exception as e:
                 print(f"set output data error: {e}")
-                
+
             ### 計算pump runtime
             if inv["inv1"]:
                 pump1_run_current_time = time.time()
@@ -5641,7 +5684,6 @@ def control():
             else:
                 fan5_run_last_min = time.time()
 
-
             ### 計算 fan6 runtime
             if raw_485_data["Fan6Com"]:
                 fan6_run_current_time = time.time()
@@ -5668,7 +5710,6 @@ def control():
             else:
                 fan6_run_last_min = time.time()
 
-
             ### 計算 fan7 runtime
             if raw_485_data["Fan7Com"]:
                 fan7_run_current_time = time.time()
@@ -5694,9 +5735,6 @@ def control():
                         print(f"read fan7 runtime error: {e}")
             else:
                 fan7_run_last_min = time.time()
-                
-                
-                
 
             ### 計算 fan8 runtime
             if raw_485_data["Fan8Com"]:
@@ -5724,13 +5762,12 @@ def control():
             else:
                 fan8_run_last_min = time.time()
 
-
             set_warning_registers(mode)
 
             time.sleep(1)
         except Exception as e:
             print(f"TCP Client Error: {e}")
-            
+
         ### 與PLC SPARE相同 結束
 
         try:
@@ -5835,7 +5872,7 @@ duration = 0.5
 
 def rtu_thread():
     prev_plc_error = False  # 追踪上一次的 PLC 錯誤狀態
-    
+
     client = ModbusSerialClient(
         method="rtu",
         port="/dev/ttyS0",
@@ -5848,9 +5885,9 @@ def rtu_thread():
     try:
         while True:
             global ver_switch
-            
+
             ### 以下複製進plc_spare 開始
-            
+
             try:
                 # journal_logger.info(f'start first')
                 if not client.connect():
@@ -5862,7 +5899,7 @@ def rtu_thread():
                         print("Failed to connect to Modbus server")
                         journal_logger.info("Failed to connect to Modbus server")
                         prev_plc_error = True  # 記錄錯誤狀態
-                        
+
                     time.sleep(2)
                     continue
 
@@ -5870,7 +5907,7 @@ def rtu_thread():
                     # journal_logger.info(f'in first')
                     r = client.read_holding_registers(2, 2, unit=4)
                     prev_plc_error = False  # 連接恢復正常時，重置 prev_plc_error
-                    
+
                     t3 = cvt_registers_to_float(r.registers[0], r.registers[1])
                     raw_485_data["AmbientTemp"] = t3
                     raw_485_comm["AmbientTemp"] = False
@@ -5937,7 +5974,7 @@ def rtu_thread():
 
                 try:
                     r = client.read_holding_registers(3059, 2, unit=3)
-                    
+
                     instant = cvt_registers_to_float(r.registers[1], r.registers[0])
                     # journal_logger.info(f'instant:{instant}')
                     raw_485_data["inst_power"] = instant
@@ -5954,14 +5991,39 @@ def rtu_thread():
                     # journal_logger.info(f'r.registers[1]:{r.registers[1]}')
                     ac = cvt_registers_to_float(r.registers[1], r.registers[0])
                     # journal_logger.info(f'ac:{ac}')
-                    
+
                     raw_485_data["average_current"] = ac
                     raw_485_comm["average_current"] = False
                 except Exception as e:
                     raw_485_comm["average_current"] = True
                     print(f"Average Current error: {e}")
+                # 測試用開始
+                time.sleep(duration)
 
+                try:
+                    r = client.read_holding_registers(3025, 2, unit=3)
+                    average_voltage = cvt_registers_to_float(
+                        r.registers[1], r.registers[0]
+                    )
+                    raw_485_data_eletricity["average_voltage"] = average_voltage
+                    raw_485_comm_eletricity["average_voltage"] = False
+                except Exception as e:
+                    raw_485_comm_eletricity["average_voltage"] = True
+                    print(f"Average Voltage error: {e}")
 
+                time.sleep(duration)
+                # Apparent Power
+                try:
+                    r = client.read_holding_registers(3075, 2, unit=3)
+                    power_factor = cvt_registers_to_float(
+                        r.registers[1], r.registers[0]
+                    )
+                    raw_485_data_eletricity["power_factor"] = power_factor
+                    raw_485_comm_eletricity["power_factor"] = False
+                except Exception as e:
+                    raw_485_comm_eletricity["power_factor"] = True
+                    print(f"Average Voltage error: {e}")
+                # 測試用結束
                 time.sleep(duration)
 
                 pump_units = [1, 2, 11]
@@ -5982,7 +6044,6 @@ def rtu_thread():
                 fan_units = [12, 13, 14, 15, 16, 17, 18, 19]
                 # fan_units_6 = [16, 17, 18, 12, 13, 14]
                 fan_units_6 = [12, 13, 14, 16, 17, 18]
-                
 
                 if ver_switch["fan_count_switch"]:
                     for i, unit in enumerate(fan_units_6, start=1):
@@ -6007,7 +6068,7 @@ def rtu_thread():
                             raw_485_comm[f"Fan{i}Com"] = True
                             print(f"Fan {i} error: {e}")
 
-                        time.sleep(duration)      
+                        time.sleep(duration)
 
                 # try:
                 #     r = client.read_discrete_inputs(6, 9, unit=10)
@@ -6020,14 +6081,14 @@ def rtu_thread():
                 #     raw_485_data["ATS2"] = ats2 == 1
                 #     raw_485_comm["ATS1"] = False
                 #     raw_485_comm["ATS2"] = False
-                                       
+
                 # except Exception as e:
                 #     raw_485_comm["ATS1"] = True
                 #     raw_485_comm["ATS2"] = True
                 #     print(f"ATS error: {e}")
 
                 # time.sleep(duration)
-                
+
                 # ### 嘗試讀取 add = 40, 並拆分出第3及第9個位元
                 try:
                     r = client.read_input_registers(40, 1, unit=10)
@@ -6043,7 +6104,7 @@ def rtu_thread():
                     raw_485_data["ATS2"] = ats2 == 1
                     raw_485_comm["ATS1"] = False
                     raw_485_comm["ATS2"] = False
-                                       
+
                 except Exception as e:
                     raw_485_comm["ATS1"] = True
                     # raw_485_comm["ATS2"] = True
@@ -6055,9 +6116,9 @@ def rtu_thread():
                 # journal_logger.info(f"485 通訊：{raw_485_comm}")
             except Exception as e:
                 print(f"enclosed: {e}")
-                
+
             ### 複製進plc_spare 結束
-                
+
     except Exception as e:
         print(f"485 issue: {e}")
     finally:
@@ -6079,9 +6140,8 @@ def rack_thread():
     }
 
     while True:
-        
         ### 以下複製進plc_spare 開始
-    
+
         try:
             try:
                 with ModbusTcpClient(host=modbus_host, port=modbus_port) as client:
@@ -6125,7 +6185,7 @@ def rack_thread():
                 print(f"pass error: {e}")
         except Exception as e:
             print(f"enclosed: {e}")
-            
+
         ### 複製進plc_spare 結束
 
         time.sleep(2)

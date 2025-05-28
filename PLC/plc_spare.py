@@ -183,7 +183,14 @@ bit_input_regs = {
     "fan7_error": None,
     "fan8_error": None,
 }
+# 測試用開始
+raw_485_data_eletricity = {
+    "average_voltage": 0,
+    "power_factor": 0
+}
 
+raw_485_comm_eletricity = {"average_voltage": False, "power_factor": False}
+# 測試用結束
 raw_485_data = {
     "Clnt_Flow": 0,
     "AmbientTemp": 0,
@@ -3538,6 +3545,7 @@ def change_inspect_time():
     except Exception as e:
         print(f"change_inspect_time:{e}")
 
+
 ###與PLC 不同 開始
 check_server1 = 0
 pre_check_server1 = 0
@@ -4287,7 +4295,20 @@ def control():
                         client.write_registers(5000, registers)
                 except Exception as e:
                     print(f"write into thrshd error: {e}")
-
+                # 測試用開始
+                registers_eletricity = []
+                for key in raw_485_data_eletricity:
+                    value = raw_485_data_eletricity[key]
+                    word1, word2 = cvt_float_byte(value)
+                    registers_eletricity.append(word2)
+                    registers_eletricity.append(word1)
+                
+                try:
+                    with ModbusTcpClient(host=modbus_host, port=modbus_port) as client:
+                        client.write_registers(7000, registers_eletricity)
+                except Exception as e:
+                    print(f"write into thrshd error: {e}")
+                # 測試用結束
                 trigger_overload_from_oc_detection()
 
                 if mode in ["auto", "stop"]:
@@ -4868,7 +4889,14 @@ def control():
                                 write_measured_data(7, max_f1)
                                 print(f"F1 結果：{max_f1}")
 
-                                inspection_data["result"]["f1"] = not (136 > max_f1 > 100)
+                                if all_sensors_dict["Temp_ClntSply"] > 45 and all_sensors_dict["Temp_ClntSply"] <= 55:
+                                    inspection_data["result"]["f1"] = not (130 > max_f1 > 100)
+                                elif all_sensors_dict["Temp_ClntSply"] > 35 and all_sensors_dict["Temp_ClntSply"] <= 45:
+                                    inspection_data["result"]["f1"] = not (80 > max_f1 > 110)
+                                elif all_sensors_dict["Temp_ClntSply"] > 25 and all_sensors_dict["Temp_ClntSply"] <= 35:
+                                    inspection_data["result"]["f1"] = not (60 > max_f1 > 90)
+                                elif all_sensors_dict["Temp_ClntSply"] > 15 and all_sensors_dict["Temp_ClntSply"] <= 25:
+                                    inspection_data["result"]["f1"] = not (40 > max_f1 > 70)
 
                                 change_progress("f1", "finish")
                                 send_all(3, "f1")
@@ -5873,7 +5901,7 @@ def rtu_thread():
                             print("Failed to connect to Modbus server")
                             journal_logger.info("Failed to connect to Modbus server")
                             prev_plc_error = True  # 記錄錯誤狀態
-                            
+
                         time.sleep(2)
                         continue
 
@@ -5881,7 +5909,7 @@ def rtu_thread():
                         # journal_logger.info(f'in first')
                         r = client.read_holding_registers(2, 2, unit=4)
                         prev_plc_error = False  # 連接恢復正常時，重置 prev_plc_error
-                        
+
                         t3 = cvt_registers_to_float(r.registers[0], r.registers[1])
                         raw_485_data["AmbientTemp"] = t3
                         raw_485_comm["AmbientTemp"] = False
@@ -5948,7 +5976,7 @@ def rtu_thread():
 
                     try:
                         r = client.read_holding_registers(3059, 2, unit=3)
-                        
+
                         instant = cvt_registers_to_float(r.registers[1], r.registers[0])
                         # journal_logger.info(f'instant:{instant}')
                         raw_485_data["inst_power"] = instant
@@ -5965,14 +5993,39 @@ def rtu_thread():
                         # journal_logger.info(f'r.registers[1]:{r.registers[1]}')
                         ac = cvt_registers_to_float(r.registers[1], r.registers[0])
                         # journal_logger.info(f'ac:{ac}')
-                        
+
                         raw_485_data["average_current"] = ac
                         raw_485_comm["average_current"] = False
                     except Exception as e:
                         raw_485_comm["average_current"] = True
                         print(f"Average Current error: {e}")
+                    # 測試用開始
+                    time.sleep(duration)
 
+                    try:
+                        r = client.read_holding_registers(3025, 2, unit=3)
+                        average_voltage = cvt_registers_to_float(
+                            r.registers[1], r.registers[0]
+                        )
+                        raw_485_data_eletricity["average_voltage"] = average_voltage
+                        raw_485_comm_eletricity["average_voltage"] = False
+                    except Exception as e:
+                        raw_485_comm_eletricity["average_voltage"] = True
+                        print(f"Average Voltage error: {e}")
 
+                    time.sleep(duration)
+                    # Apparent Power
+                    try:
+                        r = client.read_holding_registers(3075, 2, unit=3)
+                        power_factor = cvt_registers_to_float(
+                            r.registers[1], r.registers[0]
+                        )
+                        raw_485_data_eletricity["power_factor"] = power_factor
+                        raw_485_comm_eletricity["power_factor"] = False
+                    except Exception as e:
+                        raw_485_comm_eletricity["power_factor"] = True
+                        print(f"Average Voltage error: {e}")
+                    # 測試用結束
                     time.sleep(duration)
 
                     pump_units = [1, 2, 11]
@@ -5993,7 +6046,6 @@ def rtu_thread():
                     fan_units = [12, 13, 14, 15, 16, 17, 18, 19]
                     # fan_units_6 = [16, 17, 18, 12, 13, 14]
                     fan_units_6 = [12, 13, 14, 16, 17, 18]
-                    
 
                     if ver_switch["fan_count_switch"]:
                         for i, unit in enumerate(fan_units_6, start=1):
@@ -6018,7 +6070,7 @@ def rtu_thread():
                                 raw_485_comm[f"Fan{i}Com"] = True
                                 print(f"Fan {i} error: {e}")
 
-                            time.sleep(duration)      
+                            time.sleep(duration)
 
                     # try:
                     #     r = client.read_discrete_inputs(6, 9, unit=10)
@@ -6031,14 +6083,14 @@ def rtu_thread():
                     #     raw_485_data["ATS2"] = ats2 == 1
                     #     raw_485_comm["ATS1"] = False
                     #     raw_485_comm["ATS2"] = False
-                                        
+
                     # except Exception as e:
                     #     raw_485_comm["ATS1"] = True
                     #     raw_485_comm["ATS2"] = True
                     #     print(f"ATS error: {e}")
 
                     # time.sleep(duration)
-                    
+
                     # ### 嘗試讀取 add = 40, 並拆分出第3及第9個位元
                     try:
                         r = client.read_input_registers(40, 1, unit=10)
@@ -6054,7 +6106,7 @@ def rtu_thread():
                         raw_485_data["ATS2"] = ats2 == 1
                         raw_485_comm["ATS1"] = False
                         raw_485_comm["ATS2"] = False
-                                        
+
                     except Exception as e:
                         raw_485_comm["ATS1"] = True
                         # raw_485_comm["ATS2"] = True
@@ -6066,7 +6118,7 @@ def rtu_thread():
                     # journal_logger.info(f"485 通訊：{raw_485_comm}")
                 except Exception as e:
                     print(f"enclosed: {e}")
-                                            
+                                
             ### 與PLC相同 結束
 
     except Exception as e:
@@ -6141,7 +6193,7 @@ def rack_thread():
                     print(f"pass error: {e}")
             except Exception as e:
                 print(f"enclosed: {e}")
-                
+            
             ### 與PLC相同 結束
 
             time.sleep(2)

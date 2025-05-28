@@ -640,53 +640,101 @@ trap_enable_key = {
 
 max_min_value_location = {
     "Thr_W_CoolantSupplyTemperature_H": 1000,
+    "Thr_W_Rst_CoolantSupplyTemperature_H": 1002,
     "Thr_A_CoolantSupplyTemperature_H": 1004,
+    "Thr_A_Rst_CoolantSupplyTemperature_H": 1006,
     "Thr_W_CoolantSupplyTemperatureSpare_H": 1008,
+    "Thr_W_Rst_CoolantSupplyTemperatureSpare_H": 1010,
     "Thr_A_CoolantSupplyTemperatureSpare_H": 1012,
+    "Thr_A_Rst_CoolantSupplyTemperatureSpare_H": 1014,
     "Thr_W_CoolantReturnTemperature_H": 1016,
+    "Thr_W_Rst_CoolantReturnTemperature_H": 1018,
     "Thr_A_CoolantReturnTemperature_H": 1020,
+    "Thr_A_Rst_CoolantReturnTemperature_H": 1022,
     "Thr_W_CoolantReturnTemperatureSpare_H": 1024,
+    "Thr_W_Rst_CoolantReturnTemperatureSpare_H": 1026,
     "Thr_A_CoolantReturnTemperatureSpare_H": 1028,
+    "Thr_A_Rst_CoolantReturnTemperatureSpare_H": 1030,
     "Thr_W_CoolantSupplyPressure_H": 1032,
+    "Thr_W_Rst_CoolantSupplyPressure_H": 1034,
     "Thr_A_CoolantSupplyPressure_H": 1036,
+    "Thr_A_Rst_CoolantSupplyPressure_H": 1038,
     "Thr_W_CoolantSupplyPressureSpare_H": 1040,
+    "Thr_W_Rst_CoolantSupplyPressureSpare_H": 1042,
     "Thr_A_CoolantSupplyPressureSpare_H": 1044,
+    "Thr_A_Rst_CoolantSupplyPressureSpare_H": 1046,
     "Thr_W_CoolantReturnPressure_H": 1048,
+    "Thr_W_Rst_CoolantReturnPressure_H": 1050,
     "Thr_A_CoolantReturnPressure_H": 1052,
+    "Thr_A_Rst_CoolantReturnPressure_H": 1054,
     "Thr_W_CoolantReturnPressureSpare_H": 1056,
+    "Thr_W_Rst_CoolantReturnPressureSpare_H": 1058,
     "Thr_A_CoolantReturnPressureSpare_H": 1060,
+    "Thr_A_Rst_CoolantReturnPressureSpare_H": 1062,
     "Thr_W_FilterInletPressure_L": 1064,
+    "Thr_W_Rst_FilterInletPressure_L": 1066,
     "Thr_A_FilterInletPressure_L": 1068,
+    "Thr_A_Rst_FilterInletPressure_L": 1070,
     "Thr_W_FilterInletPressure_H": 1072,
+    "Thr_W_Rst_FilterInletPressure_H": 1074,
     "Thr_A_FilterInletPressure_H": 1076,
+    "Thr_A_Rst_FilterInletPressure_H": 1076,
     "Thr_W_FilterOutletPressure_H": 1080,
+    "Thr_W_Rst_FilterOutletPressure_H": 1082,
     "Thr_A_FilterOutletPressure_H": 1084,
+    "Thr_A_Rst_FilterOutletPressure_H": 1086,
     "Thr_W_CoolantFlowRate_L": 1088,
+    "Thr_W_Rst_CoolantFlowRate_L": 1090,
     "Thr_A_CoolantFlowRate_L": 1092,
+    "Thr_A_Rst_CoolantFlowRate_L": 1094,
     "Thr_W_AmbientTemp_L": 1096,
+    "Thr_W_Rst_AmbientTemp_L": 1098,
     "Thr_A_AmbientTemp_L": 1100,
+    "Thr_A_Rst_AmbientTemp_L": 1102,
     "Thr_W_AmbientTemp_H": 1104,
+    "Thr_W_Rst_AmbientTemp_H": 1106,
     "Thr_A_AmbientTemp_H": 1108,
+    "Thr_A_Rst_AmbientTemp_H": 1110,
     "Thr_W_RelativeHumid_L": 1112,
+    "Thr_W_Rst_RelativeHumid_L": 1114,
     "Thr_A_RelativeHumid_L": 1116,
+    "Thr_A_Rst_RelativeHumid_L": 1118,
     "Thr_W_RelativeHumid_H": 1120,
+    "Thr_W_Rst_RelativeHumid_H": 1122,
     "Thr_A_RelativeHumid_H": 1124,
+    "Thr_A_Rst_RelativeHumid_H": 1126,
     "Thr_W_DewPoint_L": 1128,
+    "Thr_W_Rst_DewPoint_L": 1130,
     "Thr_A_DewPoint_L": 1132,
+    "Thr_A_Rst_DewPoint_L": 1134,
     "Thr_W_pH_L": 1136,
+    "Thr_W_Rst_pH_L": 1138,
     "Thr_A_pH_L": 1140,
+    "Thr_A_Rst_pH_L": 1142,
     "Thr_W_pH_H": 1144,
+    "Thr_W_Rst_pH_H": 1146,
     "Thr_A_pH_H": 1148,
+    "Thr_A_Rst_pH_H": 1150,
     "Thr_W_Conductivity_L": 1152,
+    "Thr_W_Rst_Conductivity_L": 1154,
     "Thr_A_Conductivity_L": 1156,
+    "Thr_A_Rst_Conductivity_L": 1158,
     "Thr_W_Conductivity_H": 1160,
+    "Thr_W_Rst_Conductivity_H": 1162,
     "Thr_A_Conductivity_H": 1164,
+    "Thr_A_Rst_Conductivity_H": 1166,
     "Thr_W_Turbidity_L": 1168,
+    "Thr_W_Rst_Turbidity_L": 1170,
     "Thr_A_Turbidity_L": 1172,
+    "Thr_A_Rst_Turbidity_L": 1174,
     "Thr_W_Turbidity_H": 1176,
+    "Thr_W_Rst_Turbidity_H": 1178,
     "Thr_A_Turbidity_H": 1180,
+    "Thr_A_Rst_Turbidity_H": 1182,
     "Thr_W_AverageCurrent_H": 1184,
+    "Thr_W_Rst_AverageCurrent_H": 1186,
     "Thr_A_AverageCurrent_H": 1188,
+    "Thr_A_Rst_AverageCurrent_H": 1190,
 }
 
 sensor_thrshd = {
@@ -1578,7 +1626,7 @@ physical_asset = {
     "FirmwareVersion": "0100",
     "Version": "N/A",
     # "ProductionDate": "20250430",
-    "Manufacturer": "KAORI",
+    "Manufacturer": "Supermicro",
     "Model": "150kw",
     "SerialNumber": "N/A",
     "PartNumber": "N/A",
@@ -2849,8 +2897,20 @@ def set_sensor_config():
         return api_error_response(400)
 
     if (
+        not isinstance(AlertLevel.get("MaxRstValue"), (int, float))
+        or AlertLevel.get("MaxRstValue") > 9007199254740991
+    ):
+        return api_error_response(400)
+    
+    if (
         not isinstance(AlertLevel.get("MinValue"), (int, float))
         or AlertLevel.get("MinValue") > 9007199254740991
+    ):
+        return api_error_response(400)
+
+    if (
+        not isinstance(AlertLevel.get("MinRstValue"), (int, float))
+        or AlertLevel.get("MinRstValue") > 9007199254740991
     ):
         return api_error_response(400)
 
@@ -2862,13 +2922,25 @@ def set_sensor_config():
         or WarningLevel.get("MaxValue") > 9007199254740991
     ):
         return api_error_response(400)
-
+    
+    if (
+        not isinstance(WarningLevel.get("MaxRstValue"), (int, float))
+        or WarningLevel.get("MaxRstValue") > 9007199254740991
+    ):
+        return api_error_response(400)
+    
     if (
         not isinstance(WarningLevel.get("MinValue"), (int, float))
         or WarningLevel.get("MinValue") > 9007199254740991
     ):
         return api_error_response(400)
 
+    if (
+        not isinstance(WarningLevel.get("MinRstValue"), (int, float))
+        or WarningLevel.get("MinRstValue") > 9007199254740991
+    ):
+        return api_error_response(400)
+    
     if not isinstance(data.get("DelayTime"), (int)) or data.get("DelayTime") > 30000:
         return api_error_response(400)
 
@@ -2876,9 +2948,13 @@ def set_sensor_config():
     w_trap = WarningLevel.get("TrapEnabled")
     w_max = WarningLevel.get("MaxValue")
     w_min = WarningLevel.get("MinValue")
+    w_rst_max = WarningLevel.get("MaxRstValue")
+    w_rst_min = WarningLevel.get("MinRstValue")
     a_trap = AlertLevel.get("TrapEnabled")
     a_max = AlertLevel.get("MaxValue")
     a_min = AlertLevel.get("MinValue")
+    a_rst_max = AlertLevel.get("MaxRstValue")
+    a_rst_min = AlertLevel.get("MinRstValue")
     delay = data.get("DelayTime")
     unit["unit"]["UnitSet"] = g.system_data["value"]["unit"]
 
@@ -2888,15 +2964,19 @@ def set_sensor_config():
 
         with ModbusTcpClient(host=modbus_host, port=modbus_port) as client:
             if w_trap is not None:
-                client.write_coils(trap_mapping[a_key], [w_trap])
+                client.write_coils(trap_mapping[w_key], [w_trap])
             if a_trap is not None:
-                client.write_coils(trap_mapping[w_key], [a_trap])
+                client.write_coils(trap_mapping[a_key], [a_trap])
 
         high_W_key = f"Thr_W_{sensor}_H"
         low_W_key = f"Thr_W_{sensor}_L"
+        high_W_Rst_key = f"Thr_W_Rst_{sensor}_H"
+        low_W_Rst_key = f"Thr_W_Rst_{sensor}_L"
         high_A_key = f"Thr_A_{sensor}_H"
         low_A_key = f"Thr_A_{sensor}_L"
-
+        high_A_Rst_key = f"Thr_A_Rst_{sensor}_H"
+        low_A_Rst_key = f"Thr_A_Rst_{sensor}_L"
+        
         def convert_imperial(value):
             if value is not None:
                 if "Temp" in sensor:
@@ -2912,8 +2992,12 @@ def set_sensor_config():
         if unit["unit"]["UnitSet"] == "imperial":
             w_max = convert_imperial(w_max)
             w_min = convert_imperial(w_min)
+            w_rst_max = convert_imperial(w_rst_max)
+            w_rst_min = convert_imperial(w_rst_min)
             a_max = convert_imperial(a_max)
             a_min = convert_imperial(a_min)
+            a_rst_max = convert_imperial(a_rst_max)
+            a_rst_min = convert_imperial(a_rst_min)
 
         def update_threshold(key, value):
             if key in sensor_thrshd:
@@ -2927,10 +3011,18 @@ def set_sensor_config():
                     update_threshold(high_A_key, a_max)
                 if a_min is not None:
                     update_threshold(low_A_key, a_min)
+                if a_rst_max is not None:
+                    update_threshold(high_A_Rst_key, a_rst_max)
+                if a_rst_min is not None:
+                    update_threshold(low_A_Rst_key, a_rst_min)
                 if w_max is not None:
                     update_threshold(high_W_key, w_max)
                 if w_min is not None:
                     update_threshold(low_W_key, w_min)
+                if w_rst_max is not None:
+                    update_threshold(high_W_Rst_key, w_rst_max)
+                if w_rst_min is not None:
+                    update_threshold(low_W_Rst_key, w_rst_min)
         except Exception as e:
             print(f"update max/min values: {e}")
             return api_error_response(503)

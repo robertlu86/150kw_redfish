@@ -67,6 +67,7 @@ declare -A services=(
     ["RestAPI"]="/home/user/service/RestAPI/apienv"
     ["modbus_proxy"]="/home/user/service/modbus_proxy/venv"
     ["snmp"]="/home/user/service/snmp/snmpvenv"
+    ["RedFish"]="/home/user/service/redfish-server/redfish_venv"
 )
 
 declare -A service_scripts=(
@@ -75,6 +76,7 @@ declare -A service_scripts=(
     ["RestAPI"]="/home/user/service/RestAPI/restapi.sh"
     ["modbus_proxy"]="/home/user/service/modbus_proxy/modbusProxy_service.sh"
     ["snmp"]="/home/user/service/snmp/snmp_service.sh"
+    ["RedFish"]="/home/user/service/redfish-server/redfish_start.sh"
 )
 
 # 創建 venv（如果不存在）
@@ -113,6 +115,13 @@ sudo chmod +x "$TARGET_SCRIPT" && "$TARGET_SCRIPT"
 # sudo chmod +x "$TARGET_SCRIPT" && "$TARGET_SCRIPT"
 
 
+###上傳後降低資料夾權限
+sudo chown -R user:user /home/user/service
+
+###複製nginx default進入電腦
+# Copy the default Nginx configuration to /etc/nginx/sites-available/
+sudo cp /home/user/service/nginx/config/default /etc/nginx/sites-available/default
+sudo cp /home/user/service/nginx/config/nginx.conf /etc/nginx/
 
 # sudo systemctl daemon-reload
 # sudo systemctl restart plc

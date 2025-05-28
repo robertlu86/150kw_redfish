@@ -34,6 +34,9 @@ from pymodbus.constants import Endian
 from pymodbus.payload import BinaryPayloadDecoder
 from logging.handlers import RotatingFileHandler
 from concurrent_log_handler import ConcurrentTimedRotatingFileHandler
+# from mylib.services.debug_service import DebugService
+
+
 
 load_dotenv()
 app = Flask(__name__)
@@ -57,8 +60,8 @@ else:
 if onLinux:
     modbus_host = os.environ.get("MODBUS_IP")
 else:
-    modbus_host = "192.168.3.250"
-    # modbus_host = "127.0.0.1"
+    # modbus_host = "192.168.3.250"
+    modbus_host = "127.0.0.1"
 
 modbus_port = 502
 modbus_slave_id = 1
@@ -75,6 +78,12 @@ previous_alert_states = {}
 previous_error_states = {}
 previous_rack_states = {}
 prev_plc_error = False
+
+if onLinux:
+    from web.mylib.services.debug_service import DebugService
+else:
+    from mylib.services.debug_service import DebugService
+
 if onLinux:
     from web.auth import (
         USER_DATA,
@@ -693,7 +702,12 @@ sensorData = {
         "fan_mc1": False,
         "fan_mc2": False,
     },
-    "cdu_status": False ,
+    "cdu_status": False,
+    # 測試用
+    "eletricity": {
+        "average_voltage": 0,
+        "power_factor": 0,
+    },
 }
 
 ctr_data = {
@@ -3654,19 +3668,22 @@ def read_modbus_data():
                     sensorData["err_log"]["error"]["PLC"],
                 )
                 plc_status_cnt = 0
+                prev_plc_error = False  # 連接恢復正常時，重置 prev_plc_error
         except Exception as e:
             if plc_status_cnt < 3:
                 plc_status_cnt += 1
             else:
                 sensorData["error"]["PLC"] = True
-                if sensorData["err_log"]["error"]["PLC"] not in error_data:
-                    error_data.append(sensorData["err_log"]["error"]["PLC"])
-                app.logger.warning(sensorData["err_log"]["error"]["PLC"])
-                record_signal_on(
-                    sensorData["err_log"]["error"]["PLC"].split()[0],
-                    sensorData["err_log"]["error"]["PLC"],
-                )
-                print(f"plc connection error: {e}")
+                if not prev_plc_error:  # 避免重複記錄
+                    if sensorData["err_log"]["error"]["PLC"] not in error_data:
+                        error_data.append(sensorData["err_log"]["error"]["PLC"])
+                    app.logger.warning(sensorData["err_log"]["error"]["PLC"])
+                    record_signal_on(
+                        sensorData["err_log"]["error"]["PLC"].split()[0],
+                        sensorData["err_log"]["error"]["PLC"],
+                    )
+                    prev_plc_error = True  # 記錄錯誤狀態
+                    print(f"plc connection error: {e}")
 
             time.sleep(1)
             continue
@@ -3785,7 +3802,24 @@ def read_modbus_data():
             print(f"read status data error:{e}")
 
         # sensorData["value"]['fan_freq1']=5
-
+        # 測試用開始
+        try:
+            with ModbusTcpClient(
+                host=modbus_host, port=modbus_port, unit=modbus_slave_id
+            ) as client:
+                value_reg = (len(sensorData["eletricity"].keys())) * 2
+                r = client.read_holding_registers(7000, 4, unit=modbus_slave_id)
+                keys_list = list(sensorData["eletricity"].keys())
+                
+                for j, i in enumerate(range(0, value_reg, 2)):
+                    temp1 = [r.registers[i], r.registers[i + 1]]
+                    decoder = BinaryPayloadDecoder.fromRegisters(
+                        temp1, byteorder=Endian.Big, wordorder=Endian.Little
+                    )
+                    sensorData["eletricity"][keys_list[j]] = decoder.decode_32bit_float()
+        except Exception as e:
+            print(f"read status data error:{e}")
+        # 測試用結束
         try:
             with ModbusTcpClient(
                 host=modbus_host, port=modbus_port, unit=modbus_slave_id
@@ -4882,6 +4916,15 @@ def read_modbus_data():
 def login_page():
     return render_template("login.html")
 
+@app.route("/debug")
+def debug():
+    # check port of web services
+    debug_service = DebugService()
+    t1 = time.time()
+    report = debug_service.load_report()
+    t2 = time.time()
+    report["time_elapsed"] = t2 - t1
+    return jsonify(report)
 
 @app.route("/status")
 @login_required
@@ -6450,6 +6493,8 @@ def export_settings():
                                         decoder_big_endian.decode_32bit_float()
                                     )
                                     thrshd[keys_list[j]] = decoded_value_big_endian
+                                    if "Thr_" in keys_list[j] and "pH" in keys_list[j]:
+                                        thrshd[keys_list[j]] = round(thrshd[keys_list[j]], 2)
                                     j += 1
 
                 with ModbusTcpClient(
@@ -6794,7 +6839,8 @@ def upload_zip_pc_both():
     # if file.filename != "upload.zip":
     #     return jsonify({"message": "Please upload correct file name"}), 400
 
-    if not file.filename.endswith(".zip"):
+    # if not file.filename.endswith(".zip"):
+    if not file.filename.endswith(".gpg"):
         return jsonify({"message": "Wrong File Type"}), 400
 
     # 定義暫存解壓縮目錄
@@ -6802,7 +6848,8 @@ def upload_zip_pc_both():
     os.makedirs(temp_dir, exist_ok=True)
     
     # 存到本機暫存區
-    local_zip_path = os.path.join(temp_dir, file.filename)
+    local_zip_path = os.path.join(temp_dir, file.filename.replace(".gpg", ".zip"))
+    # local_zip_path = os.path.join(temp_dir, file.filename)
     file.save(local_zip_path)
 
     # 解壓縮 ZIP
@@ -8047,8 +8094,8 @@ def read_rack_status():
     for key in time_data["errorlog_start"]:
         time_data["errorlog_start"][key] = time.perf_counter()
         
-    rack_enable_count = sum(1 for v in ctr_data["rack_visibility"].values() if v is True)
-    openning_min = 35 + (rack_enable_count - 1) * 5 if rack_enable_count >= 1 else 0
+    # rack_enable_count = sum(1 for v in ctr_data["rack_visibility"].values() if v is True)
+    # openning_min = 35 + (rack_enable_count - 1) * 5 if rack_enable_count >= 1 else 0
     
     while True:
         if ctr_data["rack_visibility"]["rack1_enable"]:
@@ -8059,7 +8106,7 @@ def read_rack_status():
                     r = client_rack1_reg.read_holding_registers(0, 1)
                     result = r.registers[0]
                     sensorData["rack_status"]["rack1_status"] = (
-                        (result - 39321) / 26214 * openning_min
+                        (result - 39321) / 26214 * 100
                     )
                     if sensorData["rack_status"]["rack1_status"] < 0:
                         sensorData["rack_status"]["rack1_status"] = 0
@@ -8096,7 +8143,7 @@ def read_rack_status():
             except Exception as e:
                 print(f"rack1 set control error: {e}")
 
-            check_rack_error("rack1")
+            # check_rack_error("rack1")
 
         if ctr_data["rack_visibility"]["rack2_enable"]:
             try:
@@ -8106,7 +8153,7 @@ def read_rack_status():
                     r = client_rack2_reg.read_holding_registers(0, 1)
                     result = r.registers[0]
                     sensorData["rack_status"]["rack2_status"] = (
-                        (result - 39321) / 26214 * openning_min
+                        (result - 39321) / 26214 * 100
                     )
                     if sensorData["rack_status"]["rack2_status"] < 0:
                         sensorData["rack_status"]["rack2_status"] = 0
@@ -8143,7 +8190,7 @@ def read_rack_status():
             except Exception as e:
                 print(f"rack2 set control error: {e}")
 
-            check_rack_error("rack2")
+            # check_rack_error("rack2")
 
         if ctr_data["rack_visibility"]["rack3_enable"]:
             try:
@@ -8153,7 +8200,7 @@ def read_rack_status():
                     r = client_rack3_reg.read_holding_registers(0, 1)
                     result = r.registers[0]
                     sensorData["rack_status"]["rack3_status"] = (
-                        (result - 39321) / 26214 * openning_min
+                        (result - 39321) / 26214 * 100
                     )
                     if sensorData["rack_status"]["rack3_status"] < 0:
                         sensorData["rack_status"]["rack3_status"] = 0
@@ -8190,7 +8237,7 @@ def read_rack_status():
             except Exception as e:
                 print(f"rack3 set control error: {e}")
 
-            check_rack_error("rack3")
+            # check_rack_error("rack3")
 
         if ctr_data["rack_visibility"]["rack4_enable"]:
             try:
@@ -8200,7 +8247,7 @@ def read_rack_status():
                     r = client_rack4_reg.read_holding_registers(0, 1)
                     result = r.registers[0]
                     sensorData["rack_status"]["rack4_status"] = (
-                        (result - 39321) / 26214 * openning_min
+                        (result - 39321) / 26214 * 100
                     )
                     if sensorData["rack_status"]["rack4_status"] < 0:
                         sensorData["rack_status"]["rack4_status"] = 0
@@ -8237,7 +8284,7 @@ def read_rack_status():
             except Exception as e:
                 print(f"rack4 set control error: {e}")
 
-            check_rack_error("rack4")
+            # check_rack_error("rack4")
 
         if ctr_data["rack_visibility"]["rack5_enable"]:
             try:
@@ -8247,7 +8294,7 @@ def read_rack_status():
                     r = client_rack5_reg.read_holding_registers(0, 1)
                     result = r.registers[0]
                     sensorData["rack_status"]["rack5_status"] = (
-                        (result - 39321) / 26214 * openning_min
+                        (result - 39321) / 26214 * 100
                     )
                     if sensorData["rack_status"]["rack5_status"] < 0:
                         sensorData["rack_status"]["rack5_status"] = 0
@@ -8284,7 +8331,7 @@ def read_rack_status():
             except Exception as e:
                 print(f"rack5 set control error: {e}")
 
-            check_rack_error("rack5")
+            # check_rack_error("rack5")
 
         if ctr_data["rack_visibility"]["rack6_enable"]:
             try:
@@ -8294,7 +8341,7 @@ def read_rack_status():
                     r = client_rack6_reg.read_holding_registers(0, 1)
                     result = r.registers[0]
                     sensorData["rack_status"]["rack6_status"] = (
-                        (result - 39321) / 26214 * openning_min
+                        (result - 39321) / 26214 * 100
                     )
                     if sensorData["rack_status"]["rack6_status"] < 0:
                         sensorData["rack_status"]["rack6_status"] = 0
@@ -8331,7 +8378,7 @@ def read_rack_status():
             except Exception as e:
                 print(f"rack5 set control error: {e}")
 
-            check_rack_error("rack6")
+            # check_rack_error("rack6")
 
         if ctr_data["rack_visibility"]["rack7_enable"]:
             try:
@@ -8341,7 +8388,7 @@ def read_rack_status():
                     r = client_rack7_reg.read_holding_registers(0, 1)
                     result = r.registers[0]
                     sensorData["rack_status"]["rack7_status"] = (
-                        (result - 39321) / 26214 * openning_min
+                        (result - 39321) / 26214 * 100
                     )
                     if sensorData["rack_status"]["rack7_status"] < 0:
                         sensorData["rack_status"]["rack7_status"] = 0
@@ -8378,7 +8425,7 @@ def read_rack_status():
             except Exception as e:
                 print(f"rack7 set control error: {e}")
 
-            check_rack_error("rack7")
+            # check_rack_error("rack7")
 
         if ctr_data["rack_visibility"]["rack8_enable"]:
             try:
@@ -8388,7 +8435,7 @@ def read_rack_status():
                     r = client_rack8_reg.read_holding_registers(0, 1)
                     result = r.registers[0]
                     sensorData["rack_status"]["rack8_status"] = (
-                        (result - 39321) / 26214 * openning_min
+                        (result - 39321) / 26214 * 100
                     )
                     if sensorData["rack_status"]["rack8_status"] < 0:
                         sensorData["rack_status"]["rack8_status"] = 0
@@ -8426,7 +8473,7 @@ def read_rack_status():
             except Exception as e:
                 print(f"rack8 set control error: {e}")
 
-            check_rack_error("rack8")
+            # check_rack_error("rack8")
 
         if ctr_data["rack_visibility"]["rack9_enable"]:
             try:
@@ -8436,7 +8483,7 @@ def read_rack_status():
                     r = client_rack9_reg.read_holding_registers(0, 1)
                     result = r.registers[0]
                     sensorData["rack_status"]["rack9_status"] = (
-                        (result - 39321) / 26214 * openning_min
+                        (result - 39321) / 26214 * 100
                     )
                     if sensorData["rack_status"]["rack9_status"] < 0:
                         sensorData["rack_status"]["rack9_status"] = 0
@@ -8473,7 +8520,7 @@ def read_rack_status():
             except Exception as e:
                 print(f"rack9 set control error: {e}")
 
-            check_rack_error("rack9")
+            # check_rack_error("rack9")
 
         if ctr_data["rack_visibility"]["rack10_enable"]:
             try:
@@ -8483,7 +8530,7 @@ def read_rack_status():
                     r = client_rack10_reg.read_holding_registers(0, 1)
                     result = r.registers[0]
                     sensorData["rack_status"]["rack10_status"] = (
-                        (result - 39321) / 26214 * openning_min
+                        (result - 39321) / 26214 * 100
                     )
                     if sensorData["rack_status"]["rack10_status"] < 0:
                         sensorData["rack_status"]["rack10_status"] = 0
@@ -8521,9 +8568,18 @@ def read_rack_status():
             except Exception as e:
                 print(f"rack10 set control error: {e}")
 
-            check_rack_error("rack10")
-
-        send_error_log()
+            # check_rack_error("rack10")
+        keys_list = list(ctr_data["rack_visibility"])
+        index = 1
+        for key in keys_list:
+            if ctr_data["rack_visibility"][key]:
+                check_rack_error(f"rack{index}")
+            elif not ctr_data["rack_visibility"][key]:
+                sensorData["rack"][f"rack{index}_broken"] = False
+                sensorData["rack"][f"rack{index}_leak"] = False
+                sensorData["rack"][f"rack{index}_error"] = False    
+            index += 1
+        # send_error_log()
 
         try:
             rack_key = list(sensorData["rack"].keys())
