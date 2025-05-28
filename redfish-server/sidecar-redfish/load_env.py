@@ -15,6 +15,9 @@ args, unknown = arg_parser.parse_known_args()
 proj_root = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(proj_root)
 
+if os.getenv("IS_TESTING_MODE") == "True": # if in testsing mode
+    args.env = "test"
+ 
 if args.env == "prod":
     dotenv_path = os.path.join(proj_root, '.env')
 else:

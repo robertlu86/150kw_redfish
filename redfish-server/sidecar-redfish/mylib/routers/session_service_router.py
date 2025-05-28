@@ -16,8 +16,14 @@ class SessionService(Resource):
     
     def get(self):
         resp = Response(json.dumps(RfSessionService.fetch_session_service()), status=200, content_type="application/json")
-        resp.headers['Allow'] = 'GET'
+        resp.headers['Allow'] = 'GET, PATCH'
         return resp
+    def patch(self):
+        body = request.get_json(force=True)
+        try:
+            return RfSessionService.update_session_service(body)
+        except Exception:
+            return ERROR_INTERNAL
 
 @SessionService_ns.route("/SessionService/Sessions/")
 class Sessions(Resource):

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0">
-    <!-- 各種服務 -->
+    <!-- service -->
     <edmx:Reference Uri="http://redfish.dmtf.org/schemas/v1/ServiceRoot_v1.xml">
       <edmx:Include Namespace="ServiceRoot"/>
       <edmx:Include Namespace="ServiceRoot.v1_18_0"/>
@@ -50,7 +50,7 @@
       <edmx:Include Namespace="Resource" />
       <edmx:Include Namespace="Resource.v1_0_0"/>
     </edmx:Reference>  
-<!--  ================================0514新增======================================================================= -->
+
     <edmx:Reference Uri="http://redfish.dmtf.org/schemas/v1/Fan_v1.xml">
       <edmx:Include Namespace="Fan.v1_5_2"/>
       <edmx:Include Namespace="Fan"/>
@@ -240,6 +240,10 @@
       <edmx:Include Namespace="PowerSupplyMetrics.v1_1_2"/>
     </edmx:Reference>    
 
+   <edmx:Reference Uri="http://redfish.dmtf.org/schemas/v1/PowerSupply_v1.xml">
+      <edmx:Include Namespace="PowerSupply"/>
+      <edmx:Include Namespace="PowerSupply.v1_6_0"/>
+    </edmx:Reference>   
 	
    <edmx:Reference Uri="http://redfish.dmtf.org/schemas/v1/Power_v1.xml">
       <edmx:Include Namespace="Power"/>
@@ -283,12 +287,47 @@
       <edmx:Include Namespace="PCIeFunctionCollection"/>
     </edmx:Reference>    
 
-  
-<!--  ======================================================================================================= -->
-    <!-- <edmx:Reference Uri="http://redfish.dmtf.org/schemas/v1/CertificateService_v1.xml">
-      <edmx:Include Namespace="CertificateService"/>
-      <edmx:Include Namespace="CertificateService.v1_0_4"/>
-    </edmx:Reference> -->
+    <edmx:Reference Uri="http://redfish.dmtf.org/schemas/v1/ThermalSubsystem_v1.xml">
+      <edmx:Include Namespace="ThermalSubsystem"/>
+      <edmx:Include Namespace="ThermalSubsystem.v1_3_3"/>
+    </edmx:Reference>  
+
+    <edmx:Reference Uri="http://redfish.dmtf.org/schemas/v1/ActionInfo_v1.xml">
+      <edmx:Include Namespace="ActionInfo"/>
+      <edmx:Include Namespace="ActionInfo.v1_4_2"/>
+    </edmx:Reference>  
+
+    <edmx:Reference Uri="http://redfish.dmtf.org/schemas/v1/CoolantConnector_v1.xml">
+      <edmx:Include Namespace="CoolantConnector"/>
+      <edmx:Include Namespace="CoolantConnector.v1_1_0"/>
+    </edmx:Reference>  
+
+    <edmx:Reference Uri="http://redfish.dmtf.org/schemas/v1/CoolantConnectorCollection_v1.xml">
+      <edmx:Include Namespace="CoolantConnectorCollection"/>
+    </edmx:Reference>    
+    
+    <edmx:Reference Uri="http://redfish.dmtf.org/schemas/v1/LeakDetection_v1.xml">
+      <edmx:Include Namespace="LeakDetection"/>
+      <edmx:Include Namespace="LeakDetection.v1_1_0"/>
+    </edmx:Reference>  
+    
+    <edmx:Reference Uri="http://redfish.dmtf.org/schemas/v1/LeakDetector_v1.xml">
+      <edmx:Include Namespace="LeakDetector"/>
+      <edmx:Include Namespace="LeakDetector.v1_3_0"/>
+    </edmx:Reference>  
+
+    <edmx:Reference Uri="http://redfish.dmtf.org/schemas/v1/LeakDetectorCollection_v1.xml">
+      <edmx:Include Namespace="LeakDetectorCollection"/>
+    </edmx:Reference>    
+
+     <edmx:Reference Uri="http://redfish.dmtf.org/schemas/v1/CoolingUnit_v1.xml">
+      <edmx:Include Namespace="CoolingUnit"/>
+      <edmx:Include Namespace="CoolingUnit.v1_2_0"/>
+    </edmx:Reference>  
+
+    <edmx:Reference Uri="http://redfish.dmtf.org/schemas/v1/CoolingUnitCollection_v1.xml">
+      <edmx:Include Namespace="CoolingUnitCollection"/>
+    </edmx:Reference>     
   
   <!-- service -->
   <edmx:DataServices>

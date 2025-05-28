@@ -9,7 +9,7 @@ from mylib.models.rf_status_model import RfStatusModel, RfStatusHealth
 from mylib.utils.StatusUtil import StatusUtil
 
 def test_get_worst_health_model(client):
-    """測試 取得健康度最差的"""
+    """[TestCase] 取得健康度最差的"""
     status_models = [
         RfStatusModel(Health=RfStatusHealth.OK),
         RfStatusModel(Health=RfStatusHealth.Critical),
@@ -26,7 +26,7 @@ def test_get_worst_health_model(client):
         assert worst_health_status.Health == RfStatusHealth.Critical
 
 def test_get_worst_health_dict(client):
-    """測試 取得健康度最差的"""
+    """[TestCase] 取得健康度最差的"""
     status_dicts = [
         { "State": "Enabled", "Health": "OK" },
         { "State": "Enabled", "Health": "Critical" },

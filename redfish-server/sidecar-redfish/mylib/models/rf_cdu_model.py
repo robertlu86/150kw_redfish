@@ -24,7 +24,7 @@ class RfCduCollectionModel(RfResourceCollectionBaseModel):
         self.odata_id = f"/redfish/v1/ThermalEquipment/CDUs"
         self.odata_context = "/redfish/v1/$metadata#CoolingUnitCollection.CoolingUnitCollection"
         self.Name = "CDU Collection"
-        self.Description = "中控分配單元（CDU）集合"
+        self.Description = "Collection of Central Distribution Units (CDUs)"
         self.Oem = {}
         
         member_cnt = int(os.environ.get('REDFISH_CDU_COLLECTION_CNT', 1))
@@ -159,10 +159,12 @@ class RfCduModel(RfResourceBaseModel):
     PrimaryCoolantConnectors: Optional[Dict[str, Any]] = Field(default={}, description="PrimaryCoolantConnectors")
     Pumps: Optional[Dict[str, Any]] = Field(default={}, description="Pumps")
     LeakDetection: Optional[Dict[str, Any]] = Field(default={}, description="LeakDetection")
-    Coolant: Optional[Dict[str, Any]] = Field(default={}, description="Coolant")
+    Coolant: Optional[Dict[str, Any]] = Field(default=None, description="Coolant")
     PumpRedundancy: Optional[Dict[str, Any]] = Field(default={}, description="PumpRedundancy")
     Reservoirs: Optional[Dict[str, Any]] = Field(default={}, description="Reservoirs")
     EnvironmentMetrics: Optional[Dict[str, Any]] = Field(default={}, description="EnvironmentMetrics")
+    SecondaryCoolantConnectors: Optional[Dict[str, Any]] = Field(default={}, description="SecondaryCoolantConnectors")
+    Status: Optional[RfStatusModel] = Field(default=None)
     Actions: Optional[Dict[str, Any]] = Field(default={}, description="Actions")
     Links: Optional[Dict[str, Any]] = Field(default={}, description="Links")
     Oem: Optional[Dict[str, Any]] = Field(default={}, description="Oem")
@@ -173,21 +175,24 @@ class RfCduModel(RfResourceBaseModel):
 
     def __init__(self, cdu_id: str, **kwargs):
         super().__init__(**kwargs)
-        self.odata_type = "#CoolingUnit.v1_1_0.CoolingUnit"
+        self.odata_type = "#CoolingUnit.v1_2_0.CoolingUnit"
         self.Name = f"#{cdu_id} Cooling Distribution Unit"
         self.Id = cdu_id
-        self.odata_context = "/redfish/v1/$metadata#CoolingUnit.v1_1_0.CoolingUnit"
+        self.odata_context = "/redfish/v1/$metadata#CoolingUnit.v1_2_0.CoolingUnit"
 
         # cdu_id = self.__pydantic_extra__.get('cdu_id')
         self.odata_id = f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}"
 
-        self.Description = f"第{cdu_id}台冷卻分配單元，用於機箱液冷散熱"
+        self.Description = f"Cooling Distribution Unit #{cdu_id}, designed for liquid cooling of chassis systems."
 
         self.Filters = {
             "@odata.id": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/Filters"
         }
         self.PrimaryCoolantConnectors = {
             "@odata.id": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/PrimaryCoolantConnectors"
+        }
+        self.SecondaryCoolantConnectors = {
+            "@odata.id": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/SecondaryCoolantConnectors"
         }
         self.Pumps = {
             "@odata.id": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/Pumps"
@@ -198,7 +203,7 @@ class RfCduModel(RfResourceBaseModel):
         self.Coolant = {
             "CoolantType": "Water",
             "DensityKgPerCubicMeter": -1, # TBD
-            "SpecificHeatkJoulesPerKgK": -1 # TBD
+            "SpecificHeatkJoulesPerKgK": -1, # TBD
         }
         self.PumpRedundancy = [
             {
@@ -249,6 +254,7 @@ class RfCduModel(RfResourceBaseModel):
 
         # TODO: to be refactored
         # for smc interop validator
-        self.ProductionDate = DateTimeUtil.format_string("%Y/%m/%dT%H:%M:%SZ")
+        datetime_format = os.getenv("DATETIME_FORMAT", "%Y-%m-%dT%H:%M:%SZ")
+        self.ProductionDate = DateTimeUtil.format_string(datetime_format)
 
     

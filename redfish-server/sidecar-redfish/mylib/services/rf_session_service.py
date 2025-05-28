@@ -14,6 +14,23 @@ class RfSessionService():
         json_data = cls.session_service_data
         json_data['SessionTimeout'] = int(SettingModel.get_by_key('SessionService.SessionTimeout').value)
         return cls.session_service_data
+    
+    @classmethod
+    def update_session_service(cls, json_input):
+        """
+        Update session service.
+        """
+        if 'SessionTimeout' not in json_input:
+            return error_response('No key of SessionTimeout', 400, 'Base.PropertyMissing')
+        if not isinstance(json_input['SessionTimeout'], int):
+            return error_response('SessionTimeout must be an integer', 400, 'Base.PropertyValueNotInList')
+        if json_input['SessionTimeout'] < 0:
+            return error_response('SessionTimeout must be greater than or equal to 0', 400, 'Base.PropertyValueNotInList')
+        
+        if SettingModel.update_by_key_value('SessionService.SessionTimeout', json_input['SessionTimeout']):
+            return cls.fetch_session_service()
+        else:
+            return error_response('Failed to update SessionService', 500, 'Base.InternalError')
 
     @classmethod
     def create(cls, json_input):
@@ -74,6 +91,8 @@ class RfSessionService():
     
     session_service_data = {
         "@odata.type": "#SessionService.v1_1_9.SessionService",
+        "@odata.id": "/redfish/v1/SessionService",
+        "@Redfish.WriteableProperties": ['SessionTimeout'],
         "Id": "SessionService",
         "Name": "Session Service",
         "Description": "Session Service",
@@ -85,8 +104,7 @@ class RfSessionService():
         "SessionTimeout": 300,
         "Sessions": {
             "@odata.id": "/redfish/v1/SessionService/Sessions"
-        },
-        "@odata.id": "/redfish/v1/SessionService"
+        }
     }
     
     sessions_basic_data = {

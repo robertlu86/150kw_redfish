@@ -1,4 +1,5 @@
-from flask import request
+import os
+from flask import request, abort
 from flask_restx import Namespace, Resource, fields
 from mylib.models.rf_environment_metrics_model import RfEnvironmentMetricsModel
 from mylib.services.rf_ThermalEquipment_service import RfThermalEquipmentService
@@ -6,6 +7,8 @@ from mylib.utils.load_api import load_raw_from_api
 from mylib.utils.load_api import CDU_BASE
 from mylib.routers.Chassis_router import Controls_data_all
 import requests
+from http import HTTPStatus
+from mylib.common.my_resource import MyResource
 
 ThermalEquipment_ns = Namespace('', description='ThermalEquipment Collection')
 
@@ -35,136 +38,136 @@ ThermalEquipment_data= {
 #     "Members": [{"@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1"}],
 #     "Oem": {}
 # }
-CDUs_data_1 = {
-    "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1",
-    "@odata.type": "#CoolingUnit.v1_1_0.CoolingUnit",
-    "@odata.context": "/redfish/v1/$metadata#CoolingUnit.v1_1_0.CoolingUnit",
+# CDUs_data_1 = {
+#     "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1",
+#     "@odata.type": "#CoolingUnit.v1_2_0.CoolingUnit",
+#     "@odata.context": "/redfish/v1/$metadata#CoolingUnit.v1_2_0.CoolingUnit",
     
-    "Name": "#1 Cooling Distribution Unit",
-    "Id": "1",
-    "Description": "First Cooling Distribution Unit for chassis liquid cooling",
+#     "Name": "#1 Cooling Distribution Unit",
+#     "Id": "1",
+#     "Description": "First Cooling Distribution Unit for chassis liquid cooling",
     
-    # 資訊
-    "Manufacturer": "Supermicro",
-    "Model": "CoolingUnit",
-    # "UUID": "00000000-0000-0000-0000-e45f013e98f8",
-    "SerialNumber": "test_1",
-    "PartNumber": "test_1",
-    "FirmwareVersion": "1.0.0",
-    "Version": "test_1",
-    "ProductionDate": "2024-10-05T00:00:00Z",
+#     # 資訊
+#     "Manufacturer": "Supermicro",
+#     "Model": "CoolingUnit",
+#     # "UUID": "00000000-0000-0000-0000-e45f013e98f8",
+#     "SerialNumber": "test_1",
+#     "PartNumber": "test_1",
+#     "FirmwareVersion": "1.0.0",
+#     "Version": "test_1",
+#     "ProductionDate": "2024-10-05T00:00:00Z",
     
-    "Status": {
-        "State": "Enabled",
-        "Health": "OK"
-    },
+#     "Status": {
+#         "State": "Enabled",
+#         "Health": "OK"
+#     },
     
-    "CoolingCapacityWatts": 100,
-    "EquipmentType": "CDU",
+#     "CoolingCapacityWatts": 100,
+#     "EquipmentType": "CDU",
     
-    # 底下服務
-    "Filters": {
-        "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Filters"
-    },
-    "PrimaryCoolantConnectors": {
-        "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/PrimaryCoolantConnectors"
-    },
-    # "SecondaryCoolantConnectors": {
-    #     "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/SecondaryCoolantConnectors"
-    # },
-    "Pumps": {
-        "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Pumps"
-    },
-    "LeakDetection": {
-        "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/LeakDetection"
-    },
-    # 液冷劑參數    
-    "Coolant": {
-        "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Coolant",
-        "CoolantType": "Water",
-        "DensityKgPerCubicMeter": 1000,
-        "SpecificHeatkJoulesPerKgK": 4180
-    },
-    # 泵冗餘示例
-    "PumpRedundancy": [
-        {
-            "RedundancyType": "NPlusM",
-            "MinNeededInGroup": 1,
-            "RedundancyGroup": [
-                {
-                    "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Pumps/1"
-                },
-                {
-                    "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Pumps/2"
-                },                
-                {
-                    "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Pumps/3"
-                }
-            ],
-            "Status": {
-                "Health": "OK",
-                "State": "Enabled"
-            }
-        }
-    ],
-    "Reservoirs": {
-        "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Reservoirs"
-    },
-    "EnvironmentMetrics": {
-        "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/EnvironmentMetrics"
-    },
-    "Actions": {
-        "#CoolingUnit.SetMode": {
-            "target": "/redfish/v1/ThermalEquipment/CDUs/1/Actions/CoolingUnit.SetMode",
-            "CoolingUnitMode@Redfish.AllowableValues": [
-                "Enabled",
-                "Disabled"
-            ],
-            "Mode@Redfish.AllowableValues": [
-                "Enabled",
-                "Disabled"
-            ]
-        }
+#     # 底下服務
+#     "Filters": {
+#         "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Filters"
+#     },
+#     "PrimaryCoolantConnectors": {
+#         "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/PrimaryCoolantConnectors"
+#     },
+#     "SecondaryCoolantConnectors": {
+#         "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/SecondaryCoolantConnectors"
+#     },
+#     "Pumps": {
+#         "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Pumps"
+#     },
+#     "LeakDetection": {
+#         "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/LeakDetection"
+#     },
+#     # 液冷劑參數    
+#     "Coolant": {
+#         "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Coolant",
+#         "CoolantType": "Water",
+#         "DensityKgPerCubicMeter": 1000,
+#         "SpecificHeatkJoulesPerKgK": 4180
+#     },
+#     # 泵冗餘示例
+#     "PumpRedundancy": [
+#         {
+#             "RedundancyType": "NPlusM",
+#             "MinNeededInGroup": 1,
+#             "RedundancyGroup": [
+#                 {
+#                     "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Pumps/1"
+#                 },
+#                 {
+#                     "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Pumps/2"
+#                 },                
+#                 {
+#                     "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Pumps/3"
+#                 }
+#             ],
+#             "Status": {
+#                 "Health": "OK",
+#                 "State": "Enabled"
+#             }
+#         }
+#     ],
+#     "Reservoirs": {
+#         "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Reservoirs"
+#     },
+#     "EnvironmentMetrics": {
+#         "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/EnvironmentMetrics"
+#     },
+#     "Actions": {
+#         "#CoolingUnit.SetMode": {
+#             "target": "/redfish/v1/ThermalEquipment/CDUs/1/Actions/CoolingUnit.SetMode",
+#             "CoolingUnitMode@Redfish.AllowableValues": [
+#                 "Enabled",
+#                 "Disabled"
+#             ],
+#             "Mode@Redfish.AllowableValues": [
+#                 "Enabled",
+#                 "Disabled"
+#             ]
+#         }
 
-    },
+#     },
     
-    "Links": {
-        "Chassis": [
-            {
-                "@odata.id": "/redfish/v1/Chassis/1"
-            }
-        ],
-        "ManagedBy": [
-            {
-                "@odata.id": "/redfish/v1/Managers/CDU"
-            }
-        ]
-    },
-    # 0513新增
-    "Oem": {
-        "Supermicro": {
-            # "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Oem/Supermicro",
-            # "DateTime": {                    
-            #     "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Oem/Supermicro/DateTime"
-            # },
-            # "LedLight": {                  
-            #     "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Oem/Supermicro/LedLight"
-            # },
-            # "Network": {                  
-            #     "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Oem/Supermicro/Network"
-            # },
-            # "Device": {                
-            #     "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Oem/Supermicro/Device"
-            # },
-            # "Unit": { 
-            #     "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Oem/Supermicro/Unit"
-            # },
-            # "Operation": {                   
-            #     "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Oem/Supermicro/Operation"
-            # }
-        }
-    }
-}
+#     "Links": {
+#         "Chassis": [
+#             {
+#                 "@odata.id": "/redfish/v1/Chassis/1"
+#             }
+#         ],
+#         "ManagedBy": [
+#             {
+#                 "@odata.id": "/redfish/v1/Managers/CDU"
+#             }
+#         ]
+#     },
+#     # 0513新增
+#     "Oem": {
+#         "Supermicro": {
+#             # "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Oem/Supermicro",
+#             # "DateTime": {                    
+#             #     "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Oem/Supermicro/DateTime"
+#             # },
+#             # "LedLight": {                  
+#             #     "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Oem/Supermicro/LedLight"
+#             # },
+#             # "Network": {                  
+#             #     "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Oem/Supermicro/Network"
+#             # },
+#             # "Device": {                
+#             #     "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Oem/Supermicro/Device"
+#             # },
+#             # "Unit": { 
+#             #     "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Oem/Supermicro/Unit"
+#             # },
+#             # "Operation": {                   
+#             #     "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Oem/Supermicro/Operation"
+#             # }
+#         }
+#     }
+# }
 
 PrimaryCoolantConnectors_data = {
     "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/PrimaryCoolantConnectors",
@@ -196,7 +199,7 @@ PrimaryCoolantConnectors_data_1 ={
         "CoolantType": "Water",
         "DensityKgPerCubicMeter": 1000,
         "SpecificHeatkJoulesPerKgK": 4180,
-        "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Coolant"
+        # "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Coolant"
     },
     "CoolantConnectorType": "Pair",
     "FlowLitersPerMinute": {
@@ -232,7 +235,7 @@ PrimaryCoolantConnectors_data_1 ={
         "Reading": 135.0
     },
     "Oem": {
-        "supermirco": {  
+        "supermicro": {  
             "PumpSwapTime": {
                 "@odata.type": "#supermirco.PumpSwapTime.v1_0_0.PumpSwapTime", # 一定要放
                 "SetPoint": {
@@ -297,6 +300,15 @@ cdus_pumps_1={
             "target": "/redfish/v1/ThermalEquipment/CDUs/1/Pumps/1/Actions/Pump.SetMode"
         }
     },
+    "Oem": {
+        "supermirco": {  
+            "Inventer 1 MC": {
+                "@odata.type": "#supermirco.Inventer.v1_0_0.Inventer", # 一定要放
+                "Swtich": True
+            }   
+        }
+        
+    }
     
 }
 
@@ -333,7 +345,14 @@ cdus_pumps_2 = {
             "target": "/redfish/v1/ThermalEquipment/CDUs/1/Pumps/2/Actions/Pump.SetMode"
         }
     },
-    
+    "Oem": {
+        "supermirco": {  
+            "Inventer 2 MC": {
+                "@odata.type": "#supermirco.Inventer.v1_0_0.Inventer", # 一定要放
+                "Swtich": True
+            }   
+        }
+    }
 }
 
 cdus_pumps_3 = {
@@ -369,7 +388,14 @@ cdus_pumps_3 = {
             "target": "/redfish/v1/ThermalEquipment/CDUs/1/Pumps/3/Actions/Pump.SetMode"
         }
     },
-   
+    "Oem": {
+        "supermirco": {  
+            "Inventer 3 MC": {
+                "@odata.type": "#supermirco.Inventer.v1_0_0.Inventer", # 一定要放
+                "Swtich": True
+            }   
+        }
+    }
 }
 
 cdus_filters={
@@ -399,6 +425,8 @@ cdus_filters_1 = {
     "Manufacturer": "Contoso",
     "Model": "MrCoffee",
     "PartNumber": "Cone4",
+    "HotPluggable": False,
+    "Replaceable": False,
     # 設備服務時間
     "ServiceHours": 5791,
     "RatedServiceHours": 10000,
@@ -409,7 +437,11 @@ cdus_filters_1 = {
     # 實體位置
     "Location": {
         "Placement": {
-        "Row": "North 1"
+            "Row": "North 1"
+        },
+        "PartLocation": {
+            "ServiceLabel": "Filter 1",
+            "LocationType": "Bay"
         }
     },
 }
@@ -503,40 +535,57 @@ reservoirs_1 = {
 
 LeakDetection_data = {
     "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/LeakDetection",
-    "@odata.type": "#LeakDetection.v1_0_0.LeakDetection",
-    "@odata.context": "/redfish/v1/$metadata#LeakDetection.v1_0_0.LeakDetection",
+    "@odata.type": "#LeakDetection.v1_1_0.LeakDetection",
+    "@odata.context": "/redfish/v1/$metadata#LeakDetection.v1_1_0.LeakDetection",
     
     "Id": "LeakDetection",
     "Name": "Leak Detection",
     "Description": "LeakDetection",
     # "Members@odata.count": 1,
     # ---------------------------
-    # "Status": {
-    #     "State": "Enabled",
-    #     "Health": "OK"
-    # },
-    # "LeakDetectorGroups": [
-    #     {"@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/LeakDetection/LeakDetectorGroups"}
-    # ],
-    # "LeakDetectors": {
-    #     "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/LeakDetection/LeakDetectors"
-    # },
+    "Status": {
+        "State": "Enabled",
+        "Health": "OK"
+    },
+    "LeakDetectorGroups": [
+        {
+            "GroupName": "LeakDetectorGroup1",
+            "Detectors": [
+                {
+                    "DataSourceUri":   "/redfish/v1/ThermalEquipment/CDUs/1/LeakDetection/LeakDetectors/1",
+                    "DetectorState":   "OK"
+                }
+            ],
+            "HumidityPercent": {
+                "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/HumidityPercent",
+                "Reading": 67.11
+            },
+            "Status": {
+                "State": "Enabled",
+                "Health": "OK"
+            },
+            # {"@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/LeakDetection/LeakDetectorGroups"}  
+        }
+    ],
+    "LeakDetectors": {
+        "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/LeakDetection/LeakDetectors"
+    },
     # "Members": [
     #     {"@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/LeakDetection/LeakDetectors"}
     # ], 
     "Oem": {}  
 }
 
-LeakDetectionLeakDetectors_data = {
-    "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/LeakDetection/LeakDetectors",
-    "@odata.type": "#LeakDetectors.v1_6_0.LeakDetectors",
-    "Id": "1",
-    "Name": "LeakDetectors",
-    "Status": {
-        "State": "Enabled",
-        "Health": "Critical"
-    },
-}
+# LeakDetectionLeakDetectors_data = {
+#     "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/LeakDetection/LeakDetectors",
+#     "@odata.type": "#LeakDetectors.v1_3_0.LeakDetectors",
+#     "Id": "1",
+#     "Name": "LeakDetectors",
+#     "Status": {
+#         "State": "Enabled",
+#         "Health": "Critical"
+#     },
+# }
 # -------------------------------------
 # Automatic setting patch設置
 PrimaryCoolantConnectors_patch = ThermalEquipment_ns.model('PrimaryCoolantConnectors1Patch', {
@@ -571,6 +620,38 @@ pumpspeed_patch = ThermalEquipment_ns.model('PumpSpeedControlPatch', {
 })
 
 
+class MyBaseThermalEquipment(MyResource):
+    def __init__(self, *args, **kwargs):
+        self.cdu_count = int(os.getenv("REDFISH_CDUS_COLLECTION_CNT", 1))
+        self.primary_coolant_connector_count = 1
+        self.secondary_coolant_connector_count = 1
+        self.leak_detector_count = 1
+    
+    def _validate_request(self):
+        try:
+            cdu_id = request.view_args.get("cdu_id")
+            connector_id = request.view_args.get("connector_id")
+            leak_detector_id = request.view_args.get("leak_detector_id")
+
+            if not self._is_valid_id(cdu_id, self.cdu_count):
+                abort(HTTPStatus.NOT_FOUND, description=f"cdu_id, {cdu_id}, not found")
+            
+            if not self._is_valid_id(connector_id, self.primary_coolant_connector_count):
+                abort(HTTPStatus.NOT_FOUND, description=f"connector_id, {connector_id}, not found")
+            
+            if not self._is_valid_id(leak_detector_id, self.leak_detector_count):
+                abort(HTTPStatus.NOT_FOUND, description=f"leak_detector_id, {leak_detector_id}, not found")
+        except Exception as e:
+            abort(HTTPStatus.NOT_FOUND, description=f"[Unexpected Error] {e}")
+    
+    def _is_valid_id(self, id: str, max_value: int):
+        if id: # request有傳id進來才檢查
+            if not id.isdigit():
+                return False
+            if not (0 < int(id) <= max_value):
+                return False
+        return True
+
 @ThermalEquipment_ns.route("/ThermalEquipment")
 class ThermalEquipment(Resource):
     # # @requires_auth
@@ -588,15 +669,20 @@ class ThermalEquipmentCdus(Resource):
         return RfThermalEquipmentService().fetch_CDUs()
     
 @ThermalEquipment_ns.route("/ThermalEquipment/CDUs/<cdu_id>")
-class ThermalEquipmentCdus1(Resource):
+class ThermalEquipmentCdus1(MyBaseThermalEquipment):
     # # @requires_auth
     @ThermalEquipment_ns.doc("thermal_equipment_cdus")
     def get(self, cdu_id: str):
         # return CDUs_data_1
-        return RfThermalEquipmentService().fetch_CDUs(cdu_id)
+        rep = RfThermalEquipmentService().fetch_CDUs(cdu_id)
+        rep["Status"] = {
+            "State": "Enabled",
+            "Health": "OK"
+        }
+        return rep
     
 @ThermalEquipment_ns.route("/ThermalEquipment/CDUs/<cdu_id>/PrimaryCoolantConnectors")
-class PrimaryCoolantConnectors(Resource):
+class PrimaryCoolantConnectors(MyBaseThermalEquipment):
     # # @requires_auth
     @ThermalEquipment_ns.doc("primary_coolant_connectors")
     def get(self, cdu_id: str):
@@ -621,7 +707,7 @@ class PrimaryCoolantConnectors1(Resource):
         ReturnPressurekPa = PrimaryCoolantConnectors_data_1["ReturnPressurekPa"]["Reading"] = value_all["pressure_coolant_return"]
         PrimaryCoolantConnectors_data_1["DeltaPressurekPa"]["Reading"] = SupplyPressurekPa - ReturnPressurekPa
         
-        PrimaryCoolantConnectors_data_1["Oem"]["supermirco"]["PumpSwapTime"]["SetPoint"]["Value"] = pump_swap_time
+        PrimaryCoolantConnectors_data_1["Oem"]["supermicro"]["PumpSwapTime"]["SetPoint"]["Value"] = pump_swap_time
         
         return PrimaryCoolantConnectors_data_1
     
@@ -690,6 +776,7 @@ class ThermalEquipmentCdus1Pumps1(Resource):
         cdus_pumps_1["Status"]["State"] = state
         cdus_pumps_1["Status"]["Health"] = health
         cdus_pumps_1["ServiceHours"] = service_hours
+        cdus_pumps_1["Oem"]["supermirco"]["Inventer 1 MC"]["Switch"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/mc")["mc1_sw"]
         
 
         return cdus_pumps_1
@@ -758,6 +845,7 @@ class ThermalEquipmentCdus1Pumps2(Resource):
         cdus_pumps_2["Status"]["State"] = state
         cdus_pumps_2["Status"]["Health"] = health
         cdus_pumps_2["ServiceHours"] = service_hours
+        cdus_pumps_2["Oem"]["supermirco"]["Inventer 2 MC"]["Switch"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/mc")["mc2_sw"]
         
         return cdus_pumps_2
         
@@ -827,6 +915,7 @@ class ThermalEquipmentCdus1Pumps3(Resource):
         cdus_pumps_3["Status"]["State"] = state
         cdus_pumps_3["Status"]["Health"] = health
         cdus_pumps_3["ServiceHours"] = service_hours
+        cdus_pumps_3["Oem"]["supermirco"]["Inventer 3 MC"]["Switch"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/mc")["mc3_sw"]
         
         return cdus_pumps_3
         
@@ -897,7 +986,7 @@ class ThermalEquipmentCdus1Filters1(Resource):
         return cdus_filters_1
     
 @ThermalEquipment_ns.route("/ThermalEquipment/CDUs/<cdu_id>/EnvironmentMetrics")
-class ThermalEquipmentCdus1EnvironmentMetrics(Resource):
+class ThermalEquipmentCdus1EnvironmentMetrics(MyBaseThermalEquipment):
     # # @requires_auth
     @ThermalEquipment_ns.doc("thermal_equipment_cdus_1_environment_metrics")
     def get(self, cdu_id):
@@ -923,28 +1012,61 @@ class ThermalEquipmentCdus1Reservoirs1(Resource):
         return reservoirs_1
 
 @ThermalEquipment_ns.route("/ThermalEquipment/CDUs/<cdu_id>/LeakDetection")
-class LeakDetection(Resource):
+class LeakDetection(MyBaseThermalEquipment):
     # # @requires_auth
     @ThermalEquipment_ns.doc("thermal_equipment_cdus_1_LeakDetection")
     def get(self, cdu_id):
         
         return LeakDetection_data    
 
-test = [
-    "/ThermalEquipment/CDUs/<cdu_id>/test",
-    "/ThermalEquipment/CDUs/<cdu_id>/test2"
-]
+# test = [
+#     "/ThermalEquipment/CDUs/<cdu_id>/test",
+#     "/ThermalEquipment/CDUs/<cdu_id>/test2"
+# ]
 
 
-@ThermalEquipment_ns.route("/ThermalEquipment/CDUs/<cdu_id>/LeakDetection/LeakDetectors", *test)
-class LeakDetectionLeakDetectors(Resource):
+@ThermalEquipment_ns.route("/ThermalEquipment/CDUs/<cdu_id>/LeakDetection/LeakDetectors",) #*test)
+class LeakDetectionLeakDetectors(MyBaseThermalEquipment):
     # # @requires_auth
     @ThermalEquipment_ns.doc("thermal_equipment_cdus_1_LeakDetection_LeakDetectors")
     def get(self, cdu_id):
         rf_ThermalEquipment_service = RfThermalEquipmentService()
         resp_json = rf_ThermalEquipment_service.fetch_CDUs_LeakDetection_LeakDetectors(cdu_id)
+        resp_json["Members@odata.count"] = 1
+        resp_json["Members"] = [
+            {"@odata.id": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/LeakDetection/LeakDetectors/1"}
+        ]
         return resp_json
-           
+
+@ThermalEquipment_ns.route("/ThermalEquipment/CDUs/<cdu_id>/LeakDetection/LeakDetectors/<string:leak_detector_id>")
+class LeakDetectionLeakDetectors1(MyBaseThermalEquipment):
+    # # @requires_auth
+    @ThermalEquipment_ns.doc("thermal_equipment_cdus_1_LeakDetection_LeakDetectors_1")
+    def get(self, cdu_id, leak_detector_id):
+        LeakDetectors_1_data = {
+            "@odata.id": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/LeakDetection/LeakDetectors/{leak_detector_id}",
+            "@odata.type": "#LeakDetector.v1_3_0.LeakDetector",
+            
+            "Id": leak_detector_id,
+            "Name": f"Leak Detector {leak_detector_id}",
+            "Description": f"Leak Detector {leak_detector_id} for CDU {cdu_id}",
+            
+            "DetectorState": "OK",
+            "LeakDetectorType": "Moisture",
+            "Location": {
+                "PartLocation": {
+                    "ServiceLabel": f"Leak Detector {leak_detector_id}",
+                    "LocationType": "Bay"
+                }
+            },
+            "Status": {
+                "State": "Enabled",
+                "Health": "OK"
+            },
+            
+        }
+        
+        return LeakDetectors_1_data
 # 0513新增 /redfish/v1/ThermalEquipment/CDUs/{CoolingUnitId}/Oem
 # @ThermalEquipment_ns.route('/ThermalEquipment/CDUs/<string:id>/Oem')
 # class CduOem(Resource):
@@ -990,3 +1112,91 @@ class LeakDetectionLeakDetectors(Resource):
 #                 "@odata.id": f"/redfish/v1/ThermalEquipment/CDUs/{id}/Oem/Supermicro/{node}",
 #                 "@odata.type": f"#Supermicro.{node}",
 #             }, 200        
+
+@ThermalEquipment_ns.route("/ThermalEquipment/CDUs/<string:cdu_id>/SecondaryCoolantConnectors")
+class SecondaryCoolantConnectorsCollection(MyBaseThermalEquipment):
+    def get(self, cdu_id):
+        SecondaryCoolantConnectors_data = {
+            "@odata.id": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/SecondaryCoolantConnectors",
+            "@odata.type": "#CoolantConnectorCollection.CoolantConnectorCollection",
+            "@odata.context": "/redfish/v1/$metadata#CoolantConnectorCollection.CoolantConnectorCollection",
+            "Name": "Secondary (supply side) Cooling Loop Connection Collection",
+            "Members": [
+                {
+                "@odata.id": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/SecondaryCoolantConnectors/1"
+                }
+            ],
+            "Members@odata.count": 1
+        }
+        return SecondaryCoolantConnectors_data
+
+@ThermalEquipment_ns.route("/ThermalEquipment/CDUs/<string:cdu_id>/SecondaryCoolantConnectors/<string:connector_id>")
+class SecondaryCoolantConnector(MyBaseThermalEquipment):
+    def get(self, cdu_id, connector_id):
+        SecondaryCoolantConnectors_1_data = {
+            "@odata.id": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/SecondaryCoolantConnectors/{connector_id}",
+            "@odata.type": "#CoolantConnector.v1_1_0.CoolantConnector",
+            "@odata.context": "/redfish/v1/$metadata#CoolantConnector.v1_1_0.CoolantConnector",
+            
+            "Id": cdu_id,
+            "Name": f"Secondary Connector {cdu_id}",
+            
+            # 額定流量
+            "RatedFlowLitersPerMinute": 100,
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            },
+            "Coolant": {
+                "CoolantType": "Water",
+                "DensityKgPerCubicMeter": 1000,
+                "SpecificHeatkJoulesPerKgK": 4180,
+                # "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Coolant"
+            },
+            "CoolantConnectorType": "Pair",
+            "FlowLitersPerMinute": {
+                "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/PrimaryFlowLitersPerMinute",
+                "Reading": "Out of range"
+            },
+            "HeatRemovedkW": {
+                "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/PrimaryHeatRemovedkW",
+                "Reading": 0.2
+            },
+            "SupplyTemperatureCelsius": {
+                "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/PrimarySupplyTemperatureCelsius",
+                "Reading": 23.32
+            },
+            "ReturnTemperatureCelsius": {
+                "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/PrimaryReturnTemperatureCelsius",
+                "Reading": 23.45
+            },
+            "DeltaTemperatureCelsius": {
+                "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/PrimaryDeltaTemperatureCelsius",
+                "Reading": 0.13
+            },
+            "SupplyPressurekPa": {
+                "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/PrimarySupplyPressurekPa",
+                "Reading": 220.0
+            },
+            "ReturnPressurekPa": {
+                "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/PrimaryReturnPressurekPa",
+                "Reading": 85.0
+            },
+            "DeltaPressurekPa": {
+                "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/PrimaryDeltaPressurekPa",
+                "Reading": 135.0
+            },
+            "Oem": {
+                "supermirco": {  
+                    "PumpSwapTime": {
+                        "@odata.type": "#supermirco.PumpSwapTime.v1_0_0.PumpSwapTime", # 一定要放
+                        "SetPoint": {
+                            "Value": 50,
+                            "Units": "Hours"
+                        }
+                    }   
+                }
+
+            },
+        }
+        return SecondaryCoolantConnectors_1_data

@@ -104,7 +104,7 @@ thermal_equipment_testcases = [
 
 @pytest.mark.parametrize('testcase', thermal_equipment_testcases)
 def test_thermal_equipment_api(client, basic_auth_header, testcase):
-    """測試 thermal_equipment API"""
+    """[TestCase] thermal_equipment API"""
     print(f"Endpoint: {testcase['endpoint']}")
     response = client.get(testcase['endpoint'], headers=basic_auth_header)
     assert response.status_code == 200
