@@ -1,8 +1,8 @@
 {
     "sensor_value_data": {
         "CoolantSupplyTemperature": {
-            "Warning": false,
-            "Alert": false
+            "Warning": true,
+            "Alert": true
         },
         "CoolantSupplyTemperatureSpare": {
             "Warning": false,

@@ -1,6 +1,15 @@
 import os
 import platform
-from mylib.services.base_service import BaseService
+# from mylib.services.base_service import BaseService
+if platform.system() == "Linux":
+    onLinux = True
+else:
+    onLinux = False
+
+if onLinux:
+    from web.mylib.services.base_service import BaseService
+else:
+    from mylib.services.base_service import BaseService
 
 class DebugService(BaseService):
     def __init__(self):
