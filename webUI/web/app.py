@@ -6485,6 +6485,8 @@ def export_settings():
                                         decoder_big_endian.decode_32bit_float()
                                     )
                                     thrshd[keys_list[j]] = decoded_value_big_endian
+                                    if "Thr_" in keys_list[j] and "pH" in keys_list[j]:
+                                        thrshd[keys_list[j]] = round(thrshd[keys_list[j]], 2)
                                     j += 1
 
                 with ModbusTcpClient(
