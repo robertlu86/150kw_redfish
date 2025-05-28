@@ -281,7 +281,7 @@ cdus_pumps_1={
         "Reading": 0,
         "SpeedRPM": 0
     },
-    "FirmwareVersion": "0601",
+    "FirmwareVersion": "0",
     "ServiceHours": 1340.3,
     "Location": {
         "PartLocation": {
@@ -326,7 +326,7 @@ cdus_pumps_2 = {
         "Reading": 29,
         "SpeedRPM": 2004
     },
-    "FirmwareVersion": "0601",
+    "FirmwareVersion": "0",
     "ServiceHours": 1336.67,
     "Location": {
         "PartLocation": {
@@ -369,7 +369,7 @@ cdus_pumps_3 = {
         "Reading": 29,
         "SpeedRPM": 3004
     },
-    "FirmwareVersion": "0601",
+    "FirmwareVersion": "0",
     "ServiceHours": 1336.67,
     "Location": {
         "PartLocation": {
