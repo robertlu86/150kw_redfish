@@ -2626,7 +2626,71 @@ class DisplayVersion(Resource):
         rep["version"] = get_version_json()
         rep["fw_info"] = get_fw_info()
         return rep, 200
+'''
+測試使用
+        data_to_write = sensor_data  
+        data_to_write["error"]["Inv1_OverLoad"] = True
+        data_to_write["error"]["Inv1_Error"] = True
+        data_to_write["value"]["inv1_freq"] = 25
 
+        with open(f"{json_path}/sensor_data.json", "w", encoding="utf-8") as file:
+            json.dump(data_to_write, file, ensure_ascii=False, indent=2)
+'''
+@default_ns.route("/cdu/components/mc")
+class mc(Resource): 
+    def get(self):
+        rep = {}
+        mc_mapping = {}
+        sensor_data = read_sensor_data()
+        
+        # data_to_write = sensor_data  
+        # data_to_write["mc"]["fan_mc1"] = True
+        # with open(f"{json_path}/sensor_data.json", "w", encoding="utf-8") as file:
+        #     json.dump(data_to_write, file, ensure_ascii=False, indent=2)
+
+        main_mc = {"main_mc": sensor_data["error"]["main_mc_error"]}
+        mc_mapping = {**sensor_data["mc"], **main_mc}
+        for key, val in mc_mapping.items():
+            state = "ON" if val else "OFF"
+            rep[key] = state
+        return rep, 200
+    
+    
+def read_network():
+    try:
+        with open(f"{json_path}/network.json", "r") as json_file:
+            data = json.load(json_file)
+            return data
+
+    except Exception as e:
+        print(f"read read_network error: {e}")
+        return plc_error()    
+    
+@default_ns.route("/cdu/components/network")
+class network(Resource): 
+    def get(self):
+        raw_list = read_network()
+
+        parsed_list = []
+        for item in raw_list:
+            if isinstance(item, str): # JSON
+                parsed_list.append(json.loads(item))
+            elif isinstance(item, dict): # dict
+                parsed_list.append(item)
+            else: # bytes/bytearray
+                try:
+                    parsed_list.append(json.loads(item.decode()))
+                except Exception:
+                    # fallback：直接丢原始值
+                    parsed_list.append(item)
+        rep = {}
+        for idx, entry in enumerate(parsed_list):
+            if idx == 0:
+                rep["Main"] = entry
+            else:
+                rep[str(idx + 1)] = entry
+                
+        return rep, 200
 
 api.add_namespace(default_ns)
 
