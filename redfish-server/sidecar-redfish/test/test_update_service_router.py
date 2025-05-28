@@ -6,6 +6,7 @@ import time
 from io import BytesIO
 test_root = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(test_root)
+from .conftest import print_response_details
 
 
 endpoint = "/redfish/v1/UpdateService/Actions/UpdateCdu.SimpleUpdate"
@@ -57,24 +58,37 @@ updateservice_testcases = [
 
 
 def test_update_service_upload(client, basic_auth_header):
-    """測試 update_service API: /redfish/v1/UpdateService/Actions/UpdateCdu.SimpleUpdate"""
+    """[TestCase] update_service API: /redfish/v1/UpdateService/Actions/UpdateCdu.SimpleUpdate"""
     print(f"Endpoint: {endpoint}")
     
     file = None
-    filename = "testcase-updateservice-example.zip"
+    filename = "testcase-updateservice-example.zip.gpg"
     filepath = os.path.join(test_root, filename)
     with open(filepath, "rb") as f:
         file = BytesIO(f.read())
         file.name = filename
+        # file.seek(0)  
     
+    data = {
+        "File": (file, filename)
+    }
     t1 = time.time()
-    response = client.post(endpoint, headers=basic_auth_header, data={"File": file})
+    # response = client.post(endpoint, headers=basic_auth_header, data={"File": file})
+    response = client.post(
+        endpoint,
+        headers=basic_auth_header,
+        data=data,
+        content_type="multipart/form-data"
+    )
     t2 = time.time()
+
+    print_response_details(response)
+
     assert response.status_code == 200 # 200代表上傳&更新韌體成功 (這邊是sync.的設計)
     assert t2 - t1 < 120 # 120秒內完成
     
 def test_update_service_upload_noPassword(client, basic_auth_header):
-    """測試 update_service API: /redfish/v1/UpdateService/Actions/UpdateCdu.SimpleUpdate (noPassword)
+    """[TestCase] update_service API: /redfish/v1/UpdateService/Actions/UpdateCdu.SimpleUpdate (noPassword)
     Expect:
         Http status: 400
         Response json:
@@ -84,41 +98,64 @@ def test_update_service_upload_noPassword(client, basic_auth_header):
     """
     print(f"Endpoint: {endpoint}")
     file = None
-    filename = "testcase-updateservice-example-noPassword.zip"
+    filename = "testcase-updateservice-example-noPassword.zip.gpg"
     filepath = os.path.join(test_root, filename)
+    
+
     with open(filepath, "rb") as f:
         file = BytesIO(f.read())
         file.name = filename
-    response = client.post(endpoint, headers=basic_auth_header, data={"File": file})
+    
+    data = {
+        "File": (file, filename)
+    }    
+    # response = client.post(endpoint, headers=basic_auth_header, data={"File": file})
+    response = client.post(
+        endpoint,
+        headers=basic_auth_header,
+        data=data,
+        content_type="multipart/form-data"
+    )
+    print_response_details(response)
     assert response.status_code == 400
     
 def test_update_service_upload_noSpareDir(client, basic_auth_header):
-    """測試 update_service API: /redfish/v1/UpdateService/Actions/UpdateCdu.SimpleUpdate (noSpareDir)"""
+    """[TestCase] update_service API: /redfish/v1/UpdateService/Actions/UpdateCdu.SimpleUpdate (noSpareDir)"""
     print(f"Endpoint: {endpoint}")
     
     file = None
-    filename = "testcase-updateservice-example-noSpareDir.zip"
+    filename = "testcase-updateservice-example-noSpareDir.zip.gpg"
     filepath = os.path.join(test_root, filename)
     with open(filepath, "rb") as f:
         file = BytesIO(f.read())
         file.name = filename
     
+    data = {
+        "File": (file, filename)
+    }
     t1 = time.time()
-    response = client.post(endpoint, headers=basic_auth_header, data={"File": file})
+    # response = client.post(endpoint, headers=basic_auth_header, data={"File": file})
+    response = client.post(
+        endpoint,
+        headers=basic_auth_header,
+        data=data,
+        content_type="multipart/form-data"
+    )
     t2 = time.time()
+    print_response_details(response, **data)
     # assert response.status_code != 200 # 200代表上傳&更新韌體成功
     assert response.status_code == 200 # why要設計成資料不完整也能更新成功？
             
  
 @pytest.mark.parametrize('testcase', updateservice_testcases)
 def test_updateservice_api(client, basic_auth_header, testcase):
-    """測試 updateservice API"""
+    """[TestCase] updateservice API"""
     print(f"Endpoint: {testcase['endpoint']}")
     response = client.get(testcase['endpoint'], headers=basic_auth_header)
     assert response.status_code == 200
     
     resp_json = response.json
-    print(f"Response json: {json.dumps(resp_json, indent=2, ensure_ascii=False)}")
+    print_response_details(response)
     for key, value in testcase['assert_cases'].items():
         # Members比較特殊，排序後確認內容
         if key == "Members":

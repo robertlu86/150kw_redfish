@@ -24,5 +24,14 @@ class SettingModel(MyOrmBaseModel):
     @classmethod
     def get_by_key(cls, key):
         stmt = db.select(SettingModel).where(SettingModel.key == key)
-        setting = db.session.execute(stmt).scalar_one()
+        setting = db.session.execute(stmt).scalar_one_or_none()
         return setting
+
+    @classmethod
+    def update_by_key_value(cls, key, value):
+        fetched_setting = cls.get_by_key(key)
+        if fetched_setting:
+            fetched_setting.value = str(value)
+            db.session.commit()
+            return True
+        return False

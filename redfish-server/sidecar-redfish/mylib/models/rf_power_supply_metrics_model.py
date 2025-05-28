@@ -12,13 +12,13 @@ from enum import Enum
 from typing import Dict, Any
 from pydantic import ConfigDict
 from mylib.models.rf_sensor_model import (
-    SensorEnergykWhExcerpt, 
-    SensorFanArrayExcerpt, 
-    SensorFanExcerpt,
-    SensorExcerpt,
-    SensorCurrentExcerpt,
-    SensorPowerExcerpt,
-    SensorVoltageExcerpt
+    RfSensorEnergykWhExcerpt, 
+    RfSensorFanArrayExcerpt, 
+    RfSensorFanExcerpt,
+    RfSensorExcerpt,
+    RfSensorCurrentExcerpt,
+    RfSensorPowerExcerpt,
+    RfSensorVoltageExcerpt
 )
 from mylib.models.rf_status_model import RfStatusModel
 
@@ -48,26 +48,26 @@ class RfPowerSupplyMetricsModel(RfResourceBaseModel):
     # "@odata.type": {1 item},
     Actions: Optional[Actions] = Field(default=None)
     Description: Optional[str] = Field(default=None)
-    EnergykWh: Optional[SensorEnergykWhExcerpt] = Field(default=None)
-    FanSpeedPercent: Optional[SensorFanExcerpt] = Field(default=None)
-    FanSpeedsPercent: Optional[List[SensorFanArrayExcerpt]] = Field(default=None)
+    EnergykWh: Optional[RfSensorEnergykWhExcerpt] = Field(default=None)
+    FanSpeedPercent: Optional[RfSensorFanExcerpt] = Field(default=None)
+    FanSpeedsPercent: Optional[List[RfSensorFanArrayExcerpt]] = Field(default=None)
     FanSpeedsPercent_odata_count: Optional[int] = Field(default=None, alias="FanSpeedsPercent@odata.count")
-    FrequencyHz: Optional[SensorExcerpt] = Field(default=None)
+    FrequencyHz: Optional[RfSensorExcerpt] = Field(default=None)
     # "Id": {2 items},
-    InputCurrentAmps: Optional[SensorCurrentExcerpt] = Field(default=None)
-    InputPowerWatts: Optional[SensorPowerExcerpt] = Field(default=None)
-    InputVoltage: Optional[SensorVoltageExcerpt] = Field(default=None)
+    InputCurrentAmps: Optional[RfSensorCurrentExcerpt] = Field(default=None)
+    InputPowerWatts: Optional[RfSensorPowerExcerpt] = Field(default=None)
+    InputVoltage: Optional[RfSensorVoltageExcerpt] = Field(default=None)
     # "Name": {2 items},
     Oem: Optional[Dict] = Field(default=None)
-    OutputPowerWatts: Optional[SensorPowerExcerpt] = Field(default=None)
-    RailCurrentAmps: Optional[SensorCurrentExcerpt] = Field(default=None)
+    OutputPowerWatts: Optional[RfSensorPowerExcerpt] = Field(default=None)
+    RailCurrentAmps: Optional[RfSensorCurrentExcerpt] = Field(default=None)
     RailCurrentAmps_odata_count: Optional[int] = Field(default=None, alias="RailCurrentAmps@odata.count")
-    RailPowerWatts: Optional[SensorPowerExcerpt] = Field(default=None)
+    RailPowerWatts: Optional[RfSensorPowerExcerpt] = Field(default=None)
     RailPowerWatts_odata_count:  Optional[int] = Field(default=None, alias="RailPowerWatts@odata.count")
-    RailVoltage: Optional[SensorVoltageExcerpt] = Field(default=None)
+    RailVoltage: Optional[RfSensorVoltageExcerpt] = Field(default=None)
     RailVoltage_odata_count:  Optional[int] = Field(default=None, alias="RailVoltage@odata.count")
     Status: Optional[RfStatusModel] = Field(default=None)
-    TemperatureCelsius: Optional[SensorExcerpt] = Field(default=None)
+    TemperatureCelsius: Optional[RfSensorExcerpt] = Field(default=None)
 
 
                 

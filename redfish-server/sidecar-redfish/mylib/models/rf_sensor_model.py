@@ -18,7 +18,7 @@ from mylib.models.rf_physical_context_model import RfPhysicalContext, RfPhysical
 
 
 
-class SensorVoltageExcerpt(BaseModel): # 完全同 SensorCurrentExcerpt，但仍定義一個
+class RfSensorVoltageExcerpt(BaseModel): # 完全同 SensorCurrentExcerpt，但仍定義一個
     """
     @see https://redfish.dmtf.org/schemas/v1/Sensor.v1_9_1.json#/definitions/SensorVoltageExcerpt
     """
@@ -41,7 +41,7 @@ class SensorVoltageExcerpt(BaseModel): # 完全同 SensorCurrentExcerpt，但仍
         }
     )
 
-class SensorPowerExcerpt(BaseModel):
+class RfSensorPowerExcerpt(BaseModel):
     """
     @see https://redfish.dmtf.org/schemas/v1/Sensor.v1_9_1.json#/definitions/SensorPowerExcerpt
     """
@@ -82,8 +82,16 @@ class SensorPowerExcerpt(BaseModel):
     )
     Reading: Optional[float] = Field(default=None)
 
+class RfSensorPumpExcerpt(BaseModel):
+    """
+    @see https://redfish.dmtf.org/schemas/v1/Sensor.v1_9_1.json#/definitions/SensorPumpExcerpt
+    """
+    DataSourceUri: Optional[str] = Field(default=None)
+    Reading: Optional[float] = Field(default=None)
+    SpeedRPM: Optional[float] = Field(default=None, extra={"units": "{rev}/min"}) # yes: {rev} is constant str, not variable
+    
 
-class SensorCurrentExcerpt(BaseModel):
+class RfSensorCurrentExcerpt(BaseModel):
     """
     @see https://redfish.dmtf.org/schemas/v1/Sensor.v1_9_1.json#/definitions/SensorCurrentExcerpt
     """
@@ -106,7 +114,7 @@ class SensorCurrentExcerpt(BaseModel):
         }
     )
 
-class SensorFanArrayExcerpt(BaseModel):
+class RfSensorFanArrayExcerpt(BaseModel):
     """
     @see https://redfish.dmtf.org/schemas/v1/Sensor.v1_9_1.json#/definitions/SensorFanArrayExcerpt
     """
@@ -118,7 +126,7 @@ class SensorFanArrayExcerpt(BaseModel):
     SpeedRPM: Optional[float] = Field(default=None, extra={"units": "{rev}/min"}) # yes: {rev} is constant str, not variable
 
 
-class SensorExcerpt(BaseModel):
+class RfSensorExcerpt(BaseModel):
     """
     @see https://redfish.dmtf.org/schemas/v1/Sensor.v1_9_1.json#/definitions/SensorExcerpt
     """
@@ -126,7 +134,7 @@ class SensorExcerpt(BaseModel):
     Reading: Optional[float] = Field(default=None)
     
 
-class SensorFanExcerpt(BaseModel):
+class RfSensorFanExcerpt(BaseModel):
     """
     @see https://redfish.dmtf.org/schemas/v1/Sensor.v1_9_1.json#/definitions/SensorFanExcerpt
     """
@@ -135,7 +143,7 @@ class SensorFanExcerpt(BaseModel):
     SpeedRPM: Optional[float] = Field(default=None, extra={"units": "{rev}/min"}) # yes: {rev} is constant str, not variable
     
 
-class SensorEnergykWhExcerpt(BaseModel):
+class RfSensorEnergykWhExcerpt(BaseModel):
     """
     @see https://redfish.dmtf.org/schemas/v1/Sensor.v1_9_1.json#/definitions/SensorEnergykWhExcerpt
     """

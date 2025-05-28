@@ -61,8 +61,8 @@ class RfResourceCollectionBaseModel(BaseModel):
                     exclude_none=True
                 )
 
-class OemModel(BaseModel):
-    """
-    @see https://www.dmtf.org/sites/default/files/standards/documents/DSP0266_1.22.0.html#oem-resources
-    """
-    pass
+# class OemModel(BaseModel):
+#     """
+#     @see https://www.dmtf.org/sites/default/files/standards/documents/DSP0266_1.22.0.html#oem-resources
+#     """
+#     pass

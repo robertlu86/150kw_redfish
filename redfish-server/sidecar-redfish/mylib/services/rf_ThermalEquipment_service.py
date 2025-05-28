@@ -14,6 +14,8 @@ from mylib.models.rf_status_model import RfStatusModel
 from mylib.models.rf_primary_coolant_connector_model import RfPrimaryCoolantConnectorCollectionModel
 from mylib.models.rf_cdu_model import RfCduModel, RfCduCollectionModel
 
+from load_env import hardware_info
+
 class RfThermalEquipmentService(BaseService):
     def fetch_CDUs(self, cdu_id: Optional[str] = None) -> dict:
         """
@@ -25,7 +27,13 @@ class RfThermalEquipmentService(BaseService):
         if cdu_id is None:
             m = RfCduCollectionModel()
         else:
-            m = RfCduModel(cdu_id=cdu_id)
+            m = RfCduModel(
+                cdu_id=cdu_id,
+                **hardware_info["CDU"]
+            )
+            m.Status = {"State": "Enabled", "Health": "OK"}
+            m.Oem = {}
+            
         return m.to_dict()
     
     def fetch_CDUs_EnvironmentMetrics(self, cdu_id: str) -> dict:
@@ -48,7 +56,7 @@ class RfThermalEquipmentService(BaseService):
         Response Example:
         {
             "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/LeakDetection/LeakDetectors",
-            "@odata.type": "#LeakDetectors.v1_6_0.LeakDetectors",
+            "@odata.type": "#LeakDetectors.v1_3_0.LeakDetectors",
             "Id": "1",
             "Name": "LeakDetectors",
             "Status": {
@@ -60,7 +68,7 @@ class RfThermalEquipmentService(BaseService):
         :param cdu_id: str
         """
         m = RfLeakDetectorModel(cdu_id=cdu_id)
-        m.Status = self._read_leak_detector_status()
+        # m.Status = self._read_leak_detector_status()
         return m.to_dict()
 
 
@@ -167,6 +175,9 @@ class RfThermalEquipmentService(BaseService):
             ret_status_model = RfStatusModel.from_dict({"State": "Disabled", "Health": "Critical"})
         return ret_status_model
             
+    def _read_oem_by_cdu_id(self, cdu_id: str):
+        return self._read_components_thermal_equipment_summary_from_cache().get("Oem")
+        
     
     def fetch_CDUs_PrimaryCoolantConnectors(self, cdu_id: str) -> dict:
         """
