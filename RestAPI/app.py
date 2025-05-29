@@ -2500,7 +2500,7 @@ class SensorsSummary(Resource):
                     s = i + 1
                 else:
                     s = i    
-                fan_speed = sensor_value[f"fan_freq{s}"]    
+                fan_speed = round(sensor_value[f"fan_freq{s}"], 2)  
                 rep[fan_key] = {
                     "status": {
                         "state":  fan_state_judge(s, sensor_data) ,
@@ -2516,7 +2516,8 @@ class SensorsSummary(Resource):
             for key, value in sensor_mapping_output.items():
                 sensor_value_get = sensor_value.get(key)
                 if sensor_value_get != None:
-                    sensor_reading = round(sensor_value_get, 2) if key != "clnt_flow" else round(sensor_value_get)
+                    # sensor_reading = round(sensor_value_get, 2) if key != "clnt_flow" else round(sensor_value_get)
+                    sensor_reading = round(sensor_value_get, 2)
                 # if key in dis_reading: sensor_reading = None
                 if key not in rep:
                     rep[value] = {
@@ -2583,7 +2584,8 @@ class SensorsSummary(Resource):
             
             for key, value in thermal_equipment.items():
                 raw = sensor_value.get(key, 0)
-                sensor_reading = round(raw, 2) if key != "clnt_flow" else round(raw)
+                # sensor_reading = round(raw, 2) if key != "clnt_flow" else round(raw)
+                sensor_reading = round(raw, 2)
                 if key not in rep:
                     rep[value] = {
                         "status": {
