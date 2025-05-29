@@ -8110,9 +8110,10 @@ def read_rack_status():
                     r = client_rack1_reg.read_holding_registers(0, 1)
                     result = r.registers[0]
                     sensorData["rack_status"]["rack1_status"] = (
-                        (result - 39321) / 26214 * 100
+                        (result - 32767) / 32767 * 100
                     )
-                    if sensorData["rack_status"]["rack1_status"] < 0:
+                    
+                    if sensorData["rack_status"]["rack1_status"] <=20:
                         sensorData["rack_status"]["rack1_status"] = 0
                     sensorData["rack_no_connection"]["rack1_status"] = False
             except Exception as e:
@@ -8157,9 +8158,9 @@ def read_rack_status():
                     r = client_rack2_reg.read_holding_registers(0, 1)
                     result = r.registers[0]
                     sensorData["rack_status"]["rack2_status"] = (
-                        (result - 39321) / 26214 * 100
+                        (result - 32767) / 32767 * 100
                     )
-                    if sensorData["rack_status"]["rack2_status"] < 0:
+                    if sensorData["rack_status"]["rack2_status"] <= 20:
                         sensorData["rack_status"]["rack2_status"] = 0
                     sensorData["rack_no_connection"]["rack2_status"] = False
             except Exception as e:
@@ -8204,9 +8205,9 @@ def read_rack_status():
                     r = client_rack3_reg.read_holding_registers(0, 1)
                     result = r.registers[0]
                     sensorData["rack_status"]["rack3_status"] = (
-                        (result - 39321) / 26214 * 100
+                        (result - 32767) / 32767 * 100
                     )
-                    if sensorData["rack_status"]["rack3_status"] < 0:
+                    if sensorData["rack_status"]["rack3_status"] <= 20:
                         sensorData["rack_status"]["rack3_status"] = 0
                     sensorData["rack_no_connection"]["rack3_status"] = False
             except Exception as e:
@@ -8251,9 +8252,9 @@ def read_rack_status():
                     r = client_rack4_reg.read_holding_registers(0, 1)
                     result = r.registers[0]
                     sensorData["rack_status"]["rack4_status"] = (
-                        (result - 39321) / 26214 * 100
+                        (result - 32767) / 32767 * 100
                     )
-                    if sensorData["rack_status"]["rack4_status"] < 0:
+                    if sensorData["rack_status"]["rack4_status"] <= 20:
                         sensorData["rack_status"]["rack4_status"] = 0
                     sensorData["rack_no_connection"]["rack4_status"] = False
             except Exception as e:
@@ -8298,9 +8299,9 @@ def read_rack_status():
                     r = client_rack5_reg.read_holding_registers(0, 1)
                     result = r.registers[0]
                     sensorData["rack_status"]["rack5_status"] = (
-                        (result - 39321) / 26214 * 100
+                        (result - 32767) / 32767 * 100
                     )
-                    if sensorData["rack_status"]["rack5_status"] < 0:
+                    if sensorData["rack_status"]["rack5_status"] <= 20:
                         sensorData["rack_status"]["rack5_status"] = 0
                     sensorData["rack_no_connection"]["rack5_status"] = False
             except Exception as e:
@@ -8345,9 +8346,9 @@ def read_rack_status():
                     r = client_rack6_reg.read_holding_registers(0, 1)
                     result = r.registers[0]
                     sensorData["rack_status"]["rack6_status"] = (
-                        (result - 39321) / 26214 * 100
+                        (result - 32767) / 32767 * 100
                     )
-                    if sensorData["rack_status"]["rack6_status"] < 0:
+                    if sensorData["rack_status"]["rack6_status"] <= 20:
                         sensorData["rack_status"]["rack6_status"] = 0
                     sensorData["rack_no_connection"]["rack6_status"] = False
             except Exception as e:
@@ -8392,9 +8393,9 @@ def read_rack_status():
                     r = client_rack7_reg.read_holding_registers(0, 1)
                     result = r.registers[0]
                     sensorData["rack_status"]["rack7_status"] = (
-                        (result - 39321) / 26214 * 100
+                        (result - 32767) / 32767 * 100
                     )
-                    if sensorData["rack_status"]["rack7_status"] < 0:
+                    if sensorData["rack_status"]["rack7_status"] <= 20:
                         sensorData["rack_status"]["rack7_status"] = 0
                     sensorData["rack_no_connection"]["rack7_status"] = False
             except Exception as e:
@@ -8439,9 +8440,9 @@ def read_rack_status():
                     r = client_rack8_reg.read_holding_registers(0, 1)
                     result = r.registers[0]
                     sensorData["rack_status"]["rack8_status"] = (
-                        (result - 39321) / 26214 * 100
+                        (result - 32767) / 32767 * 100
                     )
-                    if sensorData["rack_status"]["rack8_status"] < 0:
+                    if sensorData["rack_status"]["rack8_status"] <= 20:
                         sensorData["rack_status"]["rack8_status"] = 0
                     sensorData["rack_no_connection"]["rack8_status"] = False
 
@@ -8487,9 +8488,9 @@ def read_rack_status():
                     r = client_rack9_reg.read_holding_registers(0, 1)
                     result = r.registers[0]
                     sensorData["rack_status"]["rack9_status"] = (
-                        (result - 39321) / 26214 * 100
+                        (result - 32767) / 32767 * 100
                     )
-                    if sensorData["rack_status"]["rack9_status"] < 0:
+                    if sensorData["rack_status"]["rack9_status"] <= 20:
                         sensorData["rack_status"]["rack9_status"] = 0
                     sensorData["rack_no_connection"]["rack9_status"] = False
             except Exception as e:
@@ -8534,9 +8535,9 @@ def read_rack_status():
                     r = client_rack10_reg.read_holding_registers(0, 1)
                     result = r.registers[0]
                     sensorData["rack_status"]["rack10_status"] = (
-                        (result - 39321) / 26214 * 100
+                        (result - 32767) / 32767 * 100
                     )
-                    if sensorData["rack_status"]["rack10_status"] < 0:
+                    if sensorData["rack_status"]["rack10_status"] <= 20:
                         sensorData["rack_status"]["rack10_status"] = 0
                     sensorData["rack_no_connection"]["rack10_status"] = False
 
