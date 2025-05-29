@@ -4313,26 +4313,79 @@ def control():
 
                 if mode in ["auto", "stop"]:
                     if (
-                        warning_data["alert"]["ClntFlow_Low"]
-                        and warning_data["error"]["level1"]
-                        and warning_data["error"]["level2"]
-                        and warning_data["error"]["level3"]
+                        not ver_switch["liquid_level_1_switch"]
+                        and not ver_switch["liquid_level_2_switch"]
+                        and not ver_switch["liquid_level_3_switch"]
                     ):
-                        try:
-                            with ModbusTcpClient(
-                                host=modbus_host, port=modbus_port
-                            ) as client:
-                                warning_data["error"]["Low_Coolant_Level_Warning"] = True
-                                client.write_coils((8192 + 514), [False])
-                        except Exception as e:
-                            print(f"change to stop error:{e}")
-                    elif warning_data["error"]["Low_Coolant_Level_Warning"]:
-                        if count_f1 > 5:
-                            warning_data["error"]["Low_Coolant_Level_Warning"] = False
-                            count_f1 = 0
-                        else:
-                            count_f1 += 1
-
+                        if (
+                            warning_data["alert"]["ClntFlow_Low"]
+                            and warning_data["error"]["level1"]
+                            and warning_data["error"]["level2"]
+                            and warning_data["error"]["level3"]
+                        ):
+                            try:
+                                with ModbusTcpClient(
+                                    host=modbus_host, port=modbus_port
+                                ) as client:
+                                    warning_data["error"]["Low_Coolant_Level_Warning"] = True
+                                    client.write_coils((8192 + 514), [False])
+                            except Exception as e:
+                                print(f"change to stop error:{e}")
+                        elif warning_data["error"]["Low_Coolant_Level_Warning"]:
+                            if count_f1 > 5:
+                                warning_data["error"]["Low_Coolant_Level_Warning"] = False
+                                count_f1 = 0
+                            else:
+                                count_f1 += 1
+                    elif(
+                        not ver_switch["liquid_level_1_switch"]
+                        and not ver_switch["liquid_level_2_switch"]
+                    ):
+                        if (
+                            warning_data["alert"]["ClntFlow_Low"]
+                            and warning_data["error"]["level1"]
+                            and warning_data["error"]["level2"]
+                        ):
+                            try:
+                                with ModbusTcpClient(
+                                    host=modbus_host, port=modbus_port
+                                ) as client:
+                                    warning_data["error"]["Low_Coolant_Level_Warning"] = (
+                                        True
+                                    )
+                                    client.write_coils((8192 + 514), [False])
+                            except Exception as e:
+                                print(f"change to stop error:{e}")
+                        elif warning_data["error"]["Low_Coolant_Level_Warning"]:
+                            if count_f1 > 5:
+                                warning_data["error"]["Low_Coolant_Level_Warning"] = False
+                                count_f1 = 0
+                            else:
+                                count_f1 += 1
+                    elif (
+                        not ver_switch["liquid_level_1_switch"]
+                    ):
+                        if (
+                            warning_data["alert"]["ClntFlow_Low"]
+                            and warning_data["error"]["level1"]
+                        ):
+                            try:
+                                with ModbusTcpClient(
+                                    host=modbus_host, port=modbus_port
+                                ) as client:
+                                    warning_data["error"]["Low_Coolant_Level_Warning"] = (
+                                        True
+                                    )
+                                    client.write_coils((8192 + 514), [False])
+                            except Exception as e:
+                                print(f"change to stop error:{e}")
+                        elif warning_data["error"]["Low_Coolant_Level_Warning"]:
+                            if count_f1 > 5:
+                                warning_data["error"]["Low_Coolant_Level_Warning"] = False
+                                count_f1 = 0
+                            else:
+                                count_f1 += 1
+                                
                 if reset_current_btn["status"]:
                     overload_error["Inv1_OverLoad"] = False
                     overload_error["Inv2_OverLoad"] = False
@@ -6161,6 +6214,13 @@ def rack_thread():
                     continue
 
                 try:
+                    rack_sw_count = 0
+                    for i in range(10):
+                        control_key = f"Rack_{i + 1}_Control"
+                        if rack_data["rack_control"][control_key]:
+                            rack_sw_count += 1
+                    percent = 35 + (rack_sw_count - 1) * 5 if rack_sw_count >= 1 else 0
+                    opening_value = 4095 * percent / 100
                     for i in range(10):
                         enable_key = f"Rack_{i + 1}_Enable"
                         control_key = f"Rack_{i + 1}_Control"
@@ -6174,7 +6234,7 @@ def rack_thread():
                                     host=rack_ip, port=modbus_port, timeout=0.5
                                 ) as client:
                                     if rack_data["rack_control"][control_key]:
-                                        client.write_register(0, 4095)
+                                        client.write_register(0, round(opening_value))
                                     else:
                                         client.write_register(0, 0)
                                     rack_data["rack_pass"][pass_key] = True
