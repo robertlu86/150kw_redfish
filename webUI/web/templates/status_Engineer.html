@@ -1819,6 +1819,18 @@ styles %}
                     }
                 }
             }
+            
+            for (let key in data["rack"]){
+                if (data["rack"].hasOwnProperty(key)){
+                    if (key.includes("_error")){
+                        let value = data["rack"][key];
+                        let status_key = key.replace("_error", "_status");
+                        if(value){
+                            $("#" + status_key).css("color", "red");
+                        }
+                    }
+                }
+            }
 
             for (let key in data["rack_no_connection"]) {
                 if (data["rack_no_connection"].hasOwnProperty(key)) {

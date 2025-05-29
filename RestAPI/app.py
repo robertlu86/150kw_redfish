@@ -2656,7 +2656,10 @@ class mc(Resource):
         main_mc = {"main_mc": sensor_data["error"]["main_mc_error"]}
         mc_mapping = {**sensor_data["mc"], **main_mc}
         for key, val in mc_mapping.items():
-            state = "ON" if val else "OFF"
+            if key == "main_mc":
+                state = "OFF" if val else "ON"
+            else:
+                state = "ON" if val else "OFF"
             rep[key] = state
         return rep, 200
     
