@@ -2500,7 +2500,7 @@ class SensorsSummary(Resource):
                     s = i + 1
                 else:
                     s = i    
-                fan_speed = sensor_value[f"fan_freq{s}"]    
+                fan_speed = round(sensor_value[f"fan_freq{s}"], 2)  
                 rep[fan_key] = {
                     "status": {
                         "state":  fan_state_judge(s, sensor_data) ,
