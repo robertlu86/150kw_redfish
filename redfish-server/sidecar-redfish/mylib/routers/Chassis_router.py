@@ -85,7 +85,7 @@ Chassis_data_1 = {
     ],
     # OEM 擴充
     "Oem": {
-        "supermirco": {
+        "supermicro": {
             "@odata.type": "#Oem.Chassis.v1_26_0.Chassis",
             "LeakDetection": {"@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/LeakDetection"},
             "Pumps": {"@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Pumps"},
@@ -385,7 +385,7 @@ class Chassis1(Resource):
         Chassis_data_1["Model"] = version_data["Model"]
         Chassis_data_1["SerialNumber"] = version_data["SN"]
         Chassis_data_1["PartNumber"] = version_data["PartNumber"]
-        Chassis_data_1["Oem"]["supermirco"]["Main MC"]["State"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/mc")["main_mc"]
+        Chassis_data_1["Oem"]["supermicro"]["Main MC"]["State"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/mc")["main_mc"]
         return Chassis_data_1
 #================================================
 # 控制介面（Controls）

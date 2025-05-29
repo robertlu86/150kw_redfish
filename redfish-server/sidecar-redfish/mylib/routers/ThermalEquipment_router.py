@@ -237,7 +237,7 @@ PrimaryCoolantConnectors_data_1 ={
     "Oem": {
         "supermicro": {  
             "PumpSwapTime": {
-                "@odata.type": "#supermirco.PumpSwapTime.v1_0_0.PumpSwapTime", # 一定要放
+                "@odata.type": "#supermicro.PumpSwapTime.v1_0_0.PumpSwapTime", # 一定要放
                 "SetPoint": {
                     "Value": 50,
                     "Units": "Hours"
@@ -281,7 +281,7 @@ cdus_pumps_1={
         "Reading": 0,
         "SpeedRPM": 0
     },
-    "FirmwareVersion": "0601",
+    "FirmwareVersion": "0",
     "ServiceHours": 1340.3,
     "Location": {
         "PartLocation": {
@@ -301,9 +301,9 @@ cdus_pumps_1={
         }
     },
     "Oem": {
-        "supermirco": {  
+        "supermicro": {  
             "Inventer 1 MC": {
-                "@odata.type": "#supermirco.Inventer.v1_0_0.Inventer", # 一定要放
+                "@odata.type": "#supermicro.Inventer.v1_0_0.Inventer", # 一定要放
                 "Swtich": True
             }   
         }
@@ -326,7 +326,7 @@ cdus_pumps_2 = {
         "Reading": 29,
         "SpeedRPM": 2004
     },
-    "FirmwareVersion": "0601",
+    "FirmwareVersion": "0",
     "ServiceHours": 1336.67,
     "Location": {
         "PartLocation": {
@@ -346,9 +346,9 @@ cdus_pumps_2 = {
         }
     },
     "Oem": {
-        "supermirco": {  
+        "supermicro": {  
             "Inventer 2 MC": {
-                "@odata.type": "#supermirco.Inventer.v1_0_0.Inventer", # 一定要放
+                "@odata.type": "#supermicro.Inventer.v1_0_0.Inventer", # 一定要放
                 "Swtich": True
             }   
         }
@@ -369,7 +369,7 @@ cdus_pumps_3 = {
         "Reading": 29,
         "SpeedRPM": 3004
     },
-    "FirmwareVersion": "0601",
+    "FirmwareVersion": "0",
     "ServiceHours": 1336.67,
     "Location": {
         "PartLocation": {
@@ -389,9 +389,9 @@ cdus_pumps_3 = {
         }
     },
     "Oem": {
-        "supermirco": {  
+        "supermicro": {  
             "Inventer 3 MC": {
-                "@odata.type": "#supermirco.Inventer.v1_0_0.Inventer", # 一定要放
+                "@odata.type": "#supermicro.Inventer.v1_0_0.Inventer", # 一定要放
                 "Swtich": True
             }   
         }
@@ -512,7 +512,7 @@ reservoirs_1 = {
     # },
     
     # 設備資訊
-    "Manufacturer": "supermirco",
+    "Manufacturer": "supermicro",
     "Model": "ReservoirModelX",
     "PartNumber": "RES-100",
     "SparePartNumber": "SPN-100",
@@ -747,7 +747,7 @@ class PrimaryCoolantConnectors1(Resource):
         # 內部儲存
         PrimaryCoolantConnectors_data_1["DeltaTemperatureCelsius"]["Reading"] = temp_set
         PrimaryCoolantConnectors_data_1["DeltaPressurekPa"]["Reading"] = pressure_set
-        PrimaryCoolantConnectors_data_1["Oem"]["supermirco"]["PumpSwapTime"]["SetPoint"]["Value"] = pump_swap_time
+        PrimaryCoolantConnectors_data_1["Oem"]["supermicro"]["PumpSwapTime"]["SetPoint"]["Value"] = pump_swap_time
         
         return PrimaryCoolantConnectors_data_1, 200
     
@@ -776,7 +776,7 @@ class ThermalEquipmentCdus1Pumps1(Resource):
         cdus_pumps_1["Status"]["State"] = state
         cdus_pumps_1["Status"]["Health"] = health
         cdus_pumps_1["ServiceHours"] = service_hours
-        cdus_pumps_1["Oem"]["supermirco"]["Inventer 1 MC"]["Switch"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/mc")["mc1_sw"]
+        cdus_pumps_1["Oem"]["supermicro"]["Inventer 1 MC"]["Switch"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/mc")["mc1_sw"]
         
 
         return cdus_pumps_1
@@ -845,7 +845,7 @@ class ThermalEquipmentCdus1Pumps2(Resource):
         cdus_pumps_2["Status"]["State"] = state
         cdus_pumps_2["Status"]["Health"] = health
         cdus_pumps_2["ServiceHours"] = service_hours
-        cdus_pumps_2["Oem"]["supermirco"]["Inventer 2 MC"]["Switch"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/mc")["mc2_sw"]
+        cdus_pumps_2["Oem"]["supermicro"]["Inventer 2 MC"]["Switch"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/mc")["mc2_sw"]
         
         return cdus_pumps_2
         
@@ -915,7 +915,7 @@ class ThermalEquipmentCdus1Pumps3(Resource):
         cdus_pumps_3["Status"]["State"] = state
         cdus_pumps_3["Status"]["Health"] = health
         cdus_pumps_3["ServiceHours"] = service_hours
-        cdus_pumps_3["Oem"]["supermirco"]["Inventer 3 MC"]["Switch"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/mc")["mc3_sw"]
+        cdus_pumps_3["Oem"]["supermicro"]["Inventer 3 MC"]["Switch"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/mc")["mc3_sw"]
         
         return cdus_pumps_3
         
@@ -1187,9 +1187,9 @@ class SecondaryCoolantConnector(MyBaseThermalEquipment):
                 "Reading": 135.0
             },
             "Oem": {
-                "supermirco": {  
+                "supermicro": {  
                     "PumpSwapTime": {
-                        "@odata.type": "#supermirco.PumpSwapTime.v1_0_0.PumpSwapTime", # 一定要放
+                        "@odata.type": "#supermicro.PumpSwapTime.v1_0_0.PumpSwapTime", # 一定要放
                         "SetPoint": {
                             "Value": 50,
                             "Units": "Hours"
