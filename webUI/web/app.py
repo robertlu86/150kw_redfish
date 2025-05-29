@@ -7950,9 +7950,16 @@ def check_rack_error(rack, delay="Delay_rack_error"):
     error = rack + "_error"
     broken_occur = not sensorData["rack_broken"][broken]
     leak_occur = not sensorData["rack_leak"][leak]
+    rack_enable = 0
+    for key in ctr_data["rack_set"]:
+        if ctr_data["rack_set"][key] and key.endswith("_result"):
+            rack_enable += 1
+    opening_min_error = 25 + (rack_enable - 1) * 5 if rack_enable >= 1 else 0
+    opening_max_error = 45 + (rack_enable - 1) * 5 if rack_enable >= 1 else 0
     error_occur = (
         ctr_data["rack_set"][f"{rack}_sw"]
-        and sensorData["rack_status"][f"{rack}_status"] < 90
+        and (sensorData["rack_status"][f"{rack}_status"] < opening_min_error
+        or sensorData["rack_status"][f"{rack}_status"] > opening_max_error)
     ) or (
         not ctr_data["rack_set"][f"{rack}_sw"]
         and sensorData["rack_status"][f"{rack}_status"] > 10
@@ -7963,14 +7970,14 @@ def check_rack_error(rack, delay="Delay_rack_error"):
             if not broken_occur:
                 time_data["check"][broken] = False
                 sensorData["rack"][broken] = False
-                return False
+
             else:
                 time_data["end"][broken] = time.perf_counter()
                 passed_time = time_data["end"][broken] - time_data["start"][broken]
 
                 if passed_time > thrshd[delay]:
                     sensorData["rack"][broken] = True
-                    return True
+
         else:
             if broken_occur:
                 time_data["start"][broken] = time.perf_counter()
@@ -7978,7 +7985,7 @@ def check_rack_error(rack, delay="Delay_rack_error"):
             else:
                 time_data["check"][broken] = False
                 sensorData["rack"][broken] = False
-                return False
+
     except Exception as e:
         print(f"check broken error：{e}")
 
@@ -7987,14 +7994,14 @@ def check_rack_error(rack, delay="Delay_rack_error"):
             if not leak_occur:
                 time_data["check"][leak] = False
                 sensorData["rack"][leak] = False
-                return False
+
             else:
                 time_data["end"][leak] = time.perf_counter()
                 passed_time = time_data["end"][leak] - time_data["start"][leak]
 
                 if passed_time > thrshd[delay]:
                     sensorData["rack"][leak] = True
-                    return True
+
         else:
             if leak_occur:
                 time_data["start"][leak] = time.perf_counter()
@@ -8002,7 +8009,7 @@ def check_rack_error(rack, delay="Delay_rack_error"):
             else:
                 time_data["check"][leak] = False
                 sensorData["rack"][leak] = False
-                return False
+
     except Exception as e:
         print(f"check leak error：{e}")
 
@@ -8011,14 +8018,14 @@ def check_rack_error(rack, delay="Delay_rack_error"):
             if not error_occur:
                 time_data["check"][error] = False
                 sensorData["rack"][error] = False
-                return False
+
             else:
                 time_data["end"][error] = time.perf_counter()
                 passed_time = time_data["end"][error] - time_data["start"][error]
 
                 if passed_time > thrshd[delay]:
                     sensorData["rack"][error] = True
-                    return True
+
         else:
             if error_occur:
                 time_data["start"][error] = time.perf_counter()
@@ -8026,7 +8033,7 @@ def check_rack_error(rack, delay="Delay_rack_error"):
             else:
                 time_data["check"][error] = False
                 sensorData["rack"][error] = False
-                return False
+
     except Exception as e:
         print(f"check error：{e}")
 
@@ -8093,10 +8100,7 @@ def read_rack_status():
 
     for key in time_data["errorlog_start"]:
         time_data["errorlog_start"][key] = time.perf_counter()
-        
-    rack_enable_count = sum(1 for v in ctr_data["rack_visibility"].values() if v is True)
-    opening_min = 35 + (rack_enable_count - 1) * 5 if rack_enable_count >= 1 else 0
-    
+
     while True:
         if ctr_data["rack_visibility"]["rack1_enable"]:
             try:
@@ -8106,7 +8110,7 @@ def read_rack_status():
                     r = client_rack1_reg.read_holding_registers(0, 1)
                     result = r.registers[0]
                     sensorData["rack_status"]["rack1_status"] = (
-                        (result - 39321) / 26214 * opening_min
+                        (result - 39321) / 26214 * 100
                     )
                     if sensorData["rack_status"]["rack1_status"] < 0:
                         sensorData["rack_status"]["rack1_status"] = 0
@@ -8153,7 +8157,7 @@ def read_rack_status():
                     r = client_rack2_reg.read_holding_registers(0, 1)
                     result = r.registers[0]
                     sensorData["rack_status"]["rack2_status"] = (
-                        (result - 39321) / 26214 * opening_min
+                        (result - 39321) / 26214 * 100
                     )
                     if sensorData["rack_status"]["rack2_status"] < 0:
                         sensorData["rack_status"]["rack2_status"] = 0
@@ -8200,7 +8204,7 @@ def read_rack_status():
                     r = client_rack3_reg.read_holding_registers(0, 1)
                     result = r.registers[0]
                     sensorData["rack_status"]["rack3_status"] = (
-                        (result - 39321) / 26214 * opening_min
+                        (result - 39321) / 26214 * 100
                     )
                     if sensorData["rack_status"]["rack3_status"] < 0:
                         sensorData["rack_status"]["rack3_status"] = 0
@@ -8247,7 +8251,7 @@ def read_rack_status():
                     r = client_rack4_reg.read_holding_registers(0, 1)
                     result = r.registers[0]
                     sensorData["rack_status"]["rack4_status"] = (
-                        (result - 39321) / 26214 * opening_min
+                        (result - 39321) / 26214 * 100
                     )
                     if sensorData["rack_status"]["rack4_status"] < 0:
                         sensorData["rack_status"]["rack4_status"] = 0
@@ -8294,7 +8298,7 @@ def read_rack_status():
                     r = client_rack5_reg.read_holding_registers(0, 1)
                     result = r.registers[0]
                     sensorData["rack_status"]["rack5_status"] = (
-                        (result - 39321) / 26214 * opening_min
+                        (result - 39321) / 26214 * 100
                     )
                     if sensorData["rack_status"]["rack5_status"] < 0:
                         sensorData["rack_status"]["rack5_status"] = 0
@@ -8341,7 +8345,7 @@ def read_rack_status():
                     r = client_rack6_reg.read_holding_registers(0, 1)
                     result = r.registers[0]
                     sensorData["rack_status"]["rack6_status"] = (
-                        (result - 39321) / 26214 * opening_min
+                        (result - 39321) / 26214 * 100
                     )
                     if sensorData["rack_status"]["rack6_status"] < 0:
                         sensorData["rack_status"]["rack6_status"] = 0
@@ -8388,7 +8392,7 @@ def read_rack_status():
                     r = client_rack7_reg.read_holding_registers(0, 1)
                     result = r.registers[0]
                     sensorData["rack_status"]["rack7_status"] = (
-                        (result - 39321) / 26214 * opening_min
+                        (result - 39321) / 26214 * 100
                     )
                     if sensorData["rack_status"]["rack7_status"] < 0:
                         sensorData["rack_status"]["rack7_status"] = 0
@@ -8435,7 +8439,7 @@ def read_rack_status():
                     r = client_rack8_reg.read_holding_registers(0, 1)
                     result = r.registers[0]
                     sensorData["rack_status"]["rack8_status"] = (
-                        (result - 39321) / 26214 * opening_min
+                        (result - 39321) / 26214 * 100
                     )
                     if sensorData["rack_status"]["rack8_status"] < 0:
                         sensorData["rack_status"]["rack8_status"] = 0
@@ -8483,7 +8487,7 @@ def read_rack_status():
                     r = client_rack9_reg.read_holding_registers(0, 1)
                     result = r.registers[0]
                     sensorData["rack_status"]["rack9_status"] = (
-                        (result - 39321) / 26214 * opening_min
+                        (result - 39321) / 26214 * 100
                     )
                     if sensorData["rack_status"]["rack9_status"] < 0:
                         sensorData["rack_status"]["rack9_status"] = 0
@@ -8530,7 +8534,7 @@ def read_rack_status():
                     r = client_rack10_reg.read_holding_registers(0, 1)
                     result = r.registers[0]
                     sensorData["rack_status"]["rack10_status"] = (
-                        (result - 39321) / 26214 * opening_min
+                        (result - 39321) / 26214 * 100
                     )
                     if sensorData["rack_status"]["rack10_status"] < 0:
                         sensorData["rack_status"]["rack10_status"] = 0
@@ -8569,9 +8573,8 @@ def read_rack_status():
                 print(f"rack10 set control error: {e}")
 
             # check_rack_error("rack10")
-        keys_list = list(ctr_data["rack_visibility"])
         index = 1
-        for key in keys_list:
+        for key in ctr_data["rack_visibility"]:
             if ctr_data["rack_visibility"][key]:
                 check_rack_error(f"rack{index}")
             elif not ctr_data["rack_visibility"][key]:
