@@ -2496,15 +2496,15 @@ class SensorsSummary(Resource):
             for i in range(1, FAN_COUNT + 1):
                 fan_key = f"fan{i}"
                 # fan 數量判斷取值
-                if fan_count_switch == True and i >= 4:
-                    s = i + 1
-                else:
-                    s = i    
-                fan_speed = round(sensor_value[f"fan_freq{s}"], 2)  
+                # if fan_count_switch == True and i >= 4:
+                #     s = i + 1
+                # else:
+                #     s = i    
+                fan_speed = round(sensor_value[f"fan_freq{i}"], 2)  
                 rep[fan_key] = {
                     "status": {
-                        "state":  fan_state_judge(s, sensor_data) ,
-                        "health": fan_health_judge(s, sensor_data),
+                        "state":  fan_state_judge(i, sensor_data) ,
+                        "health": fan_health_judge(i, sensor_data),
                     }, 
                     # hardware{}
                     "reading": fan_speed, 
