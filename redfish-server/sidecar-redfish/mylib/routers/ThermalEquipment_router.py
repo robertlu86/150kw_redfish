@@ -14,7 +14,7 @@ ThermalEquipment_ns = Namespace('', description='ThermalEquipment Collection')
 
 ThermalEquipment_data= {
     "@odata.id": "/redfish/v1/ThermalEquipment",
-    "@odata.type": "#ThermalEquipment.v1_0_0.ThermalEquipment",
+    "@odata.type": "#ThermalEquipment.v1_1_2.ThermalEquipment",
     "@odata.context": "/redfish/v1/$metadata#ThermalEquipmentCollection.ThermalEquipmentCollection",
     
     "Name": "Thermal Equipment",
@@ -304,7 +304,7 @@ cdus_pumps_1={
         "supermicro": {  
             "Inventer 1 MC": {
                 "@odata.type": "#supermicro.Inventer.v1_0_0.Inventer", # 一定要放
-                "Swtich": True
+                "Switch": "ON"
             }   
         }
         
@@ -349,7 +349,7 @@ cdus_pumps_2 = {
         "supermicro": {  
             "Inventer 2 MC": {
                 "@odata.type": "#supermicro.Inventer.v1_0_0.Inventer", # 一定要放
-                "Swtich": True
+                "Switch": "ON"
             }   
         }
     }
@@ -392,7 +392,7 @@ cdus_pumps_3 = {
         "supermicro": {  
             "Inventer 3 MC": {
                 "@odata.type": "#supermicro.Inventer.v1_0_0.Inventer", # 一定要放
-                "Swtich": True
+                "Switch": "ON"
             }   
         }
     }
@@ -751,23 +751,24 @@ class PrimaryCoolantConnectors1(Resource):
         
         return PrimaryCoolantConnectors_data_1, 200
     
-@ThermalEquipment_ns.route("/ThermalEquipment/CDUs/1/Pumps")
+@ThermalEquipment_ns.route("/ThermalEquipment/CDUs/<string:cdu_id>/Pumps")
 class ThermalEquipmentCdus1Pumps(Resource):
     # # @requires_auth
     @ThermalEquipment_ns.doc("thermal_equipment_cdus_1_pumps")
-    def get(self):    
-        return cdus_pumps
+    def get(self, cdu_id):    
+        rep = RfThermalEquipmentService().fetch_CDUs_Pumps(cdu_id)
+        return rep
     
 #--------------------------pump1---------------------------------------- 
-pump_hight_speed = 1000
+pump_hight_speed = 16000
 @ThermalEquipment_ns.route("/ThermalEquipment/CDUs/1/Pumps/1")
 class ThermalEquipmentCdus1Pumps1(Resource):
     # # @requires_auth
     @ThermalEquipment_ns.doc("thermal_equipment_cdus_1_pumps_1")
     def get(self):
         pump_speed = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_speed")["pump1_speed"]
-        cdus_pumps_1["PumpSpeedPercent"]["Reading"] = pump_speed
-        cdus_pumps_1["PumpSpeedPercent"]["SpeedRPM"] = (pump_speed / pump_hight_speed) * 100
+        cdus_pumps_1["PumpSpeedPercent"]["Reading"] = pump_speed * pump_hight_speed / 100
+        cdus_pumps_1["PumpSpeedPercent"]["SpeedRPM"] = pump_speed
         
         state = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_state")["pump1_state"]
         health = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_health")["pump1_health"]
@@ -778,8 +779,9 @@ class ThermalEquipmentCdus1Pumps1(Resource):
         cdus_pumps_1["ServiceHours"] = service_hours
         cdus_pumps_1["Oem"]["supermicro"]["Inventer 1 MC"]["Switch"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/mc")["mc1_sw"]
         
-
+        # rep = RfThermalEquipmentService().fetch_CDUs_Pumps_Pump(cdu_id, pump_id)
         return cdus_pumps_1
+        # return rep
         
     # @requires_auth
     @ThermalEquipment_ns.expect(pumpspeed_patch, validate=True)
@@ -824,6 +826,10 @@ class ThermalEquipmentCdus1Pumps1(Resource):
         scp["SetPoint"] = new_sp
         # pump_switch 控制 State
         cdus_pumps_1["Status"]["State"] = "Enabled" if new_sw else "Disabled"
+        # 取得轉速
+        pump_speed = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_speed")["pump1_speed"]
+        cdus_pumps_1["PumpSpeedPercent"]["Reading"] = pump_speed * pump_hight_speed / 100
+        cdus_pumps_1["PumpSpeedPercent"]["SpeedRPM"] = pump_speed
 
         # 回傳整個 Pump 資源
         return cdus_pumps_1, 200
@@ -835,8 +841,8 @@ class ThermalEquipmentCdus1Pumps2(Resource):
     @ThermalEquipment_ns.doc("thermal_equipment_cdus_1_pumps_2")
     def get(self):
         pump_speed = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_speed")["pump2_speed"]
-        cdus_pumps_2["PumpSpeedPercent"]["Reading"] = pump_speed
-        cdus_pumps_2["PumpSpeedPercent"]["SpeedRPM"] = (pump_speed / pump_hight_speed) * 100
+        cdus_pumps_2["PumpSpeedPercent"]["Reading"] = pump_speed * pump_hight_speed / 100
+        cdus_pumps_2["PumpSpeedPercent"]["SpeedRPM"] = pump_speed
         
         state = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_state")["pump2_state"]
         health = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_health")["pump2_health"]
@@ -893,6 +899,10 @@ class ThermalEquipmentCdus1Pumps2(Resource):
         scp["SetPoint"] = new_sp
         # pump_switch 控制 State
         cdus_pumps_2["Status"]["State"] = "Enabled" if new_sw else "Disabled"
+        # 取得轉速
+        pump_speed = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_speed")["pump2_speed"]
+        cdus_pumps_2["PumpSpeedPercent"]["Reading"] = pump_speed * pump_hight_speed / 100
+        cdus_pumps_2["PumpSpeedPercent"]["SpeedRPM"] = pump_speed
 
         # 回傳整個 Pump 資源
         return cdus_pumps_2, 200
@@ -905,8 +915,8 @@ class ThermalEquipmentCdus1Pumps3(Resource):
     @ThermalEquipment_ns.doc("thermal_equipment_cdus_1_pumps_3")
     def get(self):
         pump_speed = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_speed")["pump3_speed"]
-        cdus_pumps_3["PumpSpeedPercent"]["Reading"] = pump_speed
-        cdus_pumps_3["PumpSpeedPercent"]["SpeedRPM"] = (pump_speed / pump_hight_speed) * 100
+        cdus_pumps_3["PumpSpeedPercent"]["Reading"] = pump_speed * pump_hight_speed / 100
+        cdus_pumps_3["PumpSpeedPercent"]["SpeedRPM"] = pump_speed
         
         state = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_state")["pump3_state"]
         health = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_health")["pump3_health"]
@@ -963,6 +973,10 @@ class ThermalEquipmentCdus1Pumps3(Resource):
         scp["SetPoint"] = new_sp
         # pump_switch 控制 State
         cdus_pumps_3["Status"]["State"] = "Enabled" if new_sw else "Disabled"
+        # 取得轉速
+        pump_speed = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_speed")["pump3_speed"]
+        cdus_pumps_3["PumpSpeedPercent"]["Reading"] = pump_speed * pump_hight_speed / 100
+        cdus_pumps_3["PumpSpeedPercent"]["SpeedRPM"] = pump_speed
 
         # 回傳整個 Pump 資源
         return cdus_pumps_3, 200

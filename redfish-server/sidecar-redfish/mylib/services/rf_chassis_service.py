@@ -2,6 +2,7 @@
 這是Redfish的chassis service
 '''
 import os, re, json
+from typing import Optional
 from mylib.models.rf_sensor_model import (
     RfSensorCollectionModel, 
     RfSensorModel, 
@@ -9,6 +10,7 @@ from mylib.models.rf_sensor_model import (
 from mylib.models.rf_status_model import RfStatusModel, RfStatusHealth, RfStatusState
 from mylib.services.base_service import BaseService
 from mylib.models.rf_power_supply_model import RfPowerSupplyCollectionModel, RfPowerSupplyModel
+from mylib.models.rf_cdu_model import RfCduModel, RfCduCollectionModel
 from cachetools import LRUCache, cached
 from typing import Dict, Any
 
@@ -16,7 +18,6 @@ from load_env import hardware_info
 
 
 class RfChassisService(BaseService):
-
     SENSOR_IDS = {
         "PrimaryFlowLitersPerMinute",
         "PrimaryHeatRemovedkW",

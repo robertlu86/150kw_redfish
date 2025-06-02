@@ -148,7 +148,7 @@ class RfCduModel(RfResourceBaseModel):
     Model: Optional[str] = Field(default="", description="")
     SerialNumber: Optional[str] = Field(default="", description="")
     PartNumber: Optional[str] = Field(default="", description="")
-    FirmwareVersion: Optional[str] = Field(default="0114", description="")
+    FirmwareVersion: Optional[str] = Field(default="", description="")
     Version: Optional[str] = Field(default="", description="")
     ProductionDate: Optional[str] = Field(default="", description="The production or manufacturing date of this equipment.")
 

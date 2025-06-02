@@ -1,6 +1,8 @@
 from mylib.models.account_model import RoleModel, AccountModel
 from mylib.models.setting_model import SettingModel
 
+
+
 def init_orm(app, db):
     """
     Initialize the ORM models and create the database tables if they don't exist.
@@ -9,12 +11,16 @@ def init_orm(app, db):
         app: The Flask application instance.
         db: The SQLAlchemy instance.
     """
+    def ensure_setting(key, value):
+        setting = SettingModel.query.filter_by(key=key).first()
+        if not setting:
+            setting = SettingModel(key=key, value=value)
+            db.session.add(setting)
+            db.session.commit()
+        return setting
+ 
     with app.app_context():
-        print("#################################################################")
-        print("# app_context")
-        print("#################################################################")
         # @see https://flask-sqlalchemy.readthedocs.io/en/stable/queries/
-        db.drop_all()
         db.create_all()
         # Create default roles
         if not RoleModel.query.first():  # Check if any role exists
@@ -23,7 +29,7 @@ def init_orm(app, db):
                            "ConfigureUsers",
                            "ConfigureSelf",
                            "ConfigureComponents",
-                           "ConfigureSelf"]
+                           ]
             operator_privi = ["Login",
                               "ConfigureComponents",
                               "ConfigureSelf"
@@ -42,16 +48,16 @@ def init_orm(app, db):
 
         # Create default user
         if not AccountModel.query.first():  # Check if any user exists
-            admin_user = AccountModel(user_name='admin', role = admin_role, password='admin')
+            admin_user = AccountModel(user_name='admin', role = admin_role, password='Supermicro')
             #admin_user.role = admin_role
             db.session.add(admin_user)
             db.session.commit()
 
-        if not SettingModel.query.first():
-            setting = SettingModel(key='SessionService.SessionTimeout', value='3600')
-            db.session.add(setting)
-            db.session.commit()
-
-       
-           
-
+        # Create default setting
+        #AccountService DSP0246
+        ensure_setting(key='AccountService.AuthFailureLoggingThreshold', value='3')
+        ensure_setting(key='AccountService.MinPasswordLength', value='5')
+        ensure_setting(key='AccountService.AccountLockoutThreshold', value='5')
+        ensure_setting(key='AccountService.AccountLockoutDuration', value='30')
+        ensure_setting(key='AccountService.AccountLockoutCounterResetAfter', value='30')
+        ensure_setting(key='SessionService.SessionTimeout', value='3600')
