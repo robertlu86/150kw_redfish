@@ -1147,35 +1147,35 @@ M405 NOTIFICATION-TYPE
     SYNTAX OCTET STRING
     MAX-ACCESS read-only
     STATUS current
-    DESCRIPTION "Rack6 broken"
+    DESCRIPTION "Rack1 Leakage Communication Error"
 ::= { trapsval 133 }
 
 M406 NOTIFICATION-TYPE
     SYNTAX OCTET STRING
     MAX-ACCESS read-only
     STATUS current
-    DESCRIPTION "Rack7 broken"
+    DESCRIPTION "Rack2 Leakage Communication Error"
 ::= { trapsval 134 }
 
 M407 NOTIFICATION-TYPE
     SYNTAX OCTET STRING
     MAX-ACCESS read-only
     STATUS current
-    DESCRIPTION "Rack8 broken"
+    DESCRIPTION "Rack3 Leakage Communication Error"
 ::= { trapsval 135 }
 
 M408 NOTIFICATION-TYPE
     SYNTAX OCTET STRING
     MAX-ACCESS read-only
     STATUS current
-    DESCRIPTION "Rack9 broken"
+    DESCRIPTION "Rack4 Leakage Communication Error"
 ::= { trapsval 136 }
 
 M409 NOTIFICATION-TYPE
     SYNTAX OCTET STRING
     MAX-ACCESS read-only
     STATUS current
-    DESCRIPTION "Rack10 broken"
+    DESCRIPTION "Rack5 Leakage Communication Error"
 ::= { trapsval 137 }
 
 M410 NOTIFICATION-TYPE
@@ -1217,35 +1217,35 @@ M415 NOTIFICATION-TYPE
     SYNTAX OCTET STRING
     MAX-ACCESS read-only
     STATUS current
-    DESCRIPTION "Rack6 leakage"
+    DESCRIPTION "Rack1 Status Communication Error"
 ::= { trapsval 143 }
 
 M416 NOTIFICATION-TYPE
     SYNTAX OCTET STRING
     MAX-ACCESS read-only
     STATUS current
-    DESCRIPTION "Rack7 leakage"
+    DESCRIPTION "Rack2 Status Communication Error"
 ::= { trapsval 144 }
 
 M417 NOTIFICATION-TYPE
     SYNTAX OCTET STRING
     MAX-ACCESS read-only
     STATUS current
-    DESCRIPTION "Rack8 leakage"
+    DESCRIPTION "Rack3 Status Communication Error"
 ::= { trapsval 145 }
 
 M418 NOTIFICATION-TYPE
     SYNTAX OCTET STRING
     MAX-ACCESS read-only
     STATUS current
-    DESCRIPTION "Rack9 leakage"
+    DESCRIPTION "Rack4 Status Communication Error"
 ::= { trapsval 146 }
 
 M419 NOTIFICATION-TYPE
     SYNTAX OCTET STRING
     MAX-ACCESS read-only
     STATUS current
-    DESCRIPTION "Rack10 leakage"
+    DESCRIPTION "Rack5 Status Communication Error"
 ::= { trapsval 147 }
 
 M420 NOTIFICATION-TYPE

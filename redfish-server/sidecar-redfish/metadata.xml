@@ -328,6 +328,15 @@
     <edmx:Reference Uri="http://redfish.dmtf.org/schemas/v1/CoolingUnitCollection_v1.xml">
       <edmx:Include Namespace="CoolingUnitCollection"/>
     </edmx:Reference>     
+
+     <edmx:Reference Uri="http://redfish.dmtf.org/schemas/v1/Pump_v1.xml">
+      <edmx:Include Namespace="Pump"/>
+      <edmx:Include Namespace="Pump.v1_2_0"/>
+    </edmx:Reference>  
+
+    <edmx:Reference Uri="http://redfish.dmtf.org/schemas/v1/PumpCollection_v1.xml">
+      <edmx:Include Namespace="PumpCollection"/>
+    </edmx:Reference>    
   
   <!-- service -->
   <edmx:DataServices>

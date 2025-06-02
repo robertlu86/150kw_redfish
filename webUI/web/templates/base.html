@@ -167,7 +167,6 @@
             width: 100%;
         }
 
-        .overload_error,
         .plc_disconnect {
             border-radius: 5px;
             color: red;
@@ -178,6 +177,39 @@
             margin: 0 auto;
             z-index: 999;
             display: none;
+        }
+        .overload_error-container {
+          position: fixed;
+          top: 90px; 
+          left: 0;
+          display: none;
+          padding: 5px;
+          border: 1px solid #ccc;
+          border-radius: 8px;
+          background-color: rgba(0, 0, 0, 0.01);
+        }
+
+        .error_text,
+        .overload_error-btn{
+            font-size: 16px;
+            margin: 2px;
+        }
+        
+        .overload_error-btn{
+            border-radius: 7px;
+        }
+
+        .overload_error-btn:hover{
+            background-color: #778899;
+            color: #fff;
+        }
+
+        .overload_error-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          min-width: 220px;
+          margin: 2px 0;
         }
     </style>
     {% block styles %} {% endblock %}
@@ -257,7 +289,7 @@
             </ul>
         </div>
     </div>
-
+    <!--<div class="overload_error-container"></div>-->
     <div class="marquee-container">
         <div class="marquee"></div>
     </div>
@@ -646,38 +678,99 @@
 
         window.sharedData = {};  // 宣告全域物件
 
-        /*function check_overload_and_error(data) {
-            const $overloadDiv = $('.overload_error');
-            const overloadKeys = ["Inv1_OverLoad", "Inv2_OverLoad", "Inv3_OverLoad"];
-            const errorKeys = ["Inv1_Error", "Inv2_Error", "Inv3_Error"];
-            let displayText = '';
+        /*function handleToStop(data, ver_switch){
+            const container = $(".overload_error-container");
+            let messages = [];
+            if(data["opMod"] === "Auto"){
+              if(
+                  !ver_switch["liquid_level_1_switch"] &&
+                  !ver_switch["liquid_level_2_switch"] &&
+                  !ver_switch["liquid_level_3_switch"]
+              ){
+                  if(
+                      data["alert"]["clnt_flow_low"] &&
+                      data["error"]["level1"] &&
+                      data["error"]["level2"] &&
+                      data["error"]["level3"]
+                  ){
+                    messages.push(`Change to stop mode`);
+                  }
+              }
+              else if(
+                  !ver_switch["liquid_level_1_switch"] &&
+                  !ver_switch["liquid_level_2_switch"]
+              ){
+                  if(
+                      data["alert"]["clnt_flow_low"] &&
+                      data["error"]["level1"] &&
+                      data["error"]["level2"]
+                  ){
+                    messages.push(`Change to stop mode`);
+                  }
+              }
+              else if(ver_switch["liquid_level_1_switch"]){
+                  if(
+                      data["alert"]["clnt_flow_low"] &&
+                      data["error"]["level1"]
+                  ){
+                      messages.push(`Change to stop mode`);
+                  }
+              }
 
-            // 優先顯示過載訊息
-            let finalMessage = [];
+              if (messages.length > 0) {
+                  let html = messages.map(msg => {
+                      return `<div class="overload_error-row"><span class="error_text">${msg}</span><button class="overload_error-btn" id="stop_btn" onclick="stop_handleClick()">Stop</button></div>`;
+                  }).join("");
+                  container.html(html).fadeIn();
+              } else {
+                  container.fadeOut();
+              }
+            }
+        }
 
-            for (let i = 1; i <= 3; i++) {
-                const overloadKey = `Inv${i}_OverLoad`;
-                const errorKey = `Inv${i}_Error`;
+        window.stop_handleClick = function(){
+            $.ajax({
+                url: "/change_to_stop_mode",
+                method: "POST",
+                success: function(r){
+                    if (r.status == "success") {
+                        Swal.fire({
+                            title: "Success",
+                            text: r.message,
+                            icon: "success",
+                            confirmButtonText: "OK",
+                        });
+                    }
+                },
+            });
+        }
 
-                const overload = data.error[overloadKey];
-                const error = data.error[errorKey];
-
-                if (overload) {
-                    // 如果有過載，顯示過載訊息
-                    finalMessage.push(`Inv${i} OverLoad`);
-                } else if (error) {
-                    // 如果只有錯誤，顯示錯誤訊息
-                    finalMessage.push(`Inv${i} Error`);
+        async function show_stop_message(){
+            while(true) {
+                try{
+                    const data = await $.ajax({
+                      url: "/get_data",
+                      method: "GET",
+                      dataType: "json",
+                      timeout: 10000,
+                      loader: false,
+                    });
+                    const version = await $.ajax({
+                      url: "/get_data_version",
+                      method: "GET",
+                      loader: false,
+                      timeout: 10000,
+                      dataType: "json",
+                    });
+                    handleToStop(data, version);
+                } catch (err) {
+                    console.error("取得資料錯誤:", err);
                 }
+                await new Promise(resolve => setTimeout(resolve, 2000));
             }
+        }
 
-            // 如果有任何訊息，顯示
-            if (finalMessage.length > 0) {
-                $overloadDiv.text(finalMessage.join(', ')).show();
-            } else {
-                $overloadDiv.hide();  // 如果沒有過載或錯誤，隱藏 div
-            }
-        }*/
+        show_stop_message();*/
 
         async function get_change_light_data() {
             while (true) {
@@ -708,7 +801,6 @@
                     } else {
                         $(".plc_disconnect").hide();
                     }
-                    //check_overload_and_error(data);
                 } catch (error) {
                     console.error("AJAX request failed:", error);
                 }

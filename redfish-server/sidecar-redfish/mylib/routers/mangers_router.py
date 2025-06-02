@@ -37,7 +37,7 @@ managers_cdu_data =    {
     "Manufacturer": "Supermicro",
     "PartNumber": "LCS-SCDU-200AR001",
     "Model": "200KW-SideCar-L/A-Colling-CDU",
-    "FirmwareVersion": "0114",# webUI1版本
+    "FirmwareVersion": "1502",# webUI1版本
     "SerialNumber":"LCS-SCDU-200AR001", # 讀WebUI的FW Status，不是固定值
     "UUID": "00000000-0000-0000-0000-e45f013e98f8",
     "ServiceEntryPointUUID": "92384634-2938-2342-8820-489239905423",
@@ -248,7 +248,6 @@ managers_cdu_data =    {
                 "PreserveNetwork",
                 "ResetAll",
                 "PreserveNetworkAndUsers",
-                "ClearLogs"
             ]
         },
         "#Manager.Reset": {
@@ -258,7 +257,7 @@ managers_cdu_data =    {
                 "GracefulRestart"
             ]
         },
-        "#Manager.Reset": {
+        "#Manager.Shutdown": {
             "target": "/redfish/v1/Managers/CDU/Actions/Manager.Shutdown",
             "ShutdownType@Redfish.AllowableValues": [
                 "ForceRestart",
@@ -313,6 +312,7 @@ class ManagersCDU(Resource):
         rep = managers_cdu_data
         rep['DateTime'] = locol_time + "Z"
         rep['DateTimeLocalOffset'] = local_now.strftime('%z')[:3] + ':' + local_now.strftime('%z')[3:]
+        rep["FirmwareVersion"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/display/version")["version"]["WebUI"]
         return rep, 200
 
 #====================================================== 
@@ -427,14 +427,14 @@ class ManagersCDUNetworkProtocolHTTPSCertificates(Resource):
             
             "Actions": {
                 "#Certificate.Renew": {
+                    "@Redfish.ActionInfo": "/redfish/v1/.../Certificates/1/Actions/Certificate.RenewActionInfo",
                     "target":    "/redfish/v1/.../Certificates/1/Actions/Certificate.Renew",
-                    "title":     "Renew Certificate",
-                    "@Redfish.ActionInfo": "/redfish/v1/.../Certificates/1/Actions/Certificate.RenewActionInfo"
+                    "title":     "Renew Certificate",  
                 },
                 "#Certificate.Rekey": {
+                    "@Redfish.ActionInfo": "/redfish/v1/.../Certificates/1/Actions/Certificate.RekeyActionInfo",
                     "target":    "/redfish/v1/.../Certificates/1/Actions/Certificate.Rekey",
                     "title":     "Rekey Certificate",
-                    "@Redfish.ActionInfo": "/redfish/v1/.../Certificates/1/Actions/Certificate.RekeyActionInfo"
                 }
             }
             

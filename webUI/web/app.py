@@ -398,21 +398,21 @@ sensorData = {
         "rack3_broken": False,
         "rack4_broken": False,
         "rack5_broken": False,
-        "rack6_broken": False,
-        "rack7_broken": False,
-        "rack8_broken": False,
-        "rack9_broken": False,
-        "rack10_broken": False,
+        "rack1_leak_com": False,
+        "rack2_leak_com": False,
+        "rack3_leak_com": False,
+        "rack4_leak_com": False,
+        "rack5_leak_com": False,
         "rack1_leak": False,
         "rack2_leak": False,
         "rack3_leak": False,
         "rack4_leak": False,
         "rack5_leak": False,
-        "rack6_leak": False,
-        "rack7_leak": False,
-        "rack8_leak": False,
-        "rack9_leak": False,
-        "rack10_leak": False,
+        "rack1_status_com": False,
+        "rack2_status_com": False,
+        "rack3_status_com": False,
+        "rack4_status_com": False,
+        "rack5_status_com": False,
         "rack1_error": False,
         "rack2_error": False,
         "rack3_error": False,
@@ -553,21 +553,21 @@ sensorData = {
             "rack3_broken": "M402 Rack3 broken",
             "rack4_broken": "M403 Rack4 broken",
             "rack5_broken": "M404 Rack5 broken",
-            "rack6_broken": "M405 Rack6 broken",
-            "rack7_broken": "M406 Rack7 broken",
-            "rack8_broken": "M407 Rack8 broken",
-            "rack9_broken": "M408 Rack9 broken",
-            "rack10_broken": "M409 Rack10 broken",
+            "rack1_leak_com": "M405 Rack1 Leakage Communication Error",
+            "rack2_leak_com": "M406 Rack2 Leakage Communication Error",
+            "rack3_leak_com": "M407 Rack3 Leakage Communication Error",
+            "rack4_leak_com": "M408 Rack4 Leakage Communication Error",
+            "rack5_leak_com": "M409 Rack5 Leakage Communication Error",
             "rack1_leak": "M410 Rack1 leakage",
             "rack2_leak": "M411 Rack2 leakage",
             "rack3_leak": "M412 Rack3 leakage",
             "rack4_leak": "M413 Rack4 leakage",
             "rack5_leak": "M414 Rack5 leakage",
-            "rack6_leak": "M415 Rack6 leakage",
-            "rack7_leak": "M416 Rack7 leakage",
-            "rack8_leak": "M417 Rack8 leakage",
-            "rack9_leak": "M418 Rack9 leakage",
-            "rack10_leak": "M419 Rack10 leakage",
+            "rack1_status_com": "M415 Rack1 Status Communication Error",
+            "rack2_status_com": "M416 Rack2 Status Communication Error",
+            "rack3_status_com": "M417 Rack3 Status Communication Error",
+            "rack4_status_com": "M418 Rack4 Status Communication Error",
+            "rack5_status_com": "M419 Rack5 Status Communication Error",
             "rack1_error": "M420 Rack1 error",
             "rack2_error": "M421 Rack2 error",
             "rack3_error": "M422 Rack3 error",
@@ -708,6 +708,7 @@ sensorData = {
         "average_voltage": 0,
         "power_factor": 0,
     },
+    "opMod": "Auto",
 }
 
 ctr_data = {
@@ -3994,18 +3995,21 @@ def read_modbus_data():
                     if not r.bits[0]:
                         ctr_data["value"]["resultMode"] = "Stop"
                         ctr_data["value"]["opMod"] = "stop"
+                        sensorData["opMod"] = "Stop"
                     else:
                         r2 = client.read_coils(address=(8192 + 516), count=1)
 
                         if r2.bits[0]:
                             ctr_data["value"]["resultMode"] = "Engineer"
                             ctr_data["value"]["opMod"] = "engineer"
+                            sensorData["opMod"] = "Engineer"
                         else:
                             r3 = client.read_coils(address=(8192 + 517), count=1)
 
                             if r3.bits[0]:
                                 ctr_data["value"]["resultMode"] = "Inspection"
                                 ctr_data["value"]["opMod"] = "inspection"
+                                sensorData["opMod"] = "Inspection"
                             else:
                                 r4 = client.read_coils(address=(8192 + 505), count=1)
 
@@ -4015,9 +4019,11 @@ def read_modbus_data():
                                     if not r4.bits[0]:
                                         ctr_data["value"]["resultMode"] = "Auto"
                                         ctr_data["value"]["opMod"] = "auto"
+                                        sensorData["opMod"] = "Auto"
                                     else:
                                         ctr_data["value"]["resultMode"] = "Manual"
                                         ctr_data["value"]["opMod"] = "manual"
+                                        sensorData["opMod"] = "Manual"
         except Exception as e:
             print(f"set mode error:{e}")
 
@@ -8135,8 +8141,10 @@ def read_rack_status():
                     if sensorData["rack_status"]["rack1_status"] <=20:
                         sensorData["rack_status"]["rack1_status"] = 0
                     sensorData["rack_no_connection"]["rack1_status"] = False
+                    sensorData["rack"]["rack1_status_com"] = False
             except Exception as e:
                 sensorData["rack_no_connection"]["rack1_status"] = True
+                sensorData["rack"]["rack1_status_com"] = True
                 print(f"rack1 reg error: {e}")
                 pass
 
@@ -8148,8 +8156,10 @@ def read_rack_status():
                     sensorData["rack_leak"]["rack1_leak"] = r.bits[0]
                     sensorData["rack_broken"]["rack1_broken"] = r.bits[1]
                     sensorData["rack_no_connection"]["rack1_leak"] = False
+                    sensorData["rack"]["rack1_leak_com"] = False
             except Exception as e:
                 sensorData["rack_no_connection"]["rack1_leak"] = True
+                sensorData["rack"]["rack1_leak_com"] = True
                 print(f"rack1 reg error: {e}")
                 pass
 
@@ -8182,8 +8192,10 @@ def read_rack_status():
                     if sensorData["rack_status"]["rack2_status"] <= 20:
                         sensorData["rack_status"]["rack2_status"] = 0
                     sensorData["rack_no_connection"]["rack2_status"] = False
+                    sensorData["rack"]["rack2_status_com"] = False
             except Exception as e:
                 sensorData["rack_no_connection"]["rack2_status"] = True
+                sensorData["rack"]["rack2_status_com"] = True
                 print(f"rack2 reg error: {e}")
                 pass
 
@@ -8195,8 +8207,10 @@ def read_rack_status():
                     sensorData["rack_leak"]["rack2_leak"] = r.bits[0]
                     sensorData["rack_broken"]["rack2_broken"] = r.bits[1]
                     sensorData["rack_no_connection"]["rack2_leak"] = False
+                    sensorData["rack"]["rack2_leak_com"] = False
             except Exception as e:
                 sensorData["rack_no_connection"]["rack2_leak"] = True
+                sensorData["rack"]["rack2_leak_com"] = True
                 print(f"rack2 reg error: {e}")
                 pass
 
@@ -8229,8 +8243,10 @@ def read_rack_status():
                     if sensorData["rack_status"]["rack3_status"] <= 20:
                         sensorData["rack_status"]["rack3_status"] = 0
                     sensorData["rack_no_connection"]["rack3_status"] = False
+                    sensorData["rack"]["rack3_status_com"] = False
             except Exception as e:
                 sensorData["rack_no_connection"]["rack3_status"] = True
+                sensorData["rack"]["rack3_status_com"] = True
                 print(f"rack3 reg error: {e}")
                 pass
 
@@ -8242,8 +8258,10 @@ def read_rack_status():
                     sensorData["rack_leak"]["rack3_leak"] =  r.bits[0]
                     sensorData["rack_broken"]["rack3_broken"] =  r.bits[1]
                     sensorData["rack_no_connection"]["rack3_leak"] = False
+                    sensorData["rack"]["rack3_leak_com"] = False
             except Exception as e:
                 sensorData["rack_no_connection"]["rack3_leak"] = True
+                sensorData["rack"]["rack3_leak_com"] = True
                 print(f"rack3 reg error: {e}")
                 pass
 
@@ -8276,8 +8294,10 @@ def read_rack_status():
                     if sensorData["rack_status"]["rack4_status"] <= 20:
                         sensorData["rack_status"]["rack4_status"] = 0
                     sensorData["rack_no_connection"]["rack4_status"] = False
+                    sensorData["rack"]["rack4_status_com"] = False
             except Exception as e:
                 sensorData["rack_no_connection"]["rack4_status"] = True
+                sensorData["rack"]["rack4_status_com"] = True
                 print(f"rack4 reg error: {e}")
                 pass
 
@@ -8289,8 +8309,10 @@ def read_rack_status():
                     sensorData["rack_leak"]["rack4_leak"] = r.bits[0]
                     sensorData["rack_broken"]["rack4_broken"] = r.bits[1]
                     sensorData["rack_no_connection"]["rack4_leak"] = False
+                    sensorData["rack"]["rack4_leak_com"] = False
             except Exception as e:
                 sensorData["rack_no_connection"]["rack4_leak"] = True
+                sensorData["rack"]["rack4_leak_com"] = True
                 print(f"rack4 coil error: {e}")
                 pass
 
@@ -8323,8 +8345,10 @@ def read_rack_status():
                     if sensorData["rack_status"]["rack5_status"] <= 20:
                         sensorData["rack_status"]["rack5_status"] = 0
                     sensorData["rack_no_connection"]["rack5_status"] = False
+                    sensorData["rack"]["rack5_status_com"] = False
             except Exception as e:
                 sensorData["rack_no_connection"]["rack5_status"] = True
+                sensorData["rack"]["rack5_status_com"] = True
                 print(f"rack5 reg error: {e}")
                 pass
 
@@ -8336,8 +8360,10 @@ def read_rack_status():
                     sensorData["rack_leak"]["rack5_leak"] = r.bits[0]
                     sensorData["rack_broken"]["rack5_broken"] = r.bits[1]
                     sensorData["rack_no_connection"]["rack5_leak"] = False
+                    sensorData["rack"]["rack5_leak_com"] = False
             except Exception as e:
                 sensorData["rack_no_connection"]["rack5_leak"] = True
+                sensorData["rack"]["rack5_leak_com"] = True
                 print(f"rack5 coil error: {e}")
                 pass
 
@@ -8600,7 +8626,9 @@ def read_rack_status():
             elif not ctr_data["rack_visibility"][key]:
                 sensorData["rack"][f"rack{index}_broken"] = False
                 sensorData["rack"][f"rack{index}_leak"] = False
-                sensorData["rack"][f"rack{index}_error"] = False    
+                sensorData["rack"][f"rack{index}_error"] = False
+                sensorData["rack"][f"rack{index}_leak_com"] = False
+                sensorData["rack"][f"rack{index}_status_com"] = False    
             index += 1
         # send_error_log()
 
