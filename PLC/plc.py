@@ -4024,7 +4024,7 @@ def control():
                             check_broken("Clnt_Flow")
                             serial_sensor_value["Clnt_Flow"] = (
                                 # (serial_sensor_value["Clnt_Flow"] - 3200) / 12800 * 1650
-                                (serial_sensor_value["Clnt_Flow"] - 3200) / 12800 * 280
+                                (serial_sensor_value["Clnt_Flow"] - 3200) / 12800 * 615
                             )
                         else:
                             print("flow_rate error")
