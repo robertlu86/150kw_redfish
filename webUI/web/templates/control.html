@@ -1214,6 +1214,10 @@ styles %}
         jQuery(".rebootPC").attr("data-before", "Reboot Box PC ▲");
 
         async function fetchData() {
+            while (!window.sharedData.data) {
+                // 等待 base.html 資料初始化
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
             while (true) {
                 try {
                     //// 測試直接從base.html抓取get_data資料////
@@ -1260,7 +1264,7 @@ styles %}
 
                 for (var key in data["value"]) {
                     if (data["value"].hasOwnProperty(key)) {
-                        if(userType === "user" || userType === "kiosk"){
+                        if (userType === "user" || userType === "kiosk") {
                             if (key.includes("fan") && key.includes("_check")) {
                                 continue;
                             }
@@ -1279,7 +1283,7 @@ styles %}
                                     if (key.includes("pressure")) {
                                         value = Math.round(value * 10) / 10;
                                         element.value = value;
-                                    /// 增加fan speed 判斷, 設定小於7 會出現0
+                                        /// 增加fan speed 判斷, 設定小於7 會出現0
                                     } else if (key.includes("fan_speed")) {
                                         if (value < 7) {
                                             value = 0
@@ -1288,7 +1292,7 @@ styles %}
                                             value = Math.round(value);
                                             element.value = value;
                                         }
-                                    }else {
+                                    } else {
                                         if (element) {
                                             value = Math.round(value);
                                             element.value = value;
@@ -1473,7 +1477,7 @@ styles %}
             for (var key in data["value"]) {
                 if (key.includes("result")) {
                     if (data["value"].hasOwnProperty(key)) {
-                        if(userType === "user" || userType === "kiosk"){
+                        if (userType === "user" || userType === "kiosk") {
                             if (except_keys.includes(key)) {
                                 continue;
                             }
@@ -2247,7 +2251,7 @@ styles %}
             mode_input.p1 = $("#pump1_check").prop("checked");
             mode_input.p2 = $("#pump2_check").prop("checked");
             mode_input.p3 = $("#pump3_check").prop("checked");
-            if(userType == "superuser" || userType == "admin"){
+            if (userType == "superuser" || userType == "admin") {
                 mode_input.f1 = $("#fan1_check").prop("checked");
                 mode_input.f2 = $("#fan2_check").prop("checked");
                 mode_input.f3 = $("#fan3_check").prop("checked");
@@ -2256,7 +2260,7 @@ styles %}
                 mode_input.f6 = $("#fan6_check").prop("checked");
                 mode_input.f7 = $("#fan7_check").prop("checked");
                 mode_input.f8 = $("#fan8_check").prop("checked");
-            }else{
+            } else {
                 mode_input.f1 = true;
                 mode_input.f2 = true;
                 mode_input.f3 = true;
@@ -2647,6 +2651,10 @@ styles %}
             });
         });
 
+        $("#cancel_rack").click(function () {
+
+            window.location.href = window.location.href;
+        });
         $(".title").each(function () {
             if ($(this).data("default") === "collapsed") {
                 $(this).addClass("collapsed");

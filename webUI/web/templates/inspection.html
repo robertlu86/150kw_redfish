@@ -1,178 +1,178 @@
 {% extends "base.html" %} {% block title %} Inspection {% endblock %} {% block
-    styles %}
-    <style type="text/css">
-        .box {
-            border: 2px solid #69b4ff;
-            border-radius: 4px;
-            margin: 2em 0;
-            padding: 20px;
-            position: relative;
-        }
-    
-        .box::before {
-            background-color: #fff;
-            color: #69b4ff;
-            content: attr(data-before);
-            font-weight: bold;
-            left: 1em;
-            padding: 0 0.5em;
-            position: absolute;
-            top: -1em;
-        }
-    
-        .inspection_result,
-        .broken_result,
-        .inspection_time,
-        .communication_result,
-        .overload_result,
-        .error_result {
-            border: 2px solid #008000;
-            border-radius: 10px;
-            margin: 2em 0;
-            padding: 20px;
-            position: relative;
-        }
-    
-        .inspection_result::before,
-        .broken_result::before,
-        .inspection_time::before,
-        .communication_result::before,
-        .overload_result::before,
-        .error_result::before {
-            background-color: #fff;
-            color: #000000;
-            content: attr(data-before);
-            font-weight: bold;
-            left: 1em;
-            padding: 0 0.5em;
-            position: absolute;
-            top: -1em;
-        }
-    
-        .tdCenterAlign {
-            text-align: center;
-        }
-    
-        .navbar .navbar-nav .nav-link:hover {
-            background-color: #778899;
-            color: #fff;
-        }
-    
-        .nav-inspection {
-            background-color: #008000 !important;
-            color: #fff !important;
-        }
-    
-        .detail {
-            display: flex;
-            justify-content: center;
-            padding-bottom: 20px;
-        }
-    
-        .image {
-            position: relative;
-        }
-    
-        .csv_btn {
-            font-size: 20px;
-            margin-right: 14px;
-            width: 30%;
-        }
-    
-        .btn_container {
-            width: 100%;
-            height: 46px;
-            padding-right: 16px;
-            padding-left: 24px;
-            display: flex;
-            justify-content: space-between;
-        }
-    
-        .btn_container_2 {
-            width: 40%;
-            margin-right: 20px;
-            margin-top: 10px;
-        }
-    
-        .row_sticky {
-            position: sticky;
-            top: 90px;
-            background-color: white;
-            padding: 10px 0px;
-            z-index: 99;
-        }
-    
-        .w20 {
-            width: 25%;
-        }
-    
-        .w16 {
-            width: 16%;
-        }
-    
-        .last_inspect {
-            width: 350px;
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            font-weight: 500;
-        }
-    
-        .word {
-            margin-right: 10px;
-        }
-    
-        .title.collapsed .content {
-            display: none;
-        }
-    
-        .disappear {
-            display: none;
-        }
-    
-        .data-before-trigger {
-            position: absolute;
-            top: -14px;
-            left: 21px;
-            width: 355px;
-            height: 22px;
-            cursor: pointer;
-        }
-    
-        .title::before {
-            content: attr(data-before);
-        }
-    
-        tr:nth-of-type(even) {
-            background-color: rgba(0, 0, 0, 0.09);
-        }
-    
-        tr:nth-of-type(odd) {
-            background-color: white;
-        }
-    </style>
-    {% endblock %} {% block content %}
-    <div class="container-fluid" style="margin-top: 100px; margin-bottom: 60px">
-        <!-- CSV -->
-        <div class="btn_container">
-            <div class="last_inspect">
-                <span class="word" id="">▶ Last Inspect: </span>
-                <span class="inspect_time" id="inspect_time"></span>
-            </div>
-            <div class="btn_container_2">
-                <button class="csv_btn btn btn-outline-success" id="start_inspect">
-                    START
-                </button>
-                <button class="csv_btn btn btn-outline-success" id="cancel_inspect">
-                    CANCEL
-                </button>
-                <button class="csv_btn btn btn-outline-success" id="csv_btn">
-                    DOWNLOAD
-                </button>
-            </div>
+styles %}
+<style type="text/css">
+    .box {
+        border: 2px solid #69b4ff;
+        border-radius: 4px;
+        margin: 2em 0;
+        padding: 20px;
+        position: relative;
+    }
+
+    .box::before {
+        background-color: #fff;
+        color: #69b4ff;
+        content: attr(data-before);
+        font-weight: bold;
+        left: 1em;
+        padding: 0 0.5em;
+        position: absolute;
+        top: -1em;
+    }
+
+    .inspection_result,
+    .broken_result,
+    .inspection_time,
+    .communication_result,
+    .overload_result,
+    .error_result {
+        border: 2px solid #008000;
+        border-radius: 10px;
+        margin: 2em 0;
+        padding: 20px;
+        position: relative;
+    }
+
+    .inspection_result::before,
+    .broken_result::before,
+    .inspection_time::before,
+    .communication_result::before,
+    .overload_result::before,
+    .error_result::before {
+        background-color: #fff;
+        color: #000000;
+        content: attr(data-before);
+        font-weight: bold;
+        left: 1em;
+        padding: 0 0.5em;
+        position: absolute;
+        top: -1em;
+    }
+
+    .tdCenterAlign {
+        text-align: center;
+    }
+
+    .navbar .navbar-nav .nav-link:hover {
+        background-color: #778899;
+        color: #fff;
+    }
+
+    .nav-inspection {
+        background-color: #008000 !important;
+        color: #fff !important;
+    }
+
+    .detail {
+        display: flex;
+        justify-content: center;
+        padding-bottom: 20px;
+    }
+
+    .image {
+        position: relative;
+    }
+
+    .csv_btn {
+        font-size: 20px;
+        margin-right: 14px;
+        width: 30%;
+    }
+
+    .btn_container {
+        width: 100%;
+        height: 46px;
+        padding-right: 16px;
+        padding-left: 24px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .btn_container_2 {
+        width: 40%;
+        margin-right: 20px;
+        margin-top: 10px;
+    }
+
+    .row_sticky {
+        position: sticky;
+        top: 90px;
+        background-color: white;
+        padding: 10px 0px;
+        z-index: 99;
+    }
+
+    .w20 {
+        width: 25%;
+    }
+
+    .w16 {
+        width: 16%;
+    }
+
+    .last_inspect {
+        width: 350px;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        font-weight: 500;
+    }
+
+    .word {
+        margin-right: 10px;
+    }
+
+    .title.collapsed .content {
+        display: none;
+    }
+
+    .disappear {
+        display: none;
+    }
+
+    .data-before-trigger {
+        position: absolute;
+        top: -14px;
+        left: 21px;
+        width: 355px;
+        height: 22px;
+        cursor: pointer;
+    }
+
+    .title::before {
+        content: attr(data-before);
+    }
+
+    tr:nth-of-type(even) {
+        background-color: rgba(0, 0, 0, 0.09);
+    }
+
+    tr:nth-of-type(odd) {
+        background-color: white;
+    }
+</style>
+{% endblock %} {% block content %}
+<div class="container-fluid" style="margin-top: 100px; margin-bottom: 60px">
+    <!-- CSV -->
+    <div class="btn_container">
+        <div class="last_inspect">
+            <span class="word" id="">▶ Last Inspect: </span>
+            <span class="inspect_time" id="inspect_time"></span>
         </div>
-    
-        <!-- <div class="inspection_time title" data-label="Set Inspection Time (sec)">
+        <div class="btn_container_2">
+            <button class="csv_btn btn btn-outline-success" id="start_inspect">
+                START
+            </button>
+            <button class="csv_btn btn btn-outline-success" id="cancel_inspect">
+                CANCEL
+            </button>
+            <button class="csv_btn btn btn-outline-success" id="csv_btn">
+                DOWNLOAD
+            </button>
+        </div>
+    </div>
+
+    <!-- <div class="inspection_time title" data-label="Set Inspection Time (sec)">
                     <div class="data-before-trigger"></div>
                     <div class="content">
                         <div class="row">
@@ -198,191 +198,191 @@
                         </div>
                     </div>
                 </div> -->
-    
-        <!-- 檢測結果 -->
-        <div class="inspection_result title" data-label="Control Status Inspection Result">
-            <div class="data-before-trigger"></div>
-            <div class="content">
-                <table class="table table-hover">
-                    <thead>
-                        <tr class="row_sticky">
-                            <th class="w20 tdCenterAlign"></th>
-                            <th class="w16 tdCenterAlign">Status</th>
-                            <th class="w16 tdCenterAlign">Result</th>
-                            <!-- <th class="w16 tdCenterAlign">Current Value</th> -->
-                            <th class="w16 tdCenterAlign">Expect Value</th>
-                            <th class="w16 tdCenterAlign">Measured Value</th>
-                            <th class="w16 tdCenterAlign">Unit</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="w20 tdCenterAlign">Coolant Pump 1</td>
-                            <td class="w16 tdCenterAlign" id="p1_speed_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="p1_speed_result">
-                                *
-                            </td>
-                            <!-- <td class="w16 tdCenterAlign" id="p1_speed_stat"></td> -->
-                            <td class="w16 tdCenterAlign">45 ~ 55</td>
-                            <td class="w16 tdCenterAlign" id="p1_speed_measure"></td>
-                            <td class="w16 tdCenterAlign">%</td>
-                        </tr>
-                        <tr>
-                            <td class="w20 tdCenterAlign">Coolant Pump 2</td>
-                            <td class="w16 tdCenterAlign" id="p2_speed_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="p2_speed_result">
-                                *
-                            </td>
-                            <!-- <td class="w16 tdCenterAlign" id="p2_speed_stat"></td> -->
-                            <td class="w16 tdCenterAlign">45 ~ 55</td>
-    
-                            <td class="w16 tdCenterAlign" id="p2_speed_measure"></td>
-                            <td class="w16 tdCenterAlign">%</td>
-                        </tr>
-                        <tr>
-                            <td class="w20 tdCenterAlign">Coolant Pump 3</td>
-                            <td class="w16 tdCenterAlign" id="p3_speed_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="p3_speed_result">
-                                *
-                            </td>
-                            <!-- <td class="w16 tdCenterAlign" id="p3_speed_stat"></td> -->
-                            <td class="w16 tdCenterAlign">45 ~ 55</td>
-    
-                            <td class="w16 tdCenterAlign" id="p3_speed_measure"></td>
-                            <td class="w16 tdCenterAlign">%</td>
-                        </tr>
-                        <tr>
-                            <td class="w20 tdCenterAlign">
-                                Coolant Flow Rate (F1)
-                            </td>
-                            <td class="w16 tdCenterAlign" id="f1_status">*</td>
-                            <td class="w16 tdCenterAlign" id="f1_result">*</td>
-                            <!-- <td class="w16 tdCenterAlign" id="f1_stat"></td> -->
-                            <td class="w16 tdCenterAlign" id="f1_expect">100 ~ 136</td>
-                            <td class="w16 tdCenterAlign" id="f1_measure"></td>
-                            <td class="w16 tdCenterAlign unit_flow">-</td>
-                        </tr>
-                        <tr>
-                            <td class="w20 tdCenterAlign">Fan1</td>
-                            <td class="w16 tdCenterAlign" id="fan1_speed_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="fan1_speed_result">
-                                *
-                            </td>
-                            <!-- <td class="w16 tdCenterAlign" id="fan1_speed_stat"></td> -->
-                            <td class="w16 tdCenterAlign">25 ~ 35</td>
-    
-                            <td class="w16 tdCenterAlign" id="fan1_speed_measure"></td>
-                            <td class="w16 tdCenterAlign">%</td>
-                        </tr>
-                        <tr>
-                            <td class="w20 tdCenterAlign">Fan2</td>
-                            <td class="w16 tdCenterAlign" id="fan2_speed_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="fan2_speed_result">
-                                *
-                            </td>
-                            <!-- <td class="w16 tdCenterAlign" id="fan2_speed_stat"></td> -->
-                            <td class="w16 tdCenterAlign">25 ~ 35</td>
-    
-                            <td class="w16 tdCenterAlign" id="fan2_speed_measure"></td>
-                            <td class="w16 tdCenterAlign">%</td>
-                        </tr>
-                        <tr>
-                            <td class="w20 tdCenterAlign">Fan3</td>
-                            <td class="w16 tdCenterAlign" id="fan3_speed_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="fan3_speed_result">
-                                *
-                            </td>
-                            <!-- <td class="w16 tdCenterAlign" id="fan3_speed_stat"></td> -->
-                            <td class="w16 tdCenterAlign">25 ~ 35</td>
-    
-                            <td class="w16 tdCenterAlign" id="fan3_speed_measure"></td>
-                            <td class="w16 tdCenterAlign">%</td>
-                        </tr>
-                        <tr>
-                            <td class="w20 tdCenterAlign">Fan4</td>
-                            <td class="w16 tdCenterAlign" id="fan4_speed_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="fan4_speed_result">
-                                *
-                            </td>
-                            <!-- <td class="w16 tdCenterAlign" id="fan4_speed_stat"></td> -->
-                            <td class="w16 tdCenterAlign">25 ~ 35</td>
-    
-                            <td class="w16 tdCenterAlign" id="fan4_speed_measure"></td>
-                            <td class="w16 tdCenterAlign">%</td>
-                        </tr>
-                        <tr>
-                            <td class="w20 tdCenterAlign Fan5_name">Fan5</td>
-                            <td class="w16 tdCenterAlign" id="fan5_speed_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="fan5_speed_result">
-                                *
-                            </td>
-                            <!-- <td class="w16 tdCenterAlign" id="fan5_speed_stat"></td> -->
-                            <td class="w16 tdCenterAlign">25 ~ 35</td>
-    
-                            <td class="w16 tdCenterAlign" id="fan5_speed_measure"></td>
-                            <td class="w16 tdCenterAlign">%</td>
-                        </tr>
-                        <tr>
-                            <td class="w20 tdCenterAlign Fan6_name">Fan6</td>
-                            <td class="w16 tdCenterAlign" id="fan6_speed_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="fan6_speed_result">
-                                *
-                            </td>
-                            <!-- <td class="w16 tdCenterAlign" id="fan6_speed_stat">
+
+    <!-- 檢測結果 -->
+    <div class="inspection_result title" data-label="Control Status Inspection Result">
+        <div class="data-before-trigger"></div>
+        <div class="content">
+            <table class="table table-hover">
+                <thead>
+                    <tr class="row_sticky">
+                        <th class="w20 tdCenterAlign"></th>
+                        <th class="w16 tdCenterAlign">Status</th>
+                        <th class="w16 tdCenterAlign">Result</th>
+                        <!-- <th class="w16 tdCenterAlign">Current Value</th> -->
+                        <th class="w16 tdCenterAlign">Expect Value</th>
+                        <th class="w16 tdCenterAlign">Measured Value</th>
+                        <th class="w16 tdCenterAlign">Unit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="w20 tdCenterAlign">Coolant Pump 1</td>
+                        <td class="w16 tdCenterAlign" id="p1_speed_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="p1_speed_result">
+                            *
+                        </td>
+                        <!-- <td class="w16 tdCenterAlign" id="p1_speed_stat"></td> -->
+                        <td class="w16 tdCenterAlign">45 ~ 55</td>
+                        <td class="w16 tdCenterAlign" id="p1_speed_measure"></td>
+                        <td class="w16 tdCenterAlign">%</td>
+                    </tr>
+                    <tr>
+                        <td class="w20 tdCenterAlign">Coolant Pump 2</td>
+                        <td class="w16 tdCenterAlign" id="p2_speed_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="p2_speed_result">
+                            *
+                        </td>
+                        <!-- <td class="w16 tdCenterAlign" id="p2_speed_stat"></td> -->
+                        <td class="w16 tdCenterAlign">45 ~ 55</td>
+
+                        <td class="w16 tdCenterAlign" id="p2_speed_measure"></td>
+                        <td class="w16 tdCenterAlign">%</td>
+                    </tr>
+                    <tr>
+                        <td class="w20 tdCenterAlign">Coolant Pump 3</td>
+                        <td class="w16 tdCenterAlign" id="p3_speed_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="p3_speed_result">
+                            *
+                        </td>
+                        <!-- <td class="w16 tdCenterAlign" id="p3_speed_stat"></td> -->
+                        <td class="w16 tdCenterAlign">45 ~ 55</td>
+
+                        <td class="w16 tdCenterAlign" id="p3_speed_measure"></td>
+                        <td class="w16 tdCenterAlign">%</td>
+                    </tr>
+                    <tr>
+                        <td class="w20 tdCenterAlign">
+                            Coolant Flow Rate (F1)
+                        </td>
+                        <td class="w16 tdCenterAlign" id="f1_status">*</td>
+                        <td class="w16 tdCenterAlign" id="f1_result">*</td>
+                        <!-- <td class="w16 tdCenterAlign" id="f1_stat"></td> -->
+                        <td class="w16 tdCenterAlign" id="f1_expect">100 ~ 136</td>
+                        <td class="w16 tdCenterAlign" id="f1_measure"></td>
+                        <td class="w16 tdCenterAlign unit_flow">-</td>
+                    </tr>
+                    <tr>
+                        <td class="w20 tdCenterAlign">Fan1</td>
+                        <td class="w16 tdCenterAlign" id="fan1_speed_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="fan1_speed_result">
+                            *
+                        </td>
+                        <!-- <td class="w16 tdCenterAlign" id="fan1_speed_stat"></td> -->
+                        <td class="w16 tdCenterAlign">25 ~ 35</td>
+
+                        <td class="w16 tdCenterAlign" id="fan1_speed_measure"></td>
+                        <td class="w16 tdCenterAlign">%</td>
+                    </tr>
+                    <tr>
+                        <td class="w20 tdCenterAlign">Fan2</td>
+                        <td class="w16 tdCenterAlign" id="fan2_speed_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="fan2_speed_result">
+                            *
+                        </td>
+                        <!-- <td class="w16 tdCenterAlign" id="fan2_speed_stat"></td> -->
+                        <td class="w16 tdCenterAlign">25 ~ 35</td>
+
+                        <td class="w16 tdCenterAlign" id="fan2_speed_measure"></td>
+                        <td class="w16 tdCenterAlign">%</td>
+                    </tr>
+                    <tr>
+                        <td class="w20 tdCenterAlign">Fan3</td>
+                        <td class="w16 tdCenterAlign" id="fan3_speed_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="fan3_speed_result">
+                            *
+                        </td>
+                        <!-- <td class="w16 tdCenterAlign" id="fan3_speed_stat"></td> -->
+                        <td class="w16 tdCenterAlign">25 ~ 35</td>
+
+                        <td class="w16 tdCenterAlign" id="fan3_speed_measure"></td>
+                        <td class="w16 tdCenterAlign">%</td>
+                    </tr>
+                    <tr>
+                        <td class="w20 tdCenterAlign">Fan4</td>
+                        <td class="w16 tdCenterAlign" id="fan4_speed_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="fan4_speed_result">
+                            *
+                        </td>
+                        <!-- <td class="w16 tdCenterAlign" id="fan4_speed_stat"></td> -->
+                        <td class="w16 tdCenterAlign">25 ~ 35</td>
+
+                        <td class="w16 tdCenterAlign" id="fan4_speed_measure"></td>
+                        <td class="w16 tdCenterAlign">%</td>
+                    </tr>
+                    <tr>
+                        <td class="w20 tdCenterAlign Fan5_name">Fan5</td>
+                        <td class="w16 tdCenterAlign" id="fan5_speed_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="fan5_speed_result">
+                            *
+                        </td>
+                        <!-- <td class="w16 tdCenterAlign" id="fan5_speed_stat"></td> -->
+                        <td class="w16 tdCenterAlign">25 ~ 35</td>
+
+                        <td class="w16 tdCenterAlign" id="fan5_speed_measure"></td>
+                        <td class="w16 tdCenterAlign">%</td>
+                    </tr>
+                    <tr>
+                        <td class="w20 tdCenterAlign Fan6_name">Fan6</td>
+                        <td class="w16 tdCenterAlign" id="fan6_speed_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="fan6_speed_result">
+                            *
+                        </td>
+                        <!-- <td class="w16 tdCenterAlign" id="fan6_speed_stat">
                                     *
                                 </td> -->
-                            <td class="w16 tdCenterAlign">25 ~ 35</td>
-    
-                            <td class="w16 tdCenterAlign" id="fan6_speed_measure"></td>
-                            <td class="w16 tdCenterAlign">%</td>
-                        </tr>
-                        <tr class="Fan8_version">
-                            <td class="w20 tdCenterAlign Fan7_name">Fan7</td>
-                            <td class="w16 tdCenterAlign" id="fan7_speed_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="fan7_speed_result">
-                                *
-                            </td>
-    
-                            <!-- <td class="w16 tdCenterAlign" id="fan7_speed_stat"></td> -->
-                            <td class="w16 tdCenterAlign">25 ~ 35</td>
-                            <td class="w16 tdCenterAlign" id="fan7_speed_measure"></td>
-                            <td class="w16 tdCenterAlign">%</td>
-                        </tr>
-                        <tr class="Fan8_version">
-                            <td class="w20 tdCenterAlign">Fan8</td>
-                            <td class="w16 tdCenterAlign" id="fan8_speed_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="fan8_speed_result">
-                                *
-                            </td>
-                            <!-- <td class="w16 tdCenterAlign" id="fan8_speed_stat"></td> -->
-                            <td class="w16 tdCenterAlign">25 ~ 35</td>
-    
-                            <td class="w16 tdCenterAlign" id="fan8_speed_measure"></td>
-                            <td class="w16 tdCenterAlign">%</td>
-                        </tr>
-                        <!--
+                        <td class="w16 tdCenterAlign">25 ~ 35</td>
+
+                        <td class="w16 tdCenterAlign" id="fan6_speed_measure"></td>
+                        <td class="w16 tdCenterAlign">%</td>
+                    </tr>
+                    <tr class="Fan8_version">
+                        <td class="w20 tdCenterAlign Fan7_name">Fan7</td>
+                        <td class="w16 tdCenterAlign" id="fan7_speed_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="fan7_speed_result">
+                            *
+                        </td>
+
+                        <!-- <td class="w16 tdCenterAlign" id="fan7_speed_stat"></td> -->
+                        <td class="w16 tdCenterAlign">25 ~ 35</td>
+                        <td class="w16 tdCenterAlign" id="fan7_speed_measure"></td>
+                        <td class="w16 tdCenterAlign">%</td>
+                    </tr>
+                    <tr class="Fan8_version">
+                        <td class="w20 tdCenterAlign">Fan8</td>
+                        <td class="w16 tdCenterAlign" id="fan8_speed_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="fan8_speed_result">
+                            *
+                        </td>
+                        <!-- <td class="w16 tdCenterAlign" id="fan8_speed_stat"></td> -->
+                        <td class="w16 tdCenterAlign">25 ~ 35</td>
+
+                        <td class="w16 tdCenterAlign" id="fan8_speed_measure"></td>
+                        <td class="w16 tdCenterAlign">%</td>
+                    </tr>
+                    <!--
                                 <tr>
                                     <td class="w20 tdCenterAlign">
                                         Coolant Level 1
@@ -414,299 +414,299 @@
                                     <td class="w16 tdCenterAlign"></td>
                                 </tr>
                             -->
-                        <tr>
-                            <td class="w20 tdCenterAlign">
-                                24V Power Supply 1
-                            </td>
-                            <td class="w16 tdCenterAlign" id="power24v1_status">*</td>
-                            <td class="w16 tdCenterAlign" id="power24v1_result">*</td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                        </tr>
-    
-                        <tr>
-                            <td class="w20 tdCenterAlign">
-                                24V Power Supply 2
-                            </td>
-                            <td class="w16 tdCenterAlign" id="power24v2_status">*</td>
-                            <td class="w16 tdCenterAlign" id="power24v2_result">*</td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                        </tr>
-    
-                        <tr class="no_coolant_quality_meter_switch">
-                            <td class="w20 tdCenterAlign">
-                                12V Power Supply 1
-                            </td>
-                            <td class="w16 tdCenterAlign" id="power12v1_status">*</td>
-                            <td class="w16 tdCenterAlign" id="power12v1_result">*</td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                        </tr>
-    
-                        <tr class="no_coolant_quality_meter_switch">
-                            <td class="w20 tdCenterAlign">
-                                12V Power Supply 2
-                            </td>
-                            <td class="w16 tdCenterAlign" id="power12v2_status">*</td>
-                            <td class="w16 tdCenterAlign" id="power12v2_result">*</td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                        </tr>
-    
-                    </tbody>
-                </table>
-            </div>
+                    <tr>
+                        <td class="w20 tdCenterAlign">
+                            24V Power Supply 1
+                        </td>
+                        <td class="w16 tdCenterAlign" id="power24v1_status">*</td>
+                        <td class="w16 tdCenterAlign" id="power24v1_result">*</td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                    </tr>
+
+                    <tr>
+                        <td class="w20 tdCenterAlign">
+                            24V Power Supply 2
+                        </td>
+                        <td class="w16 tdCenterAlign" id="power24v2_status">*</td>
+                        <td class="w16 tdCenterAlign" id="power24v2_result">*</td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                    </tr>
+
+                    <tr class="no_coolant_quality_meter_switch">
+                        <td class="w20 tdCenterAlign">
+                            12V Power Supply 1
+                        </td>
+                        <td class="w16 tdCenterAlign" id="power12v1_status">*</td>
+                        <td class="w16 tdCenterAlign" id="power12v1_result">*</td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                    </tr>
+
+                    <tr class="no_coolant_quality_meter_switch">
+                        <td class="w20 tdCenterAlign">
+                            12V Power Supply 2
+                        </td>
+                        <td class="w16 tdCenterAlign" id="power12v2_status">*</td>
+                        <td class="w16 tdCenterAlign" id="power12v2_result">*</td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                    </tr>
+
+                </tbody>
+            </table>
         </div>
-    
-        <div class="broken_result title" data-label="Broken Status Inspection Result">
-            <div class="data-before-trigger"></div>
-            <div class="content">
-                <table class="table table-hover">
-                    <thead>
-                        <tr class="row_sticky">
-                            <th class="w20 tdCenterAlign"></th>
-                            <th class="w16 tdCenterAlign">Status</th>
-                            <th class="w16 tdCenterAlign">Result</th>
-                            <th class="w16 tdCenterAlign"></th>
-                            <th class="w16 tdCenterAlign"></th>
-                            <th class="w16 tdCenterAlign"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="w20 tdCenterAlign">
-                                Coolant Supply Temperature (T1)
-                            </td>
-                            <td class="w16 tdCenterAlign" id="Temp_ClntSply_broken_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="Temp_ClntSply_broken_result">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign "></td>
-                        </tr>
-    
-                        <tr class="t1sp_set">
-                            <td class="w20 tdCenterAlign">
-                                Coolant Supply Temperature Spare (T1sp)
-                            </td>
-                            <td class="w16 tdCenterAlign" id="Temp_ClntSplySpare_broken_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="Temp_ClntSplySpare_broken_result">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign "></td>
-                        </tr>
-    
-                        <tr>
-                            <td class="w20 tdCenterAlign">
-                                Coolant Return Temperature (T2)
-                            </td>
-                            <td class="w16 tdCenterAlign" id="Temp_ClntRtn_broken_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="Temp_ClntRtn_broken_result"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign "></td>
-                        </tr>
-    
-                        <tr>
-                            <td class="w20 tdCenterAlign">
-                                Coolant Return Temperature Spare (T2sp)
-                            </td>
-                            <td class="w16 tdCenterAlign" id="Temp_ClntRtnSpare_broken_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="Temp_ClntRtnSpare_broken_result"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign "></td>
-                        </tr>
-    
-                        <tr>
-                            <td class="w20 tdCenterAlign">
-                                Coolant Supply Pressure (P1)
-                            </td>
-                            <td class="w16 tdCenterAlign" id="Prsr_ClntSply_broken_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="Prsr_ClntSply_broken_result"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign "></td>
-                        </tr>
-    
-                        <tr class="p1sp_set">
-                            <td class="w20 tdCenterAlign">
-                                Coolant Supply Pressure Spare (P1sp)
-                            </td>
-                            <td class="w16 tdCenterAlign" id="Prsr_ClntSplySpare_broken_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="Prsr_ClntSplySpare_broken_result"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign "></td>
-                        </tr>
-    
-                        <tr>
-                            <td class="w20 tdCenterAlign">
-                                Coolant Return Pressure (P2)
-                            </td>
-                            <td class="w16 tdCenterAlign" id="Prsr_ClntRtn_broken_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="Prsr_ClntRtn_broken_result"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign "></td>
-                        </tr>
-                        <tr class="p2sp_set">
-                            <td class="w20 tdCenterAlign">
-                                Coolant Return Pressure Spare (P2sp)
-                            </td>
-                            <td class="w16 tdCenterAlign" id="Prsr_ClntRtnSpare_broken_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="Prsr_ClntRtnSpare_broken_result"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign "></td>
-                        </tr>
-    
-                        <tr class="p2sp_set">
-                            <td class="w20 tdCenterAlign">
-                                Filter Inlet Pressure (P3)
-                            </td>
-                            <td class="w16 tdCenterAlign" id="Prsr_FltIn_broken_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="Prsr_FltIn_broken_result"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign "></td>
-                        </tr>
-    
-                        <tr class="p2sp_set">
-                            <td class="w20 tdCenterAlign">
-                                Filter Outlet Pressure (P4)
-                            </td>
-                            <td class="w16 tdCenterAlign" id="Prsr_FltOut_broken_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="Prsr_FltOut_broken_result"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign "></td>
-                        </tr>
-    
-                        <tr class="f1_mA">
-                            <td class="w20 tdCenterAlign">
-                                Coolant Flow Rate (F1)
-                            </td>
-                            <td class="w16 tdCenterAlign" id="Clnt_Flow_broken_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="Clnt_Flow_broken_result"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign "></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+    </div>
+
+    <div class="broken_result title" data-label="Broken Status Inspection Result">
+        <div class="data-before-trigger"></div>
+        <div class="content">
+            <table class="table table-hover">
+                <thead>
+                    <tr class="row_sticky">
+                        <th class="w20 tdCenterAlign"></th>
+                        <th class="w16 tdCenterAlign">Status</th>
+                        <th class="w16 tdCenterAlign">Result</th>
+                        <th class="w16 tdCenterAlign"></th>
+                        <th class="w16 tdCenterAlign"></th>
+                        <th class="w16 tdCenterAlign"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="w20 tdCenterAlign">
+                            Coolant Supply Temperature (T1)
+                        </td>
+                        <td class="w16 tdCenterAlign" id="Temp_ClntSply_broken_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="Temp_ClntSply_broken_result">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign "></td>
+                    </tr>
+
+                    <tr class="t1sp_set">
+                        <td class="w20 tdCenterAlign">
+                            Coolant Supply Temperature Spare (T1sp)
+                        </td>
+                        <td class="w16 tdCenterAlign" id="Temp_ClntSplySpare_broken_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="Temp_ClntSplySpare_broken_result">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign "></td>
+                    </tr>
+
+                    <tr>
+                        <td class="w20 tdCenterAlign">
+                            Coolant Return Temperature (T2)
+                        </td>
+                        <td class="w16 tdCenterAlign" id="Temp_ClntRtn_broken_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="Temp_ClntRtn_broken_result"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign "></td>
+                    </tr>
+
+                    <tr>
+                        <td class="w20 tdCenterAlign">
+                            Coolant Return Temperature Spare (T2sp)
+                        </td>
+                        <td class="w16 tdCenterAlign" id="Temp_ClntRtnSpare_broken_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="Temp_ClntRtnSpare_broken_result"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign "></td>
+                    </tr>
+
+                    <tr>
+                        <td class="w20 tdCenterAlign">
+                            Coolant Supply Pressure (P1)
+                        </td>
+                        <td class="w16 tdCenterAlign" id="Prsr_ClntSply_broken_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="Prsr_ClntSply_broken_result"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign "></td>
+                    </tr>
+
+                    <tr class="p1sp_set">
+                        <td class="w20 tdCenterAlign">
+                            Coolant Supply Pressure Spare (P1sp)
+                        </td>
+                        <td class="w16 tdCenterAlign" id="Prsr_ClntSplySpare_broken_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="Prsr_ClntSplySpare_broken_result"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign "></td>
+                    </tr>
+
+                    <tr>
+                        <td class="w20 tdCenterAlign">
+                            Coolant Return Pressure (P2)
+                        </td>
+                        <td class="w16 tdCenterAlign" id="Prsr_ClntRtn_broken_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="Prsr_ClntRtn_broken_result"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign "></td>
+                    </tr>
+                    <tr class="p2sp_set">
+                        <td class="w20 tdCenterAlign">
+                            Coolant Return Pressure Spare (P2sp)
+                        </td>
+                        <td class="w16 tdCenterAlign" id="Prsr_ClntRtnSpare_broken_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="Prsr_ClntRtnSpare_broken_result"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign "></td>
+                    </tr>
+
+                    <tr class="p2sp_set">
+                        <td class="w20 tdCenterAlign">
+                            Filter Inlet Pressure (P3)
+                        </td>
+                        <td class="w16 tdCenterAlign" id="Prsr_FltIn_broken_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="Prsr_FltIn_broken_result"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign "></td>
+                    </tr>
+
+                    <tr class="p2sp_set">
+                        <td class="w20 tdCenterAlign">
+                            Filter Outlet Pressure (P4)
+                        </td>
+                        <td class="w16 tdCenterAlign" id="Prsr_FltOut_broken_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="Prsr_FltOut_broken_result"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign "></td>
+                    </tr>
+
+                    <tr class="f1_mA">
+                        <td class="w20 tdCenterAlign">
+                            Coolant Flow Rate (F1)
+                        </td>
+                        <td class="w16 tdCenterAlign" id="Clnt_Flow_broken_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="Clnt_Flow_broken_result"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign "></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-    
-        <div class="communication_result title" data-label="Communication Status Inspection Result">
-            <div class="data-before-trigger"></div>
-            <div class="content">
-                <table class="table table-hover">
-                    <thead>
-                        <tr class="row_sticky">
-                            <th class="w20 tdCenterAlign"></th>
-                            <th class="w16 tdCenterAlign">Status</th>
-                            <th class="w16 tdCenterAlign">Result</th>
-                            <th class="w16 tdCenterAlign"></th>
-                            <th class="w16 tdCenterAlign"></th>
-                            <th class="w16 tdCenterAlign"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="w20 tdCenterAlign">Inverter 1</td>
-                            <td class="w16 tdCenterAlign" id="Inv1_Freq_com_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="Inv1_Freq_com_result">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                        </tr>
-    
-                        <tr>
-                            <td class="w20 tdCenterAlign">Inverter 2</td>
-                            <td class="w16 tdCenterAlign" id="Inv2_Freq_com_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="Inv2_Freq_com_result">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                        </tr>
-                        <tr>
-                            <td class="w20 tdCenterAlign">Inverter 3</td>
-                            <td class="w16 tdCenterAlign" id="Inv3_Freq_com_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="Inv3_Freq_com_result">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                        </tr>
-    
-                        <tr>
-                            <td class="w20 tdCenterAlign">Ambient Temperature</td>
-                            <td class="w16 tdCenterAlign" id="AmbientTemp_com_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="AmbientTemp_com_result">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                        </tr>
-    
-                        <tr>
-                            <td class="w20 tdCenterAlign">Relative Humidity</td>
-                            <td class="w16 tdCenterAlign" id="RelativeHumid_com_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="RelativeHumid_com_result">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                        </tr>
-                        <!--
+    </div>
+
+    <div class="communication_result title" data-label="Communication Status Inspection Result">
+        <div class="data-before-trigger"></div>
+        <div class="content">
+            <table class="table table-hover">
+                <thead>
+                    <tr class="row_sticky">
+                        <th class="w20 tdCenterAlign"></th>
+                        <th class="w16 tdCenterAlign">Status</th>
+                        <th class="w16 tdCenterAlign">Result</th>
+                        <th class="w16 tdCenterAlign"></th>
+                        <th class="w16 tdCenterAlign"></th>
+                        <th class="w16 tdCenterAlign"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="w20 tdCenterAlign">Inverter 1</td>
+                        <td class="w16 tdCenterAlign" id="Inv1_Freq_com_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="Inv1_Freq_com_result">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                    </tr>
+
+                    <tr>
+                        <td class="w20 tdCenterAlign">Inverter 2</td>
+                        <td class="w16 tdCenterAlign" id="Inv2_Freq_com_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="Inv2_Freq_com_result">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                    </tr>
+                    <tr>
+                        <td class="w20 tdCenterAlign">Inverter 3</td>
+                        <td class="w16 tdCenterAlign" id="Inv3_Freq_com_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="Inv3_Freq_com_result">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                    </tr>
+
+                    <tr>
+                        <td class="w20 tdCenterAlign">Ambient Temperature</td>
+                        <td class="w16 tdCenterAlign" id="AmbientTemp_com_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="AmbientTemp_com_result">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                    </tr>
+
+                    <tr>
+                        <td class="w20 tdCenterAlign">Relative Humidity</td>
+                        <td class="w16 tdCenterAlign" id="RelativeHumid_com_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="RelativeHumid_com_result">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                    </tr>
+                    <!--
                                 <tr class="f1_485">
                                     <td class="w20 tdCenterAlign">Coolant Flow Meter</td>
                                     <td class="w16 tdCenterAlign" id="coolant_flow_rate_com_status">
@@ -720,626 +720,758 @@
                                     <td class="w16 tdCenterAlign"></td>
                                 </tr>
                                 -->
-                        <tr class="no_coolant_quality_meter_switch">
-                            <td class="w20 tdCenterAlign">Conductivity Sensor</td>
-                            <td class="w16 tdCenterAlign" id="conductivity_com_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="conductivity_com_result">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                        </tr>
-    
-                        <tr class="no_coolant_quality_meter_switch">
-                            <td class="w20 tdCenterAlign">pH Sensor</td>
-                            <td class="w16 tdCenterAlign" id="pH_com_status">*</td>
-                            <td class="w16 tdCenterAlign" id="pH_com_result">*</td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                        </tr>
-    
-                        <tr class="no_coolant_quality_meter_switch">
-                            <td class="w20 tdCenterAlign">Turbidity Sensor</td>
-                            <td class="w16 tdCenterAlign" id="turbidity_com_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="turbidity_com_result">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                        </tr>
-    
-                        <tr>
-                            <td class="w20 tdCenterAlign">ATS Communication</td>
-                            <td class="w16 tdCenterAlign" id="ATS1_com_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="ATS1_com_result">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                        </tr>
-    
-                        <tr>
-                            <td class="w20 tdCenterAlign">Power Meter</td>
-                            <td class="w16 tdCenterAlign" id="inst_power_com_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="inst_power_com_result">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                        </tr>
-                        <tr>
-                            <td class="w20 tdCenterAlign">Average Current</td>
-                            <td class="w16 tdCenterAlign" id="average_current_com_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="average_current_com_result">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                        </tr>
-                        <tr class="Fan_com">
-                            <td class="w20 tdCenterAlign">Fan1</td>
-                            <td class="w16 tdCenterAlign" id="Fan1Com_com_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="Fan1Com_com_result">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                        </tr>
-                        <tr class="Fan_com">
-                            <td class="w20 tdCenterAlign">Fan2</td>
-                            <td class="w16 tdCenterAlign" id="Fan2Com_com_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="Fan2Com_com_result">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                        </tr>
-                        <tr class="Fan_com">
-                            <td class="w20 tdCenterAlign">Fan3</td>
-                            <td class="w16 tdCenterAlign" id="Fan3Com_com_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="Fan3Com_com_result">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                        </tr>
-                        <tr class="Fan_com">
-                            <td class="w20 tdCenterAlign">Fan4</td>
-                            <td class="w16 tdCenterAlign" id="Fan4Com_com_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="Fan4Com_com_result">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                        </tr>
-                        <tr class="Fan_com">
-                            <td class="w20 tdCenterAlign Fan5_name">Fan5</td>
-                            <td class="w16 tdCenterAlign" id="Fan5Com_com_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="Fan5Com_com_result">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                        </tr>
-                        <tr class="Fan_com">
-                            <td class="w20 tdCenterAlign Fan6_name">Fan6</td>
-                            <td class="w16 tdCenterAlign" id="Fan6Com_com_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="Fan6Com_com_result">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                        </tr>
-                        <tr class="Fan8_version Fan_com">
-                            <td class="w20 tdCenterAlign Fan7_name">Fan7</td>
-                            <td class="w16 tdCenterAlign" id="Fan7Com_com_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="Fan7Com_com_result">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                        </tr>
-                        <tr class="Fan8_version Fan_com">
-                            <td class="w20 tdCenterAlign">Fan8</td>
-                            <td class="w16 tdCenterAlign" id="Fan8Com_com_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="Fan8Com_com_result">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+                    <tr class="no_coolant_quality_meter_switch">
+                        <td class="w20 tdCenterAlign">Conductivity Sensor</td>
+                        <td class="w16 tdCenterAlign" id="conductivity_com_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="conductivity_com_result">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                    </tr>
+
+                    <tr class="no_coolant_quality_meter_switch">
+                        <td class="w20 tdCenterAlign">pH Sensor</td>
+                        <td class="w16 tdCenterAlign" id="pH_com_status">*</td>
+                        <td class="w16 tdCenterAlign" id="pH_com_result">*</td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                    </tr>
+
+                    <tr class="no_coolant_quality_meter_switch">
+                        <td class="w20 tdCenterAlign">Turbidity Sensor</td>
+                        <td class="w16 tdCenterAlign" id="turbidity_com_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="turbidity_com_result">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                    </tr>
+
+                    <tr>
+                        <td class="w20 tdCenterAlign">ATS Communication</td>
+                        <td class="w16 tdCenterAlign" id="ATS1_com_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="ATS1_com_result">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                    </tr>
+
+                    <tr>
+                        <td class="w20 tdCenterAlign">Power Meter</td>
+                        <td class="w16 tdCenterAlign" id="inst_power_com_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="inst_power_com_result">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                    </tr>
+                    <tr>
+                        <td class="w20 tdCenterAlign">Average Current</td>
+                        <td class="w16 tdCenterAlign" id="average_current_com_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="average_current_com_result">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                    </tr>
+                    <tr class="Fan_com">
+                        <td class="w20 tdCenterAlign">Fan1</td>
+                        <td class="w16 tdCenterAlign" id="Fan1Com_com_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="Fan1Com_com_result">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                    </tr>
+                    <tr class="Fan_com">
+                        <td class="w20 tdCenterAlign">Fan2</td>
+                        <td class="w16 tdCenterAlign" id="Fan2Com_com_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="Fan2Com_com_result">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                    </tr>
+                    <tr class="Fan_com">
+                        <td class="w20 tdCenterAlign">Fan3</td>
+                        <td class="w16 tdCenterAlign" id="Fan3Com_com_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="Fan3Com_com_result">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                    </tr>
+                    <tr class="Fan_com">
+                        <td class="w20 tdCenterAlign">Fan4</td>
+                        <td class="w16 tdCenterAlign" id="Fan4Com_com_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="Fan4Com_com_result">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                    </tr>
+                    <tr class="Fan_com">
+                        <td class="w20 tdCenterAlign Fan5_name">Fan5</td>
+                        <td class="w16 tdCenterAlign" id="Fan5Com_com_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="Fan5Com_com_result">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                    </tr>
+                    <tr class="Fan_com">
+                        <td class="w20 tdCenterAlign Fan6_name">Fan6</td>
+                        <td class="w16 tdCenterAlign" id="Fan6Com_com_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="Fan6Com_com_result">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                    </tr>
+                    <tr class="Fan8_version Fan_com">
+                        <td class="w20 tdCenterAlign Fan7_name">Fan7</td>
+                        <td class="w16 tdCenterAlign" id="Fan7Com_com_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="Fan7Com_com_result">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                    </tr>
+                    <tr class="Fan8_version Fan_com">
+                        <td class="w20 tdCenterAlign">Fan8</td>
+                        <td class="w16 tdCenterAlign" id="Fan8Com_com_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="Fan8Com_com_result">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-    
-        <div class="overload_result title" data-label="Overload Status Inspection Result">
-            <div class="data-before-trigger"></div>
-            <div class="content">
-                <table class="table table-hover">
-                    <thead>
-                        <tr class="row_sticky">
-                            <th class="w20 tdCenterAlign"></th>
-                            <th class="w16 tdCenterAlign">Status</th>
-                            <th class="w16 tdCenterAlign">Result</th>
-                            <th class="w16 tdCenterAlign"></th>
-                            <th class="w16 tdCenterAlign"></th>
-                            <th class="w16 tdCenterAlign"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="w20 tdCenterAlign">Inverter 1 MC</td>
-                            <td class="w16 tdCenterAlign" id="Inv1_OverLoad_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="Inv1_OverLoad_result">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                        </tr>
-    
-                        <tr>
-                            <td class="w20 tdCenterAlign">Inverter 2 MC</td>
-                            <td class="w16 tdCenterAlign" id="Inv2_OverLoad_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="Inv2_OverLoad_result">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                        </tr>
-    
-                        <tr>
-                            <td class="w20 tdCenterAlign">Inverter 3 MC</td>
-                            <td class="w16 tdCenterAlign" id="Inv3_OverLoad_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="Inv3_OverLoad_result">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                        </tr>
-    
-    
-                        <tr>
-                            <td class="w20 tdCenterAlign" id="Fan_group1">Fan Group1 MC</td>
-                            <td class="w16 tdCenterAlign" id="Fan_OverLoad1_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="Fan_OverLoad1_result">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                        </tr>
-    
-                        <tr>
-                            <td class="w20 tdCenterAlign" id="Fan_group2">Fan Group2 MC</td>
-                            <td class="w16 tdCenterAlign" id="Fan_OverLoad2_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="Fan_OverLoad2_result">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    
-        <div class="error_result title" data-label="Error Status Inspection Result">
-            <div class="data-before-trigger"></div>
-            <div class="content">
-                <table class="table table-hover">
-                    <thead>
-                        <tr class="row_sticky">
-                            <th class="w20 tdCenterAlign"></th>
-                            <th class="w16 tdCenterAlign">Status</th>
-                            <th class="w16 tdCenterAlign">Result</th>
-                            <th class="w16 tdCenterAlign"></th>
-                            <th class="w16 tdCenterAlign"></th>
-                            <th class="w16 tdCenterAlign"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="w20 tdCenterAlign">Inverter 1</td>
-                            <td class="w16 tdCenterAlign" id="Inv1_Error_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="Inv1_Error_result">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                        </tr>
-    
-                        <tr>
-                            <td class="w20 tdCenterAlign">Inverter 2</td>
-                            <td class="w16 tdCenterAlign" id="Inv2_Error_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="Inv2_Error_result">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                        </tr>
-    
-                        <tr>
-                            <td class="w20 tdCenterAlign">Inverter 3</td>
-                            <td class="w16 tdCenterAlign" id="Inv3_Error_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="Inv3_Error_result">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                        </tr>
-    
-    
-                        <tr>
-                            <td class="w20 tdCenterAlign">Fan1</td>
-                            <td class="w16 tdCenterAlign" id="fan1_error_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="fan1_error_result">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                        </tr>
-    
-                        <tr>
-                            <td class="w20 tdCenterAlign">Fan2</td>
-                            <td class="w16 tdCenterAlign" id="fan2_error_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="fan2_error_result">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                        </tr>
-    
-                        <tr>
-                            <td class="w20 tdCenterAlign">Fan3</td>
-                            <td class="w16 tdCenterAlign" id="fan3_error_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="fan3_error_result">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                        </tr>
-                        <tr>
-                            <td class="w20 tdCenterAlign">Fan4</td>
-                            <td class="w16 tdCenterAlign" id="fan4_error_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="fan4_error_result">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                        </tr>
-                        <tr>
-                            <td class="w20 tdCenterAlign Fan5_name">Fan5</td>
-                            <td class="w16 tdCenterAlign" id="fan5_error_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="fan5_error_result">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                        </tr>
-    
-                        <tr>
-                            <td class="w20 tdCenterAlign Fan6_name">Fan6</td>
-                            <td class="w16 tdCenterAlign" id="fan6_error_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="fan6_error_result">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                        </tr>
-    
-                        <tr class="Fan8_version">
-                            <td class="w20 tdCenterAlign Fan7_name">Fan7</td>
-                            <td class="w16 tdCenterAlign" id="fan7_error_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="fan7_error_result">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                        </tr>
-    
-                        <tr class="Fan8_version">
-                            <td class="w20 tdCenterAlign">Fan8</td>
-                            <td class="w16 tdCenterAlign" id="fan8_error_status">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign" id="fan8_error_result">
-                                *
-                            </td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                            <td class="w16 tdCenterAlign"></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    
     </div>
-    {% endblock %} {% block scripts %}
-    <script>
-        jQuery(document).ready(function () {
-            jQuery(".inspection_result").attr(
-                "data-before",
-                "Control Status Inspection Result ▼"
-            );
-            jQuery(".broken_result").attr(
-                "data-before",
-                "Broken Status Inspection Result ▼"
-            );
-            jQuery(".communication_result").attr(
-                "data-before",
-                "Communication Status Inspection Result ▼"
-            );
-            jQuery(".inspection_time").attr(
-                "data-before",
-                "Set Inspection Time (sec) ▼"
-            );
-            jQuery(".overload_result").attr(
-                "data-before",
-                "Overload Status Inspection Result ▼"
-            );
-    
-            jQuery(".error_result").attr(
-                "data-before",
-                "Error Status Inspection Result ▼"
-            );
-    
-            let userType = "{{user}}";
-            let time = "";
-    
-            if (userType == "kiosk" || userType == "user") {
-                $(".inspection_time").hide();
+
+    <div class="overload_result title" data-label="Overload Status Inspection Result">
+        <div class="data-before-trigger"></div>
+        <div class="content">
+            <table class="table table-hover">
+                <thead>
+                    <tr class="row_sticky">
+                        <th class="w20 tdCenterAlign"></th>
+                        <th class="w16 tdCenterAlign">Status</th>
+                        <th class="w16 tdCenterAlign">Result</th>
+                        <th class="w16 tdCenterAlign"></th>
+                        <th class="w16 tdCenterAlign"></th>
+                        <th class="w16 tdCenterAlign"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="w20 tdCenterAlign">Inverter 1 MC</td>
+                        <td class="w16 tdCenterAlign" id="Inv1_OverLoad_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="Inv1_OverLoad_result">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                    </tr>
+
+                    <tr>
+                        <td class="w20 tdCenterAlign">Inverter 2 MC</td>
+                        <td class="w16 tdCenterAlign" id="Inv2_OverLoad_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="Inv2_OverLoad_result">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                    </tr>
+
+                    <tr>
+                        <td class="w20 tdCenterAlign">Inverter 3 MC</td>
+                        <td class="w16 tdCenterAlign" id="Inv3_OverLoad_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="Inv3_OverLoad_result">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                    </tr>
+
+
+                    <tr>
+                        <td class="w20 tdCenterAlign" id="Fan_group1">Fan Group1 MC</td>
+                        <td class="w16 tdCenterAlign" id="Fan_OverLoad1_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="Fan_OverLoad1_result">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                    </tr>
+
+                    <tr>
+                        <td class="w20 tdCenterAlign" id="Fan_group2">Fan Group2 MC</td>
+                        <td class="w16 tdCenterAlign" id="Fan_OverLoad2_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="Fan_OverLoad2_result">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="error_result title" data-label="Error Status Inspection Result">
+        <div class="data-before-trigger"></div>
+        <div class="content">
+            <table class="table table-hover">
+                <thead>
+                    <tr class="row_sticky">
+                        <th class="w20 tdCenterAlign"></th>
+                        <th class="w16 tdCenterAlign">Status</th>
+                        <th class="w16 tdCenterAlign">Result</th>
+                        <th class="w16 tdCenterAlign"></th>
+                        <th class="w16 tdCenterAlign"></th>
+                        <th class="w16 tdCenterAlign"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="w20 tdCenterAlign">Inverter 1</td>
+                        <td class="w16 tdCenterAlign" id="Inv1_Error_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="Inv1_Error_result">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                    </tr>
+
+                    <tr>
+                        <td class="w20 tdCenterAlign">Inverter 2</td>
+                        <td class="w16 tdCenterAlign" id="Inv2_Error_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="Inv2_Error_result">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                    </tr>
+
+                    <tr>
+                        <td class="w20 tdCenterAlign">Inverter 3</td>
+                        <td class="w16 tdCenterAlign" id="Inv3_Error_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="Inv3_Error_result">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                    </tr>
+
+
+                    <tr>
+                        <td class="w20 tdCenterAlign">Fan1</td>
+                        <td class="w16 tdCenterAlign" id="fan1_error_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="fan1_error_result">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                    </tr>
+
+                    <tr>
+                        <td class="w20 tdCenterAlign">Fan2</td>
+                        <td class="w16 tdCenterAlign" id="fan2_error_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="fan2_error_result">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                    </tr>
+
+                    <tr>
+                        <td class="w20 tdCenterAlign">Fan3</td>
+                        <td class="w16 tdCenterAlign" id="fan3_error_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="fan3_error_result">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                    </tr>
+                    <tr>
+                        <td class="w20 tdCenterAlign">Fan4</td>
+                        <td class="w16 tdCenterAlign" id="fan4_error_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="fan4_error_result">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                    </tr>
+                    <tr>
+                        <td class="w20 tdCenterAlign Fan5_name">Fan5</td>
+                        <td class="w16 tdCenterAlign" id="fan5_error_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="fan5_error_result">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                    </tr>
+
+                    <tr>
+                        <td class="w20 tdCenterAlign Fan6_name">Fan6</td>
+                        <td class="w16 tdCenterAlign" id="fan6_error_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="fan6_error_result">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                    </tr>
+
+                    <tr class="Fan8_version">
+                        <td class="w20 tdCenterAlign Fan7_name">Fan7</td>
+                        <td class="w16 tdCenterAlign" id="fan7_error_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="fan7_error_result">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                    </tr>
+
+                    <tr class="Fan8_version">
+                        <td class="w20 tdCenterAlign">Fan8</td>
+                        <td class="w16 tdCenterAlign" id="fan8_error_status">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign" id="fan8_error_result">
+                            *
+                        </td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                        <td class="w16 tdCenterAlign"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+{% endblock %} {% block scripts %}
+<script>
+    jQuery(document).ready(function () {
+        jQuery(".inspection_result").attr(
+            "data-before",
+            "Control Status Inspection Result ▼"
+        );
+        jQuery(".broken_result").attr(
+            "data-before",
+            "Broken Status Inspection Result ▼"
+        );
+        jQuery(".communication_result").attr(
+            "data-before",
+            "Communication Status Inspection Result ▼"
+        );
+        jQuery(".inspection_time").attr(
+            "data-before",
+            "Set Inspection Time (sec) ▼"
+        );
+        jQuery(".overload_result").attr(
+            "data-before",
+            "Overload Status Inspection Result ▼"
+        );
+
+        jQuery(".error_result").attr(
+            "data-before",
+            "Error Status Inspection Result ▼"
+        );
+
+        let userType = "{{user}}";
+        let time = "";
+
+        if (userType == "kiosk" || userType == "user") {
+            $(".inspection_time").hide();
+        }
+
+        function updateRowStripes() {
+            $("table").each(function () {  // 遍歷每個 table
+                var table = $(this);
+                table.find("tbody tr:visible").each(function (index) {
+                    // 將每個 table 的第一行設為灰色，其他行交替顯示
+                    $(this).css("background-color", index % 2 === 0 ? "rgba(0, 0, 0, 0.09)" : "white");
+                });
+            });
+        }
+
+        function update_inspection(data) {
+            let inspect_data = data["result_data"];
+            let inspection_value = data["inspection_value"];
+            let status_data = data["progress_data"];
+            let sensor_data = data["sensor_data"];
+            let measure_data = data["measure_data"];
+            let inspection_time_last_check = data["inspection_time_last_check"];
+            const currentData = window.sharedData.data;
+            check_f1_expect_value(currentData);
+            for (let key in status_data) {
+                if (status_data.hasOwnProperty(key)) {
+                    let value = status_data[key];
+
+                    let element_status = document.getElementById(
+                        key + "_status"
+                    );
+                    if (element_status) {
+                        if (value == 4) {
+                            element_status.style.color = "black";
+                            element_status.innerText = "In Progress";
+                        } else if (value == 3) {
+                            element_status.style.color = "black";
+                            element_status.innerText = "-";
+                        } else if (value == 1) {
+                            element_status.style.color = "black";
+                            element_status.innerText = "Cancelled";
+                        } else if (value == 2) {
+                            element_status.style.color = "black";
+                            element_status.innerText = "Completed";
+                        } else if (value == 5) {
+                            element_status.style.color = "black";
+                            element_status.innerText = "Completed";
+                        } else {
+                            console.log(`不知道是什麼:${value}`);
+                        }
+                    }
+                }
             }
-    
-            function updateRowStripes() {
-                $("table").each(function () {  // 遍歷每個 table
-                    var table = $(this);
-                    table.find("tbody tr:visible").each(function (index) {
-                        // 將每個 table 的第一行設為灰色，其他行交替顯示
-                        $(this).css("background-color", index % 2 === 0 ? "rgba(0, 0, 0, 0.09)" : "white");
-                    });
+
+            for (let key in inspect_data) {
+                if (inspect_data.hasOwnProperty(key)) {
+                    let value = inspect_data[key];
+
+                    let element_result = document.getElementById(
+                        key + "_result"
+                    );
+                    let status = status_data[key];
+
+                    if (element_result) {
+                        if (status == "3" || status == "4") {
+                            element_result.style.color = "black";
+                            element_result.innerText = "-";
+                        } else if (status == "1") {
+                            element_result.style.color = "black";
+                            element_result.innerText = "-";
+                        } else {
+                            if (value == 1) {
+                                element_result.style.color = "red";
+                                element_result.innerText = "NG";
+                            } else if (value == 3) {
+                                element_result.style.color = "red";
+                                element_result.innerText = "OverLoad";
+                            } else if (value == 0) {
+                                element_result.style.color = "black";
+                                element_result.innerText = "OK";
+                            }
+                        }
+
+                        if (status_data[key] == 5) {
+                            element_result.style.color = "black";
+                            element_result.innerText = "-";
+                        }
+                    }
+                }
+            }
+
+            for (let key in inspection_time_last_check) {
+                if (inspection_time_last_check.hasOwnProperty(key)) {
+                    let element_time = document.getElementById("inspect_time");
+
+                    if (element_time) {
+                        element_time.innerText =
+                            inspection_time_last_check["current_time"];
+                        time = inspection_time_last_check["current_time"];
+                    }
+                }
+            }
+
+            for (let key in inspection_value) {
+                if (inspection_value.hasOwnProperty(key)) {
+                    let value = inspection_value[key];
+                    let element_stat = document.getElementById(key + "_stat");
+                    let status = status_data[key];
+
+                    if (element_stat) {
+                        if (status == "3" || status == "4") {
+                            element_stat.innerHTML = "-";
+                        } else if (status == "1") {
+                            element_stat.innerHTML = "-";
+                        } else {
+                            if (key.includes("f1") || key.includes("speed")) {
+                                element_stat.innerHTML = value.toFixed(0);
+                            } else {
+                                element_stat.innerHTML = value.toFixed(1);
+                            }
+                        }
+                    }
+                }
+            }
+
+            for (let key in sensor_data["unit"]) {
+                if (sensor_data["unit"].hasOwnProperty(key)) {
+                    var value = sensor_data["unit"][key];
+                    $("." + key).text(value);
+                }
+            }
+
+            for (let key in measure_data) {
+                if (measure_data.hasOwnProperty(key)) {
+                    let value = measure_data[key];
+                    let element_measure = document.getElementById(
+                        key + "_measure"
+                    );
+                    let status = status_data[key];
+
+                    if (element_measure) {
+                        if (status == "3" || status == "4") {
+                            element_measure.innerHTML = "-";
+                        } else if (status == "1") {
+                            element_measure.innerHTML = "-";
+                        } else {
+                            if (key.includes("f1") || key.includes("speed")) {
+                                element_measure.innerHTML = value.toFixed(0);
+                            } else {
+                                element_measure.innerHTML = value.toFixed(1);
+                            }
+                        }
+
+                        if (status_data[key] == 5) {
+                            element_measure.innerHTML = "-";
+                        }
+                    }
+                }
+            }
+        }
+
+        $.ajax({
+            url: "/get_data_engineerMode",
+            method: "GET",
+            success: function (data) {
+                const { inspection_time } = data;
+
+                console.log(inspection_time);
+
+                for (key in inspection_time) {
+                    if (inspection_time.hasOwnProperty(key)) {
+                        var value = inspection_time[key];
+                        var element = document.getElementById(key);
+                        if (element !== null) {
+                            element.value = value;
+                        }
+                    }
+                }
+            },
+            error: function (error) {
+                console.error("Error fetching data:", error);
+            },
+        });
+
+        function check_f1_expect_value(data) {
+            let t2_value = data["value"]["temp_clntRtn"];
+            if (t2_value > 45 && t2_value <= 55) {
+                $("#f1_expect").text("100 ~ 130");
+            } else if (t2_value > 35 && t2_value <= 45) {
+                $("#f1_expect").text("80 ~ 110");
+            } else if (t2_value > 25 && t2_value <= 35) {
+                $("#f1_expect").text("60 ~ 90");
+            } else if (t2_value > 15 && t2_value <= 25) {
+                $("#f1_expect").text("40 ~ 70");
+            }
+        }
+
+        async function fetch_data_version() {
+            while (!window.sharedData.data || !window.sharedData.version) {
+                // 等待 base.html 資料初始化
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+            while (true) {
+                try {
+                    // const data = await $.ajax({
+                    //     url: "/get_data_version",
+                    //     method: "GET",
+                    //     loader: false,
+                    //     dataType: "json",
+                    // });
+                    const data = window.sharedData.version;
+                    check_version(data);
+                    updateRowStripes();
+                } catch (xhr) {
+                    console.error(
+                        `AJAX request failed with status: ${xhr.status} - ${xhr.statusText}`
+                    );
+                }
+                await new Promise((resolve) => setTimeout(resolve, 2000));
+            }
+        }
+
+        fetch_data_version();
+
+        function check_version(ver_switch) {
+            if (ver_switch["fan_count_switch"] === true) {
+                $(".Fan_com").show();
+                $(".Fan8_version").hide();
+            } else {
+                $(".Fan_com").hide();
+            }
+            if (ver_switch["coolant_quality_meter_switch"] === true) {
+                $(".no_coolant_quality_meter_switch").hide();
+            } else {
+                $(".no_coolant_quality_meter_switch").show();
+            }
+        }
+
+        $("#inspection_time_apply").click(function () {
+            let pump_open_time = $("#pump_open_time").val();
+
+            if (pump_open_time < 30 || pump_open_time > 60) {
+                Swal.fire({
+                    title: "Error",
+                    text: "Pump Speed inspection duration must be between 30 and 60",
+                    icon: "error",
+                    confirmButtonText: "OK",
+                });
+                return;
+            }
+
+            if (pump_open_time <= 0 || pump_open_time > 30000) {
+                Swal.fire({
+                    title: "Error",
+                    text: "The Accepted Range is 1 to 30,000",
+                    icon: "error",
+                    confirmButtonText: "OK",
+                });
+
+                return;
+            }
+
+            if (
+                Number.isInteger(Number(pump_open_time)) &&
+                pump_open_time > 0
+            ) {
+                $.ajax({
+                    type: "POST",
+                    url: "/inspection_time_apply",
+                    data: JSON.stringify({
+                        pump_open_time: pump_open_time,
+                    }),
+                    success: function (response) {
+                        Swal.fire({
+                            title: "Success",
+                            text: response,
+                            icon: "success",
+                            confirmButtonText: "OK",
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error sending data:", error);
+                    },
+                });
+            } else {
+                Swal.fire({
+                    title: "Error",
+                    text: "All times must be positive integers",
+                    icon: "error",
+                    confirmButtonText: "OK",
                 });
             }
-    
-            function update_inspection(data) {
-                let inspect_data = data["result_data"];
-                let inspection_value = data["inspection_value"];
-                let status_data = data["progress_data"];
-                let sensor_data = data["sensor_data"];
-                let measure_data = data["measure_data"];
-                let inspection_time_last_check = data["inspection_time_last_check"];
-                const currentData = window.sharedData.data;
-                check_f1_expect_value(currentData);
-                for (let key in status_data) {
-                    if (status_data.hasOwnProperty(key)) {
-                        let value = status_data[key];
-    
-                        let element_status = document.getElementById(
-                            key + "_status"
-                        );
-                        if (element_status) {
-                            if (value == 4) {
-                                element_status.style.color = "black";
-                                element_status.innerText = "In Progress";
-                            } else if (value == 3) {
-                                element_status.style.color = "black";
-                                element_status.innerText = "-";
-                            } else if (value == 1) {
-                                element_status.style.color = "black";
-                                element_status.innerText = "Cancelled";
-                            } else if (value == 2) {
-                                element_status.style.color = "black";
-                                element_status.innerText = "Completed";
-                            } else if (value == 5) {
-                                element_status.style.color = "black";
-                                element_status.innerText = "Completed";
-                            } else {
-                                console.log(`不知道是什麼:${value}`);
-                            }
-                        }
-                    }
-                }
-    
-                for (let key in inspect_data) {
-                    if (inspect_data.hasOwnProperty(key)) {
-                        let value = inspect_data[key];
-    
-                        let element_result = document.getElementById(
-                            key + "_result"
-                        );
-                        let status = status_data[key];
-    
-                        if (element_result) {
-                            if (status == "3" || status == "4") {
-                                element_result.style.color = "black";
-                                element_result.innerText = "-";
-                            } else if (status == "1") {
-                                element_result.style.color = "black";
-                                element_result.innerText = "-";
-                            } else {
-                                if (value == 1) {
-                                    element_result.style.color = "red";
-                                    element_result.innerText = "NG";
-                                } else if (value == 3) {
-                                    element_result.style.color = "red";
-                                    element_result.innerText = "OverLoad";
-                                } else if (value == 0) {
-                                    element_result.style.color = "black";
-                                    element_result.innerText = "OK";
-                                }
-                            }
-    
-                            if (status_data[key] == 5) {
-                                element_result.style.color = "black";
-                                element_result.innerText = "-";
-                            }
-                        }
-                    }
-                }
-    
-                for (let key in inspection_time_last_check) {
-                    if (inspection_time_last_check.hasOwnProperty(key)) {
-                        let element_time = document.getElementById("inspect_time");
-    
-                        if (element_time) {
-                            element_time.innerText =
-                                inspection_time_last_check["current_time"];
-                            time = inspection_time_last_check["current_time"];
-                        }
-                    }
-                }
-    
-                for (let key in inspection_value) {
-                    if (inspection_value.hasOwnProperty(key)) {
-                        let value = inspection_value[key];
-                        let element_stat = document.getElementById(key + "_stat");
-                        let status = status_data[key];
-    
-                        if (element_stat) {
-                            if (status == "3" || status == "4") {
-                                element_stat.innerHTML = "-";
-                            } else if (status == "1") {
-                                element_stat.innerHTML = "-";
-                            } else {
-                                if (key.includes("f1") || key.includes("speed")) {
-                                    element_stat.innerHTML = value.toFixed(0);
-                                } else {
-                                    element_stat.innerHTML = value.toFixed(1);
-                                }
-                            }
-                        }
-                    }
-                }
-    
-                for (let key in sensor_data["unit"]) {
-                    if (sensor_data["unit"].hasOwnProperty(key)) {
-                        var value = sensor_data["unit"][key];
-                        $("." + key).text(value);
-                    }
-                }
-    
-                for (let key in measure_data) {
-                    if (measure_data.hasOwnProperty(key)) {
-                        let value = measure_data[key];
-                        let element_measure = document.getElementById(
-                            key + "_measure"
-                        );
-                        let status = status_data[key];
-    
-                        if (element_measure) {
-                            if (status == "3" || status == "4") {
-                                element_measure.innerHTML = "-";
-                            } else if (status == "1") {
-                                element_measure.innerHTML = "-";
-                            } else {
-                                if (key.includes("f1") || key.includes("speed")) {
-                                    element_measure.innerHTML = value.toFixed(0);
-                                } else {
-                                    element_measure.innerHTML = value.toFixed(1);
-                                }
-                            }
-    
-                            if (status_data[key] == 5) {
-                                element_measure.innerHTML = "-";
-                            }
-                        }
-                    }
-                }
-            }
-    
+        });
+
+        $("#inspection_time_cancel").click(function () {
             $.ajax({
                 url: "/get_data_engineerMode",
                 method: "GET",
                 success: function (data) {
                     const { inspection_time } = data;
-    
-                    console.log(inspection_time);
-    
+
                     for (key in inspection_time) {
                         if (inspection_time.hasOwnProperty(key)) {
                             var value = inspection_time[key];
@@ -1354,351 +1486,224 @@
                     console.error("Error fetching data:", error);
                 },
             });
-            
-            function check_f1_expect_value(data){
-                let t2_value = data["value"]["temp_clntRtn"];
-                if(t2_value > 45 && t2_value <= 55){
-                    $("#f1_expect").text("100 ~ 130");
-                }else if(t2_value > 35 && t2_value <= 45){
-                    $("#f1_expect").text("80 ~ 110");
-                }else if(t2_value > 25 && t2_value <= 35){
-                    $("#f1_expect").text("60 ~ 90");
-                }else if(t2_value > 15 && t2_value <= 25){
-                    $("#f1_expect").text("40 ~ 70");
+        });
+
+        async function fetchInspectionResult() {
+            while (true) {
+                try {
+                    const data = await $.ajax({
+                        url: "/get_inspection_result",
+                        method: "GET",
+                        loader: false,
+                        timeout: 20000,
+                        dataType: "json",
+                    });
+
+                    update_inspection(data);
+                    console.log(data);
+                } catch (error) {
+                    console.error("Error fetching inspection result:", error);
                 }
+                await new Promise((resolve) => setTimeout(resolve, 2000));
+            }
+        }
+
+        fetchInspectionResult();
+
+        $("#csv_btn").click(function () {
+            function downloadCSV(csvContent, filename) {
+                const blob = new Blob([csvContent], { type: "text/csv" });
+                const url = window.URL.createObjectURL(blob);
+
+                const a = document.createElement("a");
+                a.setAttribute("hidden", "");
+                a.setAttribute("href", url);
+                a.setAttribute("download", filename);
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
             }
 
-            async function fetch_data_version() {
-                while (true) {
-                    try {
-                        const data = await $.ajax({
-                            url: "/get_data_version",
-                            method: "GET",
-                            loader: false,
-                            dataType: "json",
-                        });
-                        check_version(data);
-                        updateRowStripes();
-                    } catch (xhr) {
-                        console.error(
-                            `AJAX request failed with status: ${xhr.status} - ${xhr.statusText}`
-                        );
+            $.ajax({
+                url: "/get_inspection_result",
+                method: "GET",
+                dataType: "json",
+                success: function (data) {
+                    let fw_info_data = data["fw_info_data"];
+
+                    let r1 = "";
+                    let inspectionTime = time || "N/A";
+
+                    r1 += "1. Inspection Details:\n";
+
+                    if (fw_info_data) {
+                        r1 += `Last Inspect:,${inspectionTime}\n`;
+
+                        let order = [
+                            "SN",
+                            "Model",
+                            "Version",
+                            "WebUI",
+                            "SCC_API",
+                            "SNMP",
+                            "Modbus_Server",
+                            "Redfish",
+                            "PLC",
+                        ]
+
+                        order.forEach(key => {
+                            if (fw_info_data.hasOwnProperty(key)) {
+                                r1 += `${key},${fw_info_data[key]}\n`;
+                            }
+                        })
+
                     }
-                    await new Promise((resolve) => setTimeout(resolve, 2000));
-                }
-            }
-    
-            fetch_data_version();
-    
-            function check_version(ver_switch) {
-                if (ver_switch["fan_count_switch"] === true) {
-                    $(".Fan_com").show();
-                    $(".Fan8_version").hide();
-                } else {
-                    $(".Fan_com").hide();
-                }
-                if (ver_switch["coolant_quality_meter_switch"] === true) {
-                    $(".no_coolant_quality_meter_switch").hide();
-                } else {
-                    $(".no_coolant_quality_meter_switch").show();
-                }
-            }
-    
-            $("#inspection_time_apply").click(function () {
-                let pump_open_time = $("#pump_open_time").val();
-    
-                if (pump_open_time < 30 || pump_open_time > 60) {
-                    Swal.fire({
-                        title: "Error",
-                        text: "Pump Speed inspection duration must be between 30 and 60",
-                        icon: "error",
-                        confirmButtonText: "OK",
-                    });
-                    return;
-                }
-    
-                if (pump_open_time <= 0 || pump_open_time > 30000) {
-                    Swal.fire({
-                        title: "Error",
-                        text: "The Accepted Range is 1 to 30,000",
-                        icon: "error",
-                        confirmButtonText: "OK",
-                    });
-    
-                    return;
-                }
-    
-                if (
-                    Number.isInteger(Number(pump_open_time)) &&
-                    pump_open_time > 0
-                ) {
-                    $.ajax({
-                        type: "POST",
-                        url: "/inspection_time_apply",
-                        data: JSON.stringify({
-                            pump_open_time: pump_open_time,
-                        }),
-                        success: function (response) {
-                            Swal.fire({
-                                title: "Success",
-                                text: response,
-                                icon: "success",
-                                confirmButtonText: "OK",
-                            });
-                        },
-                        error: function (xhr, status, error) {
-                            console.error("Error sending data:", error);
-                        },
-                    });
-                } else {
-                    Swal.fire({
-                        title: "Error",
-                        text: "All times must be positive integers",
-                        icon: "error",
-                        confirmButtonText: "OK",
-                    });
-                }
-            });
-    
-            $("#inspection_time_cancel").click(function () {
-                $.ajax({
-                    url: "/get_data_engineerMode",
-                    method: "GET",
-                    success: function (data) {
-                        const { inspection_time } = data;
-    
-                        for (key in inspection_time) {
-                            if (inspection_time.hasOwnProperty(key)) {
-                                var value = inspection_time[key];
-                                var element = document.getElementById(key);
-                                if (element !== null) {
-                                    element.value = value;
-                                }
-                            }
+
+                    let r2 = "";
+                    r2 += "2. Inspection Result:\n";
+                    r2 += "Item,Status,Result,Measured Value,Unit\n";
+
+                    $("table tbody tr").each(function (i) {
+                        if ($(this).is(":hidden")) {
+                            return;
                         }
-                    },
-                    error: function (error) {
-                        console.error("Error fetching data:", error);
-                    },
-                });
-            });
-    
-            async function fetchInspectionResult() {
-                while (true) {
-                    try {
-                        const data = await $.ajax({
-                            url: "/get_inspection_result",
-                            method: "GET",
-                            loader: false,
-                            timeout: 20000,
-                            dataType: "json",
-                        });
-    
-                        update_inspection(data);
-                        console.log(data);
-                    } catch (error) {
-                        console.error("Error fetching inspection result:", error);
-                    }
-                    await new Promise((resolve) => setTimeout(resolve, 2000));
-                }
-            }
-    
-            fetchInspectionResult();
-    
-            $("#csv_btn").click(function () {
-                function downloadCSV(csvContent, filename) {
-                    const blob = new Blob([csvContent], { type: "text/csv" });
-                    const url = window.URL.createObjectURL(blob);
-    
-                    const a = document.createElement("a");
-                    a.setAttribute("hidden", "");
-                    a.setAttribute("href", url);
-                    a.setAttribute("download", filename);
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                }
-    
-                $.ajax({
-                    url: "/get_inspection_result",
-                    method: "GET",
-                    dataType: "json",
-                    success: function (data) {
-                        let fw_info_data = data["fw_info_data"];
-    
-                        let r1 = "";
-                        let inspectionTime = time || "N/A";
-    
-                        r1 += "1. Inspection Details:\n";
-    
-                        if (fw_info_data) {
-                            r1 += `Last Inspect:,${inspectionTime}\n`;
-    
-                            let order = [
-                                "SN",
-                                "Model",
-                                "Version",
-                                "WebUI",
-                                "SCC_API",
-                                "SNMP",
-                                "Modbus_Server",
-                                "Redfish",
-                                "PLC",
-                            ]
-    
-                            order.forEach(key => {
-                                if (fw_info_data.hasOwnProperty(key)) {
-                                    r1 += `${key},${fw_info_data[key]}\n`;
-                                }
-                            })
-    
-                        }
-    
-                        let r2 = "";
-                        r2 += "2. Inspection Result:\n";
-                        r2 += "Item,Status,Result,Measured Value,Unit\n";
-    
-                        $("table tbody tr").each(function (i) {
-                            if ($(this).is(":hidden")) {
-                                return;
-                            }
-    
-                            let item = $(this).find("td").first().text().trim();
-                            let status = $(this).find("td").eq(1).text().trim();
-                            let result = $(this).find("td").eq(2).text().trim();
-                            let value = $(this).find("td").eq(4).text().trim();
-                            let unit = $(this).find("td").eq(5).text().trim();
-    
-                            let rowNum = i + 2;
-                            console.log({ i, item });
-    
-                            /// 更改下載csv檔的每個欄位title
-    
-                            if (i >= 14 && i < 27) {
-                                r2 += `Broken Status: ${item},${status},${result},${value},${unit}\n`;
-                            } else if (i >= 27 && i < 45) {
-                                r2 += `Communication Status: ${item},${status},${result},${value},${unit}\n`;
-                            } else if (i >= 46 && i < 51) {
-                                r2 += `Overload Status: ${item},${status},${result},${value},${unit}\n`;
-                            } else if (i >= 51 && i < 61) {
-                                r2 += `Error Status: ${item},${status},${result},${value},${unit}\n`;
-                            } else {
-                                r2 += `${item},${status},${result},${value},${unit}\n`;
-                            }
-                        });
-    
-                        let final_r = r1 + "\n" + r2;
-    
-                        const now = new Date();
-                        const timestamp = now
-                            .toISOString()
-                            .replace(/[-:.T]/g, "")
-                            .slice(0, 8);
-                        downloadCSV(final_r, `Inspection_Result_${timestamp}.csv`);
-                    },
-                });
-            });
-    
-            $("#start_inspect").click(function () {
-                // let pump_open_time = $("#pump_open_time").val();
-    
-                // if (pump_open_time <= 0) {
-                //     Swal.fire({
-                //         title: "Error",
-                //         text: "Please set value to Pump Speed",
-                //         icon: "error",
-                //         confirmButtonText: "OK",
-                //     });
-                //     return;
-                // } else {
-                $.ajax({
-                    url: "/get_data_control",
-                    method: "GET",
-                    dataType: "json",
-                    success: function (data) {
-                        let value_section = data["value"];
-                        let mode = value_section["resultMode"];
-    
-                        if (mode != "Inspection") {
-                            Swal.fire({
-                                title: "info",
-                                text: 'Please Set Mode to "Inspection" First.',
-                                icon: "info",
-                                confirmButtonText: "OK",
-                            }).then(() => {
-                                window.location.href = "/control";
-                            });
+
+                        let item = $(this).find("td").first().text().trim();
+                        let status = $(this).find("td").eq(1).text().trim();
+                        let result = $(this).find("td").eq(2).text().trim();
+                        let value = $(this).find("td").eq(4).text().trim();
+                        let unit = $(this).find("td").eq(5).text().trim();
+
+                        let rowNum = i + 2;
+                        console.log({ i, item });
+
+                        /// 更改下載csv檔的每個欄位title
+
+                        if (i >= 14 && i < 27) {
+                            r2 += `Broken Status: ${item},${status},${result},${value},${unit}\n`;
+                        } else if (i >= 27 && i < 45) {
+                            r2 += `Communication Status: ${item},${status},${result},${value},${unit}\n`;
+                        } else if (i >= 46 && i < 51) {
+                            r2 += `Overload Status: ${item},${status},${result},${value},${unit}\n`;
+                        } else if (i >= 51 && i < 61) {
+                            r2 += `Error Status: ${item},${status},${result},${value},${unit}\n`;
                         } else {
-                            $.ajax({
-                                url: "/start_inspect",
-                                method: "POST",
-                                dataType: "json",
-                                success: function (response) {
-                                    Swal.fire({
-                                        title: "Success",
-                                        text: response.message,
-                                        icon: "success",
-                                        confirmButtonText: "OK",
-                                    });
-                                },
-                            });
+                            r2 += `${item},${status},${result},${value},${unit}\n`;
                         }
-                    },
-                });
-                // }
-            });
-    
-            $("#cancel_inspect").click(function () {
-                $.ajax({
-                    url: "/get_data_control",
-                    method: "GET",
-                    success: function (data) {
-                        inspecting = data["inspect_action"];
-                        if (inspecting != 1) {
-                            Swal.fire({
-                                title: "Info",
-                                text: "Inspection has not started",
-                                icon: "info",
-                                confirmButtonText: "OK",
-                            });
-                        } else {
-                            $.ajax({
-                                url: "/cancel_inspect",
-                                method: "POST",
-                                dataType: "json",
-                                success: function (response) {
-                                    Swal.fire({
-                                        title: "Success",
-                                        text: response.message,
-                                        icon: "success",
-                                        confirmButtonText: "OK",
-                                    });
-                                },
-                            });
-                        }
-                    },
-                    error: function (error) {
-                        console.error("Error fetching data:", error);
-                    },
-                });
-            });
-    
-            $(".title").each(function () {
-                if ($(this).data("default") === "collapsed") {
-                    $(this).addClass("collapsed");
-                }
-            });
-    
-            $(".data-before-trigger").click(function () {
-                let $title = $(this).closest(".title");
-                $title.toggleClass("collapsed");
-                if ($title.hasClass("collapsed")) {
-                    $title.attr("data-before", $title.attr("data-label") + " ▲");
-                } else {
-                    $title.attr("data-before", $title.attr("data-label") + " ▼");
-                }
+                    });
+
+                    let final_r = r1 + "\n" + r2;
+
+                    const now = new Date();
+                    const timestamp = now
+                        .toISOString()
+                        .replace(/[-:.T]/g, "")
+                        .slice(0, 8);
+                    downloadCSV(final_r, `Inspection_Result_${timestamp}.csv`);
+                },
             });
         });
-    </script>
-    
-    {% endblock %}
+
+        $("#start_inspect").click(function () {
+            // let pump_open_time = $("#pump_open_time").val();
+
+            // if (pump_open_time <= 0) {
+            //     Swal.fire({
+            //         title: "Error",
+            //         text: "Please set value to Pump Speed",
+            //         icon: "error",
+            //         confirmButtonText: "OK",
+            //     });
+            //     return;
+            // } else {
+            $.ajax({
+                url: "/get_data_control",
+                method: "GET",
+                dataType: "json",
+                success: function (data) {
+                    let value_section = data["value"];
+                    let mode = value_section["resultMode"];
+
+                    if (mode != "Inspection") {
+                        Swal.fire({
+                            title: "info",
+                            text: 'Please Set Mode to "Inspection" First.',
+                            icon: "info",
+                            confirmButtonText: "OK",
+                        }).then(() => {
+                            window.location.href = "/control";
+                        });
+                    } else {
+                        $.ajax({
+                            url: "/start_inspect",
+                            method: "POST",
+                            dataType: "json",
+                            success: function (response) {
+                                Swal.fire({
+                                    title: "Success",
+                                    text: response.message,
+                                    icon: "success",
+                                    confirmButtonText: "OK",
+                                });
+                            },
+                        });
+                    }
+                },
+            });
+            // }
+        });
+
+        $("#cancel_inspect").click(function () {
+            $.ajax({
+                url: "/get_data_control",
+                method: "GET",
+                success: function (data) {
+                    inspecting = data["inspect_action"];
+                    if (inspecting != 1) {
+                        Swal.fire({
+                            title: "Info",
+                            text: "Inspection has not started",
+                            icon: "info",
+                            confirmButtonText: "OK",
+                        });
+                    } else {
+                        $.ajax({
+                            url: "/cancel_inspect",
+                            method: "POST",
+                            dataType: "json",
+                            success: function (response) {
+                                Swal.fire({
+                                    title: "Success",
+                                    text: response.message,
+                                    icon: "success",
+                                    confirmButtonText: "OK",
+                                });
+                            },
+                        });
+                    }
+                },
+                error: function (error) {
+                    console.error("Error fetching data:", error);
+                },
+            });
+        });
+
+        $(".title").each(function () {
+            if ($(this).data("default") === "collapsed") {
+                $(this).addClass("collapsed");
+            }
+        });
+
+        $(".data-before-trigger").click(function () {
+            let $title = $(this).closest(".title");
+            $title.toggleClass("collapsed");
+            if ($title.hasClass("collapsed")) {
+                $title.attr("data-before", $title.attr("data-label") + " ▲");
+            } else {
+                $title.attr("data-before", $title.attr("data-label") + " ▼");
+            }
+        });
+    });
+</script>
+
+{% endblock %}
