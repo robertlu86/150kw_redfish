@@ -4048,6 +4048,7 @@ def read_modbus_data():
                 inv2_v = inv2.registers[0] / 16000 * 100
                 inv3_v = inv3.registers[0] / 16000 * 100
                 
+                ### 依照風扇數量轉換要讀取的寄存器
                 if ver_switch["fan_count_switch"]:
                     fan1_v = fan1.registers[0] / 16000 * 100
                     fan2_v = fan2.registers[0] / 16000 * 100
@@ -4055,8 +4056,6 @@ def read_modbus_data():
                     fan4_v = fan5.registers[0] / 16000 * 100
                     fan5_v = fan6.registers[0] / 16000 * 100
                     fan6_v = fan7.registers[0] / 16000 * 100
-
-                    
                 else:
                     fan1_v = fan1.registers[0] / 16000 * 100
                     fan2_v = fan2.registers[0] / 16000 * 100
@@ -4179,14 +4178,23 @@ def read_modbus_data():
                 # ctr_data["inv"]["fan6"] = fan6_v >= 2
                 # ctr_data["inv"]["fan7"] = fan7_v >= 2
                 # ctr_data["inv"]["fan8"] = fan8_v >= 2
-                ctr_data["inv"]["fan1"] = fan1_v >= 6
-                ctr_data["inv"]["fan2"] = fan2_v >= 6
-                ctr_data["inv"]["fan3"] = fan3_v >= 6
-                ctr_data["inv"]["fan4"] = fan4_v >= 6
-                ctr_data["inv"]["fan5"] = fan5_v >= 6
-                ctr_data["inv"]["fan6"] = fan6_v >= 6
-                ctr_data["inv"]["fan7"] = fan7_v >= 6
-                ctr_data["inv"]["fan8"] = fan8_v >= 6
+                if ver_switch["fan_count_switch"]:
+                    ctr_data["inv"]["fan1"] = fan1_v >= 6
+                    ctr_data["inv"]["fan2"] = fan2_v >= 6
+                    ctr_data["inv"]["fan3"] = fan3_v >= 6
+                    ctr_data["inv"]["fan4"] = fan4_v >= 6
+                    ctr_data["inv"]["fan5"] = fan5_v >= 6
+                    ctr_data["inv"]["fan6"] = fan6_v >= 6
+                else:
+                    ctr_data["inv"]["fan1"] = fan1_v >= 6
+                    ctr_data["inv"]["fan2"] = fan2_v >= 6
+                    ctr_data["inv"]["fan3"] = fan3_v >= 6
+                    ctr_data["inv"]["fan4"] = fan4_v >= 6
+                    ctr_data["inv"]["fan5"] = fan5_v >= 6
+                    ctr_data["inv"]["fan6"] = fan6_v >= 6
+                    ctr_data["inv"]["fan7"] = fan7_v >= 6
+                    ctr_data["inv"]["fan8"] = fan8_v >= 6
+                    
         except Exception as e:
             print(f"read inv_en error:{e}")
 
@@ -4206,7 +4214,9 @@ def read_modbus_data():
                 fan = cvt_registers_to_float(r3.registers[0], r3.registers[1])
 
                 r4 = client.read_coils(address=(8192 + 850), count=8)
+                
                 ### 將打勾選項換至4 5 6
+                
                 if ver_switch["fan_count_switch"]:
                     f1 = r4.bits[0]
                     f2 = r4.bits[1]
@@ -4254,12 +4264,14 @@ def read_modbus_data():
 
                 ctr_data["value"]["fan6_check"] = f6
                 ctr_data["value"]["resultFan6"] = f6
+                
+                if not ver_switch["fan_count_switch"]:
+                    
+                    ctr_data["value"]["fan7_check"] = f7
+                    ctr_data["value"]["resultFan7"] = f7
 
-                ctr_data["value"]["fan7_check"] = f7
-                ctr_data["value"]["resultFan7"] = f7
-
-                ctr_data["value"]["fan8_check"] = f8
-                ctr_data["value"]["resultFan8"] = f8
+                    ctr_data["value"]["fan8_check"] = f8
+                    ctr_data["value"]["resultFan8"] = f8
 
         except Exception as e:
             print(f"pump speed error:{e}")
@@ -4283,12 +4295,14 @@ def read_modbus_data():
                             ctr_data["value"]["resultPS"] = round(ps)
                             break
                     except Exception as e:
-                        print(f"pump speed error: {e}")
+                        print(f"pump or speed check error: {e}")
                     break
 
         if not any(v for k, v in ctr_data["inv"].items() if k.startswith("inv")):
             ctr_data["value"]["resultPS"] = 0
-        ########寫入resultFan 
+            
+        ### 寫入resultFan 
+        
         if ver_switch["fan_count_switch"]:
             fan_inv_addresses = {
                 "fan1": 7020,
@@ -4320,12 +4334,16 @@ def read_modbus_data():
                         ) as client:
                             r = client.read_holding_registers(
                                 address=(20480 + address), count=1
-                            )
+                            ) 
+                            
                             ### 轉換 freq
+                            
                             fs = r.registers[0]
                             fs = fs / 16000 * 100
                             # print(f'fs:{fs}')
-                            ###如果速度小於7, 速度就為0
+                            
+                            ### 如果速度小於7, 速度就為0 
+                            
                             if fs < 7:
                                 fs = 0
                             ctr_data["value"]["resultFan"] = round(fs)
@@ -4336,6 +4354,7 @@ def read_modbus_data():
 
         if not any(v for k, v in ctr_data["inv"].items() if k.startswith("fan")):
             ctr_data["value"]["resultFan"] = 0      
+            
         ### 讀取pump runtime
         
         try:
