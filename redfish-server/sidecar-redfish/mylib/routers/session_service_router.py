@@ -10,7 +10,7 @@ SessionService_ns = Namespace('', description='Session Service')
 #================================================
 # SessionService
 #================================================
-@SessionService_ns.route("/SessionService/")
+@SessionService_ns.route("/SessionService")
 class SessionService(Resource):
     # # @requires_auth
     
@@ -25,7 +25,7 @@ class SessionService(Resource):
         except Exception:
             return ERROR_INTERNAL
 
-@SessionService_ns.route("/SessionService/Sessions/")
+@SessionService_ns.route("/SessionService/Sessions")
 class Sessions(Resource):
     # # @requires_auth
     def get(self):
@@ -53,7 +53,7 @@ class Sessions(Resource):
         except Exception:   
             return ERROR_INTERNAL
 
-@SessionService_ns.route("/SessionService/Sessions/Members/")
+@SessionService_ns.route("/SessionService/Sessions/Members")
 class SessionMembers(Resource):
     def post(self):
         body = request.get_json(force=True)
@@ -74,7 +74,7 @@ class SessionMembers(Resource):
         except Exception:   
             return ERROR_INTERNAL
         
-@SessionService_ns.route("/SessionService/Sessions/<session_id>/")
+@SessionService_ns.route("/SessionService/Sessions/<session_id>")
 class Session(Resource):
     # # @requires_auth
     def get(self, session_id):

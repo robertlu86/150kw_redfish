@@ -9,6 +9,7 @@ import requests
 import os
 from typing import Dict
 from mylib.common.my_resource import MyResource
+from mylib.utils.system_info import get_mac_uuid
 
 
 Chassis_ns = Namespace('', description='Chassis Collection')
@@ -41,7 +42,7 @@ Chassis_data_1 = {
     "UUID": "00000000-0000-0000-0000-e45f013e98f8", # 機殼 UUID (未做)
     "AssetTag": "TBD", #  (未做)
     "SKU": "TBD", # 機殼硬體版本或型號 (未做)
-    "Version": "TBD", # 機殼軟體版本或型號 (未做)
+    "Version": "ok", # 機殼軟體版本或型號 
     
     # 狀態與指示燈 (status 未做)
     "PowerState": "On",
@@ -121,7 +122,7 @@ Controls_data_all = {
         "@odata.type": "#Control.v1_5_1.Control",
         "@odata.context": "/redfish/v1/$metadata#Control.v1_5_1.Control",
         "Id": "OperationMode",
-        "Name": "OperationMode",
+        "Name": "Operation Mode",
         "PhysicalContext": "Chassis",
         "ControlMode": "Manual",
     },
@@ -381,10 +382,13 @@ class Chassis(Resource):
 class Chassis1(Resource):
     # # @requires_auth
     def get(self):
-        version_data = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/display/version")["fw_info"]
+        version = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/display/version")
+        version_data = version["fw_info"]
         Chassis_data_1["Model"] = version_data["Model"]
         Chassis_data_1["SerialNumber"] = version_data["SN"]
         Chassis_data_1["PartNumber"] = version_data["PartNumber"]
+        Chassis_data_1["Version"] = version["version"]["Redfish_Server"]
+        Chassis_data_1["UUID"] = get_mac_uuid()
         Chassis_data_1["Oem"]["supermicro"]["Main MC"]["State"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/mc")["main_mc"]
         return Chassis_data_1
 #================================================
@@ -470,18 +474,18 @@ fanspeed_patch = Chassis_ns.model('FanSpeedControlPatch', {
         default=True,   # 這裡設定預設值
         example=True,   # 讓 UI 顯示範例
     ),
-    'fan7_switch': fields.Boolean(
-        required=True,
-        description='fan switch',
-        default=True,   # 這裡設定預設值
-        example=True,   # 讓 UI 顯示範例
-    ),
-    'fan8_switch': fields.Boolean(
-        required=True,
-        description='fan switch',
-        default=True,   # 這裡設定預設值
-        example=True,   # 讓 UI 顯示範例
-    ),    
+    # 'fan7_switch': fields.Boolean(
+    #     required=True,
+    #     description='fan switch',
+    #     default=True,   # 這裡設定預設值
+    #     example=True,   # 讓 UI 顯示範例
+    # ),
+    # 'fan8_switch': fields.Boolean(
+    #     required=True,
+    #     description='fan switch',
+    #     default=True,   # 這裡設定預設值
+    #     example=True,   # 讓 UI 顯示範例
+    # ),    
 })
 # controls 資源
 @Chassis_ns.route("/Chassis/<chassis_id>/Controls")
@@ -653,8 +657,8 @@ class FansSpeedControl(Resource):
         fan4_switch = payload["fan4_switch"]
         fan5_switch = payload["fan5_switch"]
         fan6_switch = payload["fan6_switch"]
-        fan7_switch = payload["fan7_switch"]
-        fan8_switch = payload["fan8_switch"]
+        # fan7_switch = payload["fan7_switch"]
+        # fan8_switch = payload["fan8_switch"]
 
         Controls_data_all["FansSpeedControl"]["ControlMode"] = GetControlMode()
         # 驗證模式
@@ -678,8 +682,8 @@ class FansSpeedControl(Resource):
                     "fan4_switch": fan4_switch,
                     "fan5_switch": fan5_switch,
                     "fan6_switch": fan6_switch,
-                    "fan7_switch": fan7_switch,
-                    "fan8_switch": fan8_switch
+                    # "fan7_switch": fan7_switch,
+                    # "fan8_switch": fan8_switch
                 },  
                 timeout=3
             )
@@ -908,17 +912,17 @@ class ThermalMetrics(Resource):
     
 # ===============================0514新增(以下 TBD)===============================================
 # 儲存驅動集合(硬碟、健康、製造商...)
-Drives_data = {
-    "@odata.context": "/redfish/v1/$metadata#DriveCollection.DriveCollection",
-    "@odata.id":      "/redfish/v1/Chassis/1/Drives",
-    "@odata.type":    "#DriveCollection.DriveCollection",
-    "Name":           "Drive Collection",
-    "Members@odata.count": 1,
-    "Members": [
-        { "@odata.id": "/redfish/v1/Chassis/1/Drives/1" }
-    ],
-    "Oem": {}
-}
+# Drives_data = {
+#     "@odata.context": "/redfish/v1/$metadata#DriveCollection.DriveCollection",
+#     "@odata.id":      "/redfish/v1/Chassis/1/Drives",
+#     "@odata.type":    "#DriveCollection.DriveCollection",
+#     "Name":           "Drive Collection",
+#     "Members@odata.count": 1,
+#     "Members": [
+#         { "@odata.id": "/redfish/v1/Chassis/1/Drives/1" }
+#     ],
+#     "Oem": {}
+# }
 # 網路集合(數據接口...)
 NetworkAdapters_data = {
     "@odata.id": "/redfish/v1/Chassis/1/NetworkAdapters",
@@ -934,198 +938,198 @@ NetworkAdapters_data = {
     "Oem": {}
 }
 # PCIed擴展集合
-PCIeDevices_data = {
-    "@odata.id": "/redfish/v1/Chassis/1/PCIeDevices",
-    "@odata.type": "#PCIeDeviceCollection.PCIeDeviceCollection",
+# PCIeDevices_data = {
+#     "@odata.id": "/redfish/v1/Chassis/1/PCIeDevices",
+#     "@odata.type": "#PCIeDeviceCollection.PCIeDeviceCollection",
     
-    "Name": "PCIe Device Collection",
-    "Description": "Collection of PCIe Devices for this Chassis",
+#     "Name": "PCIe Device Collection",
+#     "Description": "Collection of PCIe Devices for this Chassis",
     
-    "Members@odata.count": 1,
-    "Members": [
-        { "@odata.id": "/redfish/v1/Chassis/1/PCIeDevices/1" }
-    ],
-    "Oem": {}
-}
-# 電源子系統(PSU狀態、輸入電壓、功率...)
-Power_data = {
-    "@odata.id": "/redfish/v1/Chassis/1/Power",
-    "@odata.type": "#Power.v1_7_3.Power",
+#     "Members@odata.count": 1,
+#     "Members": [
+#         { "@odata.id": "/redfish/v1/Chassis/1/PCIeDevices/1" }
+#     ],
+#     "Oem": {}
+# }
+# # 電源子系統(PSU狀態、輸入電壓、功率...)
+# Power_data = {
+#     "@odata.id": "/redfish/v1/Chassis/1/Power",
+#     "@odata.type": "#Power.v1_7_3.Power",
     
-    "Id": "Power",
-    "Name": "Power Collection",
-    "Description": "Collection of Power for this Chassis",
+#     "Id": "Power",
+#     "Name": "Power Collection",
+#     "Description": "Collection of Power for this Chassis",
     
-    "PowerControl": [
-        {
-            "@odata.id": "/redfish/v1/Chassis/1/Power/PowerControl/1",
-            "@odata.context": "/redfish/v1/$metadata#Power.PowerControl",
-            "@odata.type": "#Power.v1_7_2.PowerControl",
-            "MemberId": "1",
-            "Name": "System Input Power",
+#     "PowerControl": [
+#         {
+#             "@odata.id": "/redfish/v1/Chassis/1/Power/PowerControl/1",
+#             "@odata.context": "/redfish/v1/$metadata#Power.PowerControl",
+#             "@odata.type": "#Power.v1_7_2.PowerControl",
+#             "MemberId": "1",
+#             "Name": "System Input Power",
             
-            "PowerConsumedWatts": 344,
-            "PowerCapacityWatts": 800,
+#             "PowerConsumedWatts": 344,
+#             "PowerCapacityWatts": 800,
             
-            "PowerMetrics": {
-                "IntervalInMin": 30,
-                "MinConsumedWatts": 271,
-                "MaxConsumedWatts": 489,
-                "AverageConsumedWatts": 319
-            },
-        }
-    ],
+#             "PowerMetrics": {
+#                 "IntervalInMin": 30,
+#                 "MinConsumedWatts": 271,
+#                 "MaxConsumedWatts": 489,
+#                 "AverageConsumedWatts": 319
+#             },
+#         }
+#     ],
     
-    "PowerSupplies": [
-        {
-            "@odata.id": "/redfish/v1/Chassis/1/Power/PowerSupplies/0",
-            "FirmwareVersion": "1.00",
-            "InputRanges": [
-                {
-                    "InputType": "AC",
-                    "MaximumVoltage": 120,
-                    "MinimumVoltage": 100,
-                    "OutputWattage": 800
-                },
-                {
-                    "InputType": "AC",
-                    "MaximumVoltage": 240,
-                    "MinimumVoltage": 200,
-                    "OutputWattage": 1300
-                }
-            ],
-            "LastPowerOutputWatts": 325,
-            "LineInputVoltage": 120,
-            "LineInputVoltageType": "AC240V",
-            "Manufacturer": "ManufacturerName",
-            "MemberId": "0",
-            "Model": "499253-B21",
-            "Name": "Power Supply Bay",
-            "PartNumber": "0000001A3A",
-            "PowerCapacityWatts": 800,
-            "PowerSupplyType": "AC",
-            "RelatedItem": [
-                {
-                    "@odata.id": "/redfish/v1/Chassis/1/Power/PowerSupplies/0/RelatedItem/0",
-                }
-            ],
-            "SerialNumber": "1Z0000001",
-            "SparePartNumber": "0000001A3A",
-            "Status": {
-                "Health": "Warning",
-                "State": "Enabled"
-            },
-            "PowerInputWatts": 325,
-            "PowerOutputWatts": 325,
-            "Redundancy": [{"@odata.id": "/redfish/v1/Chassis/1/Redundancy"}],
-        },
-        {
-            "@odata.id": "/redfish/v1/Chassis/1/Power/PowerSupplies/1",
-            "FirmwareVersion": "1.00",
-            "InputRanges": [
-                {
-                    "InputType": "AC",
-                    "MaximumVoltage": 120,
-                    "MinimumVoltage": 100,
-                    "OutputWattage": 800
-                },
-                {
-                    "InputType": "AC",
-                    "MaximumVoltage": 240,
-                    "MinimumVoltage": 200,
-                    "OutputWattage": 1300
-                }
-            ],
-            "LastPowerOutputWatts": 325,
-            "LineInputVoltage": 120,
-            "LineInputVoltageType": "AC240V",
-            "Manufacturer": "ManufacturerName",
-            "MemberId": "0",
-            "Model": "499253-B21",
-            "Name": "Power Supply Bay",
-            "PartNumber": "0000001A3A",
-            "PowerCapacityWatts": 800,
-            "PowerSupplyType": "AC",
-            "RelatedItem": [
-                {
-                    "@odata.id": "/redfish/v1/Chassis/1",
-                }
-            ],
-            "SerialNumber": "1Z0000001",
-            "SparePartNumber": "0000001A3A",
-            "Status": {
-                "Health": "Warning",
-                "State": "Enabled"
-            },
-            "PowerInputWatts": 325,
-            "PowerOutputWatts": 325,
-            "Redundancy": [{"@odata.id": "/redfish/v1/Chassis/1/Power/PowerSupplies/1/Redundancy"}],
-        },
-    ],
-    "Redundancy": [
-        {
-            "@odata.id": "/redfish/v1/Chassis/1/Power/Redundancy",
-            "Name": "Redundancy",
-            "Mode": "RedundancySet",
-            "MinNumNeeded": 1,
-            "RedundancySet": [{"@odata.id": "/redfish/v1/Chassis/1/Power/PowerSupplies/0"}],
-            "MemberId": "0"
-        }
-    ],
+#     "PowerSupplies": [
+#         {
+#             "@odata.id": "/redfish/v1/Chassis/1/Power/PowerSupplies/0",
+#             "FirmwareVersion": "1.00",
+#             "InputRanges": [
+#                 {
+#                     "InputType": "AC",
+#                     "MaximumVoltage": 120,
+#                     "MinimumVoltage": 100,
+#                     "OutputWattage": 800
+#                 },
+#                 {
+#                     "InputType": "AC",
+#                     "MaximumVoltage": 240,
+#                     "MinimumVoltage": 200,
+#                     "OutputWattage": 1300
+#                 }
+#             ],
+#             "LastPowerOutputWatts": 325,
+#             "LineInputVoltage": 120,
+#             "LineInputVoltageType": "AC240V",
+#             "Manufacturer": "ManufacturerName",
+#             "MemberId": "0",
+#             "Model": "499253-B21",
+#             "Name": "Power Supply Bay",
+#             "PartNumber": "0000001A3A",
+#             "PowerCapacityWatts": 800,
+#             "PowerSupplyType": "AC",
+#             "RelatedItem": [
+#                 {
+#                     "@odata.id": "/redfish/v1/Chassis/1/Power/PowerSupplies/0/RelatedItem/0",
+#                 }
+#             ],
+#             "SerialNumber": "1Z0000001",
+#             "SparePartNumber": "0000001A3A",
+#             "Status": {
+#                 "Health": "Warning",
+#                 "State": "Enabled"
+#             },
+#             "PowerInputWatts": 325,
+#             "PowerOutputWatts": 325,
+#             "Redundancy": [{"@odata.id": "/redfish/v1/Chassis/1/Redundancy"}],
+#         },
+#         {
+#             "@odata.id": "/redfish/v1/Chassis/1/Power/PowerSupplies/1",
+#             "FirmwareVersion": "1.00",
+#             "InputRanges": [
+#                 {
+#                     "InputType": "AC",
+#                     "MaximumVoltage": 120,
+#                     "MinimumVoltage": 100,
+#                     "OutputWattage": 800
+#                 },
+#                 {
+#                     "InputType": "AC",
+#                     "MaximumVoltage": 240,
+#                     "MinimumVoltage": 200,
+#                     "OutputWattage": 1300
+#                 }
+#             ],
+#             "LastPowerOutputWatts": 325,
+#             "LineInputVoltage": 120,
+#             "LineInputVoltageType": "AC240V",
+#             "Manufacturer": "ManufacturerName",
+#             "MemberId": "0",
+#             "Model": "499253-B21",
+#             "Name": "Power Supply Bay",
+#             "PartNumber": "0000001A3A",
+#             "PowerCapacityWatts": 800,
+#             "PowerSupplyType": "AC",
+#             "RelatedItem": [
+#                 {
+#                     "@odata.id": "/redfish/v1/Chassis/1",
+#                 }
+#             ],
+#             "SerialNumber": "1Z0000001",
+#             "SparePartNumber": "0000001A3A",
+#             "Status": {
+#                 "Health": "Warning",
+#                 "State": "Enabled"
+#             },
+#             "PowerInputWatts": 325,
+#             "PowerOutputWatts": 325,
+#             "Redundancy": [{"@odata.id": "/redfish/v1/Chassis/1/Power/PowerSupplies/1/Redundancy"}],
+#         },
+#     ],
+#     "Redundancy": [
+#         {
+#             "@odata.id": "/redfish/v1/Chassis/1/Power/Redundancy",
+#             "Name": "Redundancy",
+#             "Mode": "RedundancySet",
+#             "MinNumNeeded": 1,
+#             "RedundancySet": [{"@odata.id": "/redfish/v1/Chassis/1/Power/PowerSupplies/0"}],
+#             "MemberId": "0"
+#         }
+#     ],
     
-    "Oem": {}    
-}
-# 熱管理子系統(溫度讀取、風扇配置...)
-Thermal_data = {
-    "@odata.id": "/redfish/v1/Chassis/1/Thermal",
-    "@odata.type": "#Thermal.v1_7_3.Thermal",
+#     "Oem": {}    
+# }
+# # 熱管理子系統(溫度讀取、風扇配置...)
+# Thermal_data = {
+#     "@odata.id": "/redfish/v1/Chassis/1/Thermal",
+#     "@odata.type": "#Thermal.v1_7_3.Thermal",
 
-    "Id": "Thermal",   
-    "Name": "Thermal Collection",
-    "Description": "Collection of Thermal for this Chassis",
+#     "Id": "Thermal",   
+#     "Name": "Thermal Collection",
+#     "Description": "Collection of Thermal for this Chassis",
     
-    "Fans": [
-        {
-            "@odata.id": "/redfish/v1/Chassis/1/ThermalSubsystem/Fans",
-            "Name": "Fans",
-            "PhysicalContext": "Chassis",
-            "Reading": 1000,
-            "ReadingUnits": "RPM",
-            "Status": {
-                "Health": "OK",
-                "State": "Enabled"
-            }
-        }
-    ],
-    "Temperatures": [
-        {
-            "@odata.id": "/redfish/v1/Chassis/1/Thermal/Temperatures",
-            "MemberId": "0",
-            "Name": "Temperatures",
-            "PhysicalContext": "Chassis",
-            "ReadingCelsius": 1000,
-            "Status": {
-                "Health": "OK",
-                "State": "Enabled"
-            }
-        },
-    ],
-    "Oem": {}    
-}
-# 可信集合(TPM、硬體信任...)
-TrustedComponents_data = {
-    "@odata.id": "/redfish/v1/Chassis/1/TrustedComponents",
-    "@odata.type": "#TrustedComponentCollection.TrustedComponentCollection",
+#     "Fans": [
+#         {
+#             "@odata.id": "/redfish/v1/Chassis/1/ThermalSubsystem/Fans",
+#             "Name": "Fans",
+#             "PhysicalContext": "Chassis",
+#             "Reading": 1000,
+#             "ReadingUnits": "RPM",
+#             "Status": {
+#                 "Health": "OK",
+#                 "State": "Enabled"
+#             }
+#         }
+#     ],
+#     "Temperatures": [
+#         {
+#             "@odata.id": "/redfish/v1/Chassis/1/Thermal/Temperatures",
+#             "MemberId": "0",
+#             "Name": "Temperatures",
+#             "PhysicalContext": "Chassis",
+#             "ReadingCelsius": 1000,
+#             "Status": {
+#                 "Health": "OK",
+#                 "State": "Enabled"
+#             }
+#         },
+#     ],
+#     "Oem": {}    
+# }
+# # 可信集合(TPM、硬體信任...)
+# TrustedComponents_data = {
+#     "@odata.id": "/redfish/v1/Chassis/1/TrustedComponents",
+#     "@odata.type": "#TrustedComponentCollection.TrustedComponentCollection",
     
-    "Name": "Trusted Components Collection",
-    "Description": "Collection of Trusted Components for this Chassis",
+#     "Name": "Trusted Components Collection",
+#     "Description": "Collection of Trusted Components for this Chassis",
     
-    "Members@odata.count": 1,
-    "Members": [
-        { "@odata.id": "/redfish/v1/Chassis/1/TrustedComponents/1" }
-        ],
-    "Oem": {}
-}
+#     "Members@odata.count": 1,
+#     "Members": [
+#         { "@odata.id": "/redfish/v1/Chassis/1/TrustedComponents/1" }
+#         ],
+#     "Oem": {}
+# }
 
 
 # ================
@@ -1378,22 +1382,22 @@ class PowerSuppliesMetrics(MyBaseChassis):
 #     def get(self, chassis_id):
 #         return Thermal_data
 
-@Chassis_ns.route("/Chassis/<string:chassis_id>/ThermalSubsystem/ThermalMetrics")
-class ThermalMetrics(Resource):
-    # @requires_auth
-    def get(self, chassis_id):
-        ThermalMetrics_data = {
-            "@odata.context": "/redfish/v1/$metadata#ThermalMetrics.ThermalMetrics",
-            "@odata.id": f"/redfish/v1/Chassis/{chassis_id}/ThermalSubsystem/ThermalMetrics",
-            "@odata.type": "#ThermalMetrics.v1_3_2.ThermalMetrics",
-            "Id": f"ThermalMetrics{chassis_id}",
-            "Name": "Chassis Thermal Metrics",
-            # "Status": {
-            #     "State": "Enabled",
-            #     "Health": "OK"
-            # },
-        }
-        return ThermalMetrics_data
+# @Chassis_ns.route("/Chassis/<string:chassis_id>/ThermalSubsystem/ThermalMetrics")
+# class ThermalMetrics(Resource):
+#     # @requires_auth
+#     def get(self, chassis_id):
+#         ThermalMetrics_data = {
+#             "@odata.context": "/redfish/v1/$metadata#ThermalMetrics.ThermalMetrics",
+#             "@odata.id": f"/redfish/v1/Chassis/{chassis_id}/ThermalSubsystem/ThermalMetrics",
+#             "@odata.type": "#ThermalMetrics.v1_3_2.ThermalMetrics",
+#             "Id": f"ThermalMetrics{chassis_id}",
+#             "Name": "Chassis Thermal Metrics",
+#             # "Status": {
+#             #     "State": "Enabled",
+#             #     "Health": "OK"
+#             # },
+#         }
+#         return ThermalMetrics_data
 
 # @Chassis_ns.route("/Chassis/<chassis_id>/Thermal/Temperatures")
 # class Temperatures(Resource):

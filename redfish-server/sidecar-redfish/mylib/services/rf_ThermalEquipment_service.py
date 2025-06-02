@@ -13,6 +13,8 @@ from mylib.models.rf_leak_detector import RfLeakDetectorModel
 from mylib.models.rf_status_model import RfStatusModel
 from mylib.models.rf_primary_coolant_connector_model import RfPrimaryCoolantConnectorCollectionModel
 from mylib.models.rf_cdu_model import RfCduModel, RfCduCollectionModel
+from mylib.models.rf_pump_collection_model import RfPumpCollectionModel
+# from mylib.models.rf_pump_model import RfPumpModel
 
 from load_env import hardware_info
 
@@ -32,6 +34,8 @@ class RfThermalEquipmentService(BaseService):
                 **hardware_info["CDU"]
             )
             m.Status = {"State": "Enabled", "Health": "OK"}
+            m.FirmwareVersion = self._read_version_from_cache()["version"]["Redfish_Server"]
+            m.Version = self._read_version_from_cache()["version"]["Redfish_Server"]
             m.Oem = {}
             
         return m.to_dict()
@@ -188,3 +192,30 @@ class RfThermalEquipmentService(BaseService):
         """
         m = RfPrimaryCoolantConnectorCollectionModel(cdu_id=cdu_id)
         return m.to_dict()
+    
+    # REDFISH_PUMP_COLLECTION_CNT
+    def fetch_CDUs_Pumps(self, cdu_id: str) -> dict:
+        """
+        對應 "/ThermalEquipment/CDUs/1/Pumps"
+
+        :param cdu_id: str
+        :return: dict
+        """
+        m = RfPumpCollectionModel(cdu_id=cdu_id)
+        # for i in range(m.Members_odata_count):
+        #     m.Members.append({
+        #         "@odata.id": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/Pumps/{i+1}"
+        #     })
+        return m.to_dict()
+    
+    # def fetch_CDUs_Pumps_Pump(self, cdu_id: str, pump_id: str) -> dict:
+    #     """
+    #     對應 "/ThermalEquipment/CDUs/1/Pumps/1"
+
+    #     :param cdu_id: str
+    #     :param pump_id: str
+    #     :return: dict
+    #     """
+    #     m = RfPumpModel(cdu_id=cdu_id, pump_id=pump_id)
+    #     m.odata_id = f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/Pumps/{pump_id}"
+    #     return m.to_dict()

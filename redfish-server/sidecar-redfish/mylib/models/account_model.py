@@ -12,7 +12,7 @@ Add @dataclass for serialize sqlalchemy to dict
 from typing import List
 from dataclasses import dataclass
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import String, Integer, ForeignKey, DateTime
+from sqlalchemy import String, Integer, ForeignKey, DateTime, Boolean
 from mylib.db.extensions import db
 from mylib.models.my_orm_base_model import MyOrmBaseModel
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -20,7 +20,16 @@ import random,string,re
 from datetime import datetime
 from mylib.auth.TokenProvider import TokenProvider
 from mylib.models.setting_model import SettingModel
-
+from typing import Optional
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field, 
+    computed_field,
+    model_validator,
+    #validator, # deprecated
+    field_validator,
+)
 
 @dataclass
 class RoleModel(MyOrmBaseModel):
@@ -44,6 +53,54 @@ class RoleModel(MyOrmBaseModel):
         role = db.session.execute(stmt).scalar_one_or_none()
         return role
 
+class AccountUpdateModel(BaseModel):
+    """
+    Model for updating account information.
+    """
+    model_config = ConfigDict(populate_by_name=True)
+    
+    user_name: Optional[str] = Field(default=None,alias = 'UserName', description="The name of the user.")
+    role_id: Optional[int] = Field(default=None, alias ='RoleId', description="The ID of the role assigned to the user.")
+    password: Optional[str] = Field(default=None,alias = 'Password', description="The password for the user.")
+    enabled: Optional[bool] = Field(default=None, alias='Enabled', description="Indicates whether the account is enabled.")
+    locked: Optional[bool] = Field(default=None, alias='Locked', description="Indicates whether the account is locked.")
+        
+    @field_validator('password',mode='before')
+    @classmethod
+    def validate_password(cls, value):
+        if not AccountModel.validate_password(value):
+            raise ValueError("Password does not meet requirements.")
+        return value
+    
+    @field_validator('password',mode='after')
+    @classmethod
+    def generate_hash_password(cls, value):
+        return generate_password_hash(value)
+    
+    @field_validator('role_id',mode='before')
+    @classmethod
+    def validate_role_id(cls, value):
+        if not isinstance(value, str):
+            raise ValueError("RoleID does not meet requirements.")
+        role = RoleModel.get_by_id(value)
+        if not role:
+            raise ValueError(f"RoleId {value} does not exist.")
+        return role.id
+    
+class AccountCreateModel(AccountUpdateModel):
+    user_name: str = Field(default=..., alias='UserName', description="The name of the user.")
+    role_id: int = Field(default=..., alias='RoleId', description="The ID of the role assigned to the user.")
+    password: str = Field(default=..., alias='Password', description="The password for the user.")
+    
+    @field_validator('user_name',mode='before')
+    @classmethod
+    def validate_user_name(cls, value):
+        if not AccountModel.validate_name(value):
+            raise ValueError("User name does not meet requirements.")
+        return value
+
+
+
 @dataclass
 class AccountModel(MyOrmBaseModel):
     # new version: https://docs.sqlalchemy.org/en/20/orm/declarative_tables.html
@@ -53,6 +110,8 @@ class AccountModel(MyOrmBaseModel):
     password: Mapped[str] = mapped_column(String(255),nullable=False)
     role_id: Mapped[int] = mapped_column(Integer, ForeignKey("roles.id"),nullable=False)
     role: Mapped["RoleModel"] = relationship("RoleModel", back_populates="accounts")
+    enabled: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    locked: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     redfish_sessions: Mapped[List["SessionModel"]] = relationship('SessionModel', back_populates='account')
     
     def __init__(self, user_name, role, password):
@@ -61,7 +120,7 @@ class AccountModel(MyOrmBaseModel):
         self.password = generate_password_hash(password)
     
     def __repr__(self):
-        return f"AccountModel(id={self.id}, user_name={self.user_name}, role_id={self.role_id}, role={self.role})"
+        return f"AccountModel(id={self.id}, user_name={self.user_name}, role_id={self.role_id}, role={self.role}, enabled={self.enabled}, locked={self.locked})"
     
 
     @staticmethod
