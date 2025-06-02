@@ -5242,12 +5242,34 @@ def set_operation_mode():
         temp = mode_input["temp"]
         prsr = mode_input["prsr"]
         swap = mode_input["swap"]
+        
+        ### D224 跟D226 是油壓跟溫度在plc的設定
 
         try:
             if system_data["value"]["unit"] == "imperial":
                 temp_change = (float(temp) - 32) * 5.0 / 9.0
                 prsr_change = float(prsr) * 6.89476
-
+                
+                if (temp_change > 55) or (
+                    temp_change < 25
+                ):
+                    return jsonify(
+                        {
+                            "status": "warning",
+                            "title": "Out of Range",
+                            "message": "Temperature setting must be between\n25°C and 55°C (77°F to 131°F).",
+                        }
+                    )
+                elif (prsr_change > 750
+                    or prsr_change < 0
+                ):
+                    return jsonify(
+                        {
+                            "status": "warning",
+                            "title": "Out of Range",
+                            "message": "Pressure setting must be between\n0 kPa and 750 kPa (0 Psi to 108.75 Psi).",
+                        }
+                    )
                 temp1, temp2 = cvt_float_byte(temp_change)
                 prsr1, prsr2 = cvt_float_byte(prsr_change)
 
@@ -5261,6 +5283,26 @@ def set_operation_mode():
                     print(f"set temp error:{e}")
                     return retry_modbus_2reg(226, [temp2, temp1], 224, [prsr2, prsr1])
             else:
+                if (temp > setting_limit["control"]["oil_temp_set_up"]) or (
+                    temp < setting_limit["control"]["oil_temp_set_low"]
+                ):
+                    return jsonify(
+                        {
+                            "status": "warning",
+                            "title": "Out of Range",
+                            "message": "Temperature setting must be between\n25°C and 55°C (77°F to 131°F).",
+                        }
+                    )
+                elif (prsr > setting_limit["control"]["oil_pressure_set_up"]
+                    or prsr < setting_limit["control"]["oil_pressure_set_low"]
+                ):
+                    return jsonify(
+                        {
+                            "status": "warning",
+                            "title": "Out of Range",
+                            "message": "Pressure setting must be between\n0 kPa and 750 kPa (0 Psi to 108.75 Psi).",
+                        }
+                    )
                 temp1, temp2 = cvt_float_byte(temp)
                 prsr1, prsr2 = cvt_float_byte(prsr)
 
