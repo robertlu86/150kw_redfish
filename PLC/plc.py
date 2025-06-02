@@ -4250,14 +4250,7 @@ def control():
                         and warning_data["error"]["level2"]
                         and warning_data["error"]["level3"]
                     ):
-                        try:
-                            with ModbusTcpClient(
-                                host=modbus_host, port=modbus_port
-                            ) as client:
-                                warning_data["error"]["Low_Coolant_Level_Warning"] = True
-                                client.write_coils((8192 + 514), [False])
-                        except Exception as e:
-                            print(f"change to stop error:{e}")
+                        warning_data["error"]["Low_Coolant_Level_Warning"] = True
                     elif warning_data["error"]["Low_Coolant_Level_Warning"]:
                         if count_f1 > 5:
                             warning_data["error"]["Low_Coolant_Level_Warning"] = False
@@ -4273,16 +4266,7 @@ def control():
                         and warning_data["error"]["level1"]
                         and warning_data["error"]["level2"]
                     ):
-                        try:
-                            with ModbusTcpClient(
-                                host=modbus_host, port=modbus_port
-                            ) as client:
-                                warning_data["error"]["Low_Coolant_Level_Warning"] = (
-                                    True
-                                )
-                                client.write_coils((8192 + 514), [False])
-                        except Exception as e:
-                            print(f"change to stop error:{e}")
+                        warning_data["error"]["Low_Coolant_Level_Warning"] = True
                     elif warning_data["error"]["Low_Coolant_Level_Warning"]:
                         if count_f1 > 5:
                             warning_data["error"]["Low_Coolant_Level_Warning"] = False
@@ -4296,16 +4280,8 @@ def control():
                         warning_data["alert"]["ClntFlow_Low"]
                         and warning_data["error"]["level1"]
                     ):
-                        try:
-                            with ModbusTcpClient(
-                                host=modbus_host, port=modbus_port
-                            ) as client:
-                                warning_data["error"]["Low_Coolant_Level_Warning"] = (
-                                    True
-                                )
-                                client.write_coils((8192 + 514), [False])
-                        except Exception as e:
-                            print(f"change to stop error:{e}")
+                        warning_data["error"]["Low_Coolant_Level_Warning"] = True
+                        
                     elif warning_data["error"]["Low_Coolant_Level_Warning"]:
                         if count_f1 > 5:
                             warning_data["error"]["Low_Coolant_Level_Warning"] = False
@@ -4868,13 +4844,13 @@ def control():
 
                             write_measured_data(7, max_f1)
                             print(f"F1 結果：{max_f1}")
-                            if all_sensors_dict["Temp_ClntSply"] > 45 and all_sensors_dict["Temp_ClntSply"] <= 55:
+                            if all_sensors_dict["Temp_ClntSply"] <= 50:
                                 inspection_data["result"]["f1"] = not (130 > max_f1 > 100)
-                            elif all_sensors_dict["Temp_ClntSply"] > 35 and all_sensors_dict["Temp_ClntSply"] <= 45:
+                            elif all_sensors_dict["Temp_ClntSply"] >= 40 and all_sensors_dict["Temp_ClntSply"] < 50:
                                 inspection_data["result"]["f1"] = not (80 > max_f1 > 110)
-                            elif all_sensors_dict["Temp_ClntSply"] > 25 and all_sensors_dict["Temp_ClntSply"] <= 35:
+                            elif all_sensors_dict["Temp_ClntSply"] >= 30 and all_sensors_dict["Temp_ClntSply"] < 40:
                                 inspection_data["result"]["f1"] = not (60 > max_f1 > 90)
-                            elif all_sensors_dict["Temp_ClntSply"] > 15 and all_sensors_dict["Temp_ClntSply"] <= 25:
+                            elif all_sensors_dict["Temp_ClntSply"] >= 20 and all_sensors_dict["Temp_ClntSply"] < 30:
                                 inspection_data["result"]["f1"] = not (40 > max_f1 > 70)
                             
                             change_progress("f1", "finish")

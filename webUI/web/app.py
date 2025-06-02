@@ -7382,6 +7382,11 @@ def reset_current():
 
     return jsonify(status="success", message="Reset System Failure Successfully")
 
+@app.route("/change_to_stop_mode", methods=["POST"])
+def change_to_stop_mode():
+    stop_mode = "stop"
+    set_mode(stop_mode)
+    return jsonify(status="success", message="Stop mode is activated successfully")
 
 @app.route("/start_inspect", methods=["POST"])
 def start_inspect():
