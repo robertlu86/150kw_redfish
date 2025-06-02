@@ -131,10 +131,10 @@ styles %}
         height: auto;
     }
 
-    .image_machine_container{
-                            width: 1700px; 
-                            height: 900px;
-                        }
+    .image_machine_container {
+        width: 1700px;
+        height: 900px;
+    }
 
     .machine {
         max-width: 100%;
@@ -324,13 +324,13 @@ styles %}
             <div>
                 <div class="fans_light" id="fan_freq3_light"></div>
             </div>
-            <div class = "Fan7_set">
+            <div class="Fan7_set">
                 <div class="fans_light" id="fan_freq7_light"></div>
             </div>
             <div>
                 <div class="fans_light" id="fan_freq2_light"></div>
             </div>
-            <div class = "Fan8_set">
+            <div class="Fan8_set">
                 <div class="fans_light" id="fan_freq8_light"></div>
             </div>
             <div>
@@ -787,13 +787,13 @@ styles %}
                         <td class="tdCenterAlign" id="fan_freq6"></td>
                         <td class="fan_speed_unit">%</td>
                     </tr>
-                    <tr class = "Fan7_set">
+                    <tr class="Fan7_set">
                         <td class="tdCenterAlign">Fan Speed 7</td>
                         <td class="tdCenterAlign" id="fan_freq7_status"></td>
                         <td class="tdCenterAlign" id="fan_freq7"></td>
                         <td class="fan_speed_unit">%</td>
                     </tr>
-                    <tr class = "Fan8_set">
+                    <tr class="Fan8_set">
                         <td class="tdCenterAlign">Fan Speed 8</td>
                         <td class="tdCenterAlign" id="fan_freq8_status"></td>
                         <td class="tdCenterAlign" id="fan_freq8"></td>
@@ -1265,7 +1265,7 @@ styles %}
             }
             let ats1 = data["ats_status"]["ATS1"];
             let ats2 = data["ats_status"]["ATS2"];
-            
+
             if (ats1) {
                 // ATS1 為 true，直接顯示 Primary
                 $("#ATS_status").css("color", "black").text("Primary");
@@ -1290,15 +1290,15 @@ styles %}
                 }
             }*/
 
-             // 測試用開始
+            // 測試用開始
             for (let key in data["eletricity"]) {
                 if (data["eletricity"].hasOwnProperty(key)) {
                     let value = data["eletricity"][key];
                     $(`#${key}`).css("color", "black");
                     $(`#${key}_status`).css("color", "black").text("Valid");
                     $("#" + key).text(
-                            value.toFixed(userType == "superuser" ? 2 : 1)
-                        );
+                        value.toFixed(userType == "superuser" ? 2 : 1)
+                    );
                 }
             }
             // 測試用結束
@@ -1647,7 +1647,7 @@ styles %}
                     }
 
                     const currentVersion = window.sharedData.version;
-                    if(currentVersion["fan_count_switch"] === false) {
+                    if (currentVersion["fan_count_switch"] === false) {
                         if (data["error"]["Fan_OverLoad1"]) {
                             for (i = 1; i < 5; i++) {
                                 $(`#fan_freq${i}_status`).css("color", "red").text("Overload");
@@ -1662,7 +1662,7 @@ styles %}
                                 $(`#fan_freq${i}_image`).css("color", "red").text("-");
                             }
                         }
-                    }else{
+                    } else {
                         if (data["error"]["Fan_OverLoad1"]) {
                             for (i = 1; i < 4; i++) {
                                 $(`#fan_freq${i}_status`).css("color", "red").text("Overload");
@@ -1678,7 +1678,7 @@ styles %}
                             }
                         }
                     }
-                    
+
 
                 }
             }
@@ -1819,13 +1819,13 @@ styles %}
                     }
                 }
             }
-            
-            for (let key in data["rack"]){
-                if (data["rack"].hasOwnProperty(key)){
-                    if (key.includes("_error")){
+
+            for (let key in data["rack"]) {
+                if (data["rack"].hasOwnProperty(key)) {
+                    if (key.includes("_error")) {
                         let value = data["rack"][key];
                         let status_key = key.replace("_error", "_status");
-                        if(value){
+                        if (value) {
                             $("#" + status_key).css("color", "red");
                         }
                     }
@@ -1985,6 +1985,10 @@ styles %}
         }
 
         async function fetch_get_data() {
+            while (!window.sharedData.data || !window.sharedData.version) {
+                // 等待 base.html 資料初始化
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
             while (true) {
                 try {
                     // const data = await $.ajax({
