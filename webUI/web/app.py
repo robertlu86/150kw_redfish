@@ -8607,7 +8607,9 @@ def read_rack_status():
             elif not ctr_data["rack_visibility"][key]:
                 sensorData["rack"][f"rack{index}_broken"] = False
                 sensorData["rack"][f"rack{index}_leak"] = False
-                sensorData["rack"][f"rack{index}_error"] = False    
+                sensorData["rack"][f"rack{index}_error"] = False
+                sensorData["rack"][f"rack{index}_leak_com"] = False
+                sensorData["rack"][f"rack{index}_status_com"] = False    
             index += 1
         # send_error_log()
 
