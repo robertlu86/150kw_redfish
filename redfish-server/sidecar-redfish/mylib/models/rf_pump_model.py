@@ -1,5 +1,5 @@
 '''
-@see https://redfish.dmtf.org/schemas/v1/PowerSupply.v1_6_0.json
+@see https://redfish.dmtf.org/schemas/v1/Pump.v1_2_0.json
 '''
 import os
 from dataclasses import dataclass
@@ -32,20 +32,23 @@ class RfPumpType(str, Enum):
     Liquid = "Liquid"
     Compressor = "Compressor"
 
+class RfActions(BaseModel):
+    PumpSetMode: Optional[Dict[str, str]] = Field(default=None, alias="#Pump.SetMode")
+    Oem: Optional[Dict[str, Any]] = Field(default=None)
+    
 class RfPumpModel(RfResourceBaseModel):
     """
     @see https://redfish.dmtf.org/schemas/v1/Pump.v1_2_0.json
     @note properties 30 items
+    
     """
-    class Actions(BaseModel):
-        PumpSetMode: Optional[Dict[str, str]] = Field(default=None, alias="#Pump.SetMode")
-        Oem: Optional[Dict[str, Any]] = Field(default=None)
+
         
     Odata_context: Optional[str] = Field(default=None, alias="@odata.context")
     Odata_etag: Optional[str] = Field(default=None, alias="@odata.etag")
     # Odata_id: Optional[str] = Field(default=None, alias="@odata.id")
     # Odata_type: Optional[str] = Field(default=None, alias="@odata.type")
-    Actions: Optional[Actions] = Field(default=None)
+    Actions: Optional[RfActions] = Field(default=None)
     Assembly: Optional[RfAssemblyModel] = Field(default=None)
     AssetTag: Optional[str] = Field(default=None, description="The user-assigned asset tag for this equipment.")
     Description: Optional[str] = Field(default=None)
@@ -58,7 +61,7 @@ class RfPumpModel(RfResourceBaseModel):
     Manufacturer: Optional[str] = Field(default=None)
     Model: Optional[str] = Field(default=None, description="The model number for this pump.")
     # Name: Optional[str] = Field(default=None)
-    Oem: Optional[RfOemModel] = Field(default=None)
+    
     PartNumber: Optional[str] = Field(default=None)
     PhysicalContext: Optional[RfPhysicalContext] = Field(default=None)
     ProductionDate: Optional[str] = Field(default=None)
@@ -71,21 +74,26 @@ class RfPumpModel(RfResourceBaseModel):
     Status: Optional[RfStatusModel] = Field(default=None)
     UserLabel: Optional[str] = Field(default=None, description="A user-assigned label.")
     Version: Optional[str] = Field(default=None, description="The hardware version of this equipment.")
-
+    Oem: Optional[RfOemModel] = Field(default=None)
 
     model_config = ConfigDict(
         extra='allow',
     )
 
-    def __init__(self, chassis_id: str, **kwargs):
-        # super().__init__(**kwargs)
-        # self.odata_type = "#PowerSupply.v1_6_0.PowerSupply"
-        # self.Name = "System Power Control"
-
+    def __init__(self, cdu_id: str, pump_id: str):
+        self.odata_id = f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/Pumps/{pump_id}"
+        self.odata_type = "#Pump.v1_2_0.Pump"
+        self.Id = pump_id,
+        # self.PumpType = "Liquid"
+        self.Name = f"Pump {pump_id}"
+        self.FirmwareVersion = "0",
+        # self.Actions = {
+        #     "#Pump.SetMode": {
+        #         f"target": "/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/Pumps/{pump_id}/Actions/Pump.SetMode"
+        #     }
+        # },
         # # chassis_id = self.__pydantic_extra__.get('chassis_id')
-        # self.odata_id = f"/redfish/v1/Chassis/{chassis_id}/PowerSubsystem/PowerSupplies/{self.Id}"
-        pass
-
+        # pass
     # @model_validator(mode='after')
     # def _set_odata_id(self) -> Self:
     #     chassis_id = self.__pydantic_extra__.get('chassis_id')

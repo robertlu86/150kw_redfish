@@ -7,6 +7,7 @@ from flask import abort
 import subprocess
 from typing import Dict, List
 from mylib.adapters.sensor_api_adapter import SensorAPIAdapter
+from mylib.utils.system_info import get_mac_uuid
 
 class BaseService:
 
@@ -148,16 +149,47 @@ class BaseService:
         return sensor_value_json
     
     @classmethod
-    @cached(cache=TTLCache(maxsize=3, ttl=5))
-    def _read_getdata_from_webapp(cls) -> dict:
+    @cached(cache=TTLCache(maxsize=30, ttl=5))
+    def _read_version_from_cache(cls) -> dict:
         """
-        讀取webapp ui的/get_data api
-        格式可參考 webUI/web/json/sensor_data.json
+        @note api response from /api/v1/cdu/components/display/version
+        "version": {
+            "WebUI": "0112",
+            "SCC_API": "0104",
+            "SNMP": "0103",
+            "Redfish_API": "0101",
+            "Redfish_Server": "0101",
+            "Modbus_Server": "0101",
+            "PLC": "0107D"
+        },
+        "fw_info": {
+            "SN": "130001",
+            "Model": "CDU 150kW",
+            "Version": "1",
+            "PartNumber": "LCS-SCDU-1K3LR001"
+        }
+        
         """
-        url = f"{os.environ['ITG_WEBAPP_HOST']}/get_data"
+        url = f"{os.environ['ITG_REST_HOST']}/api/v1/cdu/components/display/version"
         response = cls.send_get(url)
-        data_json = response.json()
-        return data_json
+        version_json = response.json()
+        return version_json
+    
+    @classmethod
+    def get_uuid(cls) -> str:
+        return get_mac_uuid()
+    
+    # @classmethod
+    # @cached(cache=TTLCache(maxsize=3, ttl=5))
+    # def _read_getdata_from_webapp(cls) -> dict:
+    #     """
+    #     讀取webapp ui的/get_data api
+    #     格式可參考 webUI/web/json/sensor_data.json
+    #     """
+    #     url = f"{os.environ['ITG_WEBAPP_HOST']}/get_data"
+    #     response = cls.send_get(url)
+    #     data_json = response.json()
+    #     return data_json
 
     def _calc_delta_value(self, sensor_value: dict, fieldNameToFetchSensorValue: str ) -> float:
         """

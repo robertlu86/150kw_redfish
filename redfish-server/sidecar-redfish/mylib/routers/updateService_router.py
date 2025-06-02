@@ -48,7 +48,7 @@ WebInterface_data = {
     "ReleaseDate": "2025-02-21T06:02:08Z", # 未串
     # 是否可更新
     "Updateable": True,    
-    "Version": "1502",
+    "Version": "ok",
     "SoftwareId": "WEB-INTERFACE",
     "Oem": {
         "supermicro": {
@@ -93,7 +93,7 @@ class FirmwareInventory(Resource):
 class FirmwareInventoryWebInterface(Resource):
     def get(self):
         WebInterface_data["Version"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/display/version")["fw_info"]["WebUI"]
-        WebInterface_data["Oem"]["supermicro"]["Redfish"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/display/version")["fw_info"]["Redfish"]
+        WebInterface_data["Oem"]["supermicro"]["Redfish"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/display/version")["version"]["Redfish_Server"]
         return WebInterface_data  
 
 from werkzeug.datastructures import FileStorage
@@ -142,13 +142,15 @@ class ActionsUpdateCduSimpleUpdatee(Resource):
         # print("files:", files)
         try:
             r = requests.post(ORIGIN_UPLOAD_API, files=files, timeout=(10, None))
-            r.raise_for_status()
+            # r.raise_for_status()
+            # print("R:", r.text)
+            return r.text, 200
         except requests.HTTPError:
             return r.json() if r.headers.get("Content-Type","").startswith("application/json") else {"error": r.text}, r.status_code
         except requests.RequestException as e:
             return {"error": "upload failed", "details": str(e)}, 502
         
-        return "upload success", 200
+        
         
     
 # @update_ns.route("/UpdateService/FirmwareInventory/PC")

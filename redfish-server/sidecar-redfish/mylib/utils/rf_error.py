@@ -36,7 +36,7 @@ ERROR_PROPERTY_VALUE_NOT_IN_LIST = error_response('Property Value Not In List', 
 
 ERROR_RESOURCE_NOT_FOUND = error_response('Resource Not Found', 404, 'Base.ResourceNotFound')
 
-ERROR_DELETE_SUCCESS = error_response('', 204)
+ERROR_DELETE_SUCCESS = Response(json.dumps({'message':'OK'}), 200, {'Content-Type': 'application/json'})
 
 ERROR_PASSWORD_FORMAT = error_response('Password sould be a string, minimum length is 8, '
                                        'maxmum length is 64, must contain at least one uppercase letter, '

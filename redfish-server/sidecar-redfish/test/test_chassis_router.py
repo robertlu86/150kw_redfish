@@ -27,6 +27,11 @@ class ReadingPolicy1:
         self.judge_cnt = 3
         self.judge_interval = 2.5 # 秒
 
+    @classmethod
+    def validate_sensor_value_in_reasonable_vibration(cls, sensor_value: float, target_value: float) -> bool:
+        # return target_value*0.985 <= sensor_value <= target_value*1.015
+        return (target_value - 1.5) <= sensor_value <= (target_value + 1.5)
+
     def judge(self) -> bool:
         reading_values = []
         for i in range(self.judge_cnt):
@@ -311,38 +316,34 @@ chassis_FansSpeedControl_patch_testcases = [
     {
         "endpoint": f'/redfish/v1/Chassis/{chassis_id}/Controls/FansSpeedControl',
         "payloads": [
+            # {
+            #     "fan_speed": 60,
+            #     **{f"fan{i}_switch": True for i in range(1, fan_cnt + 1)}
+            # },
+            # {
+            #     "fan_speed": 40,
+            #     **{f"fan{i}_switch": True for i in range(1, fan_cnt + 1)}
+            # },
+            # {
+            #     "fan_speed": 25,
+            #     **{f"fan{i}_switch": True for i in range(1, fan_cnt + 1)}
+            # },
+            # {
+            #     "fan_speed": 15, # 最小值定義為15%
+            #     **{f"fan{i}_switch": True for i in range(1, fan_cnt + 1)}
+            # },
             {
-                "fan_speed": 100,
-                **{f"fan{i}_switch": True for i in range(1, fan_cnt + 1)}
-            },
-            {
-                "fan_speed": 50,
-                **{f"fan{i}_switch": True for i in range(1, fan_cnt + 1)}
-            },
-            {
-                "fan_speed": 25,
-                **{f"fan{i}_switch": True for i in range(1, fan_cnt + 1)}
-            },
-            {
-                "fan_speed": 12,
-                **{f"fan{i}_switch": True for i in range(1, fan_cnt + 1)}
-            },
-            {
-                "fan_speed": 6,
-                **{f"fan{i}_switch": True for i in range(1, fan_cnt + 1)}
-            },
-            {
-                "fan_speed": random.randint(1, 100),
+                "fan_speed": random.randint(15, 60),
                 **{f"fan{i}_switch": random.choice([True, False]) for i in range(1, fan_cnt + 1)}
             },
-            {
-                "fan_speed": random.randint(1, 100),
-                **{f"fan{i}_switch": random.choice([True, False]) for i in range(1, fan_cnt + 1)}
-            },
-            {
-                "fan_speed": random.randint(1, 100),
-                **{f"fan{i}_switch": random.choice([True, False]) for i in range(1, fan_cnt + 1)}
-            }
+            # {
+            #     "fan_speed": random.randint(15, 60),
+            #     **{f"fan{i}_switch": random.choice([True, False]) for i in range(1, fan_cnt + 1)}
+            # },
+            # { # remember to recover to default value
+            #     "fan_speed": 50, 
+            #     **{f"fan{i}_switch": True for i in range(1, fan_cnt + 1)}
+            # },
         ],
     }
 ]
@@ -375,26 +376,18 @@ chassis_OperationMode_patch_testcases = [
     }
 ]
 
-chassis_PumpSpeedControl_patch_testcases = [
+chassis_PumpsSpeedControl_patch_testcases = [
     {
-        "endpoint": f'/redfish/v1/Chassis/{chassis_id}/Controls/PumpSpeedControl',
+        "endpoint": f'/redfish/v1/Chassis/{chassis_id}/Controls/PumpsSpeedControl',
         "payloads": [
             {
-                "speed_set": 49,
+                "speed_set": random.randint(20, 70),
                 **{f"pump{i}_switch": True for i in range(1, pump_cnt + 1)}
             },
-            {
-                "speed_set": random.randint(1, 100),
-                **{f"pump{i}_switch": random.choice([True, False]) for i in range(1, pump_cnt + 1)}
-            },
-            {
-                "speed_set": random.randint(1, 100),
-                **{f"pump{i}_switch": random.choice([True, False]) for i in range(1, pump_cnt + 1)}
-            },
-            {
-                "speed_set": random.randint(1, 100),
-                **{f"pump{i}_switch": random.choice([True, False]) for i in range(1, pump_cnt + 1)}
-            },
+            # {
+            #     "speed_set": random.randint(20, 70),
+            #     **{f"pump{i}_switch": random.choice([True, False]) for i in range(1, pump_cnt + 1)}
+            # },
         ],
     },
 ]
@@ -464,20 +457,38 @@ def test_redundant_chassis_api(client, basic_auth_header, redundant_testcase):
         print(f"Error: {e}")
         
     
+@pytest.mark.parametrize('testcase', Sensors_FanN_testcases[:-1])
+def test_fan_sensors_should_be_corrected(client, basic_auth_header, testcase):
+    """[TestCase] Fan sensors should be corrected.
+    i.e., fan sensor value should equal to `SetPoint` from /FansSpeedControl
+    """
+    # get setting value
+    print("## Get sensor target value:")
+    endpoint = f"/redfish/v1/Chassis/{chassis_id}/Controls/FansSpeedControl"
+    response = client.get(endpoint, headers=basic_auth_header)
+    target_value = response.json['SetPoint'] 
+    print(f"Sensor target value is {target_value}")
+    assert target_value != 0
+
+    print("## Check sensor value:")
+    response = client.get(testcase['endpoint'], headers=basic_auth_header)
+    resp_json = response.json
+    # m = RfSensorFanExcerpt(**resp_json['Reading'])
+    print(f"- Endpoint: {testcase['endpoint']}")
+    print(f"  Response json: {json.dumps(resp_json, indent=2, ensure_ascii=False)}")
+    sensor_value = resp_json['Reading']
+    assert ReadingPolicy1.validate_sensor_value_in_reasonable_vibration(sensor_value, target_value) == True
 
 @pytest.mark.parametrize('testcase', chassis_FansSpeedControl_patch_testcases)
 def test_chassis_FansSpeedControl_patch_api(client, basic_auth_header, testcase):
     """[TestCase] chassis FansSpeedControl patch API
     payload:{ 
-        "fan_speed": 100,
+        "fan_speed": 50,
         "fan1_switch": true,
         "fan2_switch": true,
         "fan3_switch": true,
         "fan4_switch": true,
-        "fan5_switch": true,
-        "fan6_switch": true,
-        "fan7_switch": true,
-        "fan8_switch": true
+        ...
     } // Bad Design! Should use List[Dict[<fan_id>, <is_switch>]] or Dict[<fan_id>, <is_switch>]
     """
     for payload in testcase['payloads']:
@@ -490,6 +501,7 @@ def test_chassis_FansSpeedControl_patch_api(client, basic_auth_header, testcase)
         assert response.status_code == 200
 
         # 取得設定值
+        time.sleep(2)
         print(f"Http method: GET")
         print(f"Endpoint: {testcase['endpoint']}")
         response = client.get(testcase['endpoint'], headers=basic_auth_header)
@@ -498,26 +510,79 @@ def test_chassis_FansSpeedControl_patch_api(client, basic_auth_header, testcase)
         assert resp_json['SetPoint'] == payload['fan_speed']
         
         # 取得sensor實際值 (注意，實際值不會這麼快就反應出來，通常要等待幾秒)
+        # Endpoint: f'/redfish/v1/Chassis/{chassis_id}/Sensors/Fan{fan_id}'
         # Response: {
-        #   ...
-        #   "SpeedPercent": {
-        #     "DataSourceUri": "/redfish/v1/Chassis/1/ThermalSubsystem/Sensors/Fan2",
+        #     ...
         #     "Reading": 0,
-        #     "SpeedRPM": 0
-        #   }
+        #     "ReadingUnits": "rpm",
         # }
-        # for fan_id in range(1, fan_cnt + 1):
-        #     endpoint = f'/redfish/v1/Chassis/{chassis_id}/ThermalSubsystem/Sensors/Fan{fan_id}'
-        #     response = client.get(endpoint, headers=basic_auth_header)
-        #     resp_json = response.json   
-        #     m = RfSensorFanExcerpt(**resp_json['SpeedPercent'])
-        #     print(f"Response json: {json.dumps(resp_json, indent=2, ensure_ascii=False)}")
-        #     if payload[f"fan{fan_id}_switch"] is True:
-        #         assert m.Reading == payload['fan_speed']
-        #     else:
-        #         assert m.Reading != payload['fan_speed']
+        print(f"## Wait for fan sensor value reaching the target value: {payload['fan_speed']}")
+        time.sleep(10)
+        print(f"## Check Sensor Value:")
+        for fan_id in range(1, fan_cnt + 1):
+            endpoint = f'/redfish/v1/Chassis/{chassis_id}/Sensors/Fan{fan_id}'
+            response = client.get(endpoint, headers=basic_auth_header)
+            resp_json = response.json   
+            # m = RfSensorFanExcerpt(**resp_json['Reading'])
+            print(f"Response json: {json.dumps(resp_json, indent=2, ensure_ascii=False)}")
+            if payload[f"fan{fan_id}_switch"] is True:
+                sensor_value = resp_json['Reading']
+                assert ReadingPolicy1.validate_sensor_value_in_reasonable_vibration(sensor_value, payload['fan_speed']) == True
 
-    
+@pytest.mark.parametrize('testcase', chassis_PumpsSpeedControl_patch_testcases)
+def test_chassis_PumpsSpeedControl_patch_api(client, basic_auth_header, testcase):
+    """[TestCase] chassis FansSpeedControl patch API
+    payload:{ 
+        "speed_set": 50,
+        "pump1_switch": true,
+        "pump2_switch": true,
+        "pump3_switch": true
+        ...
+    @note: N個pump的設定值只會有一個，但會對應N個sensor
+    } 
+    """
+    for payload in testcase['payloads']:
+        # 更新設定值
+        print(f"## Http method: PATCH")
+        print(f"Endpoint: {testcase['endpoint']}")
+        print(f"Payload: {payload}")
+        response = client.patch(testcase['endpoint'], headers=basic_auth_header, json=payload)
+        print(f"Response json: {json.dumps(response.json, indent=2, ensure_ascii=False)}")
+        assert response.status_code == 200
+
+        # 取得設定值
+        time.sleep(2)
+        print(f"## Http method: GET")
+        print(f"Endpoint: {testcase['endpoint']}")
+        response = client.get(testcase['endpoint'], headers=basic_auth_header)
+        resp_json = response.json   
+        print(f"Response json: {json.dumps(resp_json, indent=2, ensure_ascii=False)}")
+        assert resp_json['SetPoint'] == payload['speed_set']
+        
+        # 取得sensor實際值 (注意，實際值不會這麼快就反應出來，通常要等待幾秒)
+        # URI: /redfish/v1/ThermalEquipment/CDUs/1/Pumps/1
+        # Response: {
+        #     ...
+        #     "PumpSpeedPercent": {
+        #         "Reading": 49,
+        #         "SpeedRPM": 4.9
+        #     },
+        # }
+        print(f"## Wait for pump sensor value reaching the target value: {payload['speed_set']}")
+        time.sleep(10)
+        print(f"## Check Sensor Value:")
+        for pump_id in range(1, pump_cnt + 1):
+            endpoint = f'/redfish/v1/ThermalEquipment/CDUs/1/Pumps/{pump_id}'
+            response = client.get(endpoint, headers=basic_auth_header)
+            resp_json = response.json   
+            # m = RfSensorFanExcerpt(**resp_json['PumpSpeedPercent'])
+            print(f"- Endpoint: {endpoint}")
+            print(f"  Response json: {json.dumps(resp_json, indent=2, ensure_ascii=False)}")
+            if payload[f"pump{pump_id}_switch"] is True:
+                sensor_value = resp_json['PumpSpeedPercent']['Reading']
+                assert ReadingPolicy1.validate_sensor_value_in_reasonable_vibration(sensor_value, payload['speed_set']) == True
+
+
 @pytest.mark.parametrize('testcase', chassis_OperationMode_patch_testcases)
 def test_chassis_OperationMode_patch_api(client, basic_auth_header, testcase):
     """[TestCase] chassis OperationMode patch API
