@@ -178,6 +178,7 @@
             z-index: 999;
             display: none;
         }
+
         .overload_error-container {
           position: fixed;
           top: 90px; 
@@ -289,7 +290,7 @@
             </ul>
         </div>
     </div>
-    <!--<div class="overload_error-container"></div>-->
+    <div class="overload_error-container"></div>
     <div class="marquee-container">
         <div class="marquee"></div>
     </div>
@@ -678,7 +679,7 @@
 
         window.sharedData = {};  // 宣告全域物件
 
-        /*function handleToStop(data, ver_switch){
+        function handleToStop(data, ver_switch){
             const container = $(".overload_error-container");
             let messages = [];
             if(data["opMod"] === "Auto"){
@@ -708,7 +709,7 @@
                     messages.push(`Change to stop mode`);
                   }
               }
-              else if(ver_switch["liquid_level_1_switch"]){
+              else if(!ver_switch["liquid_level_1_switch"]){
                   if(
                       data["alert"]["clnt_flow_low"] &&
                       data["error"]["level1"]
@@ -740,6 +741,7 @@
                             icon: "success",
                             confirmButtonText: "OK",
                         });
+                        $(".overload_error-container").fadeOut();
                     }
                 },
             });
@@ -770,7 +772,7 @@
             }
         }
 
-        show_stop_message();*/
+        show_stop_message();
 
         async function get_change_light_data() {
             while (true) {

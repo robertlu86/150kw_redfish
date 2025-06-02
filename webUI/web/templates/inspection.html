@@ -1357,13 +1357,13 @@
             
             function check_f1_expect_value(data){
                 let t2_value = data["value"]["temp_clntRtn"];
-                if(t2_value > 45 && t2_value <= 55){
+                if(t2_value <= 50){
                     $("#f1_expect").text("100 ~ 130");
-                }else if(t2_value > 35 && t2_value <= 45){
+                }else if(t2_value >= 40 && t2_value < 50){
                     $("#f1_expect").text("80 ~ 110");
-                }else if(t2_value > 25 && t2_value <= 35){
+                }else if(t2_value >= 30 && t2_value < 40){
                     $("#f1_expect").text("60 ~ 90");
-                }else if(t2_value > 15 && t2_value <= 25){
+                }else if(t2_value >= 20 && t2_value < 30){
                     $("#f1_expect").text("40 ~ 70");
                 }
             }
