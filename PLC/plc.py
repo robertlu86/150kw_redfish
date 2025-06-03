@@ -1460,6 +1460,43 @@ level_sw = {
     "power12v2": None,
 }
 
+fan_raw_status = {
+    "error": {
+        "Fan1": 0,
+        "Fan2": 0,
+        "Fan3": 0,
+        "Fan4": 0,
+        "Fan5": 0,
+        "Fan6": 0,
+        "Fan7": 0,
+        "Fan8": 0,
+    },
+    "warning": {
+        "Fan1": 0,
+        "Fan2": 0,
+        "Fan3": 0,
+        "Fan4": 0,
+        "Fan5": 0,
+        "Fan6": 0,
+        "Fan7": 0,
+        "Fan8": 0,
+    },
+}
+
+def save_fans_status():
+    try:
+        with ModbusTcpClient(
+            host=modbus_host, port=modbus_port, unit=modbus_slave_id
+        ) as client:
+            registers = []
+            for key in fan_raw_status["error"]:
+                registers.append(fan_raw_status["error"][key])
+            for key in fan_raw_status["warning"]:
+                registers.append(fan_raw_status["warning"][key])
+            client.write_registers(2500, registers)
+    except Exception as e:
+        print(f"save fan status error:{e}")
+
 
 def check_inverter(inv):
     return (
@@ -4221,6 +4258,8 @@ def control():
                     client.write_registers(5000, registers)
             except Exception as e:
                 print(f"write into thrshd error: {e}")
+                
+            save_fans_status()
             # 測試用開始
             registers_eletricity = []
             for key in raw_485_data_eletricity:
@@ -6079,6 +6118,10 @@ def rtu_thread():
                     for i, unit in enumerate(fan_units_6, start=1):
                         try:
                             r = client.read_input_registers(53293, 1, unit=unit)
+                            ###fan status(error、warning)
+                            status_r = client.read_input_registers(53265, 2, unit=unit)
+                            fan_raw_status["error"][f"Fan{i}"] = status_r.registers[0]
+                            fan_raw_status["warning"][f"Fan{i}"] = status_r.registers[1]
                             ###fan speed freq
                             raw_485_data[f"Fan{i}Com"] = r.registers[0]
                             raw_485_comm[f"Fan{i}Com"] = False
@@ -6091,6 +6134,10 @@ def rtu_thread():
                     for i, unit in enumerate(fan_units, start=1):
                         try:
                             r = client.read_input_registers(53293, 1, unit=unit)
+                            ###fan status(error、warning)
+                            status_r = client.read_input_registers(53265, 2, unit=unit)
+                            fan_raw_status["error"][f"Fan{i}"] = status_r.registers[0]
+                            fan_raw_status["warning"][f"Fan{i}"] = status_r.registers[1]
                             ###fan speed freq
                             raw_485_data[f"Fan{i}Com"] = r.registers[0]
                             raw_485_comm[f"Fan{i}Com"] = False
