@@ -16,9 +16,11 @@ from pymodbus.payload import BinaryPayloadDecoder, BinaryPayloadBuilder
 from concurrent_log_handler import ConcurrentTimedRotatingFileHandler
 import requests
 import pyzipper
+from dotenv import load_dotenv, set_key
 
 # from flask_limiter import Limiter
 # from flask_limiter.util import get_remote_address
+load_dotenv()
 
 log_path = os.path.dirname(os.getcwd())
 json_path = f"{log_path}/webUI/web/json"
