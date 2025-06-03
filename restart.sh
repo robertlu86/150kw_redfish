@@ -123,6 +123,9 @@ sudo chown -R user:user /home/user/service
 sudo cp /home/user/service/nginx/config/default /etc/nginx/sites-available/default
 sudo cp /home/user/service/nginx/config/nginx.conf /etc/nginx/
 
+### 暫時刪除資料庫
+sudo rm -rf /home/user/service/redfish-server/sidecar-redfish/instance/mydb.sqlite
+sudo rm -rf /home/user/service/redfish-server/instance/mydb.sqlite
 # sudo systemctl daemon-reload
 # sudo systemctl restart plc
 # sudo systemctl restart modbusProxy
