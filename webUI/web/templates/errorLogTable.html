@@ -262,7 +262,15 @@ styles %}
                         }
                     },
                 },
-                { data: "signal_value" },
+                { 
+                    data: "signal_value",
+                    render: function (data, type, row) {
+                        if (typeof data === "string") {
+                            return data.replace(/\n/g, "<br>");
+                        }
+                        return data;
+                    }
+                },
                 {
                     data: null,
                     defaultContent:
