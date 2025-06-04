@@ -709,6 +709,7 @@ sensorData = {
         "power_factor": 0,
     },
     "opMod": "Auto",
+    "plc_version": "",
 }
 
 ctr_data = {
@@ -2178,6 +2179,111 @@ snmp_setting = {
     "v3_switch": False,
 }
 
+FAN_ERROR_KEYS = [
+    "space1",
+    "space2",
+    "space3",
+    "UzLow",
+    "space4",
+    "RL_Cal",
+    "space5",
+    "n_Limit",
+    "BLK",
+    "HLL",
+    "TFM",
+    "FB",
+    "SKF",
+    "TFE",
+    "space6",
+    "PHA",
+]
+
+FAN_WANINIG_KEYS = [
+    "LRF",
+    "UeHigh",
+    "space1",
+    "UzHigh",
+    "space2",
+    "OpenCir",
+    "n_Low",
+    "RL_Cal",
+    "Braking",
+    "UzLow",
+    "TEI_high",
+    "TM_high",
+    "TE_high",
+    "P_Limit",
+    "L_high",
+    "I_Limit",
+]
+
+fan_status_message = {
+    "error":{
+        "UzLow": "DC-link undervoltage",
+        "RL_Cal": "Rotor position sensor calibration error",
+        "n_Limit": "Speed limit exceeded",
+        "BLK": "Motor blocked",
+        "HLL": "Hall sensor error",
+        "TFM": "Motor overheated",
+        "FB": "Fan Bad",
+        "SKF": "Internal communication error",
+        "TFE": "Output stage overheated",
+        "PHA": "Phase failure or line undervoltage",
+    },
+    "warning":{
+        "LRF": "Shedding function active",
+        "UeHigh": "Line voltage high",
+        "UzHigh": "DC-link voltage high",
+        "OpenCir": "No signal detected at analog or PWM input",
+        "n_Low": "Actual speed is lower than speed limit or running monitoring",
+        "RL_Cal": "Calibration of rotor position sensor in progress",
+        "Braking": "Braking mode",
+        "UzLow": "DC-link voltage low",
+        "TEI_high": "Temperature inside electronics high",
+        "TM_high": "Motor temperature high",
+        "TE_high": "Outout stage temerature high",
+        "P_Limit": "Power limiter in action",
+        "L_high": "Line impedance too high",
+        "I_Limit": "Current limitation in action",
+    }
+}
+
+fan_error_status = {
+    f"Fan{i + 1}": {key: False for key in FAN_ERROR_KEYS} for i in range(8)
+}
+
+fan_warning_status = {
+    f"Fan{i + 1}": {key: False for key in FAN_WANINIG_KEYS} for i in range(8)
+}
+
+def check_fans_status():
+    try:
+        with ModbusTcpClient(
+            host=modbus_host, port=modbus_port, unit=modbus_slave_id
+        ) as client:
+            err_key_len = len(FAN_ERROR_KEYS)
+            warning_key_len = len(FAN_WANINIG_KEYS)
+            err_keys_list = list(FAN_ERROR_KEYS)
+            warning_keys_list = list(FAN_WANINIG_KEYS)
+            start_address = 2500
+            warning_start_address = 2508
+            for i in range(8):
+                err_result = client.read_holding_registers(start_address + i, 1)
+                warning_reslut = client.read_holding_registers(warning_start_address + i , 1)
+                
+                if not err_result.isError():
+                    err_value = err_result.registers[0]
+                    err_binary_string = bin(err_value)[2:].zfill(err_key_len)
+                    for index, key in enumerate(err_keys_list):
+                        fan_error_status[f"Fan{i+1}"][key] = bool(int(err_binary_string[index]))
+                        
+                if not warning_reslut.isError():
+                    warning_value = warning_reslut.registers[0]
+                    warning_binary_string = bin(warning_value)[2:].zfill(warning_key_len)
+                    for index, key in enumerate(warning_keys_list):
+                        fan_warning_status[f"Fan{i+1}"][key] = bool(int(warning_binary_string[index]))
+    except Exception as e:
+        print(f"Fan status error:{e}")        
 
 def read_net_name():
     net_data = {
@@ -2447,11 +2553,17 @@ def record_signal_on(signal_name, singnal_value):
     max_records_to_check = min(50, len(signal_records))
     for record in signal_records[:max_records_to_check]:
         if (
-            record["signal_name"] == signal_name
+            record["signal_value"] == singnal_value
             and record["on_time"] is not None
             and record["off_time"] is None
         ):
             return
+        # if (
+        #     record["signal_name"] == signal_name
+        #     and record["on_time"] is not None
+        #     and record["off_time"] is None
+        # ):
+        #     return
 
     record = {
         "signal_name": signal_name,
@@ -2489,7 +2601,7 @@ def record_signal_off(signal_name, singnal_value):
     max_records_to_check = min(50, len(signal_records))
     for record in signal_records[:max_records_to_check]:
         if (
-            record["signal_name"] == signal_name
+            record["signal_value"] == singnal_value
             and record["on_time"] is not None
             and record["off_time"] is None
         ):
@@ -3689,6 +3801,16 @@ def read_modbus_data():
             time.sleep(1)
             continue
 
+        ### 從modbus讀取PLC的版號
+        try:
+            with ModbusTcpClient(
+                host=modbus_host, port=modbus_port, unit=modbus_slave_id
+            ) as client:
+                r = client.read_holding_registers(990, 1)
+                sensorData["plc_version"] = r.registers[0]
+        except Exception as e:
+            print(f"plc version error: {e}")
+    
         try:
             with ModbusTcpClient(
                 host=modbus_host, port=modbus_port, unit=modbus_slave_id
@@ -4448,6 +4570,7 @@ def read_modbus_data():
         except Exception as e:
             print(f"read adjust error:{e}")
 
+        check_fans_status()
         error_data.clear()
 
         try:
@@ -4610,11 +4733,26 @@ def read_modbus_data():
                     for key in keys_list:
                         if sensorData["error"][key]:
                             if sensorData["err_log"]["error"][key] not in error_data:
-                                error_data.append(sensorData["err_log"]["error"][key])
+                                if key.startswith("fan") and key.endswith("_error"):
+                                    index = key[3]
+                                    for err_key in fan_error_status[f"Fan{index}"]:
+                                        if fan_error_status[f"Fan{index}"][err_key]:
+                                            error_data.append(
+                                                f"{sensorData['err_log']['error'][key]} ; {fan_status_message['error'][err_key]}"
+                                            )
+                                    for warning_key in fan_warning_status[f"Fan{index}"]:
+                                        if fan_warning_status[f"Fan{index}"][warning_key]:
+                                            error_data.append(
+                                                f"{sensorData['err_log']['error'][key]} ; {fan_status_message['warning'][warning_key]}"
+                                            )
+                                else:
+                                    error_data.append(sensorData["err_log"]["error"][key])
                     error_count += 1
 
                     if error_toggle:
                         if error_count > 10:
+                            fan_status_list = []
+                            fan_warning_list = []
                             for key in keys_list:
                                 current_state = sensorData["error"][key]
 
@@ -4622,60 +4760,114 @@ def read_modbus_data():
                                     previous_error_states[key] = False
 
                                 if current_state and not previous_error_states[key]:
-                                    app.logger.warning(
-                                        sensorData["err_log"]["error"][key]
-                                    )
+                                    if key.startswith("fan") and key.endswith("_error"):
+                                        index = key[3]
+                                        for err_key in fan_error_status[f"Fan{index}"]:
+                                            if fan_error_status[f"Fan{index}"][err_key]:
+                                                fan_status_list.append(err_key)
+                                                app.logger.warning(
+                                                    f'{sensorData["err_log"]["error"][key]} ; {fan_status_message["error"][err_key]}'
+                                                )
 
-                                    record_signal_on(
-                                        sensorData["err_log"]["error"][key].split()[0],
-                                        sensorData["err_log"]["error"][key],
-                                    )
-                                    if (
-                                        sensorData["err_log"]["error"][key].split()[0]
-                                        == "M300"
-                                        or sensorData["err_log"]["error"][key].split()[
-                                            0
-                                        ]
-                                        == "M301"
-                                        or sensorData["err_log"]["error"][key].split()[
-                                            0
-                                        ]
-                                        == "M302"
-                                    ):
-                                        record_downtime_signal_on(
-                                            sensorData["err_log"]["error"][key].split()[
-                                                0
-                                            ],
+                                                record_signal_on(
+                                                    sensorData["err_log"]["error"][
+                                                        key
+                                                    ].split()[0],
+                                                    f"{sensorData['err_log']['error'][key]};\n{fan_status_message['error'][err_key]}",
+                                                )
+                                        for warning_key in fan_warning_status[f"Fan{index}"]:
+                                            if fan_warning_status[f"Fan{index}"][warning_key]:
+                                                fan_warning_list.append(warning_key)
+                                                app.logger.warning(
+                                                    f"{sensorData['err_log']['error'][key]} ; {fan_status_message['warning'][warning_key]}"
+                                                )
+
+                                                record_signal_on(
+                                                    sensorData["err_log"]["error"][
+                                                        key
+                                                    ].split()[0],
+                                                    f"{sensorData['err_log']['error'][key]};\n{fan_status_message['warning'][warning_key]}",
+                                                )        
+                                    else:
+                                        app.logger.warning(
+                                            sensorData["err_log"]["error"][key]
+                                        )
+
+                                        record_signal_on(
+                                            sensorData["err_log"]["error"][key].split()[0],
                                             sensorData["err_log"]["error"][key],
                                         )
+                                        if (
+                                            sensorData["err_log"]["error"][key].split()[0]
+                                            == "M300"
+                                            or sensorData["err_log"]["error"][key].split()[
+                                                0
+                                            ]
+                                            == "M301"
+                                            or sensorData["err_log"]["error"][key].split()[
+                                                0
+                                            ]
+                                            == "M302"
+                                        ):
+                                            record_downtime_signal_on(
+                                                sensorData["err_log"]["error"][key].split()[
+                                                    0
+                                                ],
+                                                sensorData["err_log"]["error"][key],
+                                            )
 
                                 elif not current_state and previous_error_states[key]:
-                                    app.logger.info(
-                                        f"{sensorData['err_log']['error'][key]} Restore"
-                                    )
+                                    if key.startswith("fan") and key.endswith("_error"):
+                                        index = key[3]
+                                        for err_key in fan_error_status[f"Fan{index}"]:
+                                            if err_key in fan_status_list:
+                                                app.logger.info(
+                                                    f"{sensorData['err_log']['error'][key]} ; {fan_status_message['error'][err_key]} Restore"
+                                                )
+                                                record_signal_off(
+                                                    sensorData["err_log"]["error"][
+                                                        key
+                                                    ].split()[0],
+                                                    f"{sensorData['err_log']['error'][key]};\n{fan_status_message['error'][err_key]}",
+                                                )
+                                        for warning_key in fan_warning_status[f"Fan{index}"]:
+                                            if warning_key in fan_warning_list:
+                                                app.logger.info(
+                                                    f"{sensorData['err_log']['error'][key]} ; {fan_status_message['warning'][warning_key]} Restore"
+                                                )
+                                                record_signal_off(
+                                                    sensorData["err_log"]["error"][
+                                                        key
+                                                    ].split()[0],
+                                                    f"{sensorData['err_log']['error'][key]};\n{fan_status_message['warning'][warning_key]}",
+                                                )
+                                    else:
+                                        app.logger.info(
+                                            f"{sensorData['err_log']['error'][key]} Restore"
+                                        )
 
-                                    record_signal_off(
-                                        sensorData["err_log"]["error"][key].split()[0],
-                                        sensorData["err_log"]["error"][key],
-                                    )
-                                    if (
-                                        sensorData["err_log"]["error"][key].split()[0]
-                                        == "M300"
-                                        or sensorData["err_log"]["error"][key].split()[
-                                            0
-                                        ]
-                                        == "M301"
-                                        or sensorData["err_log"]["error"][key].split()[
-                                            0
-                                        ]
-                                        == "M302"
-                                    ):
-                                        record_downtime_signal_off(
-                                            sensorData["err_log"]["error"][key].split()[
-                                                0
-                                            ],
+                                        record_signal_off(
+                                            sensorData["err_log"]["error"][key].split()[0],
                                             sensorData["err_log"]["error"][key],
                                         )
+                                        if (
+                                            sensorData["err_log"]["error"][key].split()[0]
+                                            == "M300"
+                                            or sensorData["err_log"]["error"][key].split()[
+                                                0
+                                            ]
+                                            == "M301"
+                                            or sensorData["err_log"]["error"][key].split()[
+                                                0
+                                            ]
+                                            == "M302"
+                                        ):
+                                            record_downtime_signal_off(
+                                                sensorData["err_log"]["error"][key].split()[
+                                                    0
+                                                ],
+                                                sensorData["err_log"]["error"][key],
+                                            )
                                 previous_error_states[key] = current_state
                             error_count = 0
             ###檢查全部status是否有任何warning, alert, error
@@ -5873,18 +6065,8 @@ def read_version():
     with open(f"{web_path}/fw_info_version.json", "r") as file2:
         FW_Info_Version = json.load(file2)
         
-    ### 從modbus讀取PLC的版號
+    plc_version = sensorData["plc_version"]
     
-    try:
-        with ModbusTcpClient(
-            host=modbus_host, port=modbus_port, unit=modbus_slave_id
-        ) as client:
-            r = client.read_holding_registers(990, 1)
-            plc_version = r.registers[0]
-    except Exception as e:
-        print(f"fwInfo error: {e}")
-        return jsonify({"error": "Request timeout"}), 504
-
     # return jsonify({"FW_Info": FW_Info, "plc_version": plc_version})
     return jsonify({"FW_Info": FW_Info,"FW_Info_Version": FW_Info_Version ,"plc_version": plc_version})
 
@@ -8109,6 +8291,10 @@ def check_rack_error(rack, delay="Delay_rack_error"):
     except Exception as e:
         print(f"check error：{e}")
 
+def check_rack_com():
+    for i in range(5):
+        sensorData["rack"][f"rack{i + 1}_status_com"] = True if  sensorData["rack_no_connection"][f"rack{i + 1}_status"] else False
+        sensorData["rack"][f"rack{i + 1}_leak_com"] = True if sensorData["rack_no_connection"][f"rack{i + 1}_leak"] else False
 
 def send_error_log():
     for i in range(10):
@@ -8188,10 +8374,10 @@ def read_rack_status():
                     if sensorData["rack_status"]["rack1_status"] <=20:
                         sensorData["rack_status"]["rack1_status"] = 0
                     sensorData["rack_no_connection"]["rack1_status"] = False
-                    sensorData["rack"]["rack1_status_com"] = False
+                    
             except Exception as e:
                 sensorData["rack_no_connection"]["rack1_status"] = True
-                sensorData["rack"]["rack1_status_com"] = True
+                
                 print(f"rack1 reg error: {e}")
                 pass
 
@@ -8203,10 +8389,10 @@ def read_rack_status():
                     sensorData["rack_leak"]["rack1_leak"] = r.bits[0]
                     sensorData["rack_broken"]["rack1_broken"] = r.bits[1]
                     sensorData["rack_no_connection"]["rack1_leak"] = False
-                    sensorData["rack"]["rack1_leak_com"] = False
+                    
             except Exception as e:
                 sensorData["rack_no_connection"]["rack1_leak"] = True
-                sensorData["rack"]["rack1_leak_com"] = True
+                
                 print(f"rack1 reg error: {e}")
                 pass
 
@@ -8239,10 +8425,10 @@ def read_rack_status():
                     if sensorData["rack_status"]["rack2_status"] <= 20:
                         sensorData["rack_status"]["rack2_status"] = 0
                     sensorData["rack_no_connection"]["rack2_status"] = False
-                    sensorData["rack"]["rack2_status_com"] = False
+                    
             except Exception as e:
                 sensorData["rack_no_connection"]["rack2_status"] = True
-                sensorData["rack"]["rack2_status_com"] = True
+                
                 print(f"rack2 reg error: {e}")
                 pass
 
@@ -8254,10 +8440,10 @@ def read_rack_status():
                     sensorData["rack_leak"]["rack2_leak"] = r.bits[0]
                     sensorData["rack_broken"]["rack2_broken"] = r.bits[1]
                     sensorData["rack_no_connection"]["rack2_leak"] = False
-                    sensorData["rack"]["rack2_leak_com"] = False
+                    
             except Exception as e:
                 sensorData["rack_no_connection"]["rack2_leak"] = True
-                sensorData["rack"]["rack2_leak_com"] = True
+                
                 print(f"rack2 reg error: {e}")
                 pass
 
@@ -8290,10 +8476,10 @@ def read_rack_status():
                     if sensorData["rack_status"]["rack3_status"] <= 20:
                         sensorData["rack_status"]["rack3_status"] = 0
                     sensorData["rack_no_connection"]["rack3_status"] = False
-                    sensorData["rack"]["rack3_status_com"] = False
+                    
             except Exception as e:
                 sensorData["rack_no_connection"]["rack3_status"] = True
-                sensorData["rack"]["rack3_status_com"] = True
+                
                 print(f"rack3 reg error: {e}")
                 pass
 
@@ -8305,10 +8491,10 @@ def read_rack_status():
                     sensorData["rack_leak"]["rack3_leak"] =  r.bits[0]
                     sensorData["rack_broken"]["rack3_broken"] =  r.bits[1]
                     sensorData["rack_no_connection"]["rack3_leak"] = False
-                    sensorData["rack"]["rack3_leak_com"] = False
+                    
             except Exception as e:
                 sensorData["rack_no_connection"]["rack3_leak"] = True
-                sensorData["rack"]["rack3_leak_com"] = True
+                
                 print(f"rack3 reg error: {e}")
                 pass
 
@@ -8341,10 +8527,10 @@ def read_rack_status():
                     if sensorData["rack_status"]["rack4_status"] <= 20:
                         sensorData["rack_status"]["rack4_status"] = 0
                     sensorData["rack_no_connection"]["rack4_status"] = False
-                    sensorData["rack"]["rack4_status_com"] = False
+                    
             except Exception as e:
                 sensorData["rack_no_connection"]["rack4_status"] = True
-                sensorData["rack"]["rack4_status_com"] = True
+                
                 print(f"rack4 reg error: {e}")
                 pass
 
@@ -8356,10 +8542,10 @@ def read_rack_status():
                     sensorData["rack_leak"]["rack4_leak"] = r.bits[0]
                     sensorData["rack_broken"]["rack4_broken"] = r.bits[1]
                     sensorData["rack_no_connection"]["rack4_leak"] = False
-                    sensorData["rack"]["rack4_leak_com"] = False
+                    
             except Exception as e:
                 sensorData["rack_no_connection"]["rack4_leak"] = True
-                sensorData["rack"]["rack4_leak_com"] = True
+                
                 print(f"rack4 coil error: {e}")
                 pass
 
@@ -8392,10 +8578,10 @@ def read_rack_status():
                     if sensorData["rack_status"]["rack5_status"] <= 20:
                         sensorData["rack_status"]["rack5_status"] = 0
                     sensorData["rack_no_connection"]["rack5_status"] = False
-                    sensorData["rack"]["rack5_status_com"] = False
+                    
             except Exception as e:
                 sensorData["rack_no_connection"]["rack5_status"] = True
-                sensorData["rack"]["rack5_status_com"] = True
+                
                 print(f"rack5 reg error: {e}")
                 pass
 
@@ -8407,10 +8593,10 @@ def read_rack_status():
                     sensorData["rack_leak"]["rack5_leak"] = r.bits[0]
                     sensorData["rack_broken"]["rack5_broken"] = r.bits[1]
                     sensorData["rack_no_connection"]["rack5_leak"] = False
-                    sensorData["rack"]["rack5_leak_com"] = False
+                    
             except Exception as e:
                 sensorData["rack_no_connection"]["rack5_leak"] = True
-                sensorData["rack"]["rack5_leak_com"] = True
+                
                 print(f"rack5 coil error: {e}")
                 pass
 
@@ -8666,17 +8852,29 @@ def read_rack_status():
                 print(f"rack10 set control error: {e}")
 
             # check_rack_error("rack10")
-        index = 1
-        for key in ctr_data["rack_visibility"]:
-            if ctr_data["rack_visibility"][key]:
-                check_rack_error(f"rack{index}")
-            elif not ctr_data["rack_visibility"][key]:
-                sensorData["rack"][f"rack{index}_broken"] = False
-                sensorData["rack"][f"rack{index}_leak"] = False
-                sensorData["rack"][f"rack{index}_error"] = False
-                sensorData["rack"][f"rack{index}_leak_com"] = False
-                sensorData["rack"][f"rack{index}_status_com"] = False    
-            index += 1
+        check_rack_com()
+        for i, (key, enabled) in enumerate(ctr_data["rack_visibility"].items(), start=1):
+            rack_name = f"rack{i}"
+            if enabled:
+                check_rack_error(rack_name)
+            else:
+                for suffix in ["_broken", "_leak", "_error", "_leak_com", "_status_com"]:
+                    sensorData["rack"][f"{rack_name}{suffix}"] = False
+                sensorData["rack_no_connection"][f"{rack_name}_status"] = False
+                sensorData["rack_no_connection"][f"{rack_name}_leak"] = False
+        # index = 1
+        # for key in ctr_data["rack_visibility"]:
+        #     if ctr_data["rack_visibility"][key]:
+        #         check_rack_error(f"rack{index}")
+        #     elif not ctr_data["rack_visibility"][key]:
+        #         sensorData["rack"][f"rack{index}_broken"] = False
+        #         sensorData["rack"][f"rack{index}_leak"] = False
+        #         sensorData["rack"][f"rack{index}_error"] = False
+        #         sensorData["rack"][f"rack{index}_leak_com"] = False
+        #         sensorData["rack"][f"rack{index}_status_com"] = False
+        #         sensorData["rack_no_connection"][f"rack{index}_status"] = False
+        #         sensorData["rack_no_connection"][f"rack{index}_leak"] = False
+        #     index += 1
         # send_error_log()
 
         try:
