@@ -14,7 +14,10 @@ from mylib.models.rf_status_model import RfStatusModel
 from mylib.models.rf_primary_coolant_connector_model import RfPrimaryCoolantConnectorCollectionModel
 from mylib.models.rf_cdu_model import RfCduModel, RfCduCollectionModel
 from mylib.models.rf_pump_collection_model import RfPumpCollectionModel
-# from mylib.models.rf_pump_model import RfPumpModel
+from mylib.models.rf_pump_model import RfPumpModel
+from mylib.utils.load_api import load_raw_from_api, CDU_BASE
+from mylib.models.rf_sensor_model import RfSensorPumpExcerpt
+from mylib.models.rf_control_model import RfControlSingleLoopExcerptModel
 
 from load_env import hardware_info
 
@@ -51,7 +54,7 @@ class RfThermalEquipmentService(BaseService):
         m.TemperatureCelsius["Reading"] = self._read_reading_value_by_sensor_id("TemperatureCelsius")
         m.DewPointCelsius["Reading"] = self._read_reading_value_by_sensor_id("DewPointCelsius")
         m.HumidityPercent["Reading"] = self._read_reading_value_by_sensor_id("HumidityPercent")
-        m.AbsoluteHumidity["Reading"] = 0 or self._read_reading_value_by_sensor_id("AbsoluteHumidity")
+        m.AbsoluteHumidity["Reading"] = self._read_reading_value_by_sensor_id("AbsoluteHumidity")
         return m.to_dict()
     
     def fetch_CDUs_LeakDetection_LeakDetectors(self, cdu_id: str) -> dict:
@@ -208,14 +211,45 @@ class RfThermalEquipmentService(BaseService):
         #     })
         return m.to_dict()
     
-    # def fetch_CDUs_Pumps_Pump(self, cdu_id: str, pump_id: str) -> dict:
-    #     """
-    #     對應 "/ThermalEquipment/CDUs/1/Pumps/1"
+    def fetch_CDUs_Pumps_Pump_get(self, cdu_id: str, pump_id: str) -> dict:
+        """
+        對應 "/ThermalEquipment/CDUs/<cdu_id>/Pumps/<pump_id>"
 
-    #     :param cdu_id: str
-    #     :param pump_id: str
-    #     :return: dict
-    #     """
-    #     m = RfPumpModel(cdu_id=cdu_id, pump_id=pump_id)
-    #     m.odata_id = f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/Pumps/{pump_id}"
-    #     return m.to_dict()
+        :param cdu_id: str
+        :param pump_id: str
+        :return: dict
+        """
+        pump_max_speed = 16000  # 最大速度為16000 RPM
+        m = RfPumpModel(cdu_id=cdu_id, pump_id=pump_id)
+        # speed
+        pump_speed = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_speed")[f"pump{pump_id}_speed"]
+        m.PumpSpeedPercent = RfSensorPumpExcerpt(**{
+            "Reading": pump_speed,
+            "SpeedRPM": pump_speed * pump_max_speed / 100            
+        })
+        # control
+        m.SpeedControlPercent = RfControlSingleLoopExcerptModel(**{
+            "SetPoint": load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/control/pump_speed")[f"pump{pump_id}_speed"],  
+            "AllowableMin": 15,
+            "AllowableMax": 100,
+            # "ControlMode": "Automatic"  
+        })
+        # status
+        state = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_state")[f"pump{pump_id}_state"]
+        health = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_health")[f"pump{pump_id}_health"]
+        if state == "Disable": state = "Disabled"
+        if state == "Enable": state = "Enabled"
+        status = {
+            "State": state,
+            "Health": health
+        }
+        m.Status = RfStatusModel.from_dict(status)
+        # service time
+        service_hours = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_service_hours")[f"pump{pump_id}_service_hours"]
+        m.ServiceHours = service_hours
+        # oem
+
+        m.Oem["supermicro"][f"Inventer {pump_id} MC"]["Switch"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/mc")[f"mc{pump_id}_sw"]
+        return m.to_dict()
+    
+    # def fetch_CDUs_Pumps_Pump_patch():
