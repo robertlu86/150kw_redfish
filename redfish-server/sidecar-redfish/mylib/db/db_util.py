@@ -1,5 +1,7 @@
+from werkzeug.security import generate_password_hash
 from mylib.models.account_model import RoleModel, AccountModel
 from mylib.models.setting_model import SettingModel
+
 
 
 
@@ -48,7 +50,7 @@ def init_orm(app, db):
 
         # Create default user
         if not AccountModel.query.first():  # Check if any user exists
-            admin_user = AccountModel(user_name='admin', role = admin_role, password='Supermicro')
+            admin_user = AccountModel(user_name='admin', role = admin_role, password=generate_password_hash('Supermicro'))
             #admin_user.role = admin_role
             db.session.add(admin_user)
             db.session.commit()
@@ -58,6 +60,6 @@ def init_orm(app, db):
         ensure_setting(key='AccountService.AuthFailureLoggingThreshold', value='3')
         ensure_setting(key='AccountService.MinPasswordLength', value='5')
         ensure_setting(key='AccountService.AccountLockoutThreshold', value='5')
-        ensure_setting(key='AccountService.AccountLockoutDuration', value='30')
+        ensure_setting(key='AccountService.AccountLockoutDuration', value='60')
         ensure_setting(key='AccountService.AccountLockoutCounterResetAfter', value='30')
         ensure_setting(key='SessionService.SessionTimeout', value='3600')
