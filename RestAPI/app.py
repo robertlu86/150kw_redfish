@@ -2354,7 +2354,7 @@ class UploadZipFile(Resource):
 
         except requests.RequestException as e:
             print(f"An error occurred: {e}")
-        time.sleep(5)
+        time.sleep(3)
         try:
             # 發送 GET 請求到該 API
             response = requests.get("http://192.168.3.100/api/v1/reboot", auth=("superuser", superuser_password), verify=False)
