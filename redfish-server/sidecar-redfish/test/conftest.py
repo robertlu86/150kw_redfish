@@ -13,6 +13,7 @@ load_dotenv(dotenv_path=f"{os.path.join(proj_root, '.env-test')}", verbose=True,
 os.environ['IS_TESTING_MODE'] = 'True'
 
 import base64
+from typing import List, Dict, Any
 import pytest
 import logging
 from pytest_metadata.plugin import metadata_key
@@ -45,7 +46,7 @@ def basic_auth_header():
             "Content-Type": "application/json"
         }
     username = os.getenv("ADMIN_USERNAME", "admin")
-    password = os.getenv("ADMIN_PASSWORD", "admin")
+    password = os.getenv("ADMIN_PASSWORD", "Supermicro")
     return make_basic_auth_header(username, password)
 
 @pytest.fixture(autouse=True)
@@ -88,3 +89,25 @@ def print_response_details(response, **kwargs):
         for key, value in kwargs.items():
             print(f"  * {key}: {value}")
         
+class TestcaseFinder:
+    """
+    很多testcase是定義成如下的json:
+    {
+        "id": "operation-mode-automatic",
+        "endpoint": "/redfish/v1/Chassis/{chassis_id}/Controls/OperationMode",
+        "description": "自動模式",
+        "payload": {
+            ...
+        }
+    }
+    為了能有效的複用testcase，因此可用id來找testcase
+    """
+
+    def __init__(self, testcases: List[Dict[str, Any]]):
+        self.testcases = testcases
+    
+    def find_testcase_by_id(self, _id: str) -> Dict[str, Any]:
+        for testcase in self.testcases:
+            if testcase.get('id') == _id:
+                return testcase
+        return None

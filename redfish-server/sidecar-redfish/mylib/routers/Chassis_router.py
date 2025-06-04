@@ -9,7 +9,7 @@ import requests
 import os
 from typing import Dict
 from mylib.common.my_resource import MyResource
-from mylib.utils.system_info import get_mac_uuid
+from mylib.utils.system_info import get_mac_uuid, list_nics_fullinfo
 
 
 Chassis_ns = Namespace('', description='Chassis Collection')
@@ -221,38 +221,38 @@ ThermalSubsystem_data = {
         "@odata.id": "/redfish/v1/Chassis/1/ThermalSubsystem/ThermalMetrics"
     },
     # TBD 備用
-    "FanRedundancy": [
-        {
-            "MaxSupportedInGroup": 2,
-            "MinNeededInGroup": 1,
-            "RedundancyGroup": [
-                {
-                    "@odata.id": "/redfish/v1/Chassis/1/ThermalSubsystem/Fans/1"
-                },
-            ],
-            "RedundancyType": "NPlusM",
-            "Status": {
-                "Health": "OK",
-                "State": "Enabled"
-            }
-        },
-        {
-            "MaxSupportedInGroup": 2,
-            "MinNeededInGroup": 1,
-            "RedundancyGroup": [
-                {
-                    "@odata.id": "/redfish/v1/Chassis/1/ThermalSubsystem/Fans/1"
-                },
-                {
-                    "@odata.id": "/redfish/v1/Chassis/1/ThermalSubsystem/Fans/2"
-                }
-            ],
-            "RedundancyType": "NPlusM",
-            "Status": {
-                "State": "Disabled"
-            }
-        }
-    ],
+    # "FanRedundancy": [
+    #     {
+    #         "MaxSupportedInGroup": 6,
+    #         "MinNeededInGroup": 6,
+    #         "RedundancyGroup": [
+    #             {
+    #                 "@odata.id": "/redfish/v1/Chassis/1/ThermalSubsystem/Fans/1"
+    #             },
+    #         ],
+    #         "RedundancyType": "NPlusM",
+    #         "Status": {
+    #             "Health": "OK",
+    #             "State": "Enabled"
+    #         }
+    #     },
+    #     {
+    #         "MaxSupportedInGroup": 2,
+    #         "MinNeededInGroup": 1,
+    #         "RedundancyGroup": [
+    #             {
+    #                 "@odata.id": "/redfish/v1/Chassis/1/ThermalSubsystem/Fans/1"
+    #             },
+    #             {
+    #                 "@odata.id": "/redfish/v1/Chassis/1/ThermalSubsystem/Fans/2"
+    #             }
+    #         ],
+    #         "RedundancyType": "NPlusM",
+    #         "Status": {
+    #             "State": "Disabled"
+    #         }
+    #     }
+    # ],
     # TBD
     "Status": {"State": "Enabled", "Health": "OK"},
     "Oem": {},
@@ -587,7 +587,7 @@ class PumpsSpeedControl(Resource):
         scp = Controls_data_all["PumpsSpeedControl"]
         if not (scp["AllowableMin"] <= new_sp <= scp["AllowableMax"]):
             return {
-                "error": f"pump_speed 必須介於 {scp['AllowableMin']} 和 {scp['AllowableMax']}"
+                "error": f"pump_speed needs to be between {scp['AllowableMin']} and {scp['AllowableMax']}"
             }, 400
 
         # 轉發到內部控制 API
@@ -1190,7 +1190,7 @@ class NetworkAdapters(Resource):
             "Name": f"NetworkAdapter {NetworkAdapter_id}",
             
             "PartNumber": "Transcend-TS2TMTS970T-I",
-            "SerialNumber": "MAC",
+            "SerialNumber": get_mac_uuid(),
             "Ports": {"@odata.id": f"/redfish/v1/Chassis/{chassis_id}/NetworkAdapters/{NetworkAdapter_id}/Ports"}
         }    
         
@@ -1216,6 +1216,7 @@ class NetworkAdapters(Resource):
 class NetworkAdapters(Resource):
     # @requires_auth
     def get(self, chassis_id, NetworkAdapter_id, Port_id):
+        # list_nics_fullinfo()
         NetworkAdapter_id_Port_id = {
             "@odata.id": f"/redfish/v1/Chassis/{chassis_id}/NetworkAdapters/{NetworkAdapter_id}/Ports/{Port_id}",
             "@odata.type": "#Port.v1_16_0.Port",
@@ -1226,10 +1227,11 @@ class NetworkAdapters(Resource):
             
             "MaxSpeedGbps": 10,
             "CurrentSpeedGbps": 10,
+            # 在Ethernet中是取得對方的資訊(LLDP)(交換機等等...)
             "Ethernet": {
                 "LLDPEnabled": True,
                 "LLDPReceive": {
-                    "ChassisId": "TBD", # 放MAC
+                    "ChassisId": get_mac_uuid(), # 放MAC
                     "ChassisIdSubtype": "ChassisComp",
                     "ManagementAddressIPv4": "192.168.1.100",
                     "ManagementAddressMAC": "00:11:22:33:44:55",
@@ -1240,6 +1242,7 @@ class NetworkAdapters(Resource):
                     "SystemName": "TBD"
                 }
             },
+            
             "LinkState": "Enabled",
             "LinkStatus": "LinkUp",
             "Width": 1,

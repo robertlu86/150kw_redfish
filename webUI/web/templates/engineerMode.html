@@ -3080,6 +3080,28 @@ block styles %}
                 </div>
             </div>
             <div class="row">
+                <div class="col-4">
+                    <p>Leakage Sensor 1:</p>
+                </div>
+                <div class="col-2 sideNum">
+                    <select class="form-select" id="leakage_sensor_1_switch">
+                        <option value="old">Disabled</option>
+                        <option value="new">Enable</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <p>Leakage Sensor 2:</p>
+                </div>
+                <div class="col-2 sideNum">
+                    <select class="form-select" id="leakage_sensor_2_switch">
+                        <option value="old">Disabled</option>
+                        <option value="new">Enable</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
                 <div class="col-4"></div>
                 <div class="col-4">
                     <button id="ver_switch_apply" class="btn btn-outline-success" style="margin-right: 10px; margin-top: 20px">
@@ -4881,6 +4903,8 @@ block styles %}
             let liquid_level_3_switch = $("#liquid_level_3_switch").val();
             let liquid_level_2_switch = $("#liquid_level_2_switch").val();
             let liquid_level_1_switch = $("#liquid_level_1_switch").val();
+            let leakage_sensor_1_switch = $("#leakage_sensor_1_switch").val();
+            let leakage_sensor_2_switch = $("#leakage_sensor_2_switch").val();
 
             if (median_switch == "old") {
                 median_switch = true;
@@ -4914,6 +4938,16 @@ block styles %}
             } else {
                 liquid_level_3_switch = false;
             }
+            if (leakage_sensor_1_switch == "old") {
+                leakage_sensor_1_switch = true;
+            } else {
+                leakage_sensor_1_switch = false;
+            }
+            if (leakage_sensor_2_switch == "old") {
+                leakage_sensor_2_switch = true;
+            } else {
+                leakage_sensor_2_switch = false;
+            }
 
 
             combined_data = {
@@ -4922,7 +4956,9 @@ block styles %}
                 fan_count_switch: fan_count_switch,
                 liquid_level_1_switch: liquid_level_1_switch,
                 liquid_level_2_switch: liquid_level_2_switch, 
-                liquid_level_3_switch: liquid_level_3_switch
+                liquid_level_3_switch: liquid_level_3_switch,
+                leakage_sensor_1_switch: leakage_sensor_1_switch,
+                leakage_sensor_2_switch: leakage_sensor_2_switch
             };
 
             console.log(combined_data);

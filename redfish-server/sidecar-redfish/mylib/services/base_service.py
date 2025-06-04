@@ -44,7 +44,7 @@ class BaseService:
         return HttpRequestUtil.send_post_as_json(url, req_body, opts)
 
     @classmethod
-    @cached(cache=TTLCache(maxsize=30, ttl=5))
+    @cached(cache=TTLCache(maxsize=30, ttl=1))
     def _read_components_chassis_summary_from_cache(cls) -> dict:
         """
         @note api response from /api/v1/cdu/components/chassis/summary
@@ -76,7 +76,7 @@ class BaseService:
         return SensorAPIAdapter.fetch_components_chassis_summary()
 
     @classmethod
-    @cached(cache=TTLCache(maxsize=30, ttl=5))
+    @cached(cache=TTLCache(maxsize=30, ttl=1))
     def _read_components_thermal_equipment_summary_from_cache(cls) -> dict:
         """
         @note api response from /api/v1/cdu/components/thermal_equipment/summary
@@ -107,7 +107,7 @@ class BaseService:
         return SensorAPIAdapter.fetch_components_thermal_equipment_summary()
 
     @classmethod
-    @cached(cache=TTLCache(maxsize=30, ttl=5))
+    @cached(cache=TTLCache(maxsize=30, ttl=1))
     def _read_sensor_value_from_cache(cls) -> dict:
         """
         @note api response from /cdu/status/sensor_value is
@@ -149,7 +149,7 @@ class BaseService:
         return sensor_value_json
     
     @classmethod
-    @cached(cache=TTLCache(maxsize=30, ttl=5))
+    @cached(cache=TTLCache(maxsize=30, ttl=1))
     def _read_version_from_cache(cls) -> dict:
         """
         @note api response from /api/v1/cdu/components/display/version
@@ -180,7 +180,7 @@ class BaseService:
         return get_mac_uuid()
     
     # @classmethod
-    # @cached(cache=TTLCache(maxsize=3, ttl=5))
+    # @cached(cache=TTLCache(maxsize=3, ttl=1))
     # def _read_getdata_from_webapp(cls) -> dict:
     #     """
     #     讀取webapp ui的/get_data api
@@ -211,9 +211,9 @@ class BaseService:
             # print("status_list: ", status_list)
             status = StatusUtil.get_worst_health_dict(status_list)
             # print("status: ", status)
-            return sensor_value[ fieldNames[0] ]["reading"] - sensor_value[ fieldNames[1] ]["reading"], status
+            return round(sensor_value[ fieldNames[0] ]["reading"] - sensor_value[ fieldNames[1] ]["reading"], 2), status
         else:
-            return sensor_value[ fieldNameToFetchSensorValue ]["reading"], sensor_value[ fieldNameToFetchSensorValue ]["status"]        
+            return round(sensor_value[ fieldNameToFetchSensorValue ]["reading"], 2), sensor_value[ fieldNameToFetchSensorValue ]["status"]        
 
     
     

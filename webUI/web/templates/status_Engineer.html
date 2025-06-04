@@ -1064,7 +1064,7 @@ styles %}
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
+                    <tr id="leakage_sensor_1_set">
                         <td class="w-12 tdCenterAlign" scope="row">
                             Leakage Sensor 1
                         </td>
@@ -1072,7 +1072,7 @@ styles %}
                         <td scope="row"></td>
                         <td></td>
                     </tr>
-                    <tr>
+                    <tr id="leakage_sensor_2_set">
                         <td class="w-12 tdCenterAlign" scope="row">
                             Leakage Sensor 2
                         </td>
@@ -1960,6 +1960,22 @@ styles %}
                 $(".level3_set").hide();
             } else if (ver_switch["liquid_level_3_switch"] === false) {
                 $(".level3_set").show();
+            }
+
+            if(ver_switch["leakage_sensor_1_switch"] === true && ver_switch["leakage_sensor_2_switch"] === true){
+                $(".rackStatus").hide();
+            }else if(ver_switch["leakage_sensor_1_switch"] === true && ver_switch["leakage_sensor_2_switch"] === false){
+                $(".rackStatus").show();
+                $("#leakage_sensor_1_set").hide();
+                $("#leakage_sensor_2_set").show();
+            }else if(ver_switch["leakage_sensor_1_switch"] === false && ver_switch["leakage_sensor_2_switch"] === true){
+                $(".rackStatus").show();
+                $("#leakage_sensor_1_set").show();
+                $("#leakage_sensor_2_set").hide();
+            }else{
+                $(".rackStatus").show();
+                $("#leakage_sensor_1_set").show();
+                $("#leakage_sensor_2_set").show();
             }
 
             ///更改首頁大圖

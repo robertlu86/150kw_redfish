@@ -359,7 +359,7 @@ class RfChassisService(BaseService):
         item["SpeedPercent"] = {
             "DataSourceUri": f"/redfish/v1/Chassis/{chassis_id}/ThermalSubsystem/Sensors/Fan{fan_id}",
             "Reading":  sensor_value_json["fan" + str(fan_id)]["reading"],
-            "SpeedRPM": sensor_value_json["fan" + str(fan_id)]["reading"] * 16000,
+            "SpeedRPM": sensor_value_json["fan" + str(fan_id)]["reading"] * 16000 / 100,
         }
         # 位置服務標籤
         item["Location"]["PartLocation"]["ServiceLabel"] = f"Fan Bay {fan_id}"

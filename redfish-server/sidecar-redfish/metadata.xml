@@ -338,6 +338,11 @@
       <edmx:Include Namespace="PumpCollection"/>
     </edmx:Reference>    
   
+    <edmx:Reference Uri="http://redfish.dmtf.org/schemas/v1/ManagerNetworkProtocol_v1.xml">
+      <edmx:Include Namespace="ManagerNetworkProtocol"/>
+      <edmx:Include Namespace="ManagerNetworkProtocol.v1_11_0"/>
+    </edmx:Reference>  
+  
   <!-- service -->
   <edmx:DataServices>
     <Schema Namespace="RedfishService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
@@ -354,3 +359,5 @@
   </edmx:DataServices>
 
 </edmx:Edmx>
+
+

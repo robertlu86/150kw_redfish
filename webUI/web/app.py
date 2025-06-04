@@ -1329,6 +1329,8 @@ ver_switch = {
     "liquid_level_1_switch": False,
     "liquid_level_2_switch": False,
     "liquid_level_3_switch": False,
+    "leakage_sensor_1_switch": False,
+    "leakage_sensor_2_switch": False,
 }
 
 
@@ -3839,13 +3841,15 @@ def read_modbus_data():
                 ctr_data["mc"]["fan_mc2"] = read_mc3.bits[1]
                 ctr_data["mc"]["fan_mc2_result"] = read_mc3.bits[1]
 
-                read_ver = client.read_coils((8192 + 803), 6)
+                read_ver = client.read_coils((8192 + 803), 8)
                 ver_switch["median_switch"] = read_ver.bits[0]
                 ver_switch["coolant_quality_meter_switch"] = read_ver.bits[1]
                 ver_switch["fan_count_switch"] = read_ver.bits[2]
                 ver_switch["liquid_level_1_switch"] = read_ver.bits[3]
                 ver_switch["liquid_level_2_switch"] = read_ver.bits[4]
                 ver_switch["liquid_level_3_switch"] = read_ver.bits[5]
+                ver_switch["leakage_sensor_1_switch"] = read_ver.bits[6]
+                ver_switch["leakage_sensor_2_switch"] = read_ver.bits[7]
                 
                 if not os.path.exists(f"{web_path}/json/version.json"):
                     with open(f"{web_path}/json/version.json", "w") as file:
@@ -7771,7 +7775,8 @@ def version_switch():
     liquid_level_1_switch = data["liquid_level_1_switch"]
     liquid_level_2_switch = data["liquid_level_2_switch"]
     liquid_level_3_switch = data["liquid_level_3_switch"]
-    
+    leakage_sensor_1_switch = data["leakage_sensor_1_switch"]
+    leakage_sensor_2_switch = data["leakage_sensor_2_switch"]
     try:
         with ModbusTcpClient(
             host=modbus_host, port=modbus_port, unit=modbus_slave_id
@@ -7782,6 +7787,8 @@ def version_switch():
             client.write_coils((8192 + 806), [liquid_level_1_switch])
             client.write_coils((8192 + 807), [liquid_level_2_switch])
             client.write_coils((8192 + 808), [liquid_level_3_switch])
+            client.write_coils((8192 + 809), [leakage_sensor_1_switch])
+            client.write_coils((8192 + 810), [leakage_sensor_2_switch])
         op_logger.info(f"Version setting updated successfully. {data}")
         return jsonify(status="success", message="Version setting updated successfully")
     except Exception as e:
@@ -8890,26 +8897,36 @@ def read_rack_status():
                 rack_leakage2_leak = rack_leak.bits[2]
                 rack_leakage2_broken = rack_leak.bits[3]
                 
-            check_rack_leakage_sensor_status(
-                "rack_leakage1_leak",
-                rack_leakage1_leak,
-                "Delay_rack_leakage1_leak",
-            )
-            check_rack_leakage_sensor_status(
-                "rack_leakage1_broken",
-                rack_leakage1_broken,
-                "Delay_rack_leakage1_broken",
-            )
-            check_rack_leakage_sensor_status(
-                "rack_leakage2_leak",
-                rack_leakage2_leak,
-                "Delay_rack_leakage2_leak",
-            )
-            check_rack_leakage_sensor_status(
-                "rack_leakage2_broken",
-                rack_leakage2_broken,
-                "Delay_rack_leakage2_broken",
-            )
+            if not ver_switch["leakage_sensor_1_switch"]:
+                check_rack_leakage_sensor_status(
+                    "rack_leakage1_leak",
+                    rack_leakage1_leak,
+                    "Delay_rack_leakage1_leak",
+                )
+                check_rack_leakage_sensor_status(
+                    "rack_leakage1_broken",
+                    rack_leakage1_broken,
+                    "Delay_rack_leakage1_broken",
+                )
+            else:
+                sensorData["rack"]["rack_leakage1_leak"] = False
+                sensorData["rack"]["rack_leakage1_broken"] = False
+                
+            if not ver_switch["leakage_sensor_2_switch"]:
+                check_rack_leakage_sensor_status(
+                    "rack_leakage2_leak",
+                    rack_leakage2_leak,
+                    "Delay_rack_leakage2_leak",
+                )
+                check_rack_leakage_sensor_status(
+                    "rack_leakage2_broken",
+                    rack_leakage2_broken,
+                    "Delay_rack_leakage2_broken",
+                )
+            else:
+                sensorData["rack"]["rack_leakage2_leak"] = False
+                sensorData["rack"]["rack_leakage2_broken"] = False
+                
             for i in range(0, rack_key_len):
                 key = rack_key[i]
                 # 測試用

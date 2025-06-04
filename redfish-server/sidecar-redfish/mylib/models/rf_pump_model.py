@@ -78,20 +78,32 @@ class RfPumpModel(RfResourceBaseModel):
 
     model_config = ConfigDict(
         extra='allow',
+        arbitrary_types_allowed=True
     )
 
-    def __init__(self, cdu_id: str, pump_id: str):
+    def __init__(self, cdu_id: str, pump_id: str, **kwargs):
+        super().__init__(**kwargs)
         self.odata_id = f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/Pumps/{pump_id}"
         self.odata_type = "#Pump.v1_2_0.Pump"
-        self.Id = pump_id,
-        # self.PumpType = "Liquid"
+        self.Id = pump_id
+        self.PumpType = RfPumpType.Liquid
         self.Name = f"Pump {pump_id}"
-        self.FirmwareVersion = "0",
-        # self.Actions = {
-        #     "#Pump.SetMode": {
-        #         f"target": "/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/Pumps/{pump_id}/Actions/Pump.SetMode"
-        #     }
-        # },
+        self.FirmwareVersion = "0"
+        raw_actions = {
+            "#Pump.SetMode": {
+                "target": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/Pumps/{pump_id}/Actions/Pump.SetMode"
+            }
+        }   
+        self.Actions = RfActions(**raw_actions)
+        self.Oem= {
+            "supermicro": {
+                f"Inventer {pump_id} MC": {
+                    "@odata.type": "#supermicro.Inventer.v1_0_0.Inventer",
+                    "Switch": "OFF"
+                }
+            }
+        }
+        
         # # chassis_id = self.__pydantic_extra__.get('chassis_id')
         # pass
     # @model_validator(mode='after')
@@ -102,4 +114,14 @@ class RfPumpModel(RfResourceBaseModel):
 
 
 
-    
+    '''
+  "Oem": {
+    "supermicro": {
+      "Inventer 2 MC": {
+        "@odata.type": "#supermicro.Inventer.v1_0_0.Inventer",
+        "Switch": "OFF"
+      }
+    }
+  }
+}
+    '''

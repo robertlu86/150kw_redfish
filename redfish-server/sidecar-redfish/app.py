@@ -171,8 +171,13 @@ def require_auth_on_all_routes():
     # if not auth or not check_auth(auth.username, auth.password):
     #     return authenticate()
     if auth and 'username' in auth and 'password' in auth:
-        if check_basic_auth(auth.username, auth.password)==AuthStatus.SUCCESS:
+        status = check_basic_auth(auth.username, auth.password)
+        if status==AuthStatus.SUCCESS:
             return
+        elif status == AuthStatus.ACCOUNT_LOCKED:
+            return Response("Account is locked",401)
+        elif status == AuthStatus.ACCOUNT_DISABLE:
+            return Response("Account is disabled",401)
     if 'X-Auth-Token' in request.headers:
         token = request.headers['X-Auth-Token']
         if check_session_auth(token) == AuthStatus.SUCCESS:
