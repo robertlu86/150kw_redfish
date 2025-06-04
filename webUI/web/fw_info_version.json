@@ -1,9 +1,9 @@
 {
-    "WebUI": "0116",
-    "SCC_API": "0105",
+    "WebUI": "0117",
+    "SCC_API": "0106",
     "SNMP": "0103",
-    "Redfish_API": "0102",
-    "Redfish_Server": "0103",
+    "Redfish_API": "0103",
+    "Redfish_Server": "0104",
     "Modbus_Server": "0101",
     "PLC": "0107D"
 }
