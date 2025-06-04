@@ -709,6 +709,7 @@ sensorData = {
         "power_factor": 0,
     },
     "opMod": "Auto",
+    "plc_version": "",
 }
 
 ctr_data = {
@@ -3800,6 +3801,16 @@ def read_modbus_data():
             time.sleep(1)
             continue
 
+        ### 從modbus讀取PLC的版號
+        try:
+            with ModbusTcpClient(
+                host=modbus_host, port=modbus_port, unit=modbus_slave_id
+            ) as client:
+                r = client.read_holding_registers(990, 1)
+                sensorData["plc_version"] = r.registers[0]
+        except Exception as e:
+            print(f"plc version error: {e}")
+    
         try:
             with ModbusTcpClient(
                 host=modbus_host, port=modbus_port, unit=modbus_slave_id
@@ -6054,18 +6065,8 @@ def read_version():
     with open(f"{web_path}/fw_info_version.json", "r") as file2:
         FW_Info_Version = json.load(file2)
         
-    ### 從modbus讀取PLC的版號
+    plc_version = sensorData["plc_version"]
     
-    try:
-        with ModbusTcpClient(
-            host=modbus_host, port=modbus_port, unit=modbus_slave_id
-        ) as client:
-            r = client.read_holding_registers(990, 1)
-            plc_version = r.registers[0]
-    except Exception as e:
-        print(f"fwInfo error: {e}")
-        return jsonify({"error": "Request timeout"}), 504
-
     # return jsonify({"FW_Info": FW_Info, "plc_version": plc_version})
     return jsonify({"FW_Info": FW_Info,"FW_Info_Version": FW_Info_Version ,"plc_version": plc_version})
 
