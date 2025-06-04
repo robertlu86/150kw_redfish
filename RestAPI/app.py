@@ -810,7 +810,8 @@ def set_fan_speed():
                     switch = read_data.bits[0]
                     fan_switch_result[f"fan{num + 1}_switch"] = switch
                 else:    
-                    set_fan_switch(num, [switch])
+                    num_test = num + 1 if num >= 3 else num
+                    set_fan_switch(num_test, [switch])
                     op_logger.info(f"Fan switch{num + 1} updated successfully: {switch}")
             # 判斷fan_speed有無更改
             if fan_speed is None:
