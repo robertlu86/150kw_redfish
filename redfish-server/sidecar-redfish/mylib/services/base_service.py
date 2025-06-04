@@ -211,9 +211,9 @@ class BaseService:
             # print("status_list: ", status_list)
             status = StatusUtil.get_worst_health_dict(status_list)
             # print("status: ", status)
-            return sensor_value[ fieldNames[0] ]["reading"] - sensor_value[ fieldNames[1] ]["reading"], status
+            return round(sensor_value[ fieldNames[0] ]["reading"] - sensor_value[ fieldNames[1] ]["reading"], 2), status
         else:
-            return sensor_value[ fieldNameToFetchSensorValue ]["reading"], sensor_value[ fieldNameToFetchSensorValue ]["status"]        
+            return round(sensor_value[ fieldNameToFetchSensorValue ]["reading"], 2), sensor_value[ fieldNameToFetchSensorValue ]["status"]        
 
     
     

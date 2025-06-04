@@ -1,7 +1,8 @@
 from flask import request
-from flask_restx import Namespace, Resource
+from flask_restx import Namespace, Resource, fields
 from mylib.utils.load_api import load_raw_from_api 
 from mylib.utils.load_api import CDU_BASE
+from mylib.services.rf_managers_service import RfManagersService
 
 managers_ns = Namespace('', description='Chassis Collection')
 
@@ -318,66 +319,154 @@ class ManagersCDU(Resource):
 #====================================================== 
 # NetworkProtocol
 #====================================================== 
-network_proto = {
-    "@odata.id": "/redfish/v1/Managers/CDU/NetworkProtocol",
-    "@odata.type": "#ManagerNetworkProtocol.v1_8_0.ManagerNetworkProtocol",
-    "@odata.context": "/redfish/v1/$metadata#ManagerNetworkProtocol.v1_8_0.ManagerNetworkProtocol",
-    
-    "Name": "Manager Network Protocol",
-    "Id": "NetworkProtocol",
-    "Description": "CDU Management Interface Network Protocol Settings",
-    
-    "HostName": "TBD",
-    "FQDN": "TBD",
-    "HTTPS": {
-        "ProtocolEnabled": True,
-        "Port": 443,
-        "Certificates": {
-            "@odata.id": "/redfish/v1/Managers/CDU/NetworkProtocol/HTTPS/Certificates"
-        }
-    },
-    "DHCP": {
-        "ProtocolEnabled": True,
-        "Port": 67,
-    },
-    "SSH": {
-        "ProtocolEnabled": True,
-        "Port": 22,
-    },
-    "SNMP": {
-        "ProtocolEnabled": True,
-        "Port": 161
-    },
-    "NTP": {
-        "ProtocolEnabled": True,
-        "NTPServers": ["time.google.com","pool.ntp.org"],
-        "Port": 123,
-    },
+Host_name = managers_ns.model('HttpProtocolPatch', {
+    'HostName': fields.String(
+        required=True,
+        description='啟用或停用 HTTP (80/TCP)',
+        example="CDU-200KW"
+    ),
+})
+http_patch = managers_ns.model('HttpProtocolPatch', {
+    'ProtocolEnabled': fields.Boolean(
+        required=True,
+        description='啟用或停用 HTTP (80/TCP)',
+        example=True
+    ),
+    'Port': fields.Integer(
+        required=False,
+        description='HTTP 要監聽的埠號 (1–65535)',
+        example=8080
+    )
+})
 
-    "Oem": {}
-}
+# HTTPS 更新時可傳 ProtocolEnabled + Port
+https_patch = managers_ns.model('HttpsProtocolPatch', {
+    'ProtocolEnabled': fields.Boolean(
+        required=True,
+        description='啟用或停用 HTTPS (443/TCP)',
+        example=False
+    ),
+    'Port': fields.Integer(
+        required=False,
+        description='HTTPS 要監聽的埠號 (1–65535)',
+        example=8443
+    )
+})
+
+# SSH 更新時只需 ProtocolEnabled
+ssh_patch = managers_ns.model('SshProtocolPatch', {
+    'ProtocolEnabled': fields.Boolean(
+        required=True,
+        description='啟用或停用 SSH (22/TCP)',
+        example=True
+    )
+})
+
+# SNMP 更新時只需 ProtocolEnabled
+snmp_patch = managers_ns.model('SnmpProtocolPatch', {
+    'ProtocolEnabled': fields.Boolean(
+        required=True,
+        description='啟用或停用 SNMP (161/UDP)',
+        example=False
+    )
+})
+
+# NTP 更新時可傳 ProtocolEnabled + NTPServers 列表
+ntp_patch = managers_ns.model('NtpProtocolPatch', {
+    'ProtocolEnabled': fields.Boolean(
+        required=True,
+        description='啟用或停用 NTP (123/UDP)',
+        example=True
+    ),
+    'NTPServers': fields.List(
+        fields.String,
+        required=False,
+        description='NTP 伺服器清單',
+        example=['0.pool.ntp.org', '1.pool.ntp.org']
+    )
+})
+
+# DHCP 更新時只需 ProtocolEnabled
+dhcp_patch = managers_ns.model('DhcpProtocolPatch', {
+    'ProtocolEnabled': fields.Boolean(
+        required=True,
+        description='啟用或停用 DHCP (UDP 67/68)',
+        example=False
+    )
+})
+
+# 2) 定義最上層的 NetworkProtocolPatch model，把上述所有 Nested 放進來
+NetworkProtocolPatch = managers_ns.model('NetworkProtocolPatch', {
+    'HTTP':  fields.Nested(http_patch,  required=False, description='HTTP 協議設定'),
+    'HTTPS': fields.Nested(https_patch, required=False, description='HTTPS 協議設定'),
+    'SSH':   fields.Nested(ssh_patch,   required=False, description='SSH 協議設定'),
+    'SNMP':  fields.Nested(snmp_patch,  required=False, description='SNMP 協議設定'),
+    'NTP':   fields.Nested(ntp_patch,   required=False, description='NTP 協議設定'),
+    'DHCP':  fields.Nested(dhcp_patch,  required=False, description='DHCP 協議設定'),
+})
+
+SnmpPatch = managers_ns.model('SnmpPatch', {
+    'TrapIP': fields.String(
+        required=True,
+        description='IP address of the SNMP trap receiver',
+        example="127.0.0.1"
+    ),
+    # 'TrapPort': fields.Integer(
+    #     required=True,
+    #     description='Port of the SNMP trap receiver',
+    #     example=162
+    # ),
+    'Community': fields.String(
+        required=True,
+        description='SNMP community string',
+        example="public",
+        enum = ["public", "private"]  # 假設只允許這兩個社群字串
+    ),
+    # 'TrapFormat': fields.String(
+    #     required=True,
+    #     description='SNMP trap format',
+    #     example="v2c",
+    #     enum=["v2c"]
+    # ),
+    'Enabled': fields.Boolean(
+        required=True,
+        description='Enable or disable the SNMP trap',
+        example=True
+    )
+})
+
 
 @managers_ns.route("/Managers/CDU/NetworkProtocol")
 class ManagersCDUNetworkProtocol(Resource):
 
     @managers_ns.doc("managers_cdu_network_protocol_get")
-    # 視需求決定要不要 requires_auth
     def get(self):
-        return network_proto
 
+        return RfManagersService().NetworkProtocol_service(), 200  
+
+    @managers_ns.expect(NetworkProtocolPatch, validate=True)
     @managers_ns.doc("managers_cdu_network_protocol_patch")
     # @requires_auth
     def patch(self):
         body = request.json or {}
-
         # 只驗其中一個欄位就夠 validator 用
         ntp = body.get("NTP", {})
-        if "NTPServers" in ntp:
-            network_proto["NTP"]["NTPServers"] = ntp["NTPServers"]
-
-        # Redfish 允許 200 (附帶新 resource) 或 204
-        return "", 204
-
+        RfManagersService().NetworkProtocol_service_patch(ntp)
+            
+        return "", 200
+    
+# @managers_ns.route("/Managers/CDU/NetworkProtocol/Oem/Supermicro/SNMPServers")
+# class ManagersCDUNetworkProtocolOemSupermicroSNMPServers(Resource):
+#     @managers_ns.doc("managers_cdu_network_protocol_oem_supermicro_snmpservers")
+#     # @requires_auth
+#     def get(self):
+#         return RfManagersService().NetworkProtocol_Snmp_get()
+    
+#     @managers_ns.expect(SnmpPatch)
+#     def patch(self):
+#         body = request.json or {}
+#         return RfManagersService().NetworkProtocol_Snmp_patch(body)
+        
 @managers_ns.route("/Managers/CDU/NetworkProtocol/HTTPS/Certificates")
 class ManagersCDUNetworkProtocolHTTPS(Resource):
     @managers_ns.doc("managers_cdu_network_protocol_https_certificates")
