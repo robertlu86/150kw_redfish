@@ -160,7 +160,7 @@ class ActionsUpdateCduSimpleUpdatee(Resource):
 #         return FirmwareInventoryPC_data   
 
 # @update_ns.route("/UpdateService/FirmwareInventory/PLC")
-# class FirmwareInventoryPLC(Resource):
+# class FirmwareInventoryPLC(Resource): 
 #     def get(self):
 
 #         return FirmwareInventoryPLC_data   

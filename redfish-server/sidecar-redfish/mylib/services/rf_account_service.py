@@ -1,10 +1,10 @@
-
 from mylib.models.account_model import (
-    AccountModel,AccountUpdateModel, RoleModel)
+    AccountModel,AccountCreateModel, AccountUpdateModel, RoleModel)
 from mylib.db.extensions import db
 from mylib.utils.rf_error import *
 from werkzeug.security import generate_password_hash
 from mylib.models.rf_account_service_model import RfAccountServiceModel
+from mylib.models.setting_model import SettingModel
 import copy
 
 class RfAccountService():
@@ -83,6 +83,7 @@ class RfAccountService():
             json_data['RoleId'] = user.role.name
             json_data['Enabled'] = user.enabled
             json_data['Locked'] = user.locked
+            json_data['PasswordChangeRequired']=user.pass_change_required
             json_data['Links'] = {
                 "Role": {
                     "@odata.id": "/redfish/v1/AccountService/Roles/{0}".format(user.role.name)
@@ -90,34 +91,39 @@ class RfAccountService():
             }
             json_data["@odata.id"]="/redfish/v1/AccountService/Accounts/{0}".format(user.user_name)
             return  json_data
+        
     
     @classmethod
     def create_account(cls, json_input):
         """
         Create a new account.
         """
-        if 'UserName' not in json_input:
-            return error_response('No key of UserName', 400, 'Base.PropertyMissing')
-        if not AccountModel.validate_name(json_input['UserName']):
-            return ERROR_USERNAME_FORMAT
-        if 'RoleId' not in json_input:
-            return error_response('No key of RoleId', 400, 'Base.PropertyMissing')
-        find_role = RoleModel.query.filter_by(name=json_input['RoleId']).first()
-        if not find_role:
-            return error_response('RoleId not found', 400, 'Base.PropertyValueNotInList')
-        if 'Password' not in json_input:
-            return error_response('No key of Password', 400, 'Base.PropertyMissing')
-        if isinstance(json_input['Password'], str) == False:
-            return ERROR_PASSWORD_FORMAT
-        if not AccountModel.validate_password(json_input['Password']):
-            return ERROR_PASSWORD_FORMAT
-        existing_user = AccountModel.query.filter_by(user_name=json_input['UserName']).first()
-        if existing_user:
-            return error_response('User already exists', 400, 'Base.ResourceAlreadyExists')
-        
-        new_account = AccountModel(user_name=json_input['UserName'], role=find_role, password=json_input['Password'])
-        db.session.add(new_account)
-        db.session.commit()
+        try:
+            print(f"json_input={json_input}")
+            validated = AccountCreateModel(**json_input)
+            if not validated:
+                return error_response('Invalid input data', 400, 'Base.PropertyValueFormatError')        
+            
+            existing_user = AccountModel.query.filter_by(user_name=json_input['UserName']).first()
+            if existing_user:
+                return error_response('User already exists', 400, 'Base.ResourceAlreadyExists')
+            
+            #new_account = AccountModel(user_name=json_input['UserName'], role=find_role, password=json_input['Password'])
+            print(f"validated.password={validated.password}")
+            new_account = AccountModel(
+                user_name=validated.user_name,
+                role=RoleModel.query.filter_by(id=validated.role_id).first(),
+                password=validated.password
+            )
+            db.session.add(new_account)
+            db.session.commit()
+        except ValueError as ve:
+            # Check which field might have failed
+            for error in ve.errors():
+                err_msg= (f"{error['loc'][0]}: {error['msg']}")#
+                return error_response(msg=err_msg,http_status=400,code='Base.PropertyValueFormatError')
+                
+            return ERROR_PROPERTY_FORMAT
  
         return cls.fetch_account_by_id(new_account.user_name)
     
@@ -137,22 +143,12 @@ class RfAccountService():
                 existing_user.__setattr__(key, value)
             db.session.commit()
         except ValueError as ve:
+            # Check which field might have failed
+            for error in ve.errors():
+                err_msg= (f"{error['loc'][0]}: {error['msg']}")#
+                return error_response(msg=err_msg,http_status=400,code='Base.PropertyValueFormatError')
+                
             return ERROR_PROPERTY_FORMAT
-        
-        # move validation logic to pydantic model, so comment out the following code
-        # if "RoleId" not in json_input and "Password" not in json_input:
-        #     return error_response('No key of RoleId or Password', 400, 'Base.PropertyMissing')
-        # if 'RoleId' in json_input:
-        #     find_role = RoleModel.query.filter_by(name=json_input['RoleId']).first()
-        #     if not find_role:
-        #         return error_response('RoleId not found', 400, 'Base.PropertyValueNotInList')
-        #     existing_user.role = find_role
-        # if 'Password' in json_input:
-        #     if isinstance(json_input['Password'], str) == False:
-        #         return ERROR_PASSWORD_FORMAT
-        #     if not AccountModel.validate_password(json_input['Password']):
-        #         return ERROR_PASSWORD_FORMAT
-        #     existing_user.password = generate_password_hash(json_input['Password'])
         
         return cls.fetch_account_by_id(existing_user.user_name), 200
     

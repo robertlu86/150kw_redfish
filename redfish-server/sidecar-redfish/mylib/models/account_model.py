@@ -53,54 +53,6 @@ class RoleModel(MyOrmBaseModel):
         role = db.session.execute(stmt).scalar_one_or_none()
         return role
 
-class AccountUpdateModel(BaseModel):
-    """
-    Model for updating account information.
-    """
-    model_config = ConfigDict(populate_by_name=True)
-    
-    user_name: Optional[str] = Field(default=None,alias = 'UserName', description="The name of the user.")
-    role_id: Optional[int] = Field(default=None, alias ='RoleId', description="The ID of the role assigned to the user.")
-    password: Optional[str] = Field(default=None,alias = 'Password', description="The password for the user.")
-    enabled: Optional[bool] = Field(default=None, alias='Enabled', description="Indicates whether the account is enabled.")
-    locked: Optional[bool] = Field(default=None, alias='Locked', description="Indicates whether the account is locked.")
-        
-    @field_validator('password',mode='before')
-    @classmethod
-    def validate_password(cls, value):
-        if not AccountModel.validate_password(value):
-            raise ValueError("Password does not meet requirements.")
-        return value
-    
-    @field_validator('password',mode='after')
-    @classmethod
-    def generate_hash_password(cls, value):
-        return generate_password_hash(value)
-    
-    @field_validator('role_id',mode='before')
-    @classmethod
-    def validate_role_id(cls, value):
-        if not isinstance(value, str):
-            raise ValueError("RoleID does not meet requirements.")
-        role = RoleModel.get_by_id(value)
-        if not role:
-            raise ValueError(f"RoleId {value} does not exist.")
-        return role.id
-    
-class AccountCreateModel(AccountUpdateModel):
-    user_name: str = Field(default=..., alias='UserName', description="The name of the user.")
-    role_id: int = Field(default=..., alias='RoleId', description="The ID of the role assigned to the user.")
-    password: str = Field(default=..., alias='Password', description="The password for the user.")
-    
-    @field_validator('user_name',mode='before')
-    @classmethod
-    def validate_user_name(cls, value):
-        if not AccountModel.validate_name(value):
-            raise ValueError("User name does not meet requirements.")
-        return value
-
-
-
 @dataclass
 class AccountModel(MyOrmBaseModel):
     # new version: https://docs.sqlalchemy.org/en/20/orm/declarative_tables.html
@@ -112,16 +64,76 @@ class AccountModel(MyOrmBaseModel):
     role: Mapped["RoleModel"] = relationship("RoleModel", back_populates="accounts")
     enabled: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     locked: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    pass_change_required: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    last_pass_err_time: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+    pass_err_times: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     redfish_sessions: Mapped[List["SessionModel"]] = relationship('SessionModel', back_populates='account')
-    
+ 
     def __init__(self, user_name, role, password):
         self.user_name = user_name
         self.role = role
-        self.password = generate_password_hash(password)
-    
+        self.password = password
+ 
     def __repr__(self):
         return f"AccountModel(id={self.id}, user_name={self.user_name}, role_id={self.role_id}, role={self.role}, enabled={self.enabled}, locked={self.locked})"
     
+    def check_if_unlocked(self):
+        """
+        Check if the account is locked and if the lockout duration has passed.
+        If the account is locked and the lockout duration has passed, unlock the account.
+        """
+        lock_out_duration = int(SettingModel.get_by_key('AccountService.AccountLockoutDuration').value)
+        if self.locked and self.last_pass_err_time:
+            time_difference = datetime.now() - self.last_pass_err_time
+            if time_difference.total_seconds() > lock_out_duration:
+                self.locked = False
+                self.pass_err_times = 0
+                self.last_pass_err_time = None
+                db.session.commit()
+                return True
+        return False
+ 
+
+
+    def add_pass_err_times(self):
+        lock_out_threshold = int(SettingModel.get_by_key('AccountService.AccountLockoutThreshold').value)
+        lock_out_duration = int(SettingModel.get_by_key('AccountService.AccountLockoutDuration').value)
+        lock_reset_after = int(SettingModel.get_by_key('AccountService.AccountLockoutCounterResetAfter').value)
+
+        if lock_out_duration == 0 or lock_out_threshold == 0:
+            return
+        
+        if self.locked:
+            if lock_out_duration > 0 and self.last_pass_err_time:
+                time_difference = datetime.now() - self.last_pass_err_time
+                if time_difference.total_seconds() > lock_out_duration:
+                    self.locked = False
+                    self.pass_err_times = 0
+                    self.last_pass_err_time = None
+
+        if lock_reset_after > 0 and self.last_pass_err_time:
+            time_difference = datetime.now() - self.last_pass_err_time
+            if time_difference.total_seconds() > lock_reset_after:
+                self.pass_err_times = 1
+            else:
+                self.pass_err_times += 1
+        else:
+            self.pass_err_times += 1
+        
+
+        if self.pass_err_times >= lock_out_threshold:
+            self.locked = True
+        self.last_pass_err_time = datetime.now()
+        db.session.commit()
+        return
+    
+    def reset_pass_err_times(self):
+        """
+        Reset the password error times and last error time.
+        """
+        self.pass_err_times = 0
+        self.last_pass_err_time = None
+        db.session.commit()
 
     @staticmethod
     def validate_name(user_name):
@@ -134,8 +146,6 @@ class AccountModel(MyOrmBaseModel):
         Validate if the given password meets requirements.
         
         Redfish password requirements:
-        - Minimum length: 8 characters
-        - Maximum length: 64 characters
         - Must contain at least one uppercase letter, one lowercase letter, one digit, and one special character.
         
         Args:
@@ -147,8 +157,6 @@ class AccountModel(MyOrmBaseModel):
         import re
         
         if not isinstance(password, str):
-            return False
-        if not (8 <= len(password) <= 64):
             return False
         
         # Check for at least one uppercase letter, one lowercase letter, one digit, and one special character
@@ -162,6 +170,17 @@ class AccountModel(MyOrmBaseModel):
             return False
 
         return True
+    
+    #if pass return 0 else return min password length
+    @staticmethod    
+    def password_len_validation(password: str):
+        # Password length validation
+        min_password_length_setting = SettingModel.get_by_key('AccountService.MinPasswordLength')
+        if min_password_length_setting:
+            min_password_length = int(min_password_length_setting.value)
+            if len(password) < min_password_length:
+                return int(min_password_length_setting.value)
+        return 0
     
     @classmethod
     def all(cls):
@@ -195,6 +214,61 @@ class AccountModel(MyOrmBaseModel):
     def insert(self):
         db.session.add(self)
         db.session.commit()
+        
+class AccountBaseModel(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+    
+    user_name: Optional[str] = Field(default=None,alias = 'UserName', description="The name of the user.")
+    role_id: Optional[int] = Field(default=None, alias ='RoleId', description="The ID of the role assigned to the user.")
+    password: Optional[str] = Field(default=None,alias = 'Password', description="The password for the user.")
+    
+    @field_validator('password',mode='before')
+    @classmethod
+    def validate_password(cls, value):
+        if not AccountModel.validate_password(value):
+            raise ValueError("should be at least one uppercase letter, one lowercase letter, one digit, and one special character")
+        ret_len = AccountModel.password_len_validation(value)
+        print(f"ret_len={ret_len}")
+        if ret_len > 0:
+            raise ValueError(f"length should >= {ret_len}")
+        return value
+
+    @field_validator('password',mode='after')
+    @classmethod
+    def generate_hash_password(cls, value):
+        print(f"generate hased password:{generate_password_hash(value)}")
+        return generate_password_hash(value)
+    
+    @field_validator('role_id',mode='before')
+    @classmethod
+    def validate_role_id(cls, value):
+        if not isinstance(value, str):
+            raise ValueError("format does not meet requirements.")
+        role = RoleModel.get_by_id(value)
+        if not role:
+            raise ValueError(f"{value} does not exist.")
+        return role.id
+
+class AccountUpdateModel(AccountBaseModel):
+    enabled: Optional[bool] = Field(default=None, alias='Enabled', 
+                            description="Indicates whether the account is enabled.")
+    locked: Optional[bool] = Field(default=None, alias='Locked', 
+                            description="Indicates whether the account is locked.")
+    pass_change_required: Optional[bool] = Field(default=None, alias='PasswordChangeRequired', 
+                            description="Indicates whether the account needs to update the password.")
+        
+class AccountCreateModel(AccountBaseModel):
+    user_name: str = Field(default=..., alias='UserName', description="The name of the user.")
+    role_id: int = Field(default=..., alias='RoleId', description="The ID of the role assigned to the user.")
+    password: str = Field(default=..., alias='Password', description="The password for the user.")
+    
+    @field_validator('user_name',mode='before')
+    @classmethod
+    def validate_user_name(cls, value):
+        if not AccountModel.validate_name(value):
+            raise ValueError("must start with a letter"
+                             " and contain only characters from A–Z,a–z,0–9,@,_,.,and -")
+        return value
         
 @dataclass
 class SessionModel(MyOrmBaseModel):

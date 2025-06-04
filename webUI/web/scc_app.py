@@ -3894,9 +3894,11 @@ def upload_zip_scc():
 @scc_bp.route("/api/v1/reboot", methods=["GET"])
 @requires_auth
 def restart():
-    subprocess.run(
-        ["sudo", "reboot"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
-    )
+    def delayed_reboot():
+        time.sleep(5)  # 延遲 5 秒，讓 response 有時間送出
+        subprocess.run(["sudo", "reboot"], check=True)
+
+    threading.Thread(target=delayed_reboot).start()
     return "Restarting System"
 
 
