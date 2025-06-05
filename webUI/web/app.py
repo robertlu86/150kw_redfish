@@ -440,7 +440,7 @@ sensorData = {
             "prsr_clntRtnSpare_high": "M107 Coolant Return Pressure Spare Over Range (High) Warning (P2sp)",
             "prsr_fltIn_low": "M108 Filter Inlet Pressure Over Range (Low) Warning (P3)",
             "prsr_fltIn_high": "M109 Filter Inlet Pressure Over Range (High) Warning (P3)",
-            "prsr_fltOut_high": "M110 Filter Outlet Pressure Over Range (High) Warning (P4)",
+            "prsr_fltOut_high": "M110 Filter Delta P Over Range (High) Warning (P3 - P4)",
             "clnt_flow_low": "M111 Coolant Flow Rate (Low) Warning (F1)",
             "ambient_temp_low": "M112 Ambient Temperature Over Range (Low) Warning (T a)",
             "ambient_temp_high": "M113 Ambient Temperature Over Range (High) Warning (T a)",
@@ -466,7 +466,7 @@ sensorData = {
             "prsr_clntRtnSpare_high": "M207 Coolant Return Pressure Spare Over Range (High) Alert (P2sp)",
             "prsr_fltIn_low": "M208 Filter Inlet Pressure Over Range (Low) Alert (P3)",
             "prsr_fltIn_high": "M209 Filter Inlet Pressure Over Range (High) Alert (P3)",
-            "prsr_fltOut_high": "M210 Filter Outlet Pressure Over Range (High) Alert (P4)",
+            "prsr_fltOut_high": "M210 Filter Delta P Over Range (High) Alert (P3 - P4)",
             "clnt_flow_low": "M211 Coolant Flow Rate (Low) Alert (F1)",
             "ambient_temp_low": "M212 Ambient Temperature Over Range (Low) Alert (T a)",
             "ambient_temp_high": "M213 Ambient Temperature Over Range (High) Alert (T a)",
@@ -706,7 +706,7 @@ sensorData = {
     # 測試用
     "eletricity": {
         "average_voltage": 0,
-        "power_factor": 0,
+        "apparent_power": 0,
     },
     "opMod": "Auto",
     "plc_version": "",

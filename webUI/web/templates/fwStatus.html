@@ -88,6 +88,14 @@ styles %}
         </div>
         <div class="row">
             <div class="col-4">
+                <p>Realease Time</p>
+            </div>
+            <div class="col-4">
+                <p id="Realease_Time"></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4">
                 <p>SCC_API</p>
             </div>
             <div class="col-4">
@@ -155,6 +163,7 @@ styles %}
                 $("#SN").text(json_data["SN"]);
                 $("#Model").text(json_data["Model"]);
                 $("#WebUI").text(FW_Info_Version["WebUI"]);
+                $("#Realease_Time").text(FW_Info_Version["Realease_Time"]);
                 $("#SCC_API").text(FW_Info_Version["SCC_API"]);
                 $("#SNMP").text(FW_Info_Version["SNMP"]);
                 $("#Redfish_API").text(FW_Info_Version["Redfish_API"]);

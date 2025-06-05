@@ -621,8 +621,8 @@ styles %}
                         <td class="tdCenterAlign" scope="row">
                             Apparent Power
                         </td>
-                        <td id="power_factor_status" class="tdCenterAlign" scope="row"></td>
-                        <td id="power_factor" scope="row"></td>
+                        <td id="apparent_power_status" class="tdCenterAlign" scope="row"></td>
+                        <td id="apparent_power" scope="row"></td>
                         <td scope="row">kVA</td>
                     </tr>
                     <!--測試用結束-->
@@ -647,6 +647,14 @@ styles %}
                         </td>
                         <td id="prsr_fltOut_status" class="tdCenterAlign" scope="row"></td>
                         <td id="prsr_fltOut" scope="row"></td>
+                        <td class="unit_pressure" scope="row"></td>
+                    </tr>
+                    <tr>
+                        <td class="tdCenterAlign" scope="row">
+                            Filter Delta P
+                        </td>
+                        <td id="filter_deltaP_status" class="tdCenterAlign" scope="row"></td>
+                        <td id="filter_deltaP" scope="row"></td>
                         <td class="unit_pressure" scope="row"></td>
                     </tr>
                 </tbody>
@@ -1263,6 +1271,34 @@ styles %}
                     }
                 }
             }
+            //Fillter計算
+            let fillter_val;
+
+            let p3 = !data["error"]["PrsrFltIn_broken"]
+                ? data["value"]["prsr_fltIn"]
+                : "-";
+
+            let p4 = !data["error"]["PrsrFltOut_broken"]
+                ? data["value"]["prsr_fltOut"]
+                : "-";
+
+
+            if (p3 == "-" || p4 == "-") {
+                fillter_val = "-";
+                $("#prsr_fltDiff_image").text("-").css("color", "red");
+                
+            } else {
+                fillter_val = p3 - p4;
+
+                if (userType == "superuser") {
+                    fillter_val = parseFloat(fillter_val).toFixed(2);
+                } else {
+                    fillter_val = parseFloat(fillter_val).toFixed(1);
+                }
+                $("#prsr_fltDiff_image").css("color", "black").text(fillter_val);
+                $("#filter_deltaP").css("color", "black").text(fillter_val);
+            }
+
             let ats1 = data["ats_status"]["ATS1"];
             let ats2 = data["ats_status"]["ATS2"];
 
@@ -1342,19 +1378,34 @@ styles %}
                 if (data["warning_notice"].hasOwnProperty(key)) {
                     let status_w = data["warning_notice"][key];
                     let status_a = data["alert_notice"][key];
-
-                    if (status_a === true) {
-                        $("#" + key + "_status")
-                            .css("color", "red")
-                            .text("Alert Level");
-                    } else if (status_w === true) {
-                        $("#" + key + "_status")
-                            .css("color", "#F39C12")
-                            .text("Warning Level");
-                    } else {
-                        $("#" + key + "_status")
-                            .css("color", "black")
-                            .text("Valid");
+                    if (key.includes("prsr_fltOut")){
+                        if (status_a === true) {
+                            $("#filter_deltaP_status")
+                                .css("color", "red")
+                                .text("Alert Level");
+                        } else if (status_w === true) {
+                            $("#filter_deltaP_status")
+                                .css("color", "#F39C12")
+                                .text("Warning Level");
+                        } else {
+                            $("#filter_deltaP_status")
+                                .css("color", "black")
+                                .text("Valid");
+                        }
+                    }else{
+                        if (status_a === true) {
+                            $("#" + key + "_status")
+                                .css("color", "red")
+                                .text("Alert Level");
+                        } else if (status_w === true) {
+                            $("#" + key + "_status")
+                                .css("color", "#F39C12")
+                                .text("Warning Level");
+                        } else {
+                            $("#" + key + "_status")
+                                .css("color", "black")
+                                .text("Valid");
+                        }
                     }
                 }
             }
@@ -1509,6 +1560,11 @@ styles %}
                                 local_element_image.css("color", "red").text("-");
                             }
                         }
+                    }
+
+                    if(data["error"]["PrsrFltIn_broken"] || data["error"]["PrsrFltOut_broken"]){
+                        $("#filter_deltaP_status").css("color", "red").text("Broken Error");
+                        $("#filter_deltaP").css("color", "red").text("-");
                     }
 
                     let com_mapping = {
@@ -1683,31 +1739,7 @@ styles %}
                 }
             }
 
-            //Fillter計算
-            let fillter_val;
-
-            let p3 = !data["error"]["PrsrFltIn_broken"]
-                ? data["value"]["prsr_fltIn"]
-                : "-";
-
-            let p4 = !data["error"]["PrsrFltOut_broken"]
-                ? data["value"]["prsr_fltOut"]
-                : "-";
-
-
-            if (p3 == "-" || p4 == "-") {
-                fillter_val = "-";
-                $("#prsr_fltDiff_image").text("-").css("color", "red");
-            } else {
-                fillter_val = p4 - p3;
-
-                if (userType == "superuser") {
-                    fillter_val = parseFloat(fillter_val).toFixed(2);
-                } else {
-                    fillter_val = parseFloat(fillter_val).toFixed(1);
-                }
-                $("#prsr_fltDiff_image").css("color", "black").text(fillter_val);
-            }
+            
 
             //PD計算
             let prsr_diff;

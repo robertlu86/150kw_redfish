@@ -404,7 +404,7 @@ M110 NOTIFICATION-TYPE
     SYNTAX OCTET STRING
     MAX-ACCESS read-only
     STATUS current
-    DESCRIPTION "Filter Outlet Pressure Over Range (High) Warning (P4)"
+    DESCRIPTION "Filter Delta P Over Range (High) Warning (P3 - P4)"
     ::= { trapsval 11 }
 
 M111 NOTIFICATION-TYPE
@@ -572,7 +572,7 @@ M210 NOTIFICATION-TYPE
     SYNTAX OCTET STRING
     MAX-ACCESS read-only
     STATUS current
-    DESCRIPTION "Filter Outlet Pressure Over Range (High) Alert (P4)"
+    DESCRIPTION "Filter Delta P Over Range (High) Alert (P3 - P4)"
     ::= { trapsval 43 }
 
 M211 NOTIFICATION-TYPE
