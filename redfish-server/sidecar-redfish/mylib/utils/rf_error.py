@@ -40,11 +40,13 @@ ERROR_RESOURCE_NOT_FOUND = error_response('Resource Not Found', 404, 'Base.Resou
 
 ERROR_DELETE_SUCCESS = Response(json.dumps({'message':'OK'}), 200, {'Content-Type': 'application/json'})
 
-ERROR_PASSWORD_FORMAT = error_response('Password must contain at least one uppercase letter, '
-                                       'one lowercase letter, one digit, and one special character',
+ERROR_PASSWORD_FORMAT = error_response('Valid passwords are strings containing chars'
+                                       ' of at least 3 categories (a-z, A-Z, 0-9, special)',
                                        400,
                                        'Base.PropertyValueFormatError')
 
 ERROR_USERNAME_FORMAT = error_response('User name must follow pattern ^[A-Za-z][A-Za-z0-9@_.-]{0,14}[A-Za-z0-9]$',
                                         400,
                                         'Base.PropertyValueFormatError')
+
+ERROR_UNAUTHORIZED = Response("Unauthorized",401)

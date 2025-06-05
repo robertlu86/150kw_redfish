@@ -3,13 +3,25 @@ from flask import request,jsonify, Response
 from flask import make_response
 from flask_restx import Namespace, Resource, fields
 from mylib.services.rf_session_service import RfSessionService
-from mylib.utils.rf_error import error_response, ERROR_INTERNAL, ERROR_RESOURCE_NOT_FOUND
+from mylib.utils.rf_error import error_response, ERROR_INTERNAL, ERROR_RESOURCE_NOT_FOUND, ERROR_UNAUTHORIZED
 
 SessionService_ns = Namespace('', description='Session Service')
 
 #================================================
 # SessionService
 #================================================
+
+session_servive_patch_model = SessionService_ns.model('SessionServicePatch', {
+    'SessionTimeout': fields.Integer(
+        required=True,
+        description='The timeout in seconds for a session before it is considered inactive.',
+        example=3600,  # 1 hour
+        minimum=30,
+        maximum=86400  # 24 hours
+    )
+})
+
+
 @SessionService_ns.route("/SessionService")
 class SessionService(Resource):
     # # @requires_auth
@@ -18,6 +30,8 @@ class SessionService(Resource):
         resp = Response(json.dumps(RfSessionService.fetch_session_service()), status=200, content_type="application/json")
         resp.headers['Allow'] = 'GET, PATCH'
         return resp
+    
+    @SessionService_ns.expect(session_servive_patch_model, validate=True)
     def patch(self):
         body = request.get_json(force=True)
         try:
@@ -41,7 +55,7 @@ class Sessions(Resource):
             if isinstance(result, Response):
                 return result
             if result is None:
-                return ERROR_RESOURCE_NOT_FOUND
+                return ERROR_UNAUTHORIZED
             else:
                 if 'token' in result:
                     redfish_token = result.pop('token')
@@ -62,7 +76,7 @@ class SessionMembers(Resource):
             if isinstance(result, Response):
                 return result
             if result is None:
-                return ERROR_RESOURCE_NOT_FOUND
+                return ERROR_UNAUTHORIZED
             else:
                 if 'token' in result:
                     redfish_token = result.pop('token')

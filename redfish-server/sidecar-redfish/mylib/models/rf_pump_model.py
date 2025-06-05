@@ -88,7 +88,6 @@ class RfPumpModel(RfResourceBaseModel):
         self.Id = pump_id
         self.PumpType = RfPumpType.Liquid
         self.Name = f"Pump {pump_id}"
-        self.FirmwareVersion = "0"
         raw_actions = {
             "#Pump.SetMode": {
                 "target": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/Pumps/{pump_id}/Actions/Pump.SetMode"

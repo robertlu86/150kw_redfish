@@ -109,8 +109,8 @@ api.add_namespace(EventService_ns, path='/redfish/v1')
 # from mylib.routers.systems_router import system_ns
 # api.add_namespace(system_ns, path='/redfish/v1')
 
-from mylib.routers.ComponentIntegrity_router import ComponentIntegrity_ns
-api.add_namespace(ComponentIntegrity_ns, path='/redfish/v1')
+# from mylib.routers.ComponentIntegrity_router import ComponentIntegrity_ns
+# api.add_namespace(ComponentIntegrity_ns, path='/redfish/v1')
 
 from mylib.models.example_model import ExampleModel
 
@@ -175,7 +175,7 @@ def require_auth_on_all_routes():
         if status==AuthStatus.SUCCESS:
             return
         elif status == AuthStatus.ACCOUNT_LOCKED:
-            return Response("Account is locked",401)
+            return Response("Account is locked",403)
         elif status == AuthStatus.ACCOUNT_DISABLE:
             return Response("Account is disabled",401)
     if 'X-Auth-Token' in request.headers:

@@ -23,11 +23,11 @@ def get_network_protocol_status():
         if conn.status == psutil.CONN_LISTEN:
             # conn.laddr = (ip, port)
             listening_ports.add(conn.laddr.port)
-
+    print(f"Listening ports: {listening_ports}")
     # 定義我們關心的協議及其預設埠號
     protocol_ports = {
         "HTTP": 80,
-        "HTTPS": 443,
+        "HTTPS": 5501,
         "SSH": 22,
         "SNMP": 161,
         "NTP": 123,
@@ -59,20 +59,21 @@ def get_network_protocol_status():
     result = {
         "HTTPEnabled":        http_enabled,
         "HTTPPort":           protocol_ports["HTTP"],
-
+        # 只要read
         "HTTPSProtocolEnabled": https_enabled,
         "HTTPSPort":            protocol_ports["HTTPS"],
-
+        # false
         "SSHEnabled":         ssh_enabled,
         "SSHPort":            protocol_ports["SSH"],
-        
+        # 給標準 另外給oem
         "SNMPEnabled":        snmp_enabled,
         "SNMPPort":           protocol_ports["SNMP"],
-        
+        # 指定一個
         "NTPEnabled":         ntp_enabled,
         "NTPPort":            protocol_ports["NTP"],
-        "NTPServers":         ["time.google.com","pool.ntp.org"],
+        "NTPServers":         ["time.google.com"],
 
+        # 只要false
         "DHCPEnabled":        dhcp_enabled,
         "DHCPPort":           dhcp_port
     }

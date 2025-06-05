@@ -146,7 +146,8 @@ class AccountModel(MyOrmBaseModel):
         Validate if the given password meets requirements.
         
         Redfish password requirements:
-        - Must contain at least one uppercase letter, one lowercase letter, one digit, and one special character.
+        - Valid passwords are strings containing chars of at least 3 categories (a-z, A-Z, 0-9, special).
+        - Allowed special characters may include: ! $ % & () * + . / < = > ? @ [] ^ _ ` {} | ~ ( : # - ;
         
         Args:
             password (str): The password to validate.
@@ -159,17 +160,18 @@ class AccountModel(MyOrmBaseModel):
         if not isinstance(password, str):
             return False
         
-        # Check for at least one uppercase letter, one lowercase letter, one digit, and one special character
-        if not re.search(r'[A-Z]', password):
-            return False
-        if not re.search(r'[a-z]', password):
-            return False
-        if not re.search(r'\d', password):
-            return False
-        if not re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
-            return False
+        # Count the number of categories present in the password
+        categories = 0
+        if re.search(r'[A-Z]', password):
+            categories += 1
+        if re.search(r'[a-z]', password):
+            categories += 1
+        if re.search(r'\d', password):
+            categories += 1
+        if re.search(r'[!$%&()*+./<=>?@\[\]^_`{}|~:#-]', password):
+            categories += 1
 
-        return True
+        return categories >= 3
     
     #if pass return 0 else return min password length
     @staticmethod    
@@ -226,7 +228,7 @@ class AccountBaseModel(BaseModel):
     @classmethod
     def validate_password(cls, value):
         if not AccountModel.validate_password(value):
-            raise ValueError("should be at least one uppercase letter, one lowercase letter, one digit, and one special character")
+            raise ValueError("should be containing chars of at least 3 categories (a-z, A-Z, 0-9, special)")
         ret_len = AccountModel.password_len_validation(value)
         print(f"ret_len={ret_len}")
         if ret_len > 0:
@@ -256,7 +258,16 @@ class AccountUpdateModel(AccountBaseModel):
                             description="Indicates whether the account is locked.")
     pass_change_required: Optional[bool] = Field(default=None, alias='PasswordChangeRequired', 
                             description="Indicates whether the account needs to update the password.")
-        
+    
+    @field_validator('locked',mode='before')
+    @classmethod
+    def validate_locked(cls, value):
+        if not isinstance(value, bool):
+            raise ValueError("format does not meet requirements.")
+        if value == True:
+            raise ValueError(f"{value} is not allowed.")
+        return value
+
 class AccountCreateModel(AccountBaseModel):
     user_name: str = Field(default=..., alias='UserName', description="The name of the user.")
     role_id: int = Field(default=..., alias='RoleId', description="The ID of the role assigned to the user.")
@@ -304,13 +315,34 @@ class SessionModel(MyOrmBaseModel):
         
     @classmethod
     def all(cls):
-        ret = db.session.query(cls).all()
-        return ret
+        ret_sessions = db.session.query(cls).all()
+        # check if session timeout
+        timeout = SettingModel.get_by_key('SessionService.SessionTimeout')
+        if timeout:
+            timeout = int(timeout.value)
+            for session in ret_sessions:
+                if (datetime.now() - session.last_request_time).total_seconds() > timeout:
+                    db.session.delete(session)
+                    db.session.commit()
+                    ret_sessions.remove(session)
+        return ret_sessions
     
     @classmethod
     def get_by_id(cls, session_id):
         stmt = db.select(SessionModel).filter_by(session_id=session_id)
         session = db.session.execute(stmt).scalar_one_or_none()
+        # check if session timeout
+        if session:
+            timeout = SettingModel.get_by_key('SessionService.SessionTimeout')
+            if timeout:
+                timeout = int(timeout.value)
+                if (datetime.now() - session.last_request_time).total_seconds() > timeout:
+                    db.session.delete(session)
+                    db.session.commit()
+                    return None
+                else:
+                    session.last_request_time = datetime.now()
+                    db.session.commit()
         return session
     
     @classmethod

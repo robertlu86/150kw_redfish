@@ -1,7 +1,6 @@
 import os
 from flask import current_app, request, jsonify, make_response, send_file, Response
 from flask_restx import Namespace, Resource
-from mylib.utils.system_info import get_mac_uuid
 
 root_ns = Namespace('', description='Redfish V1')
 
@@ -41,7 +40,7 @@ root_data={
     "EventService": {"@odata.id": "/redfish/v1/EventService"},
     "CertificateService": {"@odata.id": "/redfish/v1/CertificateService"},
     # "Systems": {"@odata.id": "/redfish/v1/Systems"},
-    "ComponentIntegrity": {"@odata.id": "/redfish/v1/ComponentIntegrity"},
+    # "ComponentIntegrity": {"@odata.id": "/redfish/v1/ComponentIntegrity"},
     # "Product": {"@odata.id": "/redfish/v1/Product"}, 
     # "Registry": {"@odata.id": "/redfish/v1/Registry"},
     "Links": {
@@ -67,7 +66,7 @@ odata_data = {
     { "@odata.id": "/redfish/v1/CertificateService"},
     {"@odata.id": "/redfish/v1/EventService"},
     # {"@odata.id": "/redfish/v1/Systems"},
-    {"@odata.id": "/redfish/v1/ComponentIntegrity"},
+    # {"@odata.id": "/redfish/v1/ComponentIntegrity"},
     # {"@odata.id": "/redfish/v1/Registry"}, # 未新增 metadata
     # {"@odata.id": "/redfish/v1/Product"}, # 未新增 metadata
   ]    
@@ -80,7 +79,7 @@ class Root(Resource):
         odata_ver = request.headers.get('OData-Version')
         if odata_ver is not None and odata_ver != '4.0':
             return Response(status=412)
-        root_data['UUID'] = get_mac_uuid()
+        
         resp = make_response(jsonify(root_data), 200)
         resp.headers['Allow'] = 'OPTIONS, GET, HEAD'
         resp.headers['Cache-Control'] = 'no-cache'
