@@ -535,6 +535,8 @@ dword_regs = {
     "f7_run_hr": 0,
     "f8_run_min": 0,
     "f8_run_hr": 0,
+    "filter_run_min":0,
+    "filter_run_hr":0,
 }
 
 reset_current_btn = {"status": False, "press_reset": False}
@@ -3601,6 +3603,7 @@ def control():
     fan6_run_last_min = time.time()
     fan7_run_last_min = time.time()
     fan8_run_last_min = time.time()
+    filter_run_last_min = time.time()
 
     swap_last = time.time()
     first_p = False
@@ -3923,6 +3926,15 @@ def control():
                         time_f_8.registers, 0
                     )
                     dword_regs["f8_run_hr"] = read_split_register(time_f_8.registers, 2)
+
+                    time_filter = client.read_holding_registers(
+                        342, 4, unit=modbus_slave_id
+                    )
+                    dword_regs["filter_run_min"] = read_split_register(
+                        time_filter.registers, 0
+                    )
+                    dword_regs["filter_run_hr"] = read_split_register(time_filter.registers, 2)
+
 
                     p_swap = client.read_holding_registers(303, 2, unit=modbus_slave_id)
                     swap = cvt_registers_to_float(
@@ -5830,6 +5842,32 @@ def control():
                         print(f"read fan8 runtime error: {e}")
             else:
                 fan8_run_last_min = time.time()
+
+            ### 計算 filter runtime
+            if inv["inv1"] or inv["inv2"] or inv["inv3"]:
+                filter_run_current_time = time.time()
+
+                if filter_run_current_time - filter_run_last_min >= 60:
+                    dword_regs["filter_run_min"] += 1
+                    dword_regs["filter_run_hr"] = int(dword_regs["filter_run_min"] / 60)
+                    filter_run_last_min = filter_run_current_time
+
+                    try:
+                        with ModbusTcpClient(
+                            host=modbus_host, port=modbus_port
+                        ) as client:
+                            filter_rt1_min = split_double([dword_regs["filter_run_min"]])
+                            filter_rt1_hr = split_double([dword_regs["filter_run_hr"]])
+
+                            client.write_registers(342, filter_rt1_min)
+                            client.write_registers(344, filter_rt1_hr)
+                            client.write_registers(366, filter_rt1_hr)
+
+                    except Exception as e:
+                        print(f"read pump1 runtime error: {e}")
+            else:
+                filter_run_last_min = time.time()
+
 
             set_warning_registers(mode)
 

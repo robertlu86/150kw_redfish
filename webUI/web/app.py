@@ -761,6 +761,7 @@ ctr_data = {
         "Fan6_run_time": 0,
         "Fan7_run_time": 0,
         "Fan8_run_time": 0,
+        "Filter_run_time": 0,
     },
     "mc": {
         "mc1_sw": False,
@@ -4504,7 +4505,7 @@ def read_modbus_data():
             with ModbusTcpClient(
                 host=modbus_host, port=modbus_port, unit=modbus_slave_id
             ) as client:
-                r = client.read_holding_registers(address=350, count=16)
+                r = client.read_holding_registers(address=350, count=18)
 
                 f1 = read_split_register(r.registers, 0)
                 f2 = read_split_register(r.registers, 2)
@@ -4514,6 +4515,7 @@ def read_modbus_data():
                 f6 = read_split_register(r.registers, 10)
                 f7 = read_split_register(r.registers, 12)
                 f8 = read_split_register(r.registers, 14)
+                filter = read_split_register(r.registers, 16)
 
                 ctr_data["text"]["Fan1_run_time"] = f1
                 ctr_data["text"]["Fan2_run_time"] = f2
@@ -4523,6 +4525,7 @@ def read_modbus_data():
                 ctr_data["text"]["Fan6_run_time"] = f6
                 ctr_data["text"]["Fan7_run_time"] = f7
                 ctr_data["text"]["Fan8_run_time"] = f8
+                ctr_data["text"]["Filter_run_time"] = filter
         except Exception as e:
             print(f"read pump runtime error: {e}")
 
@@ -7275,6 +7278,22 @@ def Pump3reset():
         op_logger.info("reset Pump3 Running Time failed!")
         print(f"pump3 reset error:{e}")
         return retry_modbus_2reg(204, [0] * 2, 278, [0] * 4)
+
+@app.route("/filter_reset", methods=["POST"])
+@login_required
+def filter_reset():
+    try:
+        with ModbusTcpClient(
+            host=modbus_host, port=modbus_port, unit=modbus_slave_id
+        ) as client:
+            client.write_registers(366, [0, 0])
+            client.write_registers(342, [0] * 4)
+        op_logger.info("reset Filter Running Time successfully!")
+        return "Reset Filter Running Time Successfully"
+    except Exception as e:
+        op_logger.info("reset Filter Running Time failed!")
+        print(f"Filter reset error:{e}")
+        return retry_modbus_2reg(366, [0] * 2, 342, [0] * 4)
 
 
 FAN_REGISTERS = {
