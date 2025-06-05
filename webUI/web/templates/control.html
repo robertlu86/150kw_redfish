@@ -823,7 +823,25 @@ styles %}
                 {% endif %}
             </div>
 
+            <div class="row" id="Filter_run_time_set">
+                <div class="col-4">
+                    <p>Filter Running Time:</p>
+                </div>
+                <div class="col-2 sideNum">
+                    <p id="Filter_run_time" style="width: 100%"></p>
 
+                    <div class="col-1">
+                        <p>hr</p>
+                    </div>
+                </div>
+                {% if user == 'superuser' or user == 'admin' %}
+                <div class="col-2" style="padding-left: 115px">
+                    <button id="FilterResetBtn" class="btn btn-outline-success" type="submit">
+                        Reset
+                    </button>
+                </div>
+                {% endif %}
+            </div>
 
             <!-- end fan running time -->
         </div>
@@ -1844,8 +1862,50 @@ styles %}
         }
 
         for (let i = 1; i <= 8; i++) {
-            $(`#Fan${i}ResetBtn`).click(() => resetPump(`Fan${i}`));
+            $(`#Fan${i}ResetBtn`).click(() => resetFan(`Fan${i}`));
         }
+
+        //重製 filter runtime
+
+        function resetFilter() {
+            Swal.fire({
+                title: "Confirm Reset",
+                text: `Confirm to reset filter Running Time?`,
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: "No",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "/filter_reset",
+                        type: "POST",
+                        contentType: "application/json",
+                        success: function (response) {
+                            Swal.fire({
+                                title: "Success",
+                                text: response,
+                                icon: "success",
+                                confirmButtonText: "OK",
+                            });
+                        },
+                        error: function () {
+                            Swal.fire({
+                                title: "Error",
+                                text: `Reset Filter Running Time failed!`,
+                                icon: "error",
+                                confirmButtonText: "OK",
+                            });
+                        },
+                    });
+                }
+            });
+        }
+
+
+            $(`#FilterResetBtn`).click(() => resetFilter());
+        
+
 
         $("#settings_export_bt").click(function () {
             var network = document.getElementById("exp_ntw_chk").checked;

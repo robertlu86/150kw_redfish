@@ -761,6 +761,7 @@ ctr_data = {
         "Fan6_run_time": 0,
         "Fan7_run_time": 0,
         "Fan8_run_time": 0,
+        "Filter_run_time": 0,
     },
     "mc": {
         "mc1_sw": False,
@@ -4520,7 +4521,7 @@ def read_modbus_data():
             with ModbusTcpClient(
                 host=modbus_host, port=modbus_port, unit=modbus_slave_id
             ) as client:
-                r = client.read_holding_registers(address=350, count=16)
+                r = client.read_holding_registers(address=350, count=18)
 
                 f1 = read_split_register(r.registers, 0)
                 f2 = read_split_register(r.registers, 2)
@@ -4530,6 +4531,7 @@ def read_modbus_data():
                 f6 = read_split_register(r.registers, 10)
                 f7 = read_split_register(r.registers, 12)
                 f8 = read_split_register(r.registers, 14)
+                filter = read_split_register(r.registers, 16)
 
                 ctr_data["text"]["Fan1_run_time"] = f1
                 ctr_data["text"]["Fan2_run_time"] = f2
@@ -4539,6 +4541,7 @@ def read_modbus_data():
                 ctr_data["text"]["Fan6_run_time"] = f6
                 ctr_data["text"]["Fan7_run_time"] = f7
                 ctr_data["text"]["Fan8_run_time"] = f8
+                ctr_data["text"]["Filter_run_time"] = filter
         except Exception as e:
             print(f"read pump runtime error: {e}")
 
@@ -7292,6 +7295,22 @@ def Pump3reset():
         print(f"pump3 reset error:{e}")
         return retry_modbus_2reg(204, [0] * 2, 278, [0] * 4)
 
+@app.route("/filter_reset", methods=["POST"])
+@login_required
+def filter_reset():
+    try:
+        with ModbusTcpClient(
+            host=modbus_host, port=modbus_port, unit=modbus_slave_id
+        ) as client:
+            client.write_registers(366, [0, 0])
+            client.write_registers(342, [0] * 4)
+        op_logger.info("reset Filter Running Time successfully!")
+        return "Reset Filter Running Time Successfully"
+    except Exception as e:
+        op_logger.info("reset Filter Running Time failed!")
+        print(f"Filter reset error:{e}")
+        return retry_modbus_2reg(366, [0] * 2, 342, [0] * 4)
+
 
 FAN_REGISTERS = {
     "Fan1": {"reg1": 350, "reg2": 310},
@@ -7324,6 +7343,286 @@ def fan_reset(fan_id):
         reg_info = FAN_REGISTERS[fan_id]
         return reset_fan(fan_id, reg_info["reg1"], reg_info["reg2"])
     return "Invalid Fan ID", 400
+
+@app.route("/restore_factory_setting_all", methods=["POST"])
+def restoreFactorySettingAll():
+    ###1. SystemSetting: Close Water Valve When Stop Mode 要勾選
+    # try:
+    #     with ModbusTcpClient(
+    #         host=modbus_host, port=modbus_port, unit=modbus_slave_id
+    #     ) as client:
+    #         client.write_coils((8192 + 515), [True])
+    #         ctr_data["stop_valve_close"] = True
+    # except Exception as e:
+    #     print(f"close valve error:{e}")
+    #     # return retry_modbus((8192 + 515), [True], "coil")
+
+    
+    ###2. SystemSetting: Log Interval(sec) : 2
+    try:
+        with ModbusTcpClient(
+            host=modbus_host, port=modbus_port, unit=modbus_slave_id
+        ) as client:
+            client.write_register(3000, 2)
+
+        op_logger.info("Sampling Rate: %s", 2)
+        # return "Log Interval Updated Successfully"
+    except Exception as e:
+        print(f"error:{e}")
+        # return retry_modbus(3000, 2, "register")
+    
+    ###3.Control: Pump & Filter Running Time: Reset
+    try:
+        with ModbusTcpClient(
+            host=modbus_host, port=modbus_port, unit=modbus_slave_id
+        ) as client:
+            client.write_registers(200, [0, 0])
+            client.write_registers(270, [0] * 4)
+
+        op_logger.info("reset Pump1 Running Time successfully!")
+        # return "Reset Pump1 Running Time Successfully"
+    except Exception as e:
+        op_logger.info("reset Pump1 Running Time failed!")
+        print(f"pump1 reset error:{e}")
+        # return retry_modbus_2reg(200, [0] * 2, 270, [0] * 4)
+
+    try:
+        with ModbusTcpClient(
+            host=modbus_host, port=modbus_port, unit=modbus_slave_id
+        ) as client:
+            client.write_registers(202, [0, 0])
+            client.write_registers(274, [0] * 4)
+        op_logger.info("reset Pump2 Running Time successfully!")
+        # return "Reset Pump2 Running Time Successfully"
+    except Exception as e:
+        op_logger.info("reset Pump2 Running Time failed!")
+        print(f"pump2 reset error:{e}")
+        # return retry_modbus_2reg(202, [0] * 2, 274, [0] * 4)
+    try:
+        with ModbusTcpClient(
+            host=modbus_host, port=modbus_port, unit=modbus_slave_id
+        ) as client:
+            client.write_registers(204, [0, 0])
+            client.write_registers(278, [0] * 4)
+        op_logger.info("reset Pump3 Running Time successfully!")
+        # return "Reset Pump3 Running Time Successfully"
+    except Exception as e:
+        op_logger.info("reset Pump3 Running Time failed!")
+        print(f"pump3 reset error:{e}")
+        # return retry_modbus_2reg(204, [0] * 2, 278, [0] * 4)
+
+    
+    try:
+        with ModbusTcpClient(
+            host=modbus_host, port=modbus_port, unit=modbus_slave_id
+        ) as client:
+            client.write_registers(310, [0, 0, 0, 0])
+            client.write_registers(314, [0, 0, 0, 0])
+            client.write_registers(318, [0, 0, 0, 0])
+            client.write_registers(322, [0, 0, 0, 0])
+            client.write_registers(326, [0, 0, 0, 0])
+            client.write_registers(330, [0, 0, 0, 0])
+            client.write_registers(334, [0, 0, 0, 0])
+            client.write_registers(338, [0, 0, 0, 0])
+            client.write_registers(342, [0, 0, 0, 0])
+            
+            client.write_registers(350, [0] * 18)
+            
+        op_logger.info("reset Filter and Fan Running Time successfully!")
+        # return "Reset Filter Running Time Successfully"
+    except Exception as e:
+        print(f"Filter and Fan reset error:{e}")
+        op_logger.info("reset Filter and Fan Running Time failed!")
+
+    ###4. Error Table: 隱藏或刪除所有已經回復的Message(superuser保留)
+    global signal_records
+    if signal_records:
+        signal_records = []
+        save_to_json()
+        # return jsonify({"status": "success", "message": "All records deleted successfully."})
+    else:
+        # return jsonify({"status": "fail", "message": "No records to delete."})
+        print(f"No records to delete.")
+    
+    global downtime_signal_records
+    if downtime_signal_records:
+        downtime_signal_records = []
+        save_to_downtime_json()
+        # return jsonify({"status": "success", "message": "All records deleted successfully."})
+    else:
+        # return jsonify({"status": "fail", "message": "No records to delete."})
+        print(f"No records to delete.")
+
+    
+    ###5. Inspection: Set Inspection Time(sec) *EV:30 *PV1:30 *Pump Speed:25
+    # inspect_data = [30,30,25]
+    # try:
+    #     with ModbusTcpClient(
+    #         host=modbus_host, port=modbus_port, unit=modbus_slave_id
+    #     ) as client:
+    #         client.write_registers(740, inspect_data)
+
+    # except Exception as e:
+    #     print(f"inspection time error:{e}")
+    #     # return retry_modbus(740, inspect_data, "register")
+    # op_logger.info("Inspection Time Updated Successfully")
+    # return "Inspection Time Updated Successfully"
+    
+    ###6. Logs:刪除所有Log檔(superuser保留)
+    try:
+        file_path = os.path.join(log_path, "logs", "error")
+
+        if os.path.exists(file_path) and os.path.isdir(file_path):
+            for filename in os.listdir(file_path):
+                file_to_delete = os.path.join(file_path, filename)
+                if os.path.isfile(file_to_delete):
+                    os.remove(file_to_delete)
+            print("All files deleted successfully.")
+        else:
+            print("Directory does not exist.")
+    except Exception as e:  
+        print(f"delete log error:{e}")
+    try:
+        file_path = os.path.join(log_path, "logs", "journal")
+
+        if os.path.exists(file_path) and os.path.isdir(file_path):
+            for filename in os.listdir(file_path):
+                file_to_delete = os.path.join(file_path, filename)
+                if os.path.isfile(file_to_delete):
+                    os.remove(file_to_delete)
+            print("All files deleted successfully.")
+        else:
+            print("Directory does not exist.")
+    except Exception as e:  
+        print(f"delete log error:{e}")
+    try:
+        file_path = os.path.join(log_path, "logs", "operation")
+
+        if os.path.exists(file_path) and os.path.isdir(file_path):
+            for filename in os.listdir(file_path):
+                file_to_delete = os.path.join(file_path, filename)
+                if os.path.isfile(file_to_delete):
+                    os.remove(file_to_delete)
+            print("All files deleted successfully.")
+        else:
+            print("Directory does not exist.")
+    except Exception as e:  
+        print(f"delete log error:{e}")
+    try:
+        file_path = os.path.join(log_path, "logs", "sensor")
+
+        if os.path.exists(file_path) and os.path.isdir(file_path):
+            for filename in os.listdir(file_path):
+                file_to_delete = os.path.join(file_path, filename)
+                if os.path.isfile(file_to_delete):
+                    os.remove(file_to_delete)
+            print("All files deleted successfully.")
+        else:
+            print("Directory does not exist.")
+    except Exception as e:  
+        print(f"delete log error:{e}")
+    try:
+        file_path = os.path.join(snmp_path, "RestAPI", "logs", "operation")
+
+        if os.path.exists(file_path) and os.path.isdir(file_path):
+            for filename in os.listdir(file_path):
+                file_to_delete = os.path.join(file_path, filename)
+                if os.path.isfile(file_to_delete):
+                    os.remove(file_to_delete)
+            print("All files deleted successfully.")
+        else:
+            print("Directory does not exist.")
+    except Exception as e:  
+        print(f"delete log error:{e}")
+    ###7. Engineer Mode: Sensor Adjustment恢復預設值
+    try:
+        adjust_import(adjust_factory)
+        op_logger.info("Reset Adjust to Factory Setting Successfully")
+    except Exception as e:
+        print(f"adjust import error:{e}")
+        
+    ###8. Engineer Mode: Alert Threshold Setting恢復預設值
+    try:
+        if system_data["value"]["unit"] == "metric":
+            threshold_import(thrshd_factory)
+        else:
+            key_list = list(thrshd_factory.keys())
+            for key in key_list:
+                if not key.endswith("_trap") and not key.startswith("Delay_"):
+                    imperial_thrshd_factory[key] = thrshd_factory[key]
+                    if "Temp" in key and "TempCds" not in key:
+                        imperial_thrshd_factory[key] = (
+                            thrshd_factory[key] * 9.0 / 5.0 + 32.0
+                        )
+
+                    if "TempCds" in key:
+                        imperial_thrshd_factory[key] = thrshd_factory[key] * 9.0 / 5.0
+
+                    if "Prsr" in key:
+                        imperial_thrshd_factory[key] = thrshd_factory[key] * 0.145038
+
+                    if "Flow" in key:
+                        imperial_thrshd_factory[key] = thrshd_factory[key] * 0.2642
+            threshold_import(imperial_thrshd_factory)
+        op_logger.info("Reset Threshold to Factory Setting Successfully")
+    except Exception as e:  
+        print(f"threshold import error:{e}")
+    
+    ###9. Engineer Mode: PID Setting恢復預設值
+    # try:
+    #     pid_import(pid_factory)
+    #     op_logger.info("Reset PID to Factory Setting Successfully")
+    # except Exception as e:  
+    #     print(f"pid import error:{e}")      
+    # ###10. Engineer Mode: *Minimum Opening:30 
+    # try:
+    #     pv_min_import(pv_min_factory)
+    #     op_logger.info("Reset Min Opening to Factory Setting Successfully")
+    # except Exception as e:      
+    #     print(f"pv_min import error:{e}")
+    
+    ###11. auto mode redundant sensor broken setting 
+    #       *PV1 when Temp Sensor Broken:80 
+    #       *Pump Speed when Pressure Sensor Broken:50 
+    #       *PV1 Minimum Opening when DP Error or selecting Close Eater Valve when Stop Mode:34 
+    # try:
+    #     auto_import(auto_factory)
+    #     op_logger.info("Reset Auto to Factory Setting Successfully")
+    # except Exception as e:      
+    #     print(f"auto import error:{e}")
+        
+    ###12. *Ta Threshold:40 *T1 Threshold:35 
+    # try:
+    #     if system_data["value"]["unit"] == "metric":
+    #         valve_import(valve_factory)
+    #     else:
+    #         imperial_valve_factory["coolant"] = round(
+    #             (valve_factory["coolant"]) * 9.0 / 5.0 + 32.0
+    #         )
+    #         # imperial_valve_factory["ambient"] = round(
+    #         #     (valve_factory["ambient"]) * 9.0 / 5.0 + 32.0
+    #         # )
+    #         valve_import(imperial_valve_factory)
+    #     op_logger.info("Reset Valve to Factory Setting Successfully")
+    # except Exception as e:  
+    #     print(f"valve import error:{e}")
+        
+    ###13. *Ststua Indicator Delay:3000010
+    try:
+        with open(f"{web_path}/json/timeout_light.json", "w") as file:
+            json.dump({"timeoutLight": "300010"}, file)
+        op_logger.info(
+            f"Update indicator delay successfully. Indicator delay:300010"
+        )
+    except Exception as e:  
+        print(f"timeout light error:{e}")   
+        
+    ##### 最後一步, 重啟電腦
+    subprocess.run(
+        ["sudo", "reboot"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+    )
+    return jsonify(message="Reset all to factory settings Successfully")
+
 
 
 @app.route("/store_pid", methods=["POST"])
