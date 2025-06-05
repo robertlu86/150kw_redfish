@@ -20,7 +20,8 @@ block styles %}
     .modbus_ip_setting,
     .rack_setting,
     .valve_setting,
-    .switch_version {
+    .switch_version,
+    .reset_to_factory {
         border: 2px solid #008000;
 
         border-radius: 10px;
@@ -48,7 +49,8 @@ block styles %}
     .modbus_ip_setting::before,
     .rack_setting::before,
     .valve_setting::before,
-    .switch_version::before {
+    .switch_version::before,
+    .reset_to_factory::before {
         background-color: #fff;
         color: #000000;
         content: attr(data-before);
@@ -3312,6 +3314,24 @@ block styles %}
         </div>
     </div>
     {% endif %}
+        {% if user == 'superuser' %}
+    <div class="reset_to_factory title" data-default="collapsed" data-label="Restore to factory settings">
+        <div class="data-before-trigger"></div>
+        <div class="content">
+            <div class="row">
+                <div class="col-4">
+                    <p>Restore to factory settings :</p>
+                </div>
+                <div class="col-2">
+                    <button id="restore_factory_setting_all" class="btn btn-outline-success" style="margin-right: 10px; margin-top: 20px">
+                        Reset
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    {% endif %}
 </div>
 {% endblock %} {% block scripts %}
 
@@ -3381,6 +3401,10 @@ block styles %}
         jQuery(".auto_setting").attr(
             "data-before",
             "Auto Mode Redundant Sensor Broken Setting ▲"
+        );
+        jQuery(".reset_to_factory").attr(
+            "data-before",
+            "Restore to factory settings ▲"
         );
         jQuery(".rack_setting").attr("data-before", "Rack Enable Setting ▲");
         jQuery(".switch_version").attr("data-before", "Switch Version ▲");
@@ -4249,6 +4273,40 @@ block styles %}
                     $.ajax({
                         type: "POST",
                         url: "/resetAdjust",
+                        contentType: "application/json;charset=UTF-8",
+                        success: function (response) {
+                            Swal.fire({
+                                title: `${response.message}`,
+                                icon: "success",
+                            }).then(() => {
+                                location.reload();
+                            });
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("Error:", error);
+                            Swal.fire({
+                                title: "Failed to connect to server",
+                                icon: "error",
+                            });
+                        },
+                    });
+                }
+            });
+        });
+
+        $("#restore_factory_setting_all").click(function () {
+            Swal.fire({
+                title: "Confirm to proceed",
+                text: "Restore factory settings? This will restart the system.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: "No",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "POST",
+                        url: "/restore_factory_setting_all",
                         contentType: "application/json;charset=UTF-8",
                         success: function (response) {
                             Swal.fire({
