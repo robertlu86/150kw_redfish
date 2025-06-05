@@ -2861,7 +2861,7 @@ def auto_import(data):
 
     except Exception as e:
         print(f"auto setting:{e}")
-        return retry_modbus(960, [int(data["fan"], int(data["pump"]))], "register")
+        return retry_modbus(960, [int(data["fan"]), int(data["pump"])], "register")
 
     op_logger.info(
         "Auto Mode Redundant Sensor Broken Setting Inputs received successfully"
