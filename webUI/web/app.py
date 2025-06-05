@@ -1320,7 +1320,7 @@ time_data = {
 
 valve_factory = {"ambient": 20, "coolant": 20}
 
-auto_factory = {"pv1": 80, "pump": 50, "water_min": 20}
+auto_factory = {"fan": 100, "pump": 80}
 
 ver_switch = {
     "median_switch": False,
@@ -2851,6 +2851,22 @@ def change_to_imperial():
         print(f"measure data input error:{e}")
         return retry_modbus(901 + i * 2, registers, "register")
 
+def auto_import(data):
+    try:
+        with ModbusTcpClient(
+            host=modbus_host, port=modbus_port, unit=modbus_slave_id
+        ) as client:
+            client.write_register(960, int(data["fan"]))
+            client.write_register(961, int(data["pump"]))
+
+    except Exception as e:
+        print(f"auto setting:{e}")
+        return retry_modbus(960, [int(data["fan"], int(data["pump"]))], "register")
+
+    op_logger.info(
+        "Auto Mode Redundant Sensor Broken Setting Inputs received successfully"
+    )
+    return "Inputs received successfully"
 
 def threshold_import(input):
     for key, value in input.items():
@@ -7665,6 +7681,11 @@ def resetPID():
     op_logger.info("Reset PID to Factory Setting Successfully")
     return jsonify(message="Reset PID to Factory Setting Successfully")
 
+@app.route("/resetAuto", methods=["POST"])
+def resetAuto():
+    auto_import(auto_factory)
+    op_logger.info("Reset Auto to Factory Setting Successfully")
+    return jsonify(message="Reset Auto to Factory Setting Successfully")
 
 @app.route("/set_rack_control", methods=["POST"])
 def set_rack_control():
