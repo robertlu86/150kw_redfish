@@ -183,9 +183,9 @@ bit_input_regs = {
     "fan8_error": None,
 }
 # 測試用開始
-raw_485_data_eletricity = {"average_voltage": 0, "power_factor": 0}
+raw_485_data_eletricity = {"average_voltage": 0, "apparent_power": 0}
 
-raw_485_comm_eletricity = {"average_voltage": False, "power_factor": False}
+raw_485_comm_eletricity = {"average_voltage": False, "apparent_power": False}
 # 測試用結束
 raw_485_data = {
     "Clnt_Flow": 0,
@@ -2825,7 +2825,7 @@ def set_warning_registers(mode):
         # warning_data["error"]["fan5_error"] = True
         # warning_data["error"]["fan6_error"] = True
         # warning_data["error"]["fan7_error"] = True
-        # warning_data["error"]["pc1_error"] = True
+        # warning_data["error"]["Prsr_FltOut_broken"] = True
         # warning_data["error"]["pc2_error"] = True
         # warning_data["error"]["level1"] = False
 
@@ -6122,13 +6122,13 @@ def rtu_thread():
                 # Apparent Power
                 try:
                     r = client.read_holding_registers(3075, 2, unit=3)
-                    power_factor = cvt_registers_to_float(
+                    apparent_power = cvt_registers_to_float(
                         r.registers[1], r.registers[0]
                     )
-                    raw_485_data_eletricity["power_factor"] = power_factor
-                    raw_485_comm_eletricity["power_factor"] = False
+                    raw_485_data_eletricity["apparent_power"] = apparent_power
+                    raw_485_comm_eletricity["apparent_power"] = False
                 except Exception as e:
-                    raw_485_comm_eletricity["power_factor"] = True
+                    raw_485_comm_eletricity["apparent_power"] = True
                     print(f"Average Voltage error: {e}")
                 # 測試用結束
                 time.sleep(duration)
