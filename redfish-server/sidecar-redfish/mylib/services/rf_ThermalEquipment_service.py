@@ -2,6 +2,7 @@
 這是Redfish的chassis service
 '''
 import os, re
+import requests
 from typing import Optional
 from mylib.models.rf_sensor_model import (
     RfSensorCollectionModel, 
@@ -20,6 +21,7 @@ from mylib.models.rf_sensor_model import RfSensorPumpExcerpt
 from mylib.models.rf_control_model import RfControlSingleLoopExcerptModel
 
 from load_env import hardware_info
+from mylib.routers.Chassis_router import GetControlMode
 
 class RfThermalEquipmentService(BaseService):
     def fetch_CDUs(self, cdu_id: Optional[str] = None) -> dict:
@@ -37,8 +39,9 @@ class RfThermalEquipmentService(BaseService):
                 **hardware_info["CDU"]
             )
             m.Status = {"State": "Enabled", "Health": "OK"}
-            m.FirmwareVersion = self._read_version_from_cache()["version"]["Redfish_Server"]
-            m.Version = self._read_version_from_cache()["version"]["Redfish_Server"]
+            m.FirmwareVersion = self._read_version_from_cache()["version"]["WebUI"]
+            m.Version = self._read_version_from_cache()["fw_info"]["Version"]
+            m.SerialNumber = self._read_version_from_cache()["fw_info"]["SN"]
             m.Oem = {}
             
         return m.to_dict()
@@ -230,8 +233,8 @@ class RfThermalEquipmentService(BaseService):
         # control
         m.SpeedControlPercent = RfControlSingleLoopExcerptModel(**{
             "SetPoint": load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/control/pump_speed")[f"pump{pump_id}_speed"],  
-            "AllowableMin": 15,
-            "AllowableMax": 100,
+            "AllowableMin": hardware_info["Pumps"][pump_id]["AllowableMin"],
+            "AllowableMax": hardware_info["Pumps"][pump_id]["AllowableMax"],
             # "ControlMode": "Automatic"  
         })
         # status
@@ -252,4 +255,56 @@ class RfThermalEquipmentService(BaseService):
         m.Oem["supermicro"][f"Inventer {pump_id} MC"]["Switch"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/mc")[f"mc{pump_id}_sw"]
         return m.to_dict()
     
-    # def fetch_CDUs_Pumps_Pump_patch():
+    def fetch_CDUs_Pumps_Pump_patch(self, cdu_id: str, pump_id: str, body: dict) -> dict:
+        """
+        對應 "/ThermalEquipment/CDUs/<cdu_id>/Pumps/<pump_id>"
+
+        :param cdu_id: str
+        :param pump_id: str
+        :param body: dict
+        :return: dict
+        """
+        GetControlMode()
+        if GetControlMode() != "Manual": return "only Manual can setting"
+        m = RfPumpModel(cdu_id=cdu_id, pump_id=pump_id)
+        new_sp = body['pump_speed']
+        new_sw = body['pump_switch']
+        
+        # 驗證範圍
+        scp = hardware_info["Pumps"][pump_id]
+        if not (scp["AllowableMin"] <= new_sp <= scp["AllowableMax"]):
+            return {
+                "error": f"pump_speed needs to be between {scp['AllowableMin']} and {scp['AllowableMax']}"
+            }, 400
+            
+                # 轉發到內部控制 API
+        try:
+            r = requests.patch(
+                f"{CDU_BASE}/api/v1/cdu/control/pump1_speed",
+                json={"pump_speed": new_sp, "pump_switch": new_sw},
+                timeout=5
+            )
+        except requests.HTTPError:
+            # 如果 CDU 回了 4xx/5xx，直接把它的 status code 和 body 回來
+            try:
+                err_body = r.json()
+            except ValueError:
+                err_body = {"error": r.text}
+            return err_body, r.status_code
+
+        except requests.RequestException as e:
+            # 純粹網路／timeout／連線失敗
+            return {
+                "error": "Forwarding to the CDU control service failed",
+                "details": str(e)
+            }, 502    
+        
+        # 更新內存資料
+        m.SpeedControlPercent = RfControlSingleLoopExcerptModel(**{
+            "SetPoint": new_sp if new_sw else 0,
+            "AllowableMin": scp["AllowableMin"],
+            "AllowableMax": scp["AllowableMax"],
+            # "ControlMode": "Automatic"  
+        })
+
+        return m.to_dict(), 200

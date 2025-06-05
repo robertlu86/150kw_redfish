@@ -39,11 +39,47 @@ PowerSupplies:
     PartNumber: "WDR-120-12"
     SerialNumber: "TBD"
     PowerCapacityWatts: 120
-    PowerSupplyType: "AC" 
+    PowerSupplyType: "AC"
+Pumps:
+  "1":
+    AllowableMax: 100
+    AllowableMin: 15
+
+  "2":
+    AllowableMax: 100
+    AllowableMin: 15
+
+  "3":
+    AllowableMax: 100
+    AllowableMin: 15
+Fans:
+  "1":
+    AllowableMax: 100
+    AllowableMin: 15
+
+  "2":
+    AllowableMax: 100
+    AllowableMin: 15
+
+  "3":
+    AllowableMax: 100
+    AllowableMin: 15
+
+  "4":
+    AllowableMax: 100
+    AllowableMin: 15
+
+  "5":
+    AllowableMax: 100
+    AllowableMin: 15
+
+  "6":
+    AllowableMax: 100
+    AllowableMin: 15
 CDU:
   Manufacturer: KAORI
   Model: 200KW SideCar L/A Colling CDU
   SerialNumber: 02753000A-XXXX
   PartNumber: LCS-SCDU-200AR001
-  FirmwareVersion: "0114"
+  FirmwareVersion: ""
   Version: ""

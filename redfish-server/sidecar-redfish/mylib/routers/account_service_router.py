@@ -58,7 +58,7 @@ account_post_model = AccountService_ns.model('AccountsPost', {
         required=True,
         description='The role ID associated with the account.',
         example='Administrator',
-        enum=['Administrator', 'Operator', 'ReadOnly'] 
+        enum=['Administrator', 'Operator', 'ReadOnly','NoAccess'] 
     ),
     # 'Enabled': fields.Boolean(
     #     required=False,
@@ -88,7 +88,7 @@ account_patch_model = AccountService_ns.model('AccountsPatch', {
         required=False,
         description='The role ID associated with the account.',
         example='Administrator',
-        enum=['Administrator', 'Operator', 'ReadOnly'] 
+        enum=['Administrator', 'Operator', 'ReadOnly','NoAccess'] 
     ),
     'Enabled': fields.Boolean(
         required=False,

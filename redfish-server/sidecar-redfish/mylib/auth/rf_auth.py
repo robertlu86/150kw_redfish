@@ -24,6 +24,8 @@ def check_basic_auth(username, password):
     
     if not fetched_account.check_password(password):
         fetched_account.add_pass_err_times()
+        if fetched_account.locked:
+            return AuthStatus.ACCOUNT_LOCKED
         return AuthStatus.PASSWORD_INCORRECT
     # If we reach here, authentication is successful
     fetched_account.reset_pass_err_times()

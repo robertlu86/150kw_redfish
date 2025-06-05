@@ -152,7 +152,7 @@ class RfCduModel(RfResourceBaseModel):
     Version: Optional[str] = Field(default="", description="")
     ProductionDate: Optional[str] = Field(default="", description="The production or manufacturing date of this equipment.")
 
-    CoolingCapacityWatts: Optional[int] = Field(default=0, description="")
+    CoolingCapacityWatts: Optional[int] = Field(default=1000, description="")
     EquipmentType: Optional[str] = Field(default="CDU", description="")
 
     Filters: Optional[Dict[str, Any]] = Field(default={}, description="")
@@ -201,29 +201,29 @@ class RfCduModel(RfResourceBaseModel):
             "@odata.id": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/LeakDetection"
         }
         self.Coolant = {
-            "CoolantType": "Water",
-            "DensityKgPerCubicMeter": -1, # TBD
-            "SpecificHeatkJoulesPerKgK": -1, # TBD
+            "CoolantType": "PropyleneGlycolAq",
+            "DensityKgPerCubicMeter": 1030, 
+            "SpecificHeatkJoulesPerKgK": 3900,
         }
-        self.PumpRedundancy = [
-            {
-                "RedundancyType": "NPlusM",
-                "MinNeededInGroup": 1,
-                "RedundancyGroup": [
-                    {
-                        "@odata.id": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/Pumps/{sn}"
-                    }
-                    for sn in range(1, int(os.environ.get('REDFISH_PUMP_COLLECTION_CNT', 1)) + 1)
-                ],
-                "Status": {
-                    "Health": "OK",
-                    "State": "Enabled"
-                }
-            }
-        ]
-        self.Reservoirs = {
-            "@odata.id": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/Reservoirs"
-        }
+        # self.PumpRedundancy = [
+        #     {
+        #         "RedundancyType": "NPlusM",
+        #         "MinNeededInGroup": 1,
+        #         "RedundancyGroup": [
+        #             {
+        #                 "@odata.id": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/Pumps/{sn}"
+        #             }
+        #             for sn in range(1, int(os.environ.get('REDFISH_PUMP_COLLECTION_CNT', 1)) + 1)
+        #         ],
+        #         "Status": {
+        #             "Health": "OK",
+        #             "State": "Enabled"
+        #         }
+        #     }
+        # ]
+        # self.Reservoirs = {
+        #     "@odata.id": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/Reservoirs"
+        # }
         self.EnvironmentMetrics = {
             "@odata.id": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/EnvironmentMetrics"
         }

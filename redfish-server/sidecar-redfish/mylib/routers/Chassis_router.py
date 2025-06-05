@@ -59,7 +59,7 @@ Chassis_data_1 = {
     # ==============0514新增=============
     # "Fans":{"@odata.id": "/redfish/v1/Chassis/1/ThermalSubsystem/Fans"},
     # "Drives": {"@odata.id": "/redfish/v1/Chassis/1/Drives"},
-    "NetworkAdapters": {"@odata.id": "/redfish/v1/Chassis/1/NetworkAdapters"},
+    # "NetworkAdapters": {"@odata.id": "/redfish/v1/Chassis/1/NetworkAdapters"},
     # "PCIeDevices": {"@odata.id": "/redfish/v1/Chassis/1/PCIeDevices"},
     # "Power": {"@odata.id": "/redfish/v1/Chassis/1/Power"},
     # "Thermal": {"@odata.id": "/redfish/v1/Chassis/1/Thermal"},
@@ -877,35 +877,35 @@ class ThermalMetrics(Resource):
             "Id": "ThermalMetrics",
             "Name": "Chassis Thermal Metrics",
             
-            "TemperatureReadingsCelsius": [
-                {
-                    "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/IntakeTemp",
-                    "DeviceName": "Intake",
-                    "Reading": 24.8
-                },
-                {
-                    "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/ExhaustTemp",
-                    "DeviceName": "Exhaust",
-                    "Reading": 40.5
-                }
-            ],
+            # "TemperatureReadingsCelsius": [
+            #     {
+            #         "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/IntakeTemp",
+            #         "DeviceName": "Intake",
+            #         "Reading": 24.8
+            #     },
+            #     {
+            #         "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/ExhaustTemp",
+            #         "DeviceName": "Exhaust",
+            #         "Reading": 40.5
+            #     }
+            # ],
             "TemperatureSummaryCelsius": {
                 "Ambient": {
-                    "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/AmbientTemp",
-                    "Reading": 22.5
+                    "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/TemperatureCelsius",
+                    # "Reading": 22.5
                 },
                 "Exhaust": {
-                    "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/ExhaustTemp",
-                    "Reading": 40.5
+                    "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/PrimarySupplyTemperatureCelsius",
+                    # "Reading": 40.5
                 },
                 "Intake": {
-                    "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/IntakeTemp",
-                    "Reading": 24.8
+                    "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/PrimaryReturnTemperatureCelsius",
+                    # "Reading": 24.8
                 },
-                "Internal": {
-                    "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/CPU1Temp",
-                    "Reading": 39
-                }
+                # "Internal": {
+                #     "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/CPU1Temp",
+                #     "Reading": 39
+                # }
             }
         }
         return ThermalMetrics_data    
@@ -924,19 +924,19 @@ class ThermalMetrics(Resource):
 #     "Oem": {}
 # }
 # 網路集合(數據接口...)
-NetworkAdapters_data = {
-    "@odata.id": "/redfish/v1/Chassis/1/NetworkAdapters",
-    "@odata.type": "#NetworkAdapterCollection.NetworkAdapterCollection",
+# NetworkAdapters_data = {
+#     "@odata.id": "/redfish/v1/Chassis/1/NetworkAdapters",
+#     "@odata.type": "#NetworkAdapterCollection.NetworkAdapterCollection",
     
-    "Name": "Network Adapter Collection",
-    "Description": "Collection of Network Adapters for this Chassis",
+#     "Name": "Network Adapter Collection",
+#     "Description": "Collection of Network Adapters for this Chassis",
     
-    "Members@odata.count": 1,
-    "Members": [
-        { "@odata.id": "/redfish/v1/Chassis/1/NetworkAdapters/1" }
-    ],
-    "Oem": {}
-}
+#     "Members@odata.count": 1,
+#     "Members": [
+#         { "@odata.id": "/redfish/v1/Chassis/1/NetworkAdapters/1" }
+#     ],
+#     "Oem": {}
+# }
 # PCIed擴展集合
 # PCIeDevices_data = {
 #     "@odata.id": "/redfish/v1/Chassis/1/PCIeDevices",
@@ -1172,83 +1172,83 @@ NetworkAdapters_data = {
 # NetworkAdapters
 # ================    
 
-@Chassis_ns.route("/Chassis/<chassis_id>/NetworkAdapters") 
-class NetworkAdapters(Resource):
-    # @requires_auth
-    def get(self, chassis_id):
-        return NetworkAdapters_data
+# @Chassis_ns.route("/Chassis/<chassis_id>/NetworkAdapters") 
+# class NetworkAdapters(Resource):
+#     # @requires_auth
+#     def get(self, chassis_id):
+#         return NetworkAdapters_data
 
-@Chassis_ns.route("/Chassis/<chassis_id>/NetworkAdapters/<string:NetworkAdapter_id>") 
-class NetworkAdapters(Resource):
-    # @requires_auth
-    def get(self, chassis_id, NetworkAdapter_id):
-        return {
-            "@odata.context": "/redfish/v1/$metadata#NetworkAdapter.NetworkAdapter",
-            "@odata.id": f"/redfish/v1/Chassis/{chassis_id}/NetworkAdapters/{NetworkAdapter_id}",
-            "@odata.type": "#NetworkAdapter.v1_11_0.NetworkAdapter",
-            "Id": NetworkAdapter_id,
-            "Name": f"NetworkAdapter {NetworkAdapter_id}",
+# @Chassis_ns.route("/Chassis/<chassis_id>/NetworkAdapters/<string:NetworkAdapter_id>") 
+# class NetworkAdapters(Resource):
+#     # @requires_auth
+#     def get(self, chassis_id, NetworkAdapter_id):
+#         return {
+#             "@odata.context": "/redfish/v1/$metadata#NetworkAdapter.NetworkAdapter",
+#             "@odata.id": f"/redfish/v1/Chassis/{chassis_id}/NetworkAdapters/{NetworkAdapter_id}",
+#             "@odata.type": "#NetworkAdapter.v1_11_0.NetworkAdapter",
+#             "Id": NetworkAdapter_id,
+#             "Name": f"NetworkAdapter {NetworkAdapter_id}",
             
-            "PartNumber": "Transcend-TS2TMTS970T-I",
-            "SerialNumber": get_mac_uuid(),
-            "Ports": {"@odata.id": f"/redfish/v1/Chassis/{chassis_id}/NetworkAdapters/{NetworkAdapter_id}/Ports"}
-        }    
+#             "PartNumber": "Transcend-TS2TMTS970T-I",
+#             "SerialNumber": get_mac_uuid(),
+#             "Ports": {"@odata.id": f"/redfish/v1/Chassis/{chassis_id}/NetworkAdapters/{NetworkAdapter_id}/Ports"}
+#         }    
         
-@Chassis_ns.route("/Chassis/<chassis_id>/NetworkAdapters/<string:NetworkAdapter_id>/Ports") 
-class NetworkAdapters(Resource):
-    # @requires_auth
-    def get(self, chassis_id, NetworkAdapter_id):
-        Port_data = {
-            "@odata.context": "/redfish/v1/$metadata#PortCollection.PortCollection",
-            "@odata.id": f"/redfish/v1/Chassis/{chassis_id}/NetworkAdapters/{NetworkAdapter_id}/Ports",
-            "@odata.type": "#PortCollection.PortCollection",
+# @Chassis_ns.route("/Chassis/<chassis_id>/NetworkAdapters/<string:NetworkAdapter_id>/Ports") 
+# class NetworkAdapters(Resource):
+#     # @requires_auth
+#     def get(self, chassis_id, NetworkAdapter_id):
+#         Port_data = {
+#             "@odata.context": "/redfish/v1/$metadata#PortCollection.PortCollection",
+#             "@odata.id": f"/redfish/v1/Chassis/{chassis_id}/NetworkAdapters/{NetworkAdapter_id}/Ports",
+#             "@odata.type": "#PortCollection.PortCollection",
             
-            "Name": "Port Collection",
+#             "Name": "Port Collection",
             
-            "Members@odata.count": 1,
-            "Members": [
-                { "@odata.id": f"/redfish/v1/Chassis/{chassis_id}/NetworkAdapters/{NetworkAdapter_id}/Ports/1" }
-            ]
-        }
-        return Port_data
+#             "Members@odata.count": 1,
+#             "Members": [
+#                 { "@odata.id": f"/redfish/v1/Chassis/{chassis_id}/NetworkAdapters/{NetworkAdapter_id}/Ports/1" }
+#             ]
+#         }
+#         return Port_data
     
-@Chassis_ns.route("/Chassis/<chassis_id>/NetworkAdapters/<string:NetworkAdapter_id>/Ports/<string:Port_id>") 
-class NetworkAdapters(Resource):
-    # @requires_auth
-    def get(self, chassis_id, NetworkAdapter_id, Port_id):
-        # list_nics_fullinfo()
-        NetworkAdapter_id_Port_id = {
-            "@odata.id": f"/redfish/v1/Chassis/{chassis_id}/NetworkAdapters/{NetworkAdapter_id}/Ports/{Port_id}",
-            "@odata.type": "#Port.v1_16_0.Port",
-            "@odata.context": "/redfish/v1/$metadata#Port.Port",
+# @Chassis_ns.route("/Chassis/<chassis_id>/NetworkAdapters/<string:NetworkAdapter_id>/Ports/<string:Port_id>") 
+# class NetworkAdapters(Resource):
+#     # @requires_auth
+#     def get(self, chassis_id, NetworkAdapter_id, Port_id):
+#         # list_nics_fullinfo()
+#         NetworkAdapter_id_Port_id = {
+#             "@odata.id": f"/redfish/v1/Chassis/{chassis_id}/NetworkAdapters/{NetworkAdapter_id}/Ports/{Port_id}",
+#             "@odata.type": "#Port.v1_16_0.Port",
+#             "@odata.context": "/redfish/v1/$metadata#Port.Port",
             
-            "Id": Port_id,
-            "Name": f"Port {Port_id}",
+#             "Id": Port_id,
+#             "Name": f"Port {Port_id}",
             
-            "MaxSpeedGbps": 10,
-            "CurrentSpeedGbps": 10,
-            # 在Ethernet中是取得對方的資訊(LLDP)(交換機等等...)
-            "Ethernet": {
-                "LLDPEnabled": True,
-                "LLDPReceive": {
-                    "ChassisId": get_mac_uuid(), # 放MAC
-                    "ChassisIdSubtype": "ChassisComp",
-                    "ManagementAddressIPv4": "192.168.1.100",
-                    "ManagementAddressMAC": "00:11:22:33:44:55",
-                    "ManagementVlanId": 0,
-                    "PortId": "01", # 單一組:01 多組:01:0A:FF:10
-                    "PortIdSubtype": "ChassisComp",
-                    "SystemDescription": "TBD",
-                    "SystemName": "TBD"
-                }
-            },
+#             "MaxSpeedGbps": 10,
+#             "CurrentSpeedGbps": 10,
+#             # 在Ethernet中是取得對方的資訊(LLDP)(交換機等等...)
+#             "Ethernet": {
+#                 "LLDPEnabled": True,
+#                 "LLDPReceive": {
+#                     "ChassisId": get_mac_uuid(), # 放MAC
+#                     "ChassisIdSubtype": "ChassisComp",
+#                     "ManagementAddressIPv4": "192.168.1.100",
+#                     "ManagementAddressMAC": "00:11:22:33:44:55",
+#                     "ManagementVlanId": 0,
+#                     "PortId": "01", # 單一組:01 多組:01:0A:FF:10
+#                     "PortIdSubtype": "ChassisComp",
+#                     "SystemDescription": "TBD",
+#                     "SystemName": "TBD"
+#                 }
+#             },
             
-            "LinkState": "Enabled",
-            "LinkStatus": "LinkUp",
-            "Width": 1,
-            "Status": {"State": "Enabled", "Health": "OK"},
-        }
-        return NetworkAdapter_id_Port_id
+#             "LinkState": "Enabled",
+#             "LinkStatus": "LinkUp",
+#             "Width": 1,
+#             "Status": {"State": "Enabled", "Health": "OK"},
+#         }
+#         return NetworkAdapter_id_Port_id
             
 # ================
 # PCIeDevices
