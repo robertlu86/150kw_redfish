@@ -3901,6 +3901,15 @@ def restart():
     threading.Thread(target=delayed_reboot).start()
     return "Restarting System"
 
+@scc_bp.route("/api/v1/graceful_reboot", methods=["GET"])
+@requires_auth
+def graceful_reboot():
+    def delayed_reboot():
+        time.sleep(5)  # 延遲 5 秒，讓 response 有時間送出
+        subprocess.run(["sudo", "systemctl","reboot"], check=True)
+
+    threading.Thread(target=delayed_reboot).start()
+    return "Restarting System"
 
 @scc_bp.route("/api/v1/snmp_setting", methods=["PATCH"])
 @requires_auth
