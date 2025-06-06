@@ -6,6 +6,7 @@ from werkzeug.security import generate_password_hash
 from mylib.models.setting_model import SettingModel
 from mylib.models.account_model import AccountModel,SessionModel
 from mylib.auth.TokenProvider import TokenProvider
+from mylib.models.rf_session_service_model import RfSessionServiceModel
 
 class RfSessionService():
     
@@ -20,14 +21,24 @@ class RfSessionService():
         """
         Update session service.
         """
-        if 'SessionTimeout' not in json_input:
-            return error_response('No key of SessionTimeout', 400, 'Base.PropertyMissing')
-        if not isinstance(json_input['SessionTimeout'], int):
-            return error_response('SessionTimeout must be an integer', 400, 'Base.PropertyValueNotInList')
-        if json_input['SessionTimeout'] < 0:
-            return error_response('SessionTimeout must be greater than or equal to 0', 400, 'Base.PropertyValueNotInList')
-        
-        if SettingModel.update_by_key_value('SessionService.SessionTimeout', json_input['SessionTimeout']):
+        try:
+            if 'SessionTimeout' not in json_input:
+                return error_response('No key of SessionTimeout', 400, 'Base.PropertyMissing')
+            if not isinstance(json_input['SessionTimeout'], int):
+                return error_response('SessionTimeout must be an integer', 400, 'Base.PropertyValueNotInList')
+            if json_input['SessionTimeout'] < 0:
+                return error_response('SessionTimeout must be greater than or equal to 0', 400, 'Base.PropertyValueNotInList')
+            
+            s_model = RfSessionServiceModel(**json_input)
+        except ValueError as ve:
+            # Check which field might have failed
+            for error in ve.errors():
+                err_msg= (f"{error['loc'][0]}: {error['msg']}")#
+                return error_response(msg=err_msg,http_status=400,code='Base.PropertyValueFormatError')
+        except Exception as e:
+            return error_response('Failed to update session service', 500, 'Base.GeneralError')
+
+        if SettingModel.update_by_key_value('SessionService.SessionTimeout', s_model.SessionTimeout):
             return cls.fetch_session_service()
         else:
             return error_response('Failed to update SessionService', 500, 'Base.InternalError')
@@ -38,7 +49,7 @@ class RfSessionService():
             return error_response('No key of UserName', 400, 'Base.PropertyMissing')
         
         if not AccountModel.validate_name(json_input['UserName']):
-            return ERROR_USERNAME_FORMAT
+            return ERROR_UNAUTHORIZED
         
         # default password of admin accoount can't pass the validation
         # if not AccountModel.validate_password(json_input['Password']):
@@ -47,10 +58,10 @@ class RfSessionService():
         find_account = AccountModel.get_by_id(json_input['UserName'])
         
         if not find_account:
-            return ERROR_RESOURCE_NOT_FOUND
+            return ERROR_UNAUTHORIZED
         
         if not find_account.check_password(json_input['Password']):
-            return ERROR_RESOURCE_NOT_FOUND
+            return ERROR_UNAUTHORIZED
         redfish_session = SessionModel(find_account)
         db.session.add(redfish_session)
         db.session.commit()

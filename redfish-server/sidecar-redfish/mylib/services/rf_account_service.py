@@ -65,7 +65,7 @@ class RfAccountService():
             json_data['Id']=str(role.name)
             json_data['RoleId'] = str(role.name)
             json_data['Description'] = str(role.name) + " User Role"
-            json_data['AssignedPrivileges'] = str(role.assigned_privileges).split(',')
+            json_data['AssignedPrivileges'] = [] if not role.assigned_privileges else str(role.assigned_privileges).split(',')
             json_data["@odata.id"]="/redfish/v1/AccountService/Roles/{0}".format(role.name)
             return  json_data
         
@@ -115,6 +115,13 @@ class RfAccountService():
                 role=RoleModel.query.filter_by(id=validated.role_id).first(),
                 password=validated.password
             )
+
+            max_allowed_setting = SettingModel.get_by_key('AccountService.MaxAllowedAccounts')
+            
+            # Check if the number of accounts exceeds the maximum allowed
+            if AccountModel.query.count() >= int(max_allowed_setting.value):
+                return error_response('Maximum number of accounts reached', 403, 'Base.OperationNotAllowed')
+
             db.session.add(new_account)
             db.session.commit()
         except ValueError as ve:

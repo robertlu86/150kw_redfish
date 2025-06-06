@@ -11,7 +11,7 @@ from pydantic import (
 from mylib.models.rf_base_model import RfResourceBaseModel
 from mylib.utils.network_info import get_network_protocol_status
 from mylib.models.rf_snmp_model import rf_SNMP
-st = get_network_protocol_status()
+# st = get_network_protocol_status()
 class _rf_HTTPS(BaseModel):
     ProtocolEnabled: Optional[bool] = Field(default=True, example=True)
     Port: Optional[int] = Field(default=True)

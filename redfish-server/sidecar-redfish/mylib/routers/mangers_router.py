@@ -226,11 +226,11 @@ managers_cdu_data =    {
     
     "Links": {
         "Oem": {
-            "Supermicro": {
-                "Memory": {
-                    "@odata.id": "/redfish/v1/Managers/CDU/Memory"
-                },
-            }
+            # "Supermicro": {
+            #     "Memory": {
+            #         "@odata.id": "/redfish/v1/Managers/CDU/Memory"
+            #     },
+            # }
         }
     },
     
@@ -280,7 +280,7 @@ ethernet_interfaces_data = {
     "@odata.type": "#EthernetInterfaceCollection.EthernetInterfaceCollection",
     "@odata.context": "/redfish/v1/$metadata#EthernetInterfaceCollection.EthernetInterfaceCollection",
     "Name": "Ethernet Network Interface Collection",
-    "Description": "“Network Interface Collection for the CDU Management Controller",
+    "Description": "Network Interface Collection for the CDU Management Controller",
     "Members@odata.count": 1,
     "Members": [
         {
@@ -764,33 +764,33 @@ class LogServicesIdEntriesId(Resource):
 # Memory
 #======================================================     
 
-@managers_ns.route("/Managers/CDU/Memory")
-class ManagerMemoryCollection(Resource):
-    def get(self):
-        return {
-            "@odata.context": "/redfish/v1/$metadata#MemoryCollection.MemoryCollection",
-            "@odata.id": f"/redfish/v1/Managers/CDU/Memory",
-            "@odata.type": "#MemoryCollection.MemoryCollection",
-            "Name": "Manager Memory Collection",
-            "Members@odata.count": 1,
-            "Members": [
-                { "@odata.id": f"/redfish/v1/Managers/CDU/Memory/1" }
-            ]
-        }
+# @managers_ns.route("/Managers/CDU/Memory")
+# class ManagerMemoryCollection(Resource):
+#     def get(self):
+#         return {
+#             "@odata.context": "/redfish/v1/$metadata#MemoryCollection.MemoryCollection",
+#             "@odata.id": f"/redfish/v1/Managers/CDU/Memory",
+#             "@odata.type": "#MemoryCollection.MemoryCollection",
+#             "Name": "Manager Memory Collection",
+#             "Members@odata.count": 1,
+#             "Members": [
+#                 { "@odata.id": f"/redfish/v1/Managers/CDU/Memory/1" }
+#             ]
+#         }
 
-@managers_ns.route("/Managers/CDU/Memory/<string:mem_id>")
-class ManagerMemory(Resource):
-    def get(self, mem_id):
-        return {
-            "@odata.context": "/redfish/v1/$metadata#Memory.Memory",
-            "@odata.id": f"/redfish/v1/Managers/CDU/Memory/{mem_id}",
-            "@odata.type": "#Memory.v1_4_0.Memory",
-            "Id": mem_id,
-            "Name": f"Memory {mem_id}",
-            "Status": { "State": "Enabled", "Health": "OK" },
-            "CapacityMiB": 16384,
-            "MemoryType": "DRAM"
-        }    
+# @managers_ns.route("/Managers/CDU/Memory/<string:mem_id>")
+# class ManagerMemory(Resource):
+#     def get(self, mem_id):
+#         return {
+#             "@odata.context": "/redfish/v1/$metadata#Memory.Memory",
+#             "@odata.id": f"/redfish/v1/Managers/CDU/Memory/{mem_id}",
+#             "@odata.type": "#Memory.v1_4_0.Memory",
+#             "Id": mem_id,
+#             "Name": f"Memory {mem_id}",
+#             "Status": { "State": "Enabled", "Health": "OK" },
+#             "CapacityMiB": 16384,
+#             "MemoryType": "DRAM"
+#         }    
 #====================================================== 
 # HostInterfaces
 #====================================================== 

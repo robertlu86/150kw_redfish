@@ -33,6 +33,7 @@ FirmwareInventory_data = {
     "Members@odata.count": 2, # 未串
     "Members": [{
         "@odata.id": "/redfish/v1/UpdateService/FirmwareInventory/WebInterface",
+        "@odata.id": "/redfish/v1/UpdateService/FirmwareInventory/ControlUnit_1",
         # "@odata.id": "/redfish/v1/UpdateService/FirmwareInventory/PLC",
         # "@odata.id": "/redfish/v1/UpdateService/FirmwareInventory/PC"
     }],
@@ -106,6 +107,25 @@ upload_parser.add_argument(
     help='Firmware zip file'
 )
 
+@update_ns.route("/UpdateService/FirmwareInventory/ControlUnit_1")
+class FirmwareInventoryControlUnit_1(Resource):
+    def get(self):
+        controlunit1_data = {
+            "@odata.id": "/redfish/v1/UpdateService/FirmwareInventory/ControlUnit_1" ,
+            "@odata.type": "#SoftwareInventory.v1_3_0.SoftwareInventory",
+            "Id": "PLC version",
+            "Name": "PLC version",
+            "Manufacturer": "supermicro",
+            # 更新日
+            "ReleaseDate": "2025-02-21T06:02:08Z", # 未串
+            # 是否可更新
+            "Updateable": False,    
+            "Version": load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/display/version")["version"]["PLC"],
+            "SoftwareId": "PLC-VERSION",
+            "Oem": {}
+        }
+        return controlunit1_data
+
 # 要確認
 @update_ns.route("/UpdateService/SimpleUpdateActionInfo")
 class SimpleUpdateActionInfo(Resource):
@@ -144,7 +164,8 @@ class ActionsUpdateCduSimpleUpdatee(Resource):
             r = requests.post(ORIGIN_UPLOAD_API, files=files, timeout=(10, None))
             # r.raise_for_status()
             # print("R:", r.text)
-            return r.text, 200
+            # return r.text, 200
+            return "upload success, it will reboot", 200
         except requests.HTTPError:
             return r.json() if r.headers.get("Content-Type","").startswith("application/json") else {"error": r.text}, r.status_code
         except requests.RequestException as e:

@@ -19,10 +19,15 @@ def init_orm(app, db):
             setting = SettingModel(key=key, value=value)
             db.session.add(setting)
             db.session.commit()
+        elif setting.value != str(value):
+            setting.value = str(value)
+            db.session.commit()
         return setting
  
     with app.app_context():
         # @see https://flask-sqlalchemy.readthedocs.io/en/stable/queries/
+        # add drop_all() temporarily to reset the database, and will be removed later
+        db.drop_all()
         db.create_all()
         # Create default roles
         if not RoleModel.query.first():  # Check if any role exists
@@ -43,9 +48,11 @@ def init_orm(app, db):
             
             operator_role = RoleModel(name='Operator', assigned_privileges=",".join(operator_privi))
             readonly_role = RoleModel(name='ReadOnly', assigned_privileges=",".join(readonly_privi))
+            noaccess_role = RoleModel(name='NoAccess', assigned_privileges="")
             db.session.add(admin_role)
             db.session.add(operator_role)
             db.session.add(readonly_role)
+            db.session.add(noaccess_role)
             db.session.commit()
 
         # Create default user
@@ -57,9 +64,10 @@ def init_orm(app, db):
 
         # Create default setting
         #AccountService DSP0246
+        ensure_setting(key='AccountService.MaxAllowedAccounts', value='15')
         ensure_setting(key='AccountService.AuthFailureLoggingThreshold', value='3')
         ensure_setting(key='AccountService.MinPasswordLength', value='5')
-        ensure_setting(key='AccountService.AccountLockoutThreshold', value='5')
+        ensure_setting(key='AccountService.AccountLockoutThreshold', value='3')
         ensure_setting(key='AccountService.AccountLockoutDuration', value='60')
         ensure_setting(key='AccountService.AccountLockoutCounterResetAfter', value='30')
         ensure_setting(key='SessionService.SessionTimeout', value='3600')
