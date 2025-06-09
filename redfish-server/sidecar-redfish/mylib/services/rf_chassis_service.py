@@ -269,7 +269,11 @@ class RfChassisService(BaseService):
             "PowerConsume": {
                 "ReadingUnits": "kW", 
                 "fieldNameToFetchSensorValue": "power_total"
-            },     
+            },   
+            "EnergykWh": {
+                "ReadingUnits": "kWh", 
+                "fieldNameToFetchSensorValue": "EnergykWh"  
+            } 
         }
         # 動態調整風扇數量
         fan_cnt = int(os.getenv("REDFISH_FAN_COLLECTION_CNT", 8))
@@ -283,24 +287,15 @@ class RfChassisService(BaseService):
         reading_info = id_readingInfo_map.get(sensor_id, {})
         if reading_info:
             sensor_value_json = self._read_components_chassis_summary_from_cache()
-            # print("Infttest: ", reading_info)
-            # print("sensor_value_json: ", sensor_value_json)
-            reading_info["Reading"], reading_info["Status"] = self._calc_delta_value_status(sensor_value_json, reading_info["fieldNameToFetchSensorValue"])
-            # reading_info["Status"] = sensor_value_json[reading_info["fieldNameToFetchSensorValue"]]["status"]
+            if reading_info['fieldNameToFetchSensorValue'] == "EnergykWh":
+                EnergykWh_data = self._calc_delta_value_status(sensor_value_json, "power_total")
+                reading_info["Reading"] = round(EnergykWh_data[0] / (60 * 1000), 2)
+                reading_info["Status"] = EnergykWh_data[1]
+            else:
+                reading_info["Reading"], reading_info["Status"] = self._calc_delta_value_status(sensor_value_json, reading_info["fieldNameToFetchSensorValue"])
         else:
             reading_info["Reading"] = 0.0  
-        # print("resulttest:" , reading_info)    
         return reading_info
-    
-    # def _calc_delta_value(self, sensor_value: dict, fieldNameToFetchSensorValue: str ) -> str:
-    #     """
-    #     如果有兩欄(欄位含',')，則計算兩個sensor value的差值
-    #     """
-    #     if "," in fieldNameToFetchSensorValue: 
-    #         fieldNames = fieldNameToFetchSensorValue.split(",")
-    #         return sensor_value[ fieldNames[0] ] - sensor_value[ fieldNames[1] ]
-    #     else:
-    #         return sensor_value[ fieldNameToFetchSensorValue ]
     
     # 取得 thermal_subsystem 風扇數量
     def get_thermal_subsystem_fans_count(self, chassis_id: str):
@@ -342,7 +337,7 @@ class RfChassisService(BaseService):
             "SparePartNumber": "SPN-FAN-100",
             "Status": {"State": "Enabled", "Health": "OK"},
             "Location": {
-                "PartLocation": {"LocationType": "Bay"}
+                "PartLocation": {}
             },
             "Oem": {}
         }
@@ -362,7 +357,7 @@ class RfChassisService(BaseService):
             "SpeedRPM": sensor_value_json["fan" + str(fan_id)]["reading"] * 16000 / 100,
         }
         # 位置服務標籤
-        item["Location"]["PartLocation"]["ServiceLabel"] = f"Fan Bay {fan_id}"
+        item["Location"]["PartLocation"]["ServiceLabel"] = hardware_info["Fans"][fan_id]["Location"]["PartLocation"]["ServiceLabel"]
 
         item["Status"]["State"] = sensor_value_json["fan" + str(fan_id)]["status"]["state"]
         item["Status"]["Health"] = sensor_value_json["fan" + str(fan_id)]["status"]["health"]

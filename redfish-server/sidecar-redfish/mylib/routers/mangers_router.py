@@ -3,8 +3,14 @@ from flask_restx import Namespace, Resource, fields
 from mylib.utils.load_api import load_raw_from_api 
 from mylib.utils.load_api import CDU_BASE
 from mylib.services.rf_managers_service import RfManagersService
+from mylib.models.rf_resource_model import RfResetType
+from mylib.models.rf_manager_model import RfResetToDefaultsType
 
 managers_ns = Namespace('', description='Chassis Collection')
+
+
+
+
 
 managers_data = {
     "@odata.id": "/redfish/v1/Managers",
@@ -245,10 +251,10 @@ managers_cdu_data =    {
     "Actions": {
         "#Manager.ResetToDefaults": {
             "target": "/redfish/v1/Managers/CDU/Actions/Manager.ResetToDefaults",
-            "ResetType@Redfish.AllowableValues": [
-                "PreserveNetwork",
+            "ResetType@Redfish.AllowableValues": [ # note: only `ResetAll` impl. in RestAPI
+                # "PreserveNetwork",
                 "ResetAll",
-                "PreserveNetworkAndUsers",
+                # "PreserveNetworkAndUsers",
             ]
         },
         "#Manager.Reset": {
@@ -290,6 +296,32 @@ ethernet_interfaces_data = {
     "Oem": {},
 }
 
+
+ResetToDefaultsPostModel = managers_ns.model('ResetToDefaultsPostModel', {
+    'ResetType': fields.String(
+        required=True,
+        description='The reset to defaults type.',
+        example='ResetAll',
+        enum=[
+            RfResetToDefaultsType.ResetAll.value,
+            # RfResetToDefaultsType.PreserveNetwork.value,
+            # RfResetToDefaultsType.PreserveNetworkAndUsers.value,
+        ]
+    ),
+})
+
+ResetPostModel = managers_ns.model('ResetPostModel', {
+    'ResetType': fields.String(
+        required=True,
+        description='The reset type.',
+        example='ForceRestart',
+        enum=[
+            RfResetType.ForceRestart.value,
+            RfResetType.GracefulRestart.value,
+        ]
+    ),
+})
+
 #====================================================== 
 # Managers
 #====================================================== 
@@ -315,6 +347,31 @@ class ManagersCDU(Resource):
         rep['DateTimeLocalOffset'] = local_now.strftime('%z')[:3] + ':' + local_now.strftime('%z')[3:]
         rep["FirmwareVersion"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/display/version")["version"]["WebUI"]
         return rep, 200
+
+@managers_ns.route("/Managers/CDU/Actions/Manager.ResetToDefaults")
+class ManagersCDUActionsResetToDefaults(Resource):
+    """Reset to defaults
+    (回復到預設值)
+    """
+    @managers_ns.expect(ResetToDefaultsPostModel, validate=True)
+    def post(self):
+        req_json = request.json or {}
+        reset_type = req_json.get("ResetType")
+        resp = RfManagersService().reset_to_defaults(reset_type)
+        return resp
+
+@managers_ns.route("/Managers/CDU/Actions/Manager.Reset")
+class ManagersCDUActionsReset(Resource):
+    """Reset
+    (重開機)
+    """
+    @managers_ns.expect(ResetPostModel, validate=True)
+    def post(self):
+        req_json = request.json or {}
+        reset_type = req_json.get("ResetType")
+        resp = RfManagersService().reset(reset_type)
+        return resp
+
 
 #====================================================== 
 # NetworkProtocol

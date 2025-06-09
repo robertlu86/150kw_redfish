@@ -1,4 +1,4 @@
-
+import os
 from dataclasses import dataclass
 from typing import Optional, List, Dict, Any
 from pydantic import (
@@ -9,6 +9,7 @@ from pydantic import (
     model_validator,
     #validator, # deprecated
     field_validator,
+    field_serializer,
 )
 
 from mylib.models.rf_status_model import RfStatusModel
@@ -17,6 +18,23 @@ from mylib.models.rf_physical_context_model import RfPhysicalContext, RfPhysical
 
 
 
+class MySensorBaseExcerpt(BaseModel):
+    """
+    Impl. field_serializer for `Reading`
+    @note 
+        Not redfish defined. So the class name start with `My`, not `Rf`.
+    """
+    @field_serializer('Reading', check_fields=False)
+    def serialize_reading(cls, value):
+        if value is None:
+            return None
+        if isinstance(value, float):
+            decimal_places = int(os.getenv("DECIMAL_PLACES", 2)) # 小數點精確位數
+            return round(value, decimal_places)
+        elif isinstance(value, int):
+            return int(value)
+        else:
+            return value
 
 class RfSensorVoltageExcerpt(BaseModel): # 完全同 SensorCurrentExcerpt，但仍定義一個
     """

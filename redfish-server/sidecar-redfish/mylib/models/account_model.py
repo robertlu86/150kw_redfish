@@ -238,7 +238,6 @@ class AccountBaseModel(BaseModel):
     @field_validator('password',mode='after')
     @classmethod
     def generate_hash_password(cls, value):
-        print(f"generate hased password:{generate_password_hash(value)}")
         return generate_password_hash(value)
     
     @field_validator('role_id',mode='before')
@@ -258,6 +257,20 @@ class AccountUpdateModel(AccountBaseModel):
                             description="Indicates whether the account is locked.")
     pass_change_required: Optional[bool] = Field(default=None, alias='PasswordChangeRequired', 
                             description="Indicates whether the account needs to update the password.")
+    
+    @model_validator(mode='before')
+    def check_at_least_one_field(cls, values):
+        enabled = values.get('Enabled')
+        locked = values.get('Locked')
+        pass_change_required = values.get('PasswordChangeRequired')
+        user_name = values.get('UserName')
+        password = values.get('Password')
+        role_id = values.get('RoleId')
+
+        if enabled is None and locked is None and pass_change_required is None and \
+           user_name is None and password is None and role_id is None:
+            raise ValueError(f"{values} must contain at least one valid field to update.")
+        return values
     
     @field_validator('locked',mode='before')
     @classmethod

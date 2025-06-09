@@ -412,39 +412,39 @@ cdus_filters={
     ]
 }
 
-cdus_filters_1 = {
-    "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Filters/1",
-    "@odata.type": "#Filter.v1_0_0.Filter",
-    "@odata.context": "/redfish/v1/$metadata#Filter.v1_0_0.Filter",
+# cdus_filters_1 = {
+#     "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Filters/1",
+#     "@odata.type": "#Filter.v1_0_2.Filter",
+#     "@odata.context": "/redfish/v1/$metadata#Filter.v1_0_2.Filter",
     
-    "Id": "1",
-    "Name": "Cooling Loop Filter",
-    "Description": "Cooling Loop Filter",
-    # 設備資訊
-    "ServicedDate": "2020-12-24T08:00:00Z",
-    "Manufacturer": "Contoso",
-    "Model": "MrCoffee",
-    "PartNumber": "Cone4",
-    "HotPluggable": False,
-    "Replaceable": False,
-    # 設備服務時間
-    "ServiceHours": 5791,
-    "RatedServiceHours": 10000,
-    "Status": {
-        "State": "Enabled",
-        "Health": "OK"
-    },
-    # 實體位置
-    "Location": {
-        "Placement": {
-            "Row": "North 1"
-        },
-        "PartLocation": {
-            "ServiceLabel": "Filter 1",
-            "LocationType": "Bay"
-        }
-    },
-}
+#     "Id": "1",
+#     "Name": "Cooling Loop Filter",
+#     "Description": "Cooling Loop Filter",
+#     # 設備資訊
+#     "ServicedDate": "2020-12-24T08:00:00Z", # 先hardcode
+#     # "Manufacturer": "Supermicro",
+#     # "Model": "MrCoffee",
+#     # "PartNumber": "Cone4",
+#     "HotPluggable": False,
+#     "Replaceable": False,
+#     # 設備服務時間
+#     "ServiceHours": -1,
+#     "RatedServiceHours": 4320,
+#     "Status": {
+#         "State": "Enabled",
+#         "Health": "OK"
+#     },
+#     # 實體位置
+#     "Location": {
+#         "Placement": {
+#             "Row": "North 1"
+#         },
+#         "PartLocation": {
+#             "ServiceLabel": "Filter 1",
+#             "LocationType": "Bay"
+#         }
+#     },
+# }
 
 # environment_metrics = {
 #     "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/EnvironmentMetrics",
@@ -556,9 +556,10 @@ LeakDetection_data = {
                     "DetectorState":   "OK"
                 }
             ],
+            # 必要
             "HumidityPercent": {
                 "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/HumidityPercent",
-                "Reading": 67.11
+                "Reading": "Null"
             },
             "Status": {
                 "State": "Enabled",
@@ -759,7 +760,7 @@ class ThermalEquipmentCdus1Pumps(Resource):
         rep = RfThermalEquipmentService().fetch_CDUs_Pumps(cdu_id)
         return rep
     
-#--------------------------pump1---------------------------------------- 
+#--------------------------pumpId---------------------------------------- 
 @ThermalEquipment_ns.route("/ThermalEquipment/CDUs/<string:cdu_id>/Pumps/<string:pump_id>")
 class ThermalEquipmentCdus1PumpsPump(MyBaseThermalEquipment):
     # # @requires_auth
@@ -859,155 +860,6 @@ class ThermalEquipmentCdus1PumpsPump(MyBaseThermalEquipment):
     #     # 回傳整個 Pump 資源
     #     return cdus_pumps_1, 200
 
-#--------------------------pump2---------------------------------------- 
-# @ThermalEquipment_ns.route("/ThermalEquipment/CDUs/1/Pumps/2")
-# class ThermalEquipmentCdus1Pumps2(Resource):
-#     # # @requires_auth
-#     @ThermalEquipment_ns.doc("thermal_equipment_cdus_1_pumps_2")
-#     def get(self):
-#         pump_speed = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_speed")["pump2_speed"]
-#         cdus_pumps_2["PumpSpeedPercent"]["Reading"] = pump_speed
-#         cdus_pumps_2["PumpSpeedPercent"]["SpeedRPM"] = pump_speed * pump_max_speed / 100
-#         cdus_pumps_2["SpeedControlPercent"]["SetPoint"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/control/pump_speed")["pump2_speed"]
-        
-#         state = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_state")["pump2_state"]
-#         health = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_health")["pump2_health"]
-#         service_hours = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_service_hours")["pump2_service_hours"]
-#         if state == "Disable": state = "Disabled"
-#         cdus_pumps_2["Status"]["State"] = state
-#         cdus_pumps_2["Status"]["Health"] = health
-#         cdus_pumps_2["ServiceHours"] = service_hours
-#         cdus_pumps_2["Oem"]["supermicro"]["Inventer 2 MC"]["Switch"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/mc")["mc2_sw"]
-        
-#         return cdus_pumps_2
-        
-    # @requires_auth
-    # @ThermalEquipment_ns.expect(pumpspeed_patch, validate=True)
-    # def patch(self):
-    #     body = request.get_json(force=True)
-    #     new_sp = body['pump_speed']
-    #     new_sw = body['pump_switch']
-        
-    #     # 驗證模式
-    #     if GetControlMode() != "Manual": return "only Manual can setting"
-        
-    #     # 驗證範圍
-    #     scp = cdus_pumps_2["SpeedControlPercent"]
-    #     if not (scp["AllowableMin"] <= new_sp <= scp["AllowableMax"]):
-    #         return {
-    #             "error": f"pump_speed needs to be between {scp['AllowableMin']} and {scp['AllowableMax']}"
-    #         }, 400
-
-    #     # 轉發到內部控制 API
-    #     try:
-    #         r = requests.patch(
-    #             f"{CDU_BASE}/api/v1/cdu/control/pump2_speed",
-    #             json={"pump_speed": new_sp, "pump_switch": new_sw},
-    #             timeout=3
-    #         )
-    #         r.raise_for_status()
-    #     except requests.HTTPError:
-    #         # 如果 CDU 回了 4xx/5xx，直接把它的 status code 和 body 回來
-    #         try:
-    #             err_body = r.json()
-    #         except ValueError:
-    #             err_body = {"error": r.text}
-    #         return err_body, r.status_code
-
-    #     except requests.RequestException as e:
-    #         # 純粹網路／timeout／連線失敗
-    #         return {
-    #             "error": "Forwarding to the CDU control service failed",
-    #             "details": str(e)
-    #         }, 502
-
-    #     # 更新內存資料
-    #     scp["SetPoint"] = new_sp
-    #     # pump_switch 控制 State
-    #     cdus_pumps_2["Status"]["State"] = "Enabled" if new_sw else "Disabled"
-    #     # 取得轉速
-    #     pump_speed = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_speed")["pump2_speed"]
-    #     cdus_pumps_2["PumpSpeedPercent"]["Reading"] = pump_speed
-    #     cdus_pumps_2["PumpSpeedPercent"]["SpeedRPM"] = pump_speed * pump_max_speed / 100
-
-    #     # 回傳整個 Pump 資源
-    #     return cdus_pumps_2, 200
-
-
-#--------------------------pump3---------------------------------------- 
-# @ThermalEquipment_ns.route("/ThermalEquipment/CDUs/1/Pumps/3")
-# class ThermalEquipmentCdus1Pumps3(Resource):
-    # # @requires_auth
-    # @ThermalEquipment_ns.doc("thermal_equipment_cdus_1_pumps_3")
-    # def get(self):
-    #     pump_speed = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_speed")["pump3_speed"]
-    #     cdus_pumps_3["PumpSpeedPercent"]["Reading"] = pump_speed
-    #     cdus_pumps_3["PumpSpeedPercent"]["SpeedRPM"] = pump_speed * pump_max_speed / 100
-    #     cdus_pumps_3["SpeedControlPercent"]["SetPoint"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/control/pump_speed")["pump3_speed"]
-        
-    #     state = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_state")["pump3_state"]
-    #     health = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_health")["pump3_health"]
-    #     service_hours = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_service_hours")["pump3_service_hours"]
-    #     if state == "Disable": state = "Disabled"
-    #     cdus_pumps_3["Status"]["State"] = state
-    #     cdus_pumps_3["Status"]["Health"] = health
-    #     cdus_pumps_3["ServiceHours"] = service_hours
-    #     cdus_pumps_3["Oem"]["supermicro"]["Inventer 3 MC"]["Switch"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/mc")["mc3_sw"]
-        
-    #     return cdus_pumps_3
-        
-    # @requires_auth
-    # @ThermalEquipment_ns.expect(pumpspeed_patch, validate=True)
-    # def patch(self):
-    #     body = request.get_json(force=True)
-    #     new_sp = body['pump_speed']
-    #     new_sw = body['pump_switch']
-        
-    #     # 驗證模式
-    #     if GetControlMode() != "Manual": return "only Manual can setting"
-        
-    #     # 驗證範圍
-    #     scp = cdus_pumps_3["SpeedControlPercent"]
-    #     if not (scp["AllowableMin"] <= new_sp <= scp["AllowableMax"]):
-    #         return {
-    #             "error": f"pump_speed needs to be between {scp['AllowableMin']} and {scp['AllowableMax']}"
-    #         }, 400
-
-    #     # 轉發到內部控制 API
-    #     try:
-    #         r = requests.patch(
-    #             f"{CDU_BASE}/api/v1/cdu/control/pump3_speed",
-    #             json={"pump_speed": new_sp, "pump_switch": new_sw},
-    #             timeout=3
-    #         )
-    #         r.raise_for_status()
-    #     except requests.HTTPError:
-    #         # 如果 CDU 回了 4xx/5xx，直接把它的 status code 和 body 回來
-    #         try:
-    #             err_body = r.json()
-    #         except ValueError:
-    #             err_body = {"error": r.text}
-    #         return err_body, r.status_code
-
-    #     except requests.RequestException as e:
-    #         # 純粹網路／timeout／連線失敗
-    #         return {
-    #             "error": "Forwarding to the CDU control service failed",
-    #             "details": str(e)
-    #         }, 502
-
-    #     # 更新內存資料
-    #     scp["SetPoint"] = new_sp
-    #     # pump_switch 控制 State
-    #     cdus_pumps_3["Status"]["State"] = "Enabled" if new_sw else "Disabled"
-    #     # 取得轉速
-    #     pump_speed = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_speed")["pump3_speed"]
-    #     cdus_pumps_3["PumpSpeedPercent"]["Reading"] = pump_speed
-    #     cdus_pumps_3["PumpSpeedPercent"]["SpeedRPM"] = pump_speed * pump_max_speed / 100
-
-    #     # 回傳整個 Pump 資源
-    #     return cdus_pumps_3, 200
-
     
     
 @ThermalEquipment_ns.route("/ThermalEquipment/CDUs/1/Filters")
@@ -1018,13 +870,19 @@ class ThermalEquipmentCdus1Filters(Resource):
         
         return cdus_filters
     
-@ThermalEquipment_ns.route("/ThermalEquipment/CDUs/1/Filters/1")
+@ThermalEquipment_ns.route("/ThermalEquipment/CDUs/<cdu_id>/Filters/<filter_id>")
 class ThermalEquipmentCdus1Filters1(Resource):
     # # @requires_auth
+    '''
+    p3, p4其中一個broken他就broken
+    warning, alert抓p4
+    '''
     @ThermalEquipment_ns.doc("thermal_equipment_cdus_1_filters_1")
-    def get(self):
-        
-        return cdus_filters_1
+    def get(self, cdu_id, filter_id):
+        rep = RfThermalEquipmentService().fetch_CDUs_Filters_id(cdu_id, filter_id)
+
+        # return cdus_filters_1
+        return rep
     
 @ThermalEquipment_ns.route("/ThermalEquipment/CDUs/<cdu_id>/EnvironmentMetrics")
 class ThermalEquipmentCdus1EnvironmentMetrics(MyBaseThermalEquipment):
@@ -1084,6 +942,7 @@ class LeakDetectionLeakDetectors1(MyBaseThermalEquipment):
     # # @requires_auth
     @ThermalEquipment_ns.doc("thermal_equipment_cdus_1_LeakDetection_LeakDetectors_1")
     def get(self, cdu_id, leak_detector_id):
+        leak = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/thermal_equipment/summary")["leak_detector"]
         LeakDetectors_1_data = {
             "@odata.id": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/LeakDetection/LeakDetectors/{leak_detector_id}",
             "@odata.type": "#LeakDetector.v1_3_0.LeakDetector",
@@ -1101,8 +960,8 @@ class LeakDetectionLeakDetectors1(MyBaseThermalEquipment):
                 }
             },
             "Status": {
-                "State": "Enabled",
-                "Health": "OK"
+                "State": leak["status"]["state"],
+                "Health": leak["status"]["health"]
             },
             
         }
