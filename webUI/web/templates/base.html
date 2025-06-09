@@ -913,7 +913,19 @@
             },
         });
 
+        $.ajax({
+            url: "/get_data_engineerMode",
+            method: "GET",
+            dataType: "json",
+            loader: false,
+            success: function (data) {
+                consol.log(data);
 
+            },
+            error: function (xhr, status, error) {
+                console.error("Failed to fetch engineer mode:", error);
+            },
+        });
         // if (window.location.hostname === "127.0.0.1") {
         //     if (userType == "superuser" || userType == "admin") {
         //         let timeoutLogoutSeconds = 600;
