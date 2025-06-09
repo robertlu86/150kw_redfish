@@ -16,6 +16,25 @@ from pydantic import ConfigDict
 
         
 
+class RfResetType(Enum):
+    """
+    @see https://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/ResetType
+    """
+    On = "On"
+    ForceOff = "ForceOff"
+    GracefulShutdown = "GracefulShutdown"
+    GracefulRestart = "GracefulRestart"
+    ForceRestart = "ForceRestart"
+    Nmi = "Nmi"
+    ForceOn = "ForceOn"
+    PushPowerButton = "PushPowerButton"
+    PowerCycle = "PowerCycle"
+    Suspend = "Suspend"
+    Pause = "Pause"
+    Resume = "Resume"
+    FullPowerCycle = "FullPowerCycle"
+
+
 class RfContactInfoModel(BaseModel):
     """
     @see https://redfish.dmtf.org/schemas/v1/Resource.v1_21_0.json#/definitions/ContactInfo
@@ -43,7 +62,7 @@ class RfLocationModel(BaseModel):
     AltitudeMeters: Optional[float] = Field(default=None, description="Altitude in meters.", extra={"units": "m"})
     Contacts: Optional[List[RfContactInfoModel]] = None
     Info: Optional[str] = None
-    InfoFormat: Optional[str]
+    InfoFormat: Optional[str] = None
     Latitude: Optional[float] = Field(default=None, extra={"units": "deg"})
     Longitude: Optional[float] = Field(default=None, extra={"units": "deg"})
     Oem: Optional[RfOemModel] = Field(default=None)

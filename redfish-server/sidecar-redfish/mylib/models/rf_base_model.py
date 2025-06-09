@@ -1,5 +1,6 @@
-
+import os
 from typing import Optional, List, Dict, Any
+from datetime import datetime, timezone
 from pydantic import (
     BaseModel,
     Field, 
@@ -7,6 +8,7 @@ from pydantic import (
     model_validator,
     #validator, # deprecated
     field_validator,
+    field_serializer
 )
 
 
@@ -19,7 +21,7 @@ class RfResourceBaseModel(BaseModel):
     Id: str                 = Field(default=None, description="")
     Name: str               = Field(default=None, description="")
     odata_id: Optional[str] = Field(default=None, description="", alias="@odata.id")
-
+    
     def to_dict(self) -> dict:
         """
         Only dump fields that are defined in the model
@@ -30,6 +32,11 @@ class RfResourceBaseModel(BaseModel):
                     include=set(self.__class__.model_fields.keys()),
                     exclude_none=True
                 )
+        
+    @field_serializer("ServicedDate", check_fields=False)
+    def datetime_serialized(self, v: Optional[datetime]) -> Optional[str]:
+        result = v.strftime(os.getenv('DATETIME_FORMAT'))
+        return result
 
 
 class RfResourceCollectionBaseModel(BaseModel):

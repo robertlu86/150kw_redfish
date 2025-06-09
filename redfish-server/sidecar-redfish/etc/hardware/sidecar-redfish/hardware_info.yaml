@@ -7,7 +7,7 @@ PowerSupplies:
     InputNominalVoltageType: "AC400V" 
     Manufacturer: "Supermicro"
     PartNumber: "WDR-240-24"
-    SerialNumber: "TBD"
+    # SerialNumber: "TBD"
     PowerCapacityWatts: 240
     PowerSupplyType: "AC"
 
@@ -17,7 +17,7 @@ PowerSupplies:
     InputNominalVoltageType: "AC400V" 
     Manufacturer: "Supermicro"
     PartNumber: "WDR-240-24"
-    SerialNumber: "TBD"
+    # SerialNumber: "TBD"
     PowerCapacityWatts: 240
     PowerSupplyType: "AC"
 
@@ -27,7 +27,7 @@ PowerSupplies:
     InputNominalVoltageType: "AC400V" 
     Manufacturer: "Supermicro"
     PartNumber: "WDR-120-12"
-    SerialNumber: "TBD"
+    # SerialNumber: "TBD"
     PowerCapacityWatts: 120
     PowerSupplyType: "AC"  
 
@@ -37,45 +37,82 @@ PowerSupplies:
     InputNominalVoltageType: "AC400V" 
     Manufacturer: "Supermicro"
     PartNumber: "WDR-120-12"
-    SerialNumber: "TBD"
+    # SerialNumber: "TBD"
     PowerCapacityWatts: 120
     PowerSupplyType: "AC"
 Pumps:
   "1":
     AllowableMax: 100
     AllowableMin: 15
+    "Location":
+      "PartLocation": 
+        ServiceLabel: "Pump 1 is located at the bottom left of the CDU"
 
   "2":
     AllowableMax: 100
     AllowableMin: 15
+    "Location":
+      "PartLocation": 
+        ServiceLabel: "Pump 2 is located at the bottom center of the CDU"
 
   "3":
     AllowableMax: 100
     AllowableMin: 15
+    "Location":
+      "PartLocation": 
+        ServiceLabel: "Pump 3 is located at the bottom right of the CDU"
 Fans:
   "1":
     AllowableMax: 100
     AllowableMin: 15
+    "Location":
+      "PartLocation": 
+        ServiceLabel: "Fan 1 is located at the bottom right of the CDU"
 
   "2":
     AllowableMax: 100
     AllowableMin: 15
+    "Location":
+      "PartLocation": 
+        ServiceLabel: "Fan 2 is located at the middle right of the CDU"
 
   "3":
     AllowableMax: 100
     AllowableMin: 15
+    "Location":
+      "PartLocation":  
+        ServiceLabel: "Fan 3 is located at the top right of the CDU"    
 
   "4":
     AllowableMax: 100
     AllowableMin: 15
+    "Location":
+      "PartLocation": 
+        ServiceLabel: "Fan 4 is located at the top left of the CDU"    
 
   "5":
     AllowableMax: 100
     AllowableMin: 15
+    "Location":
+      "PartLocation": 
+        ServiceLabel: "Fan 5 is located at the middle left of the CDU" 
 
   "6":
     AllowableMax: 100
     AllowableMin: 15
+    "Location":
+      "PartLocation": 
+        ServiceLabel: "Fan 6 is located at the bottom left of the CDU" 
+"Filters":
+  "1":
+    RatedServiceHours: 4320
+    ServicedDate: 2025-06-06T04:11:00Z
+    "Location":
+      "Placement":
+        Row: "North 1"
+      "PartLocation":
+        ServiceLabel: "Filter 1"
+        LocationType: "Bay"  
 CDU:
   Manufacturer: KAORI
   Model: 200KW SideCar L/A Colling CDU

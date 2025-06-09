@@ -1,11 +1,12 @@
 '''
 這是Redfish的managers service
 '''
+import subprocess, json
 from mylib.services.base_service import BaseService
 from mylib.models.rf_networkprotocol_model import RfNetworkProtocolModel
 from mylib.models.rf_snmp_model import RfSnmpModel
-import subprocess, json
-
+from mylib.adapters.webapp_api_adapter import WebAppAPIAdapter
+from mylib.models.rf_resource_model import RfResetType
 
 class RfManagersService(BaseService):
     # ================NetworkProtocol================
@@ -53,3 +54,30 @@ class RfManagersService(BaseService):
             Enabled   = enabled
         )
         return new_model.model_dump(by_alias=True, exclude_none=True)
+
+    ##
+    #      ___        ______ .___________. __    ______   .__   __.      _______.
+    #     /   \      /      ||           ||  |  /  __  \  |  \ |  |     /       |
+    #    /  ^  \    |  ,----'`---|  |----`|  | |  |  |  | |   \|  |    |   (----`
+    #   /  /_\  \   |  |         |  |     |  | |  |  |  | |  . `  |     \   \
+    #  /  _____  \  |  `----.    |  |     |  | |  `--'  | |  |\   | .----)   |
+    # /__/     \__\  \______|    |__|     |__|  \______/  |__| \__| |_______/
+    ##
+
+    def reset_to_defaults(self, reset_type: str):
+        """
+        :param reset_type: str
+            e.g., "ResetAll"
+        @note:
+            API will return jsonify(message="Reset all to factory settings Successfully")
+        """
+        resp = WebAppAPIAdapter.reset_to_defaults(reset_type)
+        return resp
+    
+    def reset(self, reset_type: str):
+        """
+        :param reset_type: str
+            e.g., "ForceRestart" or "GracefulRestart"
+        """
+        resp = WebAppAPIAdapter.reset(reset_type)
+        return resp

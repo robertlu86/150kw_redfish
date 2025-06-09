@@ -4,6 +4,7 @@
 import os, re
 import requests
 from typing import Optional
+from datetime import datetime
 from mylib.models.rf_sensor_model import (
     RfSensorCollectionModel, 
     RfSensorModel, 
@@ -19,9 +20,13 @@ from mylib.models.rf_pump_model import RfPumpModel
 from mylib.utils.load_api import load_raw_from_api, CDU_BASE
 from mylib.models.rf_sensor_model import RfSensorPumpExcerpt
 from mylib.models.rf_control_model import RfControlSingleLoopExcerptModel
+from mylib.models.rf_filter_model import RfFilterModel
+from mylib.models.rf_resource_model import RfLocationModel
+
 
 from load_env import hardware_info
 from mylib.routers.Chassis_router import GetControlMode
+from mylib.utils.StatusUtil import StatusUtil
 
 class RfThermalEquipmentService(BaseService):
     def fetch_CDUs(self, cdu_id: Optional[str] = None) -> dict:
@@ -57,7 +62,9 @@ class RfThermalEquipmentService(BaseService):
         m.TemperatureCelsius["Reading"] = self._read_reading_value_by_sensor_id("TemperatureCelsius")
         m.DewPointCelsius["Reading"] = self._read_reading_value_by_sensor_id("DewPointCelsius")
         m.HumidityPercent["Reading"] = self._read_reading_value_by_sensor_id("HumidityPercent")
-        m.AbsoluteHumidity["Reading"] = self._read_reading_value_by_sensor_id("AbsoluteHumidity")
+        m.PowerWatts["Reading"] = self._read_reading_value_by_sensor_id("PowerConsume")
+        m.EnergykWh["Reading"] = round(self._read_reading_value_by_sensor_id("PowerConsume")  / (60 * 1000), 2)
+        # m.AbsoluteHumidity["Reading"] = self._read_reading_value_by_sensor_id("AbsoluteHumidity")
         return m.to_dict()
     
     def fetch_CDUs_LeakDetection_LeakDetectors(self, cdu_id: str) -> dict:
@@ -250,8 +257,9 @@ class RfThermalEquipmentService(BaseService):
         # service time
         service_hours = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/pump_service_hours")[f"pump{pump_id}_service_hours"]
         m.ServiceHours = service_hours
+        # location
+        # m.Location = hardware_info["Pumps"][pump_id]["Location"]
         # oem
-
         m.Oem["supermicro"][f"Inventer {pump_id} MC"]["Switch"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/mc")[f"mc{pump_id}_sw"]
         return m.to_dict()
     
@@ -306,5 +314,42 @@ class RfThermalEquipmentService(BaseService):
             "AllowableMax": scp["AllowableMax"],
             # "ControlMode": "Automatic"  
         })
+
+        return m.to_dict(), 200
+    
+    def fetch_CDUs_Filters_id(self, cdu_id: str, filter_id: str) -> dict:
+        """
+        對應 "/redfish/v1/ThermalEquipment/CDUs/<cdu_id>/Filters/<filter_id>"
+
+        :param cdu_id: str
+        :param filter_id: str
+        :return: dict
+        
+        @note 
+            p3, p4其中一個broken他就broken
+            warning, alert抓p4
+        """
+        m = RfFilterModel(cdu_id=cdu_id, filter_id=filter_id)
+        
+        # ServicedDate
+        m.ServicedDate = hardware_info["Filters"][filter_id]["ServicedDate"]
+        m.ServiceHours = int(load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/thermal_equipment/summary")["Filter_run_time"])
+        
+        # location
+        # raw_location = hardware_info["Filters"][filter_id]["Location"]
+        # m.Location = RfLocationModel(raw_location)
+        
+        # Status
+        all_data = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/chassis/summary")
+        health_data = (all_data["pressure_filter_in"]["status"], all_data["pressure_filter_out"]["status"])
+        
+        status = StatusUtil().get_worst_health_dict(health_data)
+        # print("health: ", health)
+        # state = "Enabled" if health is "OK" else "Disabled"
+        # status = {
+        #     "State": state,
+        #     "Health": health
+        # }
+        m.Status = RfStatusModel.from_dict(status)
 
         return m.to_dict(), 200
