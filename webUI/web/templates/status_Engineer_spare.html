@@ -336,40 +336,6 @@ styles %}
             <div>
                 <div class="fans_light" id="fan_freq1_light"></div>
             </div>
-            <!-- 顯示fan 1-8 數值框 -->
-            <!--<div class="value_border" style="top: 275px; left:1250px">
-                                    <span class="fan_freq_image" id="fan_freq1_image">-</span>
-                                    <span class="fan_unit">%</span>
-                                </div>
-                                <div class="value_border" style="top: 315px; left:1250px">
-                                    <span class="fan_freq_image" id="fan_freq2_image">-</span>
-                                    <span class="fan_unit">%</span>
-                                </div>
-                                <div class="value_border" style="top: 355px; left:1250px">
-                                    <span class="fan_freq_image" id="fan_freq3_image">-</span>
-                                    <span class="fan_unit">%</span>
-                                </div>
-                                <div class="value_border" style="top: 395px; left:1250px">
-                                    <span class="fan_freq_image" id="fan_freq4_image">-</span>
-                                    <span class="fan_unit">%</span>
-                                </div>
-                                <div class="value_border" style="top: 275px; left:1560px">
-                                    <span class="fan_freq_image" id="fan_freq5_image">-</span>
-                                    <span class="fan_unit">%</span>
-                                </div>
-                                <div class="value_border" style="top: 315px; left:1560px">
-                                    <span class="fan_freq_image" id="fan_freq6_image">-</span>
-                                    <span class="fan_unit">%</span>
-                                </div>
-                                <div class="value_border" style="top: 355px; left:1560px">
-                                    <span class="fan_freq_image" id="fan_freq7_image">-</span>
-                                    <span class="fan_unit">%</span>
-                                </div>
-                                <div class="value_border" style="top: 395px; left:1560px">
-                                    <span class="fan_freq_image" id="fan_freq8_image">-</span>
-                                    <span class="fan_unit">%</span>
-                                </div>-->
-
             <!-- 顯示T2數值框 -->
             <div class="value_border" id="temp_clntRtn_image_set" style="top: 77.5%; left:9.2%">
                 <span class="temp_clntRtn_image" id="temp_clntRtn_image">-</span>
@@ -621,8 +587,8 @@ styles %}
                         <td class="tdCenterAlign" scope="row">
                             Apparent Power
                         </td>
-                        <td id="power_factor_status" class="tdCenterAlign" scope="row"></td>
-                        <td id="power_factor" scope="row"></td>
+                        <td id="apparent_power_status" class="tdCenterAlign" scope="row"></td>
+                        <td id="apparent_power" scope="row"></td>
                         <td scope="row">kVA</td>
                     </tr>
                     <!--測試用結束-->
@@ -647,6 +613,14 @@ styles %}
                         </td>
                         <td id="prsr_fltOut_status" class="tdCenterAlign" scope="row"></td>
                         <td id="prsr_fltOut" scope="row"></td>
+                        <td class="unit_pressure" scope="row"></td>
+                    </tr>
+                    <tr>
+                        <td class="tdCenterAlign" scope="row">
+                            Filter Delta P
+                        </td>
+                        <td id="filter_deltaP_status" class="tdCenterAlign" scope="row"></td>
+                        <td id="filter_deltaP" scope="row"></td>
                         <td class="unit_pressure" scope="row"></td>
                     </tr>
                 </tbody>
@@ -1064,7 +1038,7 @@ styles %}
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
+                    <tr id="leakage_sensor_1_set">
                         <td class="w-12 tdCenterAlign" scope="row">
                             Leakage Sensor 1
                         </td>
@@ -1072,11 +1046,35 @@ styles %}
                         <td scope="row"></td>
                         <td></td>
                     </tr>
-                    <tr>
+                    <tr id="leakage_sensor_2_set">
                         <td class="w-12 tdCenterAlign" scope="row">
                             Leakage Sensor 2
                         </td>
                         <td id="rack_leakage2" class="w-12 tdCenterAlign" scope="row"></td>
+                        <td scope="row"></td>
+                        <td></td>
+                    </tr>
+                    <tr id="leakage_sensor_3_set">
+                        <td class="w-12 tdCenterAlign" scope="row">
+                            Leakage Sensor 3
+                        </td>
+                        <td id="rack_leakage3" class="w-12 tdCenterAlign" scope="row"></td>
+                        <td scope="row"></td>
+                        <td></td>
+                    </tr>
+                    <tr id="leakage_sensor_4_set">
+                        <td class="w-12 tdCenterAlign" scope="row">
+                            Leakage Sensor 4
+                        </td>
+                        <td id="rack_leakage4" class="w-12 tdCenterAlign" scope="row"></td>
+                        <td scope="row"></td>
+                        <td></td>
+                    </tr>
+                    <tr id="leakage_sensor_5_set">
+                        <td class="w-12 tdCenterAlign" scope="row">
+                            Leakage Sensor 5
+                        </td>
+                        <td id="rack_leakage5" class="w-12 tdCenterAlign" scope="row"></td>
                         <td scope="row"></td>
                         <td></td>
                     </tr>
@@ -1263,6 +1261,34 @@ styles %}
                     }
                 }
             }
+            //Fillter計算
+            let fillter_val;
+
+            let p3 = !data["error"]["PrsrFltIn_broken"]
+                ? data["value"]["prsr_fltIn"]
+                : "-";
+
+            let p4 = !data["error"]["PrsrFltOut_broken"]
+                ? data["value"]["prsr_fltOut"]
+                : "-";
+
+
+            if (p3 == "-" || p4 == "-") {
+                fillter_val = "-";
+                $("#prsr_fltDiff_image").text("-").css("color", "red");
+                
+            } else {
+                fillter_val = p3 - p4;
+
+                if (userType == "superuser") {
+                    fillter_val = parseFloat(fillter_val).toFixed(2);
+                } else {
+                    fillter_val = parseFloat(fillter_val).toFixed(1);
+                }
+                $("#prsr_fltDiff_image").css("color", "black").text(fillter_val);
+                $("#filter_deltaP").css("color", "black").text(fillter_val);
+            }
+
             let ats1 = data["ats_status"]["ATS1"];
             let ats2 = data["ats_status"]["ATS2"];
 
@@ -1342,19 +1368,34 @@ styles %}
                 if (data["warning_notice"].hasOwnProperty(key)) {
                     let status_w = data["warning_notice"][key];
                     let status_a = data["alert_notice"][key];
-
-                    if (status_a === true) {
-                        $("#" + key + "_status")
-                            .css("color", "red")
-                            .text("Alert Level");
-                    } else if (status_w === true) {
-                        $("#" + key + "_status")
-                            .css("color", "#F39C12")
-                            .text("Warning Level");
-                    } else {
-                        $("#" + key + "_status")
-                            .css("color", "black")
-                            .text("Valid");
+                    if (key.includes("prsr_fltOut")){
+                        if (status_a === true) {
+                            $("#filter_deltaP_status")
+                                .css("color", "red")
+                                .text("Alert Level");
+                        } else if (status_w === true) {
+                            $("#filter_deltaP_status")
+                                .css("color", "#F39C12")
+                                .text("Warning Level");
+                        } else {
+                            $("#filter_deltaP_status")
+                                .css("color", "black")
+                                .text("Valid");
+                        }
+                    }else{
+                        if (status_a === true) {
+                            $("#" + key + "_status")
+                                .css("color", "red")
+                                .text("Alert Level");
+                        } else if (status_w === true) {
+                            $("#" + key + "_status")
+                                .css("color", "#F39C12")
+                                .text("Warning Level");
+                        } else {
+                            $("#" + key + "_status")
+                                .css("color", "black")
+                                .text("Valid");
+                        }
                     }
                 }
             }
@@ -1509,6 +1550,11 @@ styles %}
                                 local_element_image.css("color", "red").text("-");
                             }
                         }
+                    }
+
+                    if(data["error"]["PrsrFltIn_broken"] || data["error"]["PrsrFltOut_broken"]){
+                        $("#filter_deltaP_status").css("color", "red").text("Broken Error");
+                        $("#filter_deltaP").css("color", "red").text("-");
                     }
 
                     let com_mapping = {
@@ -1683,31 +1729,7 @@ styles %}
                 }
             }
 
-            //Fillter計算
-            let fillter_val;
-
-            let p3 = !data["error"]["PrsrFltIn_broken"]
-                ? data["value"]["prsr_fltIn"]
-                : "-";
-
-            let p4 = !data["error"]["PrsrFltOut_broken"]
-                ? data["value"]["prsr_fltOut"]
-                : "-";
-
-
-            if (p3 == "-" || p4 == "-") {
-                fillter_val = "-";
-                $("#prsr_fltDiff_image").text("-").css("color", "red");
-            } else {
-                fillter_val = p4 - p3;
-
-                if (userType == "superuser") {
-                    fillter_val = parseFloat(fillter_val).toFixed(2);
-                } else {
-                    fillter_val = parseFloat(fillter_val).toFixed(1);
-                }
-                $("#prsr_fltDiff_image").css("color", "black").text(fillter_val);
-            }
+            
 
             //PD計算
             let prsr_diff;
@@ -1756,7 +1778,7 @@ styles %}
                 $("#prsr_diff_image").css("color", "black").text(prsr_diff);
             }
 
-            for (let key in data["rack"]) {
+            /*for (let key in data["rack"]) {
                 if (key.includes("rack_leakage1")) {
                     if (data["rack"]["rack_leakage1_broken"]) {
                         $("#rack_leakage1")
@@ -1785,6 +1807,19 @@ styles %}
                     } else {
                         $("#rack_leakage2").css("color", "black").text("Valid");
                     }
+                }
+            }*/
+            for (let i = 1; i <= 5; i++) {
+                let broken = data["rack"][`rack_leakage${i}_broken`];
+                let leak = data["rack"][`rack_leakage${i}_leak`];
+                let $sensor = $(`#rack_leakage${i}`);
+            
+                if (broken) {
+                    $sensor.css("color", "red").text("Broken");
+                } else if (leak) {
+                    $sensor.css("color", "red").text("Leak");
+                } else {
+                    $sensor.css("color", "black").text("Valid");
                 }
             }
 
@@ -1816,6 +1851,18 @@ styles %}
                         $("#" + assign_key)
                             .text("Broken")
                             .css("color", "red");
+                    }
+                }
+            }
+
+            for (let key in data["rack"]) {
+                if (data["rack"].hasOwnProperty(key)) {
+                    if (key.includes("_error")) {
+                        let value = data["rack"][key];
+                        let status_key = key.replace("_error", "_status");
+                        if (value) {
+                            $("#" + status_key).css("color", "red");
+                        }
                     }
                 }
             }
@@ -1948,6 +1995,30 @@ styles %}
                 $(".level3_set").hide();
             } else if (ver_switch["liquid_level_3_switch"] === false) {
                 $(".level3_set").show();
+            }
+
+            let allTrue = true;
+            for (let i = 1; i <= 5; i++) {
+                if (ver_switch[`leakage_sensor_${i}_switch`] === false) {
+                    allTrue = false;
+                    break;
+                }
+            }
+
+            if (allTrue) {
+                $(".rackStatus").hide();
+                for (let i = 1; i <= 5; i++) {
+                    $(`#leakage_sensor_${i}_set`).hide();
+                }
+            } else {
+                $(".rackStatus").show();
+                for (let i = 1; i <= 5; i++) {
+                    if (ver_switch[`leakage_sensor_${i}_switch`] === false) {
+                        $(`#leakage_sensor_${i}_set`).show();
+                    } else {
+                        $(`#leakage_sensor_${i}_set`).hide();
+                    }
+                }
             }
 
             ///更改首頁大圖

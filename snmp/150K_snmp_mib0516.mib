@@ -1346,6 +1346,48 @@ M433 NOTIFICATION-TYPE
     DESCRIPTION "Rack Leakage Sensor 2 Broken"
 ::= { trapsval 161 }
 
+M434 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Rack Leakage Sensor 3 Leak"
+::= { trapsval 162 }
+
+M435 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Rack Leakage Sensor 3 Broken"
+::= { trapsval 163 }
+
+M436 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Rack Leakage Sensor 4 Leak"
+::= { trapsval 164 }
+
+M437 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Rack Leakage Sensor 4 Broken"
+::= { trapsval 165 }
+
+M438 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Rack Leakage Sensor 5 Leak"
+::= { trapsval 166 }
+
+M439 NOTIFICATION-TYPE
+    SYNTAX OCTET STRING
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Rack Leakage Sensor 5 Broken"
+::= { trapsval 167 }
+
 severity OBJECT IDENTIFIER ::= { traps 2 }
 
 severityLevel OBJECT-TYPE
