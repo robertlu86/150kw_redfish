@@ -9,6 +9,7 @@ import logging
 import math
 import os
 import platform
+import shutil
 import struct
 import subprocess
 import threading
@@ -5189,57 +5190,142 @@ def download(filename):
     return send_from_directory(f"{log_path}/logs", filename, as_attachment=True)
 
 
+# @app.route("/sensor_logs")
+# @login_required
+# def sensor_logs():
+#     directory = f"{log_path}/logs/sensor"
+#     if not os.path.exists(directory):
+#         os.makedirs(directory)
+#     files = os.listdir(f"{log_path}/logs/sensor")
+
+#     files = [f for f in files if not (f.startswith(".__") or f == ".DS_Store")]
+
+#     sorted_files = sorted(
+#         files, key=lambda x: x.split(".")[-2].split(".")[0], reverse=True
+#     )
+
+#     return render_template("sensorLog.html", files=sorted_files, user=current_user.id)
+
 @app.route("/sensor_logs")
 @login_required
 def sensor_logs():
-    directory = f"{log_path}/logs/sensor"
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-    files = os.listdir(f"{log_path}/logs/sensor")
+    sensor_dir = os.path.join(log_path, "logs", "sensor")
+    old_sensor_dir = os.path.join(log_path, "logs", "old_sensor")
 
-    files = [f for f in files if not (f.startswith(".__") or f == ".DS_Store")]
+    if not os.path.exists(sensor_dir):
+        os.makedirs(sensor_dir)
 
-    sorted_files = sorted(
-        files, key=lambda x: x.split(".")[-2].split(".")[0], reverse=True
+    sensor_files = os.listdir(sensor_dir)
+    sensor_files = [f for f in sensor_files if not (f.startswith(".__") or f == ".DS_Store")]
+
+    sorted_sensor_files = sorted(
+        sensor_files, key=lambda x: x.split(".")[-2].split(".")[0], reverse=True
     )
 
-    return render_template("sensorLog.html", files=sorted_files, user=current_user.id)
+    # 如果是 superuser，才傳回 old_sensor 檔案
+    old_sensor_files = []
+    if current_user.id == "superuser":
+        if not os.path.exists(old_sensor_dir):
+            os.makedirs(old_sensor_dir)
+
+        old_sensor_files = os.listdir(old_sensor_dir)
+        old_sensor_files = [f for f in old_sensor_files if not (f.startswith(".__") or f == ".DS_Store")]
+        old_sensor_files = sorted(
+            old_sensor_files, key=lambda x: os.path.getmtime(os.path.join(old_sensor_dir, x)), reverse=True
+        )
+
+    return render_template(
+        "sensorLog.html",
+        files=sorted_sensor_files,
+        old_files=old_sensor_files,
+        user=current_user.id
+    )
 
 
-@app.route("/sensor_logs/<path:filename>")
+# @app.route("/sensor_logs/<path:filename>")
+# @login_required
+# def download_sensor_logs(filename):
+#     return send_from_directory(f"{log_path}/logs/sensor", filename, as_attachment=True)
+@app.route("/download_sensor_logs/<filename>")
 @login_required
 def download_sensor_logs(filename):
-    return send_from_directory(f"{log_path}/logs/sensor", filename, as_attachment=True)
+    archive = request.args.get("archive")
+    if archive and current_user.id != "superuser":
+        print(f'403')
+
+    base_dir = os.path.join(log_path, "logs", "old_sensor") if archive else os.path.join(log_path, "logs", "sensor")
+    return send_from_directory(base_dir, filename, as_attachment=True)
 
 
+# @app.route("/operation_logs")
+# @login_required
+# def operation_logs():
+#     directory = f"{log_path}/logs/operation"
+#     if not os.path.exists(directory):
+#         os.makedirs(directory)
+#     files = os.listdir(f"{log_path}/logs/operation")
+
+#     files = [f for f in files if not (f.startswith(".__") or f == ".DS_Store")]
+#     sorted_files = sorted(
+#         files,
+#         key=lambda x: (x != "oplog.log", x.split(".")[-1] if x != "oplog.log" else ""),
+#         reverse=True,
+#     )
+#     if "oplog.log" in sorted_files:
+#         sorted_files.insert(0, sorted_files.pop(sorted_files.index("oplog.log")))
+
+#     return render_template(
+#         "operationLog.html", files=sorted_files, user=current_user.id
+#     )
 @app.route("/operation_logs")
 @login_required
 def operation_logs():
-    directory = f"{log_path}/logs/operation"
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-    files = os.listdir(f"{log_path}/logs/operation")
+    operation_dir = os.path.join(log_path, "logs", "operation")
+    old_operation_dir = os.path.join(log_path, "logs", "old_operation")
 
-    files = [f for f in files if not (f.startswith(".__") or f == ".DS_Store")]
-    sorted_files = sorted(
-        files,
-        key=lambda x: (x != "oplog.log", x.split(".")[-1] if x != "oplog.log" else ""),
-        reverse=True,
+    if not os.path.exists(operation_dir):
+        os.makedirs(operation_dir)
+
+    operation_files = os.listdir(operation_dir)
+    operation_files = [f for f in operation_files if not (f.startswith(".__") or f == ".DS_Store")]
+
+    sorted_operation_files = sorted(
+        operation_files, key=lambda x: (x != "oplog.log", x.split(".")[-1] if x != "oplog.log" else ""),reverse=True
     )
-    if "oplog.log" in sorted_files:
-        sorted_files.insert(0, sorted_files.pop(sorted_files.index("oplog.log")))
+    if "oplog.log" in sorted_operation_files:
+        sorted_operation_files.insert(0, sorted_operation_files.pop(sorted_operation_files.index("oplog.log")))
+
+    old_operation_files = []
+    if current_user.id == "superuser":
+        if not os.path.exists(old_operation_dir):
+            os.makedirs(old_operation_dir)
+
+        old_operation_files = os.listdir(old_operation_dir)
+        old_operation_files = [f for f in old_operation_files if not (f.startswith(".__") or f == ".DS_Store")]
+        old_operation_files = sorted(
+            old_operation_files, key=lambda x: os.path.getmtime(os.path.join(old_operation_dir, x)), reverse=True
+        )
 
     return render_template(
-        "operationLog.html", files=sorted_files, user=current_user.id
+        "operationLog.html",
+        files=sorted_operation_files,
+        old_files=old_operation_files,
+        user=current_user.id
     )
-
 
 @app.route("/operation_logs/<path:filename>")
 @login_required
 def download_operation_logs(filename):
-    return send_from_directory(
-        f"{log_path}/logs/operation", filename, as_attachment=True
-    )
+    # return send_from_directory(
+    #     f"{log_path}/logs/operation", filename, as_attachment=True
+    # )
+    archive = request.args.get("archive")
+    if archive and current_user.id != "superuser":
+        print(f'403')
+
+    base_dir = os.path.join(log_path, "logs", "old_operation") if archive else os.path.join(log_path, "logs", "operation")
+    return send_from_directory(base_dir, filename, as_attachment=True)
+
 
 
 @app.route("/operation_logs_restapi")
@@ -5274,36 +5360,86 @@ def download_operation_logs_restapi(filename):
         f"{snmp_path}/RestAPI/logs/operation", filename, as_attachment=True
     )
 
+# @app.route("/error_logs")
+# @login_required
+# def error_logs():
+#     directory = f"{log_path}/logs/error"
+#     if not os.path.exists(directory):
+#         os.makedirs(directory)
+#     files = os.listdir(f"{log_path}/logs/error")
+
+#     files = [f for f in files if not (f.startswith(".__") or f == ".DS_Store")]
+
+#     sorted_files = sorted(
+#         files,
+#         key=lambda x: (
+#             x != "errorlog.log",
+#             x.split(".")[-1] if x != "errorlog.log" else "",
+#         ),
+#         reverse=True,
+#     )
+
+#     if "errorlog.log" in sorted_files:
+#         sorted_files.insert(0, sorted_files.pop(sorted_files.index("errorlog.log")))
+
+#     return render_template("errorLog.html", files=sorted_files, user=current_user.id)
+
 
 @app.route("/error_logs")
 @login_required
 def error_logs():
-    directory = f"{log_path}/logs/error"
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-    files = os.listdir(f"{log_path}/logs/error")
+    error_dir = os.path.join(log_path, "logs", "error")
+    old_error_dir = os.path.join(log_path, "logs", "old_error")
 
-    files = [f for f in files if not (f.startswith(".__") or f == ".DS_Store")]
+    if not os.path.exists(error_dir):
+        os.makedirs(error_dir)
 
-    sorted_files = sorted(
-        files,
-        key=lambda x: (
+    error_files = os.listdir(error_dir)
+    error_files = [f for f in error_files if not (f.startswith(".__") or f == ".DS_Store")]
+
+    sorted_error_files = sorted(
+        error_files, key=lambda x: (
             x != "errorlog.log",
             x.split(".")[-1] if x != "errorlog.log" else "",
-        ),
-        reverse=True,
+        ),reverse=True
+    )
+    if "errorlog.log" in sorted_error_files:
+        sorted_error_files.insert(0, sorted_error_files.pop(sorted_error_files.index("errorlog.log")))
+
+    old_error_files = []
+    if current_user.id == "superuser":
+        if not os.path.exists(old_error_dir):
+            os.makedirs(old_error_dir)
+
+        old_error_files = os.listdir(old_error_dir)
+        old_error_files = [f for f in old_error_files if not (f.startswith(".__") or f == ".DS_Store")]
+        old_error_files = sorted(
+            old_error_files, key=lambda x: os.path.getmtime(os.path.join(old_error_dir, x)), reverse=True
+        )
+
+    return render_template(
+        "errorLog.html",
+        files=sorted_error_files,
+        old_files=old_error_files,
+        user=current_user.id
     )
 
-    if "errorlog.log" in sorted_files:
-        sorted_files.insert(0, sorted_files.pop(sorted_files.index("errorlog.log")))
-
-    return render_template("errorLog.html", files=sorted_files, user=current_user.id)
 
 
-@app.route("/error_logs/<path:filename>")
+# @app.route("/error_logs/<path:filename>")
+# @login_required
+# def download_error_logs(filename):
+#     return send_from_directory(f"{log_path}/logs/error", filename, as_attachment=True)
+
+@app.route("/download_error_logs/<filename>")
 @login_required
 def download_error_logs(filename):
-    return send_from_directory(f"{log_path}/logs/error", filename, as_attachment=True)
+    archive = request.args.get("archive")
+    if archive and current_user.id != "superuser":
+        print(f'403')
+
+    base_dir = os.path.join(log_path, "logs", "old_error") if archive else os.path.join(log_path, "logs", "error")
+    return send_from_directory(base_dir, filename, as_attachment=True)
 
 
 @app.route("/logout")
@@ -5702,6 +5838,7 @@ def set_operation_mode():
                 set_p1(0)
                 set_p2(0)
                 set_p3(0)
+                set_p1_reg(0)
             else:
                 set_p1_reg(float(ps))
                 if p1:
@@ -7468,59 +7605,82 @@ def restoreFactorySettingAll():
     # op_logger.info("Inspection Time Updated Successfully")
     # return "Inspection Time Updated Successfully"
     
+    
     ###6. Logs:刪除所有Log檔(superuser保留)
+  
     try:
-        file_path = os.path.join(log_path, "logs", "error")
+        error_dir = os.path.join(log_path, "logs", "error")
+        old_error_dir = os.path.join(log_path, "logs", "old_error")
 
-        if os.path.exists(file_path) and os.path.isdir(file_path):
-            for filename in os.listdir(file_path):
-                file_to_delete = os.path.join(file_path, filename)
-                if os.path.isfile(file_to_delete):
-                    os.remove(file_to_delete)
-            print("All files deleted successfully.")
+        if os.path.exists(error_dir) and os.path.isdir(error_dir):
+            if not os.path.exists(old_error_dir):
+                os.makedirs(old_error_dir)
+
+            for filename in os.listdir(error_dir):
+                src_file = os.path.join(error_dir, filename)
+                dst_file = os.path.join(old_error_dir, filename)
+                if os.path.isfile(src_file):
+                    shutil.move(src_file, dst_file)
+            print("All error log files moved to old_error successfully.")
         else:
-            print("Directory does not exist.")
-    except Exception as e:  
-        print(f"delete log error:{e}")
+            print("Error log directory does not exist.")
+    except Exception as e:
+        print(f"Move log error: {e}")
+        
+
+    # try:
+    #     file_path = os.path.join(log_path, "logs", "operation")
+
+    #     if os.path.exists(file_path) and os.path.isdir(file_path):
+    #         for filename in os.listdir(file_path):
+    #             file_to_delete = os.path.join(file_path, filename)
+    #             if os.path.isfile(file_to_delete):
+    #                 os.remove(file_to_delete)
+    #         print("All files deleted successfully.")
+    #     else:
+    #         print("Directory does not exist.")
+    # except Exception as e:  
+    #     print(f"delete log error:{e}")
+
     try:
-        file_path = os.path.join(log_path, "logs", "journal")
+        operation_dir = os.path.join(log_path, "logs", "operation")
+        old_operation_dir = os.path.join(log_path, "logs", "old_operation")
 
-        if os.path.exists(file_path) and os.path.isdir(file_path):
-            for filename in os.listdir(file_path):
-                file_to_delete = os.path.join(file_path, filename)
-                if os.path.isfile(file_to_delete):
-                    os.remove(file_to_delete)
-            print("All files deleted successfully.")
+        if os.path.exists(operation_dir) and os.path.isdir(operation_dir):
+            if not os.path.exists(old_operation_dir):
+                os.makedirs(old_operation_dir)
+
+            for filename in os.listdir(operation_dir):
+                src_file = os.path.join(operation_dir, filename)
+                dst_file = os.path.join(old_operation_dir, filename)
+                if os.path.isfile(src_file):
+                    shutil.move(src_file, dst_file)
+            print("All operation log files moved to old_operation successfully.")
         else:
-            print("Directory does not exist.")
-    except Exception as e:  
-        print(f"delete log error:{e}")
+            print("operation log directory does not exist.")
+    except Exception as e:
+        print(f"Move log operation: {e}")
+        
+        
     try:
-        file_path = os.path.join(log_path, "logs", "operation")
+        sensor_dir = os.path.join(log_path, "logs", "sensor")
+        old_sensor_dir = os.path.join(log_path, "logs", "old_sensor")
 
-        if os.path.exists(file_path) and os.path.isdir(file_path):
-            for filename in os.listdir(file_path):
-                file_to_delete = os.path.join(file_path, filename)
-                if os.path.isfile(file_to_delete):
-                    os.remove(file_to_delete)
-            print("All files deleted successfully.")
-        else:
-            print("Directory does not exist.")
-    except Exception as e:  
-        print(f"delete log error:{e}")
-    try:
-        file_path = os.path.join(log_path, "logs", "sensor")
+        if os.path.exists(sensor_dir) and os.path.isdir(sensor_dir):
+            if not os.path.exists(old_sensor_dir):
+                os.makedirs(old_sensor_dir)
 
-        if os.path.exists(file_path) and os.path.isdir(file_path):
-            for filename in os.listdir(file_path):
-                file_to_delete = os.path.join(file_path, filename)
-                if os.path.isfile(file_to_delete):
-                    os.remove(file_to_delete)
-            print("All files deleted successfully.")
+            for filename in os.listdir(sensor_dir):
+                src_file = os.path.join(sensor_dir, filename)
+                dst_file = os.path.join(old_sensor_dir, filename)
+                if os.path.isfile(src_file):
+                    shutil.move(src_file, dst_file)
+            print("All sensor log files moved to old_sensor successfully.")
         else:
-            print("Directory does not exist.")
-    except Exception as e:  
-        print(f"delete log error:{e}")
+            print("Error log directory does not exist.")
+    except Exception as e:
+        print(f"Move log error: {e}")
+        
     try:
         file_path = os.path.join(snmp_path, "RestAPI", "logs", "operation")
 
@@ -7534,6 +7694,7 @@ def restoreFactorySettingAll():
             print("Directory does not exist.")
     except Exception as e:  
         print(f"delete log error:{e}")
+        
     ###7. Engineer Mode: Sensor Adjustment恢復預設值
     try:
         adjust_import(adjust_factory)
