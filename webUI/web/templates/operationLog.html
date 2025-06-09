@@ -102,6 +102,15 @@
                     <a href="{{ url_for('download_operation_logs', filename=file) }}">{{ file }}</a>
                 </li>
                 {% endfor %}
+                {% if user == "superuser" %}
+
+                {% for file in old_files %}
+                <li class="list-group-item">
+                    <a href="{{ url_for('download_operation_logs', filename=file, archive=1) }}">{{ file }}</a>
+                </li>
+                {% endfor %}
+
+                {% endif %}
             </ul>
         </div>
     </div>

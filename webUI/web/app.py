@@ -9,6 +9,7 @@ import logging
 import math
 import os
 import platform
+import shutil
 import struct
 import subprocess
 import threading
@@ -427,6 +428,12 @@ sensorData = {
         "rack_leakage1_broken": False,
         "rack_leakage2_leak": False,
         "rack_leakage2_broken": False,
+        "rack_leakage3_leak": False,
+        "rack_leakage3_broken": False,
+        "rack_leakage4_leak": False,
+        "rack_leakage4_broken": False,
+        "rack_leakage5_leak": False,
+        "rack_leakage5_broken": False,
     },
     "err_log": {
         "warning": {
@@ -582,6 +589,12 @@ sensorData = {
             "rack_leakage1_broken": "M431 Rack Leakage Sensor 1 Broken",
             "rack_leakage2_leak": "M432 Rack Leakage Sensor 2 Leak",
             "rack_leakage2_broken": "M433 Rack Leakage Sensor 2 Broken",
+            "rack_leakage3_leak": "M434 Rack Leakage Sensor 3 Leak",
+            "rack_leakage3_broken": "M435 Rack Leakage Sensor 3 Broken",
+            "rack_leakage4_leak": "M436 Rack Leakage Sensor 4 Leak",
+            "rack_leakage4_broken": "M437 Rack Leakage Sensor 4 Broken",
+            "rack_leakage5_leak": "M438 Rack Leakage Sensor 5 Leak",
+            "rack_leakage5_broken": "M439 Rack Leakage Sensor 5 Broken",
         },
     },
     "unit": {
@@ -1042,6 +1055,12 @@ thrshd = OrderedDict(
         "Delay_rack_leakage1_broken": 0,
         "Delay_rack_leakage2_leak": 0,
         "Delay_rack_leakage2_broken": 0,
+        "Delay_rack_leakage3_leak": 0,
+        "Delay_rack_leakage3_broken": 0,
+        "Delay_rack_leakage4_leak": 0,
+        "Delay_rack_leakage4_broken": 0,
+        "Delay_rack_leakage5_leak": 0,
+        "Delay_rack_leakage5_broken": 0,
         "W_TempClntSply_trap": False,
         "A_TempClntSply_trap": False,
         "W_TempClntSplySpare_trap": False,
@@ -1147,6 +1166,12 @@ thrshd = OrderedDict(
         "E_rack_leakage1_broken_trap": False,
         "E_rack_leakage2_leak_trap": False,
         "E_rack_leakage2_broken_trap": False,
+        "E_rack_leakage3_leak_trap": False,
+        "E_rack_leakage3_broken_trap": False,
+        "E_rack_leakage4_leak_trap": False,
+        "E_rack_leakage4_broken_trap": False,
+        "E_rack_leakage5_leak_trap": False,
+        "E_rack_leakage5_broken_trap": False,
     }
 )
 
@@ -1231,6 +1256,12 @@ time_data = {
         "rack_leakage1_broken": 0,
         "rack_leakage2_leak": 0,
         "rack_leakage2_broken": 0,
+        "rack_leakage3_leak": 0,
+        "rack_leakage3_broken": 0,
+        "rack_leakage4_leak": 0,
+        "rack_leakage4_broken": 0,
+        "rack_leakage5_leak": 0,
+        "rack_leakage5_broken": 0,
     },
     "start": {
         "rack1_broken": 0,
@@ -1267,6 +1298,12 @@ time_data = {
         "rack_leakage1_broken": 0,
         "rack_leakage2_leak": 0,
         "rack_leakage2_broken": 0,
+        "rack_leakage3_leak": 0,
+        "rack_leakage3_broken": 0,
+        "rack_leakage4_leak": 0,
+        "rack_leakage4_broken": 0,
+        "rack_leakage5_leak": 0,
+        "rack_leakage5_broken": 0,
     },
     "end": {
         "rack1_broken": 0,
@@ -1303,6 +1340,12 @@ time_data = {
         "rack_leakage1_broken": 0,
         "rack_leakage2_leak": 0,
         "rack_leakage2_broken": 0,
+        "rack_leakage3_leak": 0,
+        "rack_leakage3_broken": 0,
+        "rack_leakage4_leak": 0,
+        "rack_leakage4_broken": 0,
+        "rack_leakage5_leak": 0,
+        "rack_leakage5_broken": 0,
     },
     "errorlog_start": {
         "rack1": 0,
@@ -1332,6 +1375,9 @@ ver_switch = {
     "liquid_level_3_switch": False,
     "leakage_sensor_1_switch": False,
     "leakage_sensor_2_switch": False,
+    "leakage_sensor_3_switch": False,
+    "leakage_sensor_4_switch": False,
+    "leakage_sensor_5_switch": False,
 }
 
 
@@ -1480,6 +1526,12 @@ thrshd_factory = {
     "Delay_rack_leakage1_leak": 0,
     "Delay_rack_leakage2_broken": 0,
     "Delay_rack_leakage2_leak": 0,
+    "Delay_rack_leakage3_broken": 0,
+    "Delay_rack_leakage3_leak": 0,
+    "Delay_rack_leakage4_broken": 0,
+    "Delay_rack_leakage4_leak": 0,
+    "Delay_rack_leakage5_broken": 0,
+    "Delay_rack_leakage5_leak": 0,
     "E_ATS1_Communication_trap": False,
     "E_ATS2_Communication_trap": False,
     "E_ATS_trap": False,
@@ -1549,6 +1601,12 @@ thrshd_factory = {
     "E_rack_leakage1_leak_trap": False,
     "E_rack_leakage2_broken_trap": False,
     "E_rack_leakage2_leak_trap": False,
+    "E_rack_leakage3_broken_trap": False,
+    "E_rack_leakage3_leak_trap": False,
+    "E_rack_leakage4_broken_trap": False,
+    "E_rack_leakage4_leak_trap": False,
+    "E_rack_leakage5_broken_trap": False,
+    "E_rack_leakage5_leak_trap": False,
     "Thr_A_AC_H": 45,
     "Thr_A_AmbientTemp_H": 45,
     "Thr_A_AmbientTemp_L": 18,
@@ -3858,7 +3916,7 @@ def read_modbus_data():
                 ctr_data["mc"]["fan_mc2"] = read_mc3.bits[1]
                 ctr_data["mc"]["fan_mc2_result"] = read_mc3.bits[1]
 
-                read_ver = client.read_coils((8192 + 803), 8)
+                read_ver = client.read_coils((8192 + 803), 11)
                 ver_switch["median_switch"] = read_ver.bits[0]
                 ver_switch["coolant_quality_meter_switch"] = read_ver.bits[1]
                 ver_switch["fan_count_switch"] = read_ver.bits[2]
@@ -3867,6 +3925,9 @@ def read_modbus_data():
                 ver_switch["liquid_level_3_switch"] = read_ver.bits[5]
                 ver_switch["leakage_sensor_1_switch"] = read_ver.bits[6]
                 ver_switch["leakage_sensor_2_switch"] = read_ver.bits[7]
+                ver_switch["leakage_sensor_3_switch"] = read_ver.bits[8]
+                ver_switch["leakage_sensor_4_switch"] = read_ver.bits[9]
+                ver_switch["leakage_sensor_5_switch"] = read_ver.bits[10]
                 
                 if not os.path.exists(f"{web_path}/json/version.json"):
                     with open(f"{web_path}/json/version.json", "w") as file:
@@ -5189,57 +5250,142 @@ def download(filename):
     return send_from_directory(f"{log_path}/logs", filename, as_attachment=True)
 
 
+# @app.route("/sensor_logs")
+# @login_required
+# def sensor_logs():
+#     directory = f"{log_path}/logs/sensor"
+#     if not os.path.exists(directory):
+#         os.makedirs(directory)
+#     files = os.listdir(f"{log_path}/logs/sensor")
+
+#     files = [f for f in files if not (f.startswith(".__") or f == ".DS_Store")]
+
+#     sorted_files = sorted(
+#         files, key=lambda x: x.split(".")[-2].split(".")[0], reverse=True
+#     )
+
+#     return render_template("sensorLog.html", files=sorted_files, user=current_user.id)
+
 @app.route("/sensor_logs")
 @login_required
 def sensor_logs():
-    directory = f"{log_path}/logs/sensor"
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-    files = os.listdir(f"{log_path}/logs/sensor")
+    sensor_dir = os.path.join(log_path, "logs", "sensor")
+    old_sensor_dir = os.path.join(log_path, "logs", "old_sensor")
 
-    files = [f for f in files if not (f.startswith(".__") or f == ".DS_Store")]
+    if not os.path.exists(sensor_dir):
+        os.makedirs(sensor_dir)
 
-    sorted_files = sorted(
-        files, key=lambda x: x.split(".")[-2].split(".")[0], reverse=True
+    sensor_files = os.listdir(sensor_dir)
+    sensor_files = [f for f in sensor_files if not (f.startswith(".__") or f == ".DS_Store")]
+
+    sorted_sensor_files = sorted(
+        sensor_files, key=lambda x: x.split(".")[-2].split(".")[0], reverse=True
     )
 
-    return render_template("sensorLog.html", files=sorted_files, user=current_user.id)
+    # 如果是 superuser，才傳回 old_sensor 檔案
+    old_sensor_files = []
+    if current_user.id == "superuser":
+        if not os.path.exists(old_sensor_dir):
+            os.makedirs(old_sensor_dir)
+
+        old_sensor_files = os.listdir(old_sensor_dir)
+        old_sensor_files = [f for f in old_sensor_files if not (f.startswith(".__") or f == ".DS_Store")]
+        old_sensor_files = sorted(
+            old_sensor_files, key=lambda x: os.path.getmtime(os.path.join(old_sensor_dir, x)), reverse=True
+        )
+
+    return render_template(
+        "sensorLog.html",
+        files=sorted_sensor_files,
+        old_files=old_sensor_files,
+        user=current_user.id
+    )
 
 
-@app.route("/sensor_logs/<path:filename>")
+# @app.route("/sensor_logs/<path:filename>")
+# @login_required
+# def download_sensor_logs(filename):
+#     return send_from_directory(f"{log_path}/logs/sensor", filename, as_attachment=True)
+@app.route("/download_sensor_logs/<filename>")
 @login_required
 def download_sensor_logs(filename):
-    return send_from_directory(f"{log_path}/logs/sensor", filename, as_attachment=True)
+    archive = request.args.get("archive")
+    if archive and current_user.id != "superuser":
+        print(f'403')
+
+    base_dir = os.path.join(log_path, "logs", "old_sensor") if archive else os.path.join(log_path, "logs", "sensor")
+    return send_from_directory(base_dir, filename, as_attachment=True)
 
 
+# @app.route("/operation_logs")
+# @login_required
+# def operation_logs():
+#     directory = f"{log_path}/logs/operation"
+#     if not os.path.exists(directory):
+#         os.makedirs(directory)
+#     files = os.listdir(f"{log_path}/logs/operation")
+
+#     files = [f for f in files if not (f.startswith(".__") or f == ".DS_Store")]
+#     sorted_files = sorted(
+#         files,
+#         key=lambda x: (x != "oplog.log", x.split(".")[-1] if x != "oplog.log" else ""),
+#         reverse=True,
+#     )
+#     if "oplog.log" in sorted_files:
+#         sorted_files.insert(0, sorted_files.pop(sorted_files.index("oplog.log")))
+
+#     return render_template(
+#         "operationLog.html", files=sorted_files, user=current_user.id
+#     )
 @app.route("/operation_logs")
 @login_required
 def operation_logs():
-    directory = f"{log_path}/logs/operation"
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-    files = os.listdir(f"{log_path}/logs/operation")
+    operation_dir = os.path.join(log_path, "logs", "operation")
+    old_operation_dir = os.path.join(log_path, "logs", "old_operation")
 
-    files = [f for f in files if not (f.startswith(".__") or f == ".DS_Store")]
-    sorted_files = sorted(
-        files,
-        key=lambda x: (x != "oplog.log", x.split(".")[-1] if x != "oplog.log" else ""),
-        reverse=True,
+    if not os.path.exists(operation_dir):
+        os.makedirs(operation_dir)
+
+    operation_files = os.listdir(operation_dir)
+    operation_files = [f for f in operation_files if not (f.startswith(".__") or f == ".DS_Store")]
+
+    sorted_operation_files = sorted(
+        operation_files, key=lambda x: (x != "oplog.log", x.split(".")[-1] if x != "oplog.log" else ""),reverse=True
     )
-    if "oplog.log" in sorted_files:
-        sorted_files.insert(0, sorted_files.pop(sorted_files.index("oplog.log")))
+    if "oplog.log" in sorted_operation_files:
+        sorted_operation_files.insert(0, sorted_operation_files.pop(sorted_operation_files.index("oplog.log")))
+
+    old_operation_files = []
+    if current_user.id == "superuser":
+        if not os.path.exists(old_operation_dir):
+            os.makedirs(old_operation_dir)
+
+        old_operation_files = os.listdir(old_operation_dir)
+        old_operation_files = [f for f in old_operation_files if not (f.startswith(".__") or f == ".DS_Store")]
+        old_operation_files = sorted(
+            old_operation_files, key=lambda x: os.path.getmtime(os.path.join(old_operation_dir, x)), reverse=True
+        )
 
     return render_template(
-        "operationLog.html", files=sorted_files, user=current_user.id
+        "operationLog.html",
+        files=sorted_operation_files,
+        old_files=old_operation_files,
+        user=current_user.id
     )
-
 
 @app.route("/operation_logs/<path:filename>")
 @login_required
 def download_operation_logs(filename):
-    return send_from_directory(
-        f"{log_path}/logs/operation", filename, as_attachment=True
-    )
+    # return send_from_directory(
+    #     f"{log_path}/logs/operation", filename, as_attachment=True
+    # )
+    archive = request.args.get("archive")
+    if archive and current_user.id != "superuser":
+        print(f'403')
+
+    base_dir = os.path.join(log_path, "logs", "old_operation") if archive else os.path.join(log_path, "logs", "operation")
+    return send_from_directory(base_dir, filename, as_attachment=True)
+
 
 
 @app.route("/operation_logs_restapi")
@@ -5274,36 +5420,86 @@ def download_operation_logs_restapi(filename):
         f"{snmp_path}/RestAPI/logs/operation", filename, as_attachment=True
     )
 
+# @app.route("/error_logs")
+# @login_required
+# def error_logs():
+#     directory = f"{log_path}/logs/error"
+#     if not os.path.exists(directory):
+#         os.makedirs(directory)
+#     files = os.listdir(f"{log_path}/logs/error")
+
+#     files = [f for f in files if not (f.startswith(".__") or f == ".DS_Store")]
+
+#     sorted_files = sorted(
+#         files,
+#         key=lambda x: (
+#             x != "errorlog.log",
+#             x.split(".")[-1] if x != "errorlog.log" else "",
+#         ),
+#         reverse=True,
+#     )
+
+#     if "errorlog.log" in sorted_files:
+#         sorted_files.insert(0, sorted_files.pop(sorted_files.index("errorlog.log")))
+
+#     return render_template("errorLog.html", files=sorted_files, user=current_user.id)
+
 
 @app.route("/error_logs")
 @login_required
 def error_logs():
-    directory = f"{log_path}/logs/error"
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-    files = os.listdir(f"{log_path}/logs/error")
+    error_dir = os.path.join(log_path, "logs", "error")
+    old_error_dir = os.path.join(log_path, "logs", "old_error")
 
-    files = [f for f in files if not (f.startswith(".__") or f == ".DS_Store")]
+    if not os.path.exists(error_dir):
+        os.makedirs(error_dir)
 
-    sorted_files = sorted(
-        files,
-        key=lambda x: (
+    error_files = os.listdir(error_dir)
+    error_files = [f for f in error_files if not (f.startswith(".__") or f == ".DS_Store")]
+
+    sorted_error_files = sorted(
+        error_files, key=lambda x: (
             x != "errorlog.log",
             x.split(".")[-1] if x != "errorlog.log" else "",
-        ),
-        reverse=True,
+        ),reverse=True
+    )
+    if "errorlog.log" in sorted_error_files:
+        sorted_error_files.insert(0, sorted_error_files.pop(sorted_error_files.index("errorlog.log")))
+
+    old_error_files = []
+    if current_user.id == "superuser":
+        if not os.path.exists(old_error_dir):
+            os.makedirs(old_error_dir)
+
+        old_error_files = os.listdir(old_error_dir)
+        old_error_files = [f for f in old_error_files if not (f.startswith(".__") or f == ".DS_Store")]
+        old_error_files = sorted(
+            old_error_files, key=lambda x: os.path.getmtime(os.path.join(old_error_dir, x)), reverse=True
+        )
+
+    return render_template(
+        "errorLog.html",
+        files=sorted_error_files,
+        old_files=old_error_files,
+        user=current_user.id
     )
 
-    if "errorlog.log" in sorted_files:
-        sorted_files.insert(0, sorted_files.pop(sorted_files.index("errorlog.log")))
-
-    return render_template("errorLog.html", files=sorted_files, user=current_user.id)
 
 
-@app.route("/error_logs/<path:filename>")
+# @app.route("/error_logs/<path:filename>")
+# @login_required
+# def download_error_logs(filename):
+#     return send_from_directory(f"{log_path}/logs/error", filename, as_attachment=True)
+
+@app.route("/download_error_logs/<filename>")
 @login_required
 def download_error_logs(filename):
-    return send_from_directory(f"{log_path}/logs/error", filename, as_attachment=True)
+    archive = request.args.get("archive")
+    if archive and current_user.id != "superuser":
+        print(f'403')
+
+    base_dir = os.path.join(log_path, "logs", "old_error") if archive else os.path.join(log_path, "logs", "error")
+    return send_from_directory(base_dir, filename, as_attachment=True)
 
 
 @app.route("/logout")
@@ -5702,6 +5898,7 @@ def set_operation_mode():
                 set_p1(0)
                 set_p2(0)
                 set_p3(0)
+                set_p1_reg(0)
             else:
                 set_p1_reg(float(ps))
                 if p1:
@@ -7468,59 +7665,82 @@ def restoreFactorySettingAll():
     # op_logger.info("Inspection Time Updated Successfully")
     # return "Inspection Time Updated Successfully"
     
+    
     ###6. Logs:刪除所有Log檔(superuser保留)
+  
     try:
-        file_path = os.path.join(log_path, "logs", "error")
+        error_dir = os.path.join(log_path, "logs", "error")
+        old_error_dir = os.path.join(log_path, "logs", "old_error")
 
-        if os.path.exists(file_path) and os.path.isdir(file_path):
-            for filename in os.listdir(file_path):
-                file_to_delete = os.path.join(file_path, filename)
-                if os.path.isfile(file_to_delete):
-                    os.remove(file_to_delete)
-            print("All files deleted successfully.")
+        if os.path.exists(error_dir) and os.path.isdir(error_dir):
+            if not os.path.exists(old_error_dir):
+                os.makedirs(old_error_dir)
+
+            for filename in os.listdir(error_dir):
+                src_file = os.path.join(error_dir, filename)
+                dst_file = os.path.join(old_error_dir, filename)
+                if os.path.isfile(src_file):
+                    shutil.move(src_file, dst_file)
+            print("All error log files moved to old_error successfully.")
         else:
-            print("Directory does not exist.")
-    except Exception as e:  
-        print(f"delete log error:{e}")
+            print("Error log directory does not exist.")
+    except Exception as e:
+        print(f"Move log error: {e}")
+        
+
+    # try:
+    #     file_path = os.path.join(log_path, "logs", "operation")
+
+    #     if os.path.exists(file_path) and os.path.isdir(file_path):
+    #         for filename in os.listdir(file_path):
+    #             file_to_delete = os.path.join(file_path, filename)
+    #             if os.path.isfile(file_to_delete):
+    #                 os.remove(file_to_delete)
+    #         print("All files deleted successfully.")
+    #     else:
+    #         print("Directory does not exist.")
+    # except Exception as e:  
+    #     print(f"delete log error:{e}")
+
     try:
-        file_path = os.path.join(log_path, "logs", "journal")
+        operation_dir = os.path.join(log_path, "logs", "operation")
+        old_operation_dir = os.path.join(log_path, "logs", "old_operation")
 
-        if os.path.exists(file_path) and os.path.isdir(file_path):
-            for filename in os.listdir(file_path):
-                file_to_delete = os.path.join(file_path, filename)
-                if os.path.isfile(file_to_delete):
-                    os.remove(file_to_delete)
-            print("All files deleted successfully.")
+        if os.path.exists(operation_dir) and os.path.isdir(operation_dir):
+            if not os.path.exists(old_operation_dir):
+                os.makedirs(old_operation_dir)
+
+            for filename in os.listdir(operation_dir):
+                src_file = os.path.join(operation_dir, filename)
+                dst_file = os.path.join(old_operation_dir, filename)
+                if os.path.isfile(src_file):
+                    shutil.move(src_file, dst_file)
+            print("All operation log files moved to old_operation successfully.")
         else:
-            print("Directory does not exist.")
-    except Exception as e:  
-        print(f"delete log error:{e}")
+            print("operation log directory does not exist.")
+    except Exception as e:
+        print(f"Move log operation: {e}")
+        
+        
     try:
-        file_path = os.path.join(log_path, "logs", "operation")
+        sensor_dir = os.path.join(log_path, "logs", "sensor")
+        old_sensor_dir = os.path.join(log_path, "logs", "old_sensor")
 
-        if os.path.exists(file_path) and os.path.isdir(file_path):
-            for filename in os.listdir(file_path):
-                file_to_delete = os.path.join(file_path, filename)
-                if os.path.isfile(file_to_delete):
-                    os.remove(file_to_delete)
-            print("All files deleted successfully.")
-        else:
-            print("Directory does not exist.")
-    except Exception as e:  
-        print(f"delete log error:{e}")
-    try:
-        file_path = os.path.join(log_path, "logs", "sensor")
+        if os.path.exists(sensor_dir) and os.path.isdir(sensor_dir):
+            if not os.path.exists(old_sensor_dir):
+                os.makedirs(old_sensor_dir)
 
-        if os.path.exists(file_path) and os.path.isdir(file_path):
-            for filename in os.listdir(file_path):
-                file_to_delete = os.path.join(file_path, filename)
-                if os.path.isfile(file_to_delete):
-                    os.remove(file_to_delete)
-            print("All files deleted successfully.")
+            for filename in os.listdir(sensor_dir):
+                src_file = os.path.join(sensor_dir, filename)
+                dst_file = os.path.join(old_sensor_dir, filename)
+                if os.path.isfile(src_file):
+                    shutil.move(src_file, dst_file)
+            print("All sensor log files moved to old_sensor successfully.")
         else:
-            print("Directory does not exist.")
-    except Exception as e:  
-        print(f"delete log error:{e}")
+            print("Error log directory does not exist.")
+    except Exception as e:
+        print(f"Move log error: {e}")
+        
     try:
         file_path = os.path.join(snmp_path, "RestAPI", "logs", "operation")
 
@@ -7534,6 +7754,7 @@ def restoreFactorySettingAll():
             print("Directory does not exist.")
     except Exception as e:  
         print(f"delete log error:{e}")
+        
     ###7. Engineer Mode: Sensor Adjustment恢復預設值
     try:
         adjust_import(adjust_factory)
@@ -8084,6 +8305,43 @@ def set_rack_engineer():
             status="error", message="Error occurred while updating rack settings"
         )
 
+@app.route("/version_switch_admin", methods=["POST"])
+def version_switch_admin():
+    data = request.get_json()
+    leakage_sensor_1_switch = data["leakage_sensor_1_switch"]
+    leakage_sensor_2_switch = data["leakage_sensor_2_switch"]
+    leakage_sensor_3_switch = data["leakage_sensor_3_switch"]
+    leakage_sensor_4_switch = data["leakage_sensor_4_switch"]
+    leakage_sensor_5_switch = data["leakage_sensor_5_switch"]
+    try:
+        with ModbusTcpClient(
+            host=modbus_host, port=modbus_port, unit=modbus_slave_id
+        ) as client:
+            client.write_coils(
+                (8192 + 809),
+                [
+                    leakage_sensor_1_switch,
+                    leakage_sensor_2_switch,
+                    leakage_sensor_3_switch,
+                    leakage_sensor_4_switch,
+                    leakage_sensor_5_switch,
+                ],
+            )
+        op_logger.info(f"Version setting updated successfully. {data}")
+        return jsonify(status="success", message="Version setting updated successfully")
+    except Exception as e:
+        print(f"Error: {e}")
+        return retry_modbus(
+            (8092 + 809), 
+            [
+                leakage_sensor_1_switch,
+                leakage_sensor_2_switch,
+                leakage_sensor_3_switch,
+                leakage_sensor_4_switch,
+                leakage_sensor_5_switch,
+            ],
+            "coil"
+        )
 
 @app.route("/version_switch", methods=["POST"])
 def version_switch():
@@ -8097,29 +8355,57 @@ def version_switch():
     liquid_level_3_switch = data["liquid_level_3_switch"]
     leakage_sensor_1_switch = data["leakage_sensor_1_switch"]
     leakage_sensor_2_switch = data["leakage_sensor_2_switch"]
+    leakage_sensor_3_switch = data["leakage_sensor_3_switch"]
+    leakage_sensor_4_switch = data["leakage_sensor_4_switch"]
+    leakage_sensor_5_switch = data["leakage_sensor_5_switch"]
     try:
         with ModbusTcpClient(
             host=modbus_host, port=modbus_port, unit=modbus_slave_id
         ) as client:
-            client.write_coils((8192 + 803), [median_switch])
-            client.write_coils((8192 + 804), [coolant_quality_meter_switch])
-            client.write_coils((8192 + 805), [fan_count_switch])
-            client.write_coils((8192 + 806), [liquid_level_1_switch])
-            client.write_coils((8192 + 807), [liquid_level_2_switch])
-            client.write_coils((8192 + 808), [liquid_level_3_switch])
-            client.write_coils((8192 + 809), [leakage_sensor_1_switch])
-            client.write_coils((8192 + 810), [leakage_sensor_2_switch])
+            # client.write_coils((8192 + 803), [median_switch])
+            # client.write_coils((8192 + 804), [coolant_quality_meter_switch])
+            # client.write_coils((8192 + 805), [fan_count_switch])
+            # client.write_coils((8192 + 806), [liquid_level_1_switch])
+            # client.write_coils((8192 + 807), [liquid_level_2_switch])
+            # client.write_coils((8192 + 808), [liquid_level_3_switch])
+            # client.write_coils((8192 + 809), [leakage_sensor_1_switch])
+            # client.write_coils((8192 + 810), [leakage_sensor_2_switch])
+            client.write_coils(
+                (8192 + 803),
+                [
+                    median_switch,
+                    coolant_quality_meter_switch,
+                    fan_count_switch,
+                    liquid_level_1_switch,
+                    liquid_level_2_switch,
+                    liquid_level_3_switch,
+                    leakage_sensor_1_switch,
+                    leakage_sensor_2_switch,
+                    leakage_sensor_3_switch,
+                    leakage_sensor_4_switch,
+                    leakage_sensor_5_switch
+                ],
+            )
         op_logger.info(f"Version setting updated successfully. {data}")
         return jsonify(status="success", message="Version setting updated successfully")
     except Exception as e:
         print(f"Error: {e}")
-        return retry_modbus_3coil(
-            (8192 + 803),
-            [median_switch,],
-            (8192 + 804),
-            [coolant_quality_meter_switch],
-            ((8192 + 805), 
-            [fan_count_switch]),
+        return retry_modbus(
+            (8092 + 803),
+            [
+                median_switch,
+                coolant_quality_meter_switch,
+                fan_count_switch,
+                liquid_level_1_switch,
+                liquid_level_2_switch,
+                liquid_level_3_switch,
+                leakage_sensor_1_switch,
+                leakage_sensor_2_switch,
+                leakage_sensor_3_switch,
+                leakage_sensor_4_switch,
+                leakage_sensor_5_switch,
+            ],
+            "coil",
         )
 
 
@@ -9203,7 +9489,7 @@ def read_rack_status():
         #         sensorData["rack_no_connection"][f"rack{index}_leak"] = False
         #     index += 1
         # send_error_log()
-
+        
         try:
             rack_key = list(sensorData["rack"].keys())
             rack_key_len = len(sensorData["rack"].keys())
@@ -9211,41 +9497,64 @@ def read_rack_status():
             value_r = [0] * rack_reg
             with ModbusTcpClient(
                 host=modbus_host, port=modbus_port) as client:
-                rack_leak = client.read_discrete_inputs(36, 4, unit=modbus_slave_id)
-                rack_leakage1_leak = rack_leak.bits[0]
-                rack_leakage1_broken = rack_leak.bits[1]
-                rack_leakage2_leak = rack_leak.bits[2]
-                rack_leakage2_broken = rack_leak.bits[3]
+                r1 = client.read_discrete_inputs(36, 10, unit=modbus_slave_id)
+                rack_leakage1_leak = r1.bits[0]
+                rack_leakage1_broken = r1.bits[1]
+                rack_leakage2_leak = r1.bits[2]
+                rack_leakage2_broken = r1.bits[3]
+                r2 = client.read_discrete_inputs(4, 6, unit=modbus_slave_id)
+                rack_leakage3_leak = r2.bits[0]
+                rack_leakage3_broken = r2.bits[1]
+                rack_leakage4_leak = r2.bits[2]
+                rack_leakage4_broken = r2.bits[3]
+                rack_leakage5_leak = r2.bits[4]
+                rack_leakage5_broken = r2.bits[5]
+                rack_leakage_leak_list = [rack_leakage1_leak, rack_leakage2_leak, rack_leakage3_leak, rack_leakage4_leak, rack_leakage5_leak]
+                rack_leakage_broken_list = [rack_leakage1_broken, rack_leakage2_broken, rack_leakage3_broken, rack_leakage4_broken, rack_leakage5_broken]
+            for i in range(1, 6):
+                if not ver_switch.get(f"leakage_sensor_{i}_switch", False):
+                    check_rack_leakage_sensor_status(
+                        f"rack_leakage{i}_leak",
+                        rack_leakage_leak_list[i - 1],
+                        f"Delay_rack_leakage{i}_leak",
+                    )
+                    check_rack_leakage_sensor_status(
+                        f"rack_leakage{i}_broken",
+                        rack_leakage_broken_list[i - 1],
+                        f"Delay_rack_leakage{i}_broken",
+                    )
+                else:
+                    sensorData["rack"][f"rack_leakage{i}_leak"] = False
+                    sensorData["rack"][f"rack_leakage{i}_broken"] = False
+            # if not ver_switch["leakage_sensor_1_switch"]:
+            #     check_rack_leakage_sensor_status(
+            #         "rack_leakage1_leak",
+            #         rack_leakage1_leak,
+            #         "Delay_rack_leakage1_leak",
+            #     )
+            #     check_rack_leakage_sensor_status(
+            #         "rack_leakage1_broken",
+            #         rack_leakage1_broken,
+            #         "Delay_rack_leakage1_broken",
+            #     )
+            # else:
+            #     sensorData["rack"]["rack_leakage1_leak"] = False
+            #     sensorData["rack"]["rack_leakage1_broken"] = False
                 
-            if not ver_switch["leakage_sensor_1_switch"]:
-                check_rack_leakage_sensor_status(
-                    "rack_leakage1_leak",
-                    rack_leakage1_leak,
-                    "Delay_rack_leakage1_leak",
-                )
-                check_rack_leakage_sensor_status(
-                    "rack_leakage1_broken",
-                    rack_leakage1_broken,
-                    "Delay_rack_leakage1_broken",
-                )
-            else:
-                sensorData["rack"]["rack_leakage1_leak"] = False
-                sensorData["rack"]["rack_leakage1_broken"] = False
-                
-            if not ver_switch["leakage_sensor_2_switch"]:
-                check_rack_leakage_sensor_status(
-                    "rack_leakage2_leak",
-                    rack_leakage2_leak,
-                    "Delay_rack_leakage2_leak",
-                )
-                check_rack_leakage_sensor_status(
-                    "rack_leakage2_broken",
-                    rack_leakage2_broken,
-                    "Delay_rack_leakage2_broken",
-                )
-            else:
-                sensorData["rack"]["rack_leakage2_leak"] = False
-                sensorData["rack"]["rack_leakage2_broken"] = False
+            # if not ver_switch["leakage_sensor_2_switch"]:
+            #     check_rack_leakage_sensor_status(
+            #         "rack_leakage2_leak",
+            #         rack_leakage2_leak,
+            #         "Delay_rack_leakage2_leak",
+            #     )
+            #     check_rack_leakage_sensor_status(
+            #         "rack_leakage2_broken",
+            #         rack_leakage2_broken,
+            #         "Delay_rack_leakage2_broken",
+            #     )
+            # else:
+            #     sensorData["rack"]["rack_leakage2_leak"] = False
+            #     sensorData["rack"]["rack_leakage2_broken"] = False
                 
             for i in range(0, rack_key_len):
                 key = rack_key[i]
