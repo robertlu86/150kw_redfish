@@ -163,7 +163,7 @@ class RfCduModel(RfResourceBaseModel):
     PumpRedundancy: Optional[Dict[str, Any]] = Field(default=None, description="PumpRedundancy")
     Reservoirs: Optional[Dict[str, Any]] = Field(default=None, description="Reservoirs")
     EnvironmentMetrics: Optional[Dict[str, Any]] = Field(default={}, description="EnvironmentMetrics")
-    SecondaryCoolantConnectors: Optional[Dict[str, Any]] = Field(default={}, description="SecondaryCoolantConnectors")
+    SecondaryCoolantConnectors: Optional[Dict[str, Any]] = Field(default=None, description="SecondaryCoolantConnectors")
     Status: Optional[RfStatusModel] = Field(default=None)
     Actions: Optional[Dict[str, Any]] = Field(default={}, description="Actions")
     Links: Optional[Dict[str, Any]] = Field(default={}, description="Links")
@@ -191,9 +191,9 @@ class RfCduModel(RfResourceBaseModel):
         self.PrimaryCoolantConnectors = {
             "@odata.id": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/PrimaryCoolantConnectors"
         }
-        self.SecondaryCoolantConnectors = {
-            "@odata.id": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/SecondaryCoolantConnectors"
-        }
+        # self.SecondaryCoolantConnectors = {
+        #     "@odata.id": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/SecondaryCoolantConnectors"
+        # }
         self.Pumps = {
             "@odata.id": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/Pumps"
         }

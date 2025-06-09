@@ -186,6 +186,9 @@ class RfSensorCollectionModel(RfResourceCollectionBaseModel):
 
 
 class RfSensorModel(RfResourceBaseModel):
+    '''
+    @note properties 67 items
+    '''
     odata_type: str   = Field(default="#Sensor.v1_1_0.Sensor", alias="@odata.type")
     Id: str           = Field(default="", description="ex: PrimaryFlowLitersPerMinute|PrimaryHeatRemovedkW|..., 會放到odata_id的最後一層")
     Name: str         = Field(default="")
@@ -193,6 +196,7 @@ class RfSensorModel(RfResourceBaseModel):
     ReadingUnits: str = Field(default="", description="ex: L/min, kW, kPa, ...")
     odata_id: Optional[str]         = Field(default=None, alias="@odata.id", description="")
     Status: Optional[RfStatusModel]   = None
+    Oem: Dict[str, Any] = None
 
     model_config = ConfigDict(
         extra='allow',

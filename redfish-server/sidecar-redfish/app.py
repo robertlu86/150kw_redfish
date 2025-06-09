@@ -35,6 +35,8 @@ from mylib.common.proj_error import ProjError
 from mylib.auth.rf_auth import check_basic_auth,check_session_auth, AuthStatus
 from mylib.services.debug_service import DebugService
 from mylib.managements.FlaskConfiger import FlaskConfiger
+from flask.json.provider import DefaultJSONProvider
+import json
 
 class CustomApi(Api):
     def handle_validation_error(self, error, bundle_errors):
@@ -43,6 +45,20 @@ class CustomApi(Api):
             "message": "Validation Failed",
             "errors": error.data.get('errors', {})
         }, HTTPStatus.BAD_REQUEST
+
+class MyJSONProvider(DefaultJSONProvider):
+    """Provide JSON operations using Python’s built-in json library.
+    @see https://flask.palletsprojects.com/en/stable/api/#flask.json.provider.DefaultJSONProvider
+    @note: 高力想直接顯示utf8內容，不要轉成unicode編碼
+    """
+
+    def dumps(self, obj, **kwargs):
+        kwargs.setdefault("ensure_ascii", False)  # 強制所有回傳不轉 Unicode (ex: "μs/cm" 不會轉成 "\u03bcs/cm")
+        # kwargs.setdefault("indent", None)  # 如需 pretty，可調整這一行
+        return json.dumps(obj, **kwargs)
+
+    # def loads(self, s, **kwargs):
+    #     return json.loads(s, **kwargs)
 
 app = Flask(__name__)
 
@@ -54,6 +70,8 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     'pool_timeout': 10,
 }
 app.config["JSON_SORT_KEYS"] = False
+app.json_provider_class = MyJSONProvider
+app.json = app.json_provider_class(app)
 
 ext_engine.init_db(app)
 init_orm(ext_engine.get_app(), ext_engine.get_db())

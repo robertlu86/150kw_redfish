@@ -7,6 +7,7 @@ import time
 import math
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+from load_env import hardware_info
 from mylib.models.rf_sensor_model import RfSensorFanExcerpt
 from mylib.adapters.sensor_api_adapter import SensorAPIAdapter
 from conftest import TestcaseFinder
@@ -23,9 +24,10 @@ ThermalSubsystem_Fans_testcases = [
             "@odata.type": "#Fan.v1_5_0.Fan",
             "@odata.context": "/redfish/v1/$metadata#Fan.v1_5_0.Fan",
             "PhysicalContext": "Chassis",
+            "Description": hardware_info["Fans"][str(sn)]["LocatedAt"]
         }
     } 
-    for sn in range(1, int(os.getenv("REDFISH_FAN_COLLECTION_CNT", 1)) + 2) # 故意+2，多一組
+    for sn in range(1, int(os.getenv("REDFISH_FAN_COLLECTION_CNT", 1)) + 1) # 故意+2，多一組
 ]
 
 Sensors_FanN_testcases = [

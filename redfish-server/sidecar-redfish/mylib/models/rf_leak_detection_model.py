@@ -28,8 +28,8 @@ class RfLeakDetectionModel(RfResourceBaseModel):
     Actions: Optional[Dict[str, Any]] = Field(default=None)
     Description: Optional[str] = Field(default=None)
     # "Id": {2 items},
-    # "LeakDetectorGroups": {4 items},
-    LeakDetectors: Optional[RfLeakDetectorCollectionModel] = Field(default=None)
+    LeakDetectorGroups: Optional[List[Dict[str, Any]]] = Field(default=None)
+    LeakDetectors: Optional[Dict[str, Any]] = Field(default=None)
     # "Name": {2 items},
     Oem: Optional[Dict[str, Any]] = Field(default=None)
     Status: Optional[RfStatusModel] = Field(default=None)
@@ -38,6 +38,67 @@ class RfLeakDetectionModel(RfResourceBaseModel):
     model_config = ConfigDict(
         extra='allow',
     )
+    
+    def __init__(self, cdu_id: str, **kwargs):
+        super().__init__(**kwargs)
+        self.odata_type = "#LeakDetection.v1_1_0.LeakDetection"
+        self.odata_id = f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/LeakDetection"
+        self.Odata_context = "/redfish/v1/$metadata#LeakDetection.v1_1_0.LeakDetection"
+        
+        self.Id = "LeakDetection"
+        self.Name = "Leak Detection"
+        self.Description = "LeakDetection"
+        
+        
+        
+        
+        '''
+        LeakDetection_data = {
+    "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/LeakDetection",
+    "@odata.type": "#LeakDetection.v1_1_0.LeakDetection",
+    "@odata.context": "/redfish/v1/$metadata#LeakDetection.v1_1_0.LeakDetection",
+    
+    "Id": "LeakDetection",
+    "Name": "Leak Detection",
+    "Description": "LeakDetection",
+    # "Members@odata.count": 1,
+    # ---------------------------
+    "Status": {
+        "State": "Enabled",
+        "Health": "OK"
+    },
+    "LeakDetectorGroups": [
+        {
+            "GroupName": "LeakDetectorGroup1",
+            "Detectors": [
+                {
+                    "DataSourceUri":   "/redfish/v1/ThermalEquipment/CDUs/1/LeakDetection/LeakDetectors/1",
+                    "DetectorState":   "OK"
+                }
+            ],
+            # 必要
+            "HumidityPercent": {
+                "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/HumidityPercent",
+                "Reading": "Null"
+            },
+            "Status": {
+                "State": "Enabled",
+                "Health": "OK"
+            },
+            # {"@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/LeakDetection/LeakDetectorGroups"}  
+        }
+    ],
+    "LeakDetectors": {
+        "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/LeakDetection/LeakDetectors"
+    },
+    # "Members": [
+    #     {"@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/LeakDetection/LeakDetectors"}
+    # ], 
+    "Oem": {}  
+}
+        '''
+    
+    
 
 
 

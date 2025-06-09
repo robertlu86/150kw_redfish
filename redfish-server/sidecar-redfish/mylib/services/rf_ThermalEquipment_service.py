@@ -21,7 +21,8 @@ from mylib.utils.load_api import load_raw_from_api, CDU_BASE
 from mylib.models.rf_sensor_model import RfSensorPumpExcerpt
 from mylib.models.rf_control_model import RfControlSingleLoopExcerptModel
 from mylib.models.rf_filter_model import RfFilterModel
-from mylib.models.rf_resource_model import RfLocationModel
+from mylib.models.rf_leak_detection_model import RfLeakDetectionModel
+from mylib.models.rf_leak_detector_id import RfLeakDetectionIdModel
 
 
 from load_env import hardware_info
@@ -67,6 +68,39 @@ class RfThermalEquipmentService(BaseService):
         # m.AbsoluteHumidity["Reading"] = self._read_reading_value_by_sensor_id("AbsoluteHumidity")
         return m.to_dict()
     
+    def fetch_CDUs_LeakDetection(self, cdu_id: str) -> dict:
+        """
+        對應 "/redfish/v1/ThermalEquipment/CDUs/1/LeakDetection"
+
+        :param cdu_id: str
+        :return: dict
+        """
+        leakgroup = [
+            {
+                "GroupName": "LeakDetectorGroup1",
+                "Detectors": [
+                    {
+                        "DataSourceUri":   "/redfish/v1/ThermalEquipment/CDUs/1/LeakDetection/LeakDetectors/1",
+                        # "DetectorState":   "OK"
+                    }
+                ],
+                # 必要
+                "HumidityPercent": {
+                    "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/HumidityPercent",
+                    "Reading": "Null"
+                },
+            }
+        ]
+        
+        m = RfLeakDetectionModel(cdu_id=cdu_id)
+        m.Status = self._read_leak_detector_status()
+        m.LeakDetectorGroups = leakgroup
+        m.LeakDetectors = {
+            "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/LeakDetection/LeakDetectors"
+        }
+        
+        return m.to_dict()
+    
     def fetch_CDUs_LeakDetection_LeakDetectors(self, cdu_id: str) -> dict:
         """
         對應 "/redfish/v1/ThermalEquipment/CDUs/1/LeakDetection/LeakDetectors"
@@ -88,6 +122,13 @@ class RfThermalEquipmentService(BaseService):
         # m.Status = self._read_leak_detector_status()
         return m.to_dict()
 
+    def fetch_CDUs_LeakDetection_LeakDetectors_id(self, cdu_id: str, leak_detector_id: str) -> dict:
+        m = RfLeakDetectionIdModel(cdu_id=cdu_id, leak_detector_id=leak_detector_id)
+        
+        # status
+        m.Status = self._read_leak_detector_status()
+        m.DetectorState = m.Status.Health
+        return m.to_dict()
 
     def _read_reading_value_by_sensor_id(self, sensor_id: str) -> float:
         """
@@ -282,13 +323,13 @@ class RfThermalEquipmentService(BaseService):
         scp = hardware_info["Pumps"][pump_id]
         if not (scp["AllowableMin"] <= new_sp <= scp["AllowableMax"]):
             return {
-                "error": f"pump_speed needs to be between {scp['AllowableMin']} and {scp['AllowableMax']}"
+                "error": f"pump_speed needs to be between {scp['AllowableMin']} and {scp['AllowableMax']} or 0"
             }, 400
             
                 # 轉發到內部控制 API
         try:
             r = requests.patch(
-                f"{CDU_BASE}/api/v1/cdu/control/pump1_speed",
+                f"{CDU_BASE}/api/v1/cdu/control/pump{pump_id}_speed",
                 json={"pump_speed": new_sp, "pump_switch": new_sw},
                 timeout=5
             )
@@ -314,7 +355,7 @@ class RfThermalEquipmentService(BaseService):
             "AllowableMax": scp["AllowableMax"],
             # "ControlMode": "Automatic"  
         })
-
+        m.Oem["supermicro"][f"Inventer {pump_id} MC"]["Switch"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/mc")[f"mc{pump_id}_sw"]
         return m.to_dict(), 200
     
     def fetch_CDUs_Filters_id(self, cdu_id: str, filter_id: str) -> dict:
