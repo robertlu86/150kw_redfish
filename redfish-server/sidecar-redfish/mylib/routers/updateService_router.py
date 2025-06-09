@@ -1,8 +1,12 @@
 from flask_restx import Namespace, Resource
 from flask import request
+from datetime import datetime
 import requests
+import os
 from mylib.utils.load_api import load_raw_from_api 
 from mylib.utils.load_api import CDU_BASE
+
+
 
 update_ns = Namespace('', description='update service')
 
@@ -93,6 +97,11 @@ class FirmwareInventory(Resource):
 @update_ns.route("/UpdateService/FirmwareInventory/WebInterface")
 class FirmwareInventoryWebInterface(Resource):
     def get(self):
+        release_date = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/display/version")["version"]["Release_Time"]
+        fmt = os.getenv("DATETIME_FORMAT") 
+        dt = datetime.strptime(release_date, "%Y-%m-%d %H:%M:%S")
+        release_date = dt.strftime(fmt)
+        WebInterface_data["ReleaseDate"] = release_date
         WebInterface_data["Version"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/display/version")["fw_info"]["WebUI"]
         WebInterface_data["Oem"]["supermicro"]["Redfish"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/display/version")["version"]["Redfish_Server"]
         return WebInterface_data  
@@ -113,11 +122,11 @@ class FirmwareInventoryControlUnit_1(Resource):
         controlunit1_data = {
             "@odata.id": "/redfish/v1/UpdateService/FirmwareInventory/ControlUnit_1" ,
             "@odata.type": "#SoftwareInventory.v1_3_0.SoftwareInventory",
-            "Id": "PLC version",
+            "Id": "ControlUnit_1",
             "Name": "PLC version",
             "Manufacturer": "supermicro",
             # 更新日
-            "ReleaseDate": "2025-02-21T06:02:08Z", # 未串
+            "ReleaseDate": "2025-02-21T06:02:08Z", # TBD
             # 是否可更新
             "Updateable": False,    
             "Version": load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/display/version")["version"]["PLC"],
