@@ -7678,10 +7678,10 @@ def restoreFactorySettingAll():
         print(f"timeout light error:{e}")   
         
     ##### 最後一步, 重啟電腦
-    subprocess.run(
-        ["sudo", "reboot"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
-    )
-    return jsonify(message="Reset all to factory settings Successfully")
+    # subprocess.run(
+    #     ["sudo", "reboot"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+    # )
+    return "Reset all to factory settings Successfully, Please restart PC."
 
 
 

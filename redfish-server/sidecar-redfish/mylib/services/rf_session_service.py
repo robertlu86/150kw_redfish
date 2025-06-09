@@ -101,7 +101,7 @@ class RfSessionService():
         return ERROR_DELETE_SUCCESS
     
     session_service_data = {
-        "@odata.type": "#SessionService.v1_1_9.SessionService",
+        "@odata.type": "#SessionService.v1_2_0.SessionService",
         "@odata.id": "/redfish/v1/SessionService",
         "@Redfish.WriteableProperties": ['SessionTimeout'],
         "Id": "SessionService",

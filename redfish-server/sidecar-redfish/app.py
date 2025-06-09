@@ -34,6 +34,7 @@ from mylib.db.db_util import init_orm
 from mylib.common.proj_error import ProjError
 from mylib.auth.rf_auth import check_basic_auth,check_session_auth, AuthStatus
 from mylib.services.debug_service import DebugService
+from mylib.managements.FlaskConfiger import FlaskConfiger
 
 class CustomApi(Api):
     def handle_validation_error(self, error, bundle_errors):
@@ -193,30 +194,40 @@ def add_link_describedby(response):
     return response
 
 
-@app.errorhandler(HTTPException)
+@api.errorhandler(HTTPException)
 def handle_http_exception(e):
     """
     Catch exception from Flask abort().
     """
-    return jsonify({
-        "error": {
-            "code": e.code,
-            "name": e.name,
-            "message": e.description,
-        }
-    }), e.code
+    return {
+        "code": e.code,
+        "name": e.name,
+        "message": e.description,
+    }, e.code
 
-@app.errorhandler(ProjError) 
+@api.errorhandler(ProjError) 
 def handle_proj_error(e):
     """
     Catch exception from custom exception, ProjError.
+    @note:
+        1) Not use jsonify() to return ProjError
+        2) flask-restx will add `message` to response automatically.
     """
-    return jsonify({
-        "error": {
-            "code": e.code,
-            "message": e.message
-        }
-    }), e.code if e.code < 1000 else HTTPStatus.INTERNAL_SERVER_ERROR
+    status_code = e.code if e.code < 1000 else HTTPStatus.INTERNAL_SERVER_ERROR.value
+    return {
+        "code": e.code,
+        "message": e.message
+    }, status_code
+
+@api.errorhandler(Exception)
+def handle_exception(e):
+    """
+    Catch other exception
+    """
+    return {
+        "code": 500,
+        "message": str(e)
+    }, 500
 
 
 if __name__ == '__main__':
@@ -226,6 +237,10 @@ if __name__ == '__main__':
     # 取得憑證檔和私鑰檔的路徑
     cert_pem_path = os.path.join(proj_root, 'cert.pem')
     key_pem_path = os.path.join(proj_root, 'key.pem')
+
+    # disable strict slashes
+    FlaskConfiger.disable_strict_slashes_for_all_urls(app, '/redfish/v1')
+    
 
     # ssl_context=(憑證檔, 私鑰檔)
     redfish_port = int(os.environ.get('ITG_REDFISH_API_PORT', "5000"))

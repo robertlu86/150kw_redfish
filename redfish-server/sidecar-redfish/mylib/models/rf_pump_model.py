@@ -24,6 +24,7 @@ from mylib.models.rf_resource_model import RfLocationModel, RfOemModel
 from mylib.models.rf_physical_context_model import RfPhysicalContext
 from mylib.models.rf_sensor_model import RfSensorPumpExcerpt
 from mylib.models.rf_control_model import RfControlSingleLoopExcerptModel
+from load_env import hardware_info
 
 class RfPumpType(str, Enum):
     """
@@ -94,6 +95,7 @@ class RfPumpModel(RfResourceBaseModel):
             }
         }   
         self.Actions = RfActions(**raw_actions)
+        self.Location = RfLocationModel(**hardware_info["Pumps"][pump_id]["Location"])
         self.Oem= {
             "supermicro": {
                 f"Inventer {pump_id} MC": {

@@ -573,7 +573,7 @@ def set_temperature():
         return False, invalid_type()
     unit = read_unit()
     upLmt = 131 if unit == "imperial" else 55
-    lowLmt = 95 if unit == "imperial" else 35
+    lowLmt = 77 if unit == "imperial" else 25
     try:
         with ModbusTcpClient(host=modbus_host, port=modbus_port, unit=modbus_slave_id) as client:
 

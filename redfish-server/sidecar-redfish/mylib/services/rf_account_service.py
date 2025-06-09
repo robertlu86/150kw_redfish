@@ -1,3 +1,4 @@
+
 from mylib.models.account_model import (
     AccountModel,AccountCreateModel, AccountUpdateModel, RoleModel)
 from mylib.db.extensions import db
@@ -99,7 +100,6 @@ class RfAccountService():
         Create a new account.
         """
         try:
-            print(f"json_input={json_input}")
             validated = AccountCreateModel(**json_input)
             if not validated:
                 return error_response('Invalid input data', 400, 'Base.PropertyValueFormatError')        
@@ -109,7 +109,6 @@ class RfAccountService():
                 return error_response('User already exists', 400, 'Base.ResourceAlreadyExists')
             
             #new_account = AccountModel(user_name=json_input['UserName'], role=find_role, password=json_input['Password'])
-            print(f"validated.password={validated.password}")
             new_account = AccountModel(
                 user_name=validated.user_name,
                 role=RoleModel.query.filter_by(id=validated.role_id).first(),
@@ -152,9 +151,10 @@ class RfAccountService():
         except ValueError as ve:
             # Check which field might have failed
             for error in ve.errors():
+                if not error['loc']:
+                    return error_response(msg=error['msg'],http_status=400,code='Base.PropertyValueFormatError')
                 err_msg= (f"{error['loc'][0]}: {error['msg']}")#
                 return error_response(msg=err_msg,http_status=400,code='Base.PropertyValueFormatError')
-                
             return ERROR_PROPERTY_FORMAT
         
         return cls.fetch_account_by_id(existing_user.user_name), 200
@@ -181,9 +181,9 @@ class RfAccountService():
         return ERROR_DELETE_SUCCESS
     
     account_service_data = {
-        "@odata.type": "#AccountService.v1_15_1.AccountService",
+        "@odata.type": "#AccountService.v1_18_0.AccountService",
         "@odata.id": "/redfish/v1/AccountService",
-        "@odata.context":  "/redfish/v1/$metadata#AccountService.v1_15_1.AccountService",
+        "@odata.context":  "/redfish/v1/$metadata#AccountService.v1_18_0.AccountService",
         "Id": "AccountService",
         "Name": "Account Service",
         "Description": "Account Service",
@@ -191,6 +191,9 @@ class RfAccountService():
             "State": "Enabled",
             "Health": "OK"
         },
+        "SupportedAccountTypes": [
+            "Redfish"
+        ],
         "ServiceEnabled": True,
         "AuthFailureLoggingThreshold": 0,
         "MinPasswordLength": 0,
