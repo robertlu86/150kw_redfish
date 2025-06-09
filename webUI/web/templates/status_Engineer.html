@@ -336,40 +336,6 @@ styles %}
             <div>
                 <div class="fans_light" id="fan_freq1_light"></div>
             </div>
-            <!-- 顯示fan 1-8 數值框 -->
-            <!--<div class="value_border" style="top: 275px; left:1250px">
-                                    <span class="fan_freq_image" id="fan_freq1_image">-</span>
-                                    <span class="fan_unit">%</span>
-                                </div>
-                                <div class="value_border" style="top: 315px; left:1250px">
-                                    <span class="fan_freq_image" id="fan_freq2_image">-</span>
-                                    <span class="fan_unit">%</span>
-                                </div>
-                                <div class="value_border" style="top: 355px; left:1250px">
-                                    <span class="fan_freq_image" id="fan_freq3_image">-</span>
-                                    <span class="fan_unit">%</span>
-                                </div>
-                                <div class="value_border" style="top: 395px; left:1250px">
-                                    <span class="fan_freq_image" id="fan_freq4_image">-</span>
-                                    <span class="fan_unit">%</span>
-                                </div>
-                                <div class="value_border" style="top: 275px; left:1560px">
-                                    <span class="fan_freq_image" id="fan_freq5_image">-</span>
-                                    <span class="fan_unit">%</span>
-                                </div>
-                                <div class="value_border" style="top: 315px; left:1560px">
-                                    <span class="fan_freq_image" id="fan_freq6_image">-</span>
-                                    <span class="fan_unit">%</span>
-                                </div>
-                                <div class="value_border" style="top: 355px; left:1560px">
-                                    <span class="fan_freq_image" id="fan_freq7_image">-</span>
-                                    <span class="fan_unit">%</span>
-                                </div>
-                                <div class="value_border" style="top: 395px; left:1560px">
-                                    <span class="fan_freq_image" id="fan_freq8_image">-</span>
-                                    <span class="fan_unit">%</span>
-                                </div>-->
-
             <!-- 顯示T2數值框 -->
             <div class="value_border" id="temp_clntRtn_image_set" style="top: 77.5%; left:9.2%">
                 <span class="temp_clntRtn_image" id="temp_clntRtn_image">-</span>
@@ -1088,6 +1054,30 @@ styles %}
                         <td scope="row"></td>
                         <td></td>
                     </tr>
+                    <tr id="leakage_sensor_3_set">
+                        <td class="w-12 tdCenterAlign" scope="row">
+                            Leakage Sensor 3
+                        </td>
+                        <td id="rack_leakage3" class="w-12 tdCenterAlign" scope="row"></td>
+                        <td scope="row"></td>
+                        <td></td>
+                    </tr>
+                    <tr id="leakage_sensor_4_set">
+                        <td class="w-12 tdCenterAlign" scope="row">
+                            Leakage Sensor 4
+                        </td>
+                        <td id="rack_leakage4" class="w-12 tdCenterAlign" scope="row"></td>
+                        <td scope="row"></td>
+                        <td></td>
+                    </tr>
+                    <tr id="leakage_sensor_5_set">
+                        <td class="w-12 tdCenterAlign" scope="row">
+                            Leakage Sensor 5
+                        </td>
+                        <td id="rack_leakage5" class="w-12 tdCenterAlign" scope="row"></td>
+                        <td scope="row"></td>
+                        <td></td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -1788,7 +1778,7 @@ styles %}
                 $("#prsr_diff_image").css("color", "black").text(prsr_diff);
             }
 
-            for (let key in data["rack"]) {
+            /*for (let key in data["rack"]) {
                 if (key.includes("rack_leakage1")) {
                     if (data["rack"]["rack_leakage1_broken"]) {
                         $("#rack_leakage1")
@@ -1817,6 +1807,19 @@ styles %}
                     } else {
                         $("#rack_leakage2").css("color", "black").text("Valid");
                     }
+                }
+            }*/
+            for (let i = 1; i <= 5; i++) {
+                let broken = data["rack"][`rack_leakage${i}_broken`];
+                let leak = data["rack"][`rack_leakage${i}_leak`];
+                let $sensor = $(`#rack_leakage${i}`);
+            
+                if (broken) {
+                    $sensor.css("color", "red").text("Broken");
+                } else if (leak) {
+                    $sensor.css("color", "red").text("Leak");
+                } else {
+                    $sensor.css("color", "black").text("Valid");
                 }
             }
 
@@ -1994,20 +1997,28 @@ styles %}
                 $(".level3_set").show();
             }
 
-            if(ver_switch["leakage_sensor_1_switch"] === true && ver_switch["leakage_sensor_2_switch"] === true){
+            let allTrue = true;
+            for (let i = 1; i <= 5; i++) {
+                if (ver_switch[`leakage_sensor_${i}_switch`] === false) {
+                    allTrue = false;
+                    break;
+                }
+            }
+
+            if (allTrue) {
                 $(".rackStatus").hide();
-            }else if(ver_switch["leakage_sensor_1_switch"] === true && ver_switch["leakage_sensor_2_switch"] === false){
+                for (let i = 1; i <= 5; i++) {
+                    $(`#leakage_sensor_${i}_set`).hide();
+                }
+            } else {
                 $(".rackStatus").show();
-                $("#leakage_sensor_1_set").hide();
-                $("#leakage_sensor_2_set").show();
-            }else if(ver_switch["leakage_sensor_1_switch"] === false && ver_switch["leakage_sensor_2_switch"] === true){
-                $(".rackStatus").show();
-                $("#leakage_sensor_1_set").show();
-                $("#leakage_sensor_2_set").hide();
-            }else{
-                $(".rackStatus").show();
-                $("#leakage_sensor_1_set").show();
-                $("#leakage_sensor_2_set").show();
+                for (let i = 1; i <= 5; i++) {
+                    if (ver_switch[`leakage_sensor_${i}_switch`] === false) {
+                        $(`#leakage_sensor_${i}_set`).show();
+                    } else {
+                        $(`#leakage_sensor_${i}_set`).hide();
+                    }
+                }
             }
 
             ///更改首頁大圖
