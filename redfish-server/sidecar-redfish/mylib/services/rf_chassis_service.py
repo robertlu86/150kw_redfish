@@ -121,6 +121,24 @@ class RfChassisService(BaseService):
 
         # resp_json = m.model_dump(by_alias=True)
         # del resp_json['chassis_id']
+        mapping = {
+            "PrimarySupplyTemperatureCelsius": "temp_coolant_supply",
+            "PrimaryReturnTemperatureCelsius": "temp_coolant_return",
+            "PrimarySupplyPressurekPa": "pressure_coolant_supply",
+            "PrimaryReturnPressurekPa": "pressure_coolant_return",
+        }
+        
+        if m.Status.Health == "Critical":
+            if sensor_name in mapping.keys():
+                all_sensor_reading = self._read_components_chassis_summary_from_cache()
+                m.Oem = {
+                "Supermicro": {
+                    "@odata.type": "#Supermicro.Sensor.v1_0_0.Sensor",
+                    "ReadingSpare": all_sensor_reading[mapping[sensor_name] + "_spare"]["reading"],
+                    "StatusSpare": all_sensor_reading[mapping[sensor_name] + "_spare"]["status"],
+                }
+        }
+        
         resp_json = m.to_dict()
         return resp_json
     
@@ -156,7 +174,7 @@ class RfChassisService(BaseService):
                 **hardware_info["PowerSupplies"][power_supply_id]
                 # Status = RfStatusModel(Health=RfStatusHealth.OK, State=RfStatusState.Enabled)
             )
-            m.Status = RfStatusModel.from_dict(summary_info.get(power_supply_name).get("status", {}))
+            # m.Status = RfStatusModel.from_dict(summary_info.get(power_supply_name).get("status", {}))
             # ret_json = m.model_dump(
             #             by_alias=True,
             #             include=RfPowerSupplyModel.model_fields.keys()
@@ -331,7 +349,7 @@ class RfChassisService(BaseService):
             "@odata.context": "/redfish/v1/$metadata#Fan.v1_5_0.Fan",
             "PhysicalContext": "Chassis",
             "PartNumber": "578-5010007",
-            "SerialNumber": "SN12345678", # 風扇本體序號 去哪讀
+            # "SerialNumber": "SN12345678", # 風扇本體序號 去哪讀 (Not required in interop validator)
             "Manufacturer": "Supermicro",
             "Model": "K3G310-PV69-03-42",
             "SparePartNumber": "SPN-FAN-100",
@@ -348,8 +366,8 @@ class RfChassisService(BaseService):
         # 設定每支風扇特有欄位
         item["@odata.id"] = f"{base_path}/{fan_id}"
         item["Id"] = str(fan_id)
-        item["Name"] = f"Fan Right {fan_id}"
-        item["Description"] = f"Fan Right {fan_id}"
+        item["Name"] = f"Fan {fan_id}"
+        item["Description"] = hardware_info["Fans"][fan_id]["LocatedAt"]
         # 速度感測器連結
         item["SpeedPercent"] = {
             "DataSourceUri": f"/redfish/v1/Chassis/{chassis_id}/ThermalSubsystem/Sensors/Fan{fan_id}",

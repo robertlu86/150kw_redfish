@@ -188,7 +188,7 @@ PrimaryCoolantConnectors_data_1 ={
     
     "Id": "1",
     "Name": "Mains Input from Chiller",
-    "Description": "Primary input from facility chiller",
+    "Description": "Primary input from facility chiller (no valve control)",
     # 額定流量
     "RatedFlowLitersPerMinute": 1000,
     "Status": {
@@ -915,8 +915,10 @@ class LeakDetection(MyBaseThermalEquipment):
     # # @requires_auth
     @ThermalEquipment_ns.doc("thermal_equipment_cdus_1_LeakDetection")
     def get(self, cdu_id):
+        rep = RfThermalEquipmentService().fetch_CDUs_LeakDetection(cdu_id)
         
-        return LeakDetection_data    
+        # return LeakDetection_data    
+        return rep
 
 # test = [
 #     "/ThermalEquipment/CDUs/<cdu_id>/test",
@@ -965,8 +967,9 @@ class LeakDetectionLeakDetectors1(MyBaseThermalEquipment):
             },
             
         }
-        
-        return LeakDetectors_1_data
+        rep = RfThermalEquipmentService().fetch_CDUs_LeakDetection_LeakDetectors_id(cdu_id, leak_detector_id)
+        # return LeakDetectors_1_data
+        return rep
 # 0513新增 /redfish/v1/ThermalEquipment/CDUs/{CoolingUnitId}/Oem
 # @ThermalEquipment_ns.route('/ThermalEquipment/CDUs/<string:id>/Oem')
 # class CduOem(Resource):
@@ -1013,107 +1016,107 @@ class LeakDetectionLeakDetectors1(MyBaseThermalEquipment):
 #                 "@odata.type": f"#Supermicro.{node}",
 #             }, 200        
 
-@ThermalEquipment_ns.route("/ThermalEquipment/CDUs/<string:cdu_id>/SecondaryCoolantConnectors")
-class SecondaryCoolantConnectorsCollection(MyBaseThermalEquipment):
-    def get(self, cdu_id):
-        SecondaryCoolantConnectors_data = {
-            "@odata.id": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/SecondaryCoolantConnectors",
-            "@odata.type": "#CoolantConnectorCollection.CoolantConnectorCollection",
-            "@odata.context": "/redfish/v1/$metadata#CoolantConnectorCollection.CoolantConnectorCollection",
-            "Name": "Secondary (supply side) Cooling Loop Connection Collection",
-            "Members": [
-                {
-                "@odata.id": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/SecondaryCoolantConnectors/1"
-                }
-            ],
-            "Members@odata.count": 1
-        }
-        return SecondaryCoolantConnectors_data
+# @ThermalEquipment_ns.route("/ThermalEquipment/CDUs/<string:cdu_id>/SecondaryCoolantConnectors")
+# class SecondaryCoolantConnectorsCollection(MyBaseThermalEquipment):
+#     def get(self, cdu_id):
+#         SecondaryCoolantConnectors_data = {
+#             "@odata.id": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/SecondaryCoolantConnectors",
+#             "@odata.type": "#CoolantConnectorCollection.CoolantConnectorCollection",
+#             "@odata.context": "/redfish/v1/$metadata#CoolantConnectorCollection.CoolantConnectorCollection",
+#             "Name": "Secondary (supply side) Cooling Loop Connection Collection",
+#             "Members": [
+#                 {
+#                 "@odata.id": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/SecondaryCoolantConnectors/1"
+#                 }
+#             ],
+#             "Members@odata.count": 1
+#         }
+#         return SecondaryCoolantConnectors_data
 
-@ThermalEquipment_ns.route("/ThermalEquipment/CDUs/<string:cdu_id>/SecondaryCoolantConnectors/<string:connector_id>")
-class SecondaryCoolantConnector(MyBaseThermalEquipment):
-    def get(self, cdu_id, connector_id):
-        SecondaryCoolantConnectors_1_data = {
-            "@odata.id": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/SecondaryCoolantConnectors/{connector_id}",
-            "@odata.type": "#CoolantConnector.v1_1_0.CoolantConnector",
-            "@odata.context": "/redfish/v1/$metadata#CoolantConnector.v1_1_0.CoolantConnector",
+# @ThermalEquipment_ns.route("/ThermalEquipment/CDUs/<string:cdu_id>/SecondaryCoolantConnectors/<string:connector_id>")
+# class SecondaryCoolantConnector(MyBaseThermalEquipment):
+#     def get(self, cdu_id, connector_id):
+#         SecondaryCoolantConnectors_1_data = {
+#             "@odata.id": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/SecondaryCoolantConnectors/{connector_id}",
+#             "@odata.type": "#CoolantConnector.v1_1_0.CoolantConnector",
+#             "@odata.context": "/redfish/v1/$metadata#CoolantConnector.v1_1_0.CoolantConnector",
             
-            "Id": cdu_id,
-            "Name": f"Secondary Connector {cdu_id}",
+#             "Id": cdu_id,
+#             "Name": f"Secondary Connector {cdu_id}",
             
-            # 額定流量
-            "RatedFlowLitersPerMinute": 1000,
-            "Status": {
-                "Health": "OK",
-                "State": "Enabled"
-            },
-            "Coolant": {
-                "CoolantType": "PropyleneGlycolAq",
-                "AdditiveName": "Propylene Glycol",
-                "AdditivePercent": 25,
-                "DensityKgPerCubicMeter": 1030,
-                "SpecificHeatkJoulesPerKgK": 3900,
-                # "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Coolant"
-            },
-            "CoolantConnectorType": "Pair",
-            "FlowLitersPerMinute": {
-                "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/PrimaryFlowLitersPerMinute",
-                "Reading": "Out of range"
-            },
-            "HeatRemovedkW": {
-                "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/PrimaryHeatRemovedkW",
-                "Reading": 0.2
-            },
-            "SupplyTemperatureCelsius": {
-                "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/PrimarySupplyTemperatureCelsius",
-                "Reading": 23.32
-            },
-            "ReturnTemperatureCelsius": {
-                "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/PrimaryReturnTemperatureCelsius",
-                "Reading": 23.45
-            },
-            "DeltaTemperatureCelsius": {
-                "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/PrimaryDeltaTemperatureCelsius",
-                "Reading": 0.13
-            },
-            "SupplyPressurekPa": {
-                "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/PrimarySupplyPressurekPa",
-                "Reading": 220.0
-            },
-            "ReturnPressurekPa": {
-                "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/PrimaryReturnPressurekPa",
-                "Reading": 85.0
-            },
-            "DeltaPressurekPa": {
-                "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/PrimaryDeltaPressurekPa",
-                "Reading": 135.0
-            },
-            "Oem": {
-                "supermicro": {  
-                    "PumpSwapTime": {
-                        "@odata.type": "#supermicro.PumpSwapTime.v1_0_0.PumpSwapTime", # 一定要放
-                        "SetPoint": {
-                            "Value": 50,
-                            "Units": "Hours"
-                        }
-                    }   
-                }
+#             # 額定流量
+#             "RatedFlowLitersPerMinute": 1000,
+#             "Status": {
+#                 "Health": "OK",
+#                 "State": "Enabled"
+#             },
+#             "Coolant": {
+#                 "CoolantType": "PropyleneGlycolAq",
+#                 "AdditiveName": "Propylene Glycol",
+#                 "AdditivePercent": 25,
+#                 "DensityKgPerCubicMeter": 1030,
+#                 "SpecificHeatkJoulesPerKgK": 3900,
+#                 # "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Coolant"
+#             },
+#             "CoolantConnectorType": "Pair",
+#             "FlowLitersPerMinute": {
+#                 "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/PrimaryFlowLitersPerMinute",
+#                 "Reading": "Out of range"
+#             },
+#             "HeatRemovedkW": {
+#                 "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/PrimaryHeatRemovedkW",
+#                 "Reading": 0.2
+#             },
+#             "SupplyTemperatureCelsius": {
+#                 "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/PrimarySupplyTemperatureCelsius",
+#                 "Reading": 23.32
+#             },
+#             "ReturnTemperatureCelsius": {
+#                 "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/PrimaryReturnTemperatureCelsius",
+#                 "Reading": 23.45
+#             },
+#             "DeltaTemperatureCelsius": {
+#                 "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/PrimaryDeltaTemperatureCelsius",
+#                 "Reading": 0.13
+#             },
+#             "SupplyPressurekPa": {
+#                 "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/PrimarySupplyPressurekPa",
+#                 "Reading": 220.0
+#             },
+#             "ReturnPressurekPa": {
+#                 "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/PrimaryReturnPressurekPa",
+#                 "Reading": 85.0
+#             },
+#             "DeltaPressurekPa": {
+#                 "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/PrimaryDeltaPressurekPa",
+#                 "Reading": 135.0
+#             },
+#             "Oem": {
+#                 "supermicro": {  
+#                     "PumpSwapTime": {
+#                         "@odata.type": "#supermicro.PumpSwapTime.v1_0_0.PumpSwapTime", # 一定要放
+#                         "SetPoint": {
+#                             "Value": 50,
+#                             "Units": "Hours"
+#                         }
+#                     }   
+#                 }
 
-            },
-        }
-        value_all = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/sensor_value")
-        pump_swap_time = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/control/pump_swap_time")
+#             },
+#         }
+#         value_all = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/sensor_value")
+#         pump_swap_time = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/control/pump_swap_time")
         
-        SecondaryCoolantConnectors_1_data["FlowLitersPerMinute"]["Reading"] = value_all["coolant_flow_rate"]
-        SecondaryCoolantConnectors_1_data["HeatRemovedkW"]["Reading"] = value_all["heat_capacity"]
+#         SecondaryCoolantConnectors_1_data["FlowLitersPerMinute"]["Reading"] = value_all["coolant_flow_rate"]
+#         SecondaryCoolantConnectors_1_data["HeatRemovedkW"]["Reading"] = value_all["heat_capacity"]
         
-        SupplyTemperatureCelsius = SecondaryCoolantConnectors_1_data["SupplyTemperatureCelsius"]["Reading"] = value_all["temp_coolant_supply"]
-        ReturnTemperatureCelsius = SecondaryCoolantConnectors_1_data["ReturnTemperatureCelsius"]["Reading"] = value_all["temp_coolant_return"]
-        SecondaryCoolantConnectors_1_data["DeltaTemperatureCelsius"]["Reading"] = round(SupplyTemperatureCelsius - ReturnTemperatureCelsius, 2)
+#         SupplyTemperatureCelsius = SecondaryCoolantConnectors_1_data["SupplyTemperatureCelsius"]["Reading"] = value_all["temp_coolant_supply"]
+#         ReturnTemperatureCelsius = SecondaryCoolantConnectors_1_data["ReturnTemperatureCelsius"]["Reading"] = value_all["temp_coolant_return"]
+#         SecondaryCoolantConnectors_1_data["DeltaTemperatureCelsius"]["Reading"] = round(SupplyTemperatureCelsius - ReturnTemperatureCelsius, 2)
        
-        SupplyPressurekPa = SecondaryCoolantConnectors_1_data["SupplyPressurekPa"]["Reading"] = value_all["pressure_coolant_supply"]
-        ReturnPressurekPa = SecondaryCoolantConnectors_1_data["ReturnPressurekPa"]["Reading"] = value_all["pressure_coolant_return"]
-        SecondaryCoolantConnectors_1_data["DeltaPressurekPa"]["Reading"] = round(SupplyPressurekPa - ReturnPressurekPa, 2)
+#         SupplyPressurekPa = SecondaryCoolantConnectors_1_data["SupplyPressurekPa"]["Reading"] = value_all["pressure_coolant_supply"]
+#         ReturnPressurekPa = SecondaryCoolantConnectors_1_data["ReturnPressurekPa"]["Reading"] = value_all["pressure_coolant_return"]
+#         SecondaryCoolantConnectors_1_data["DeltaPressurekPa"]["Reading"] = round(SupplyPressurekPa - ReturnPressurekPa, 2)
         
-        SecondaryCoolantConnectors_1_data["Oem"]["supermicro"]["PumpSwapTime"]["SetPoint"]["Value"] = pump_swap_time
-        return SecondaryCoolantConnectors_1_data
+#         SecondaryCoolantConnectors_1_data["Oem"]["supermicro"]["PumpSwapTime"]["SetPoint"]["Value"] = pump_swap_time
+#         return SecondaryCoolantConnectors_1_data

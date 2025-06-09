@@ -13,7 +13,7 @@ root_data={
     "Vendor": "Supermicro",
     "ServiceIdentification": "ServiceRoot",
     "UUID": "00000000-0000-0000-0000-e45f013e98f8", # Mac address
-    # "Product": "TBD",
+    "Product": "TBD",
     "ProtocolFeaturesSupported": {
         "FilterQuery": False,
         "SelectQuery": False,
@@ -98,3 +98,13 @@ class metadata(Resource):
             return {"error": "metadata.xml not found"}, 500
         # 用 send_file 直接回 XML
         return send_file(xml_path, mimetype='application/xml; charset=utf-8')
+    
+        # restAPI
+        # cdu_status = sensor_data["cdu_status"]
+        # if cdu_status == "alert":
+        #     cdu_status_result = "Critical"
+        # elif cdu_status == "warning":
+        #     cdu_status_result = "Warning"
+        # else:
+        #     cdu_status_result = "OK"    
+        # rep["cdu_status"] = cdu_status_result    

@@ -2470,7 +2470,7 @@ def health_judge(key, sensor):
 
     health = "OK"
     if com_key and sensor["error"].get(com_key):
-        health = "Warning"
+        health = "Critical"
     if broken_key and sensor["error"].get(broken_key):
         health = "Critical"  
     return health
@@ -2511,8 +2511,8 @@ class SensorsSummary(Resource):
                     }, 
                     # hardware{}
                     "reading": fan_speed, 
-                    "ServiceHours": 100,
-                    "ServiceDate": 100,
+                    "ServiceHours": -1,
+                    "ServiceDate": -1,
                     "HardWareInfo":{}
                 }
             # 加入其他sensor
@@ -2529,8 +2529,8 @@ class SensorsSummary(Resource):
                             "health": health_judge(key, sensor_data),
                         },
                         "reading": sensor_reading,
-                        "ServiceHours": 100,
-                        "ServiceDate": 100,
+                        "ServiceHours": -1,
+                        "ServiceDate": -1,
                         "HardWareInfo":{}
                     }
             
@@ -2564,8 +2564,8 @@ def leak_judge(leak_broken, leak_leak):
                 "health": health
             },
             "reading": None,
-            "ServiceHours": 100,
-            "ServiceDate": 100,
+            "ServiceHours": -1,
+            "ServiceDate": -1,
             "HardWareInfo":{}
         }    
     
@@ -2602,6 +2602,7 @@ class SensorsSummary(Resource):
                     }
                     
             rep["leak_detector"] = leak_judge(leak_broken, leak_leak)
+            rep["Filter_run_time"] = read_ctr_data()["text"]["Filter_run_time"]
                             
         except Exception as e:
             print(f"get sensors data error:{e}")
@@ -2664,6 +2665,14 @@ class mc(Resource):
             else:
                 state = "ON" if val else "OFF"
             rep[key] = state
+        cdu_status = sensor_data["cdu_status"]
+        if cdu_status == "alert":
+            cdu_status_result = "Critical"
+        elif cdu_status == "warning":
+            cdu_status_result = "Warning"
+        else:
+            cdu_status_result = "OK"    
+        rep["cdu_status"] = cdu_status_result            
         return rep, 200
     
     

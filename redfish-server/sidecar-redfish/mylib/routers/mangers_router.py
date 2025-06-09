@@ -346,6 +346,9 @@ class ManagersCDU(Resource):
         rep['DateTime'] = locol_time + "Z"
         rep['DateTimeLocalOffset'] = local_now.strftime('%z')[:3] + ':' + local_now.strftime('%z')[3:]
         rep["FirmwareVersion"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/display/version")["version"]["WebUI"]
+        # status
+        heath = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/mc")["cdu_status"]
+        rep["Status"] = {"State": "Enabled", "Health": heath}
         return rep, 200
 
 @managers_ns.route("/Managers/CDU/Actions/Manager.ResetToDefaults")

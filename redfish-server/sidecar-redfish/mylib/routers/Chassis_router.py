@@ -1,4 +1,4 @@
-from flask import request
+from flask import request, jsonify
 from flask_restx import Namespace, Resource, fields
 from flask import abort
 from http import HTTPStatus
@@ -34,14 +34,14 @@ Chassis_data_1 = {
     "Name": "Catfish System Chassis",
     "Description": "Main rack-mount chassis for Catfish System",
     # 標準硬體資訊
-    "ChassisType": "RackMount",
+    "ChassisType": "Sidecar",
     "Manufacturer": "Supermicro",
     "Model": "CDU 150kW",
     "SerialNumber": "130001",
     "PartNumber": "LCS-SCDU-1K3LR001",
     "UUID": "00000000-0000-0000-0000-e45f013e98f8", # 機殼 UUID (未做)
-    "AssetTag": "TBD", #  (未做)
-    "SKU": "TBD", # 機殼硬體版本或型號 (未做)
+    "AssetTag": "130001",
+    "SKU": "130-D0150000A0-T01",
     "Version": "ok", # 機殼軟體版本或型號 
     
     # 狀態與指示燈 (status 未做)
@@ -388,6 +388,7 @@ class Chassis1(Resource):
         Chassis_data_1["SerialNumber"] = version_data["SN"]
         Chassis_data_1["PartNumber"] = version_data["PartNumber"]
         Chassis_data_1["Version"] = version["version"]["Redfish_Server"]
+        Chassis_data_1["AssetTag"] = version_data["SN"]
         Chassis_data_1["UUID"] = get_mac_uuid()
         Chassis_data_1["Oem"]["supermicro"]["Main MC"]["State"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/mc")["main_mc"]
         return Chassis_data_1
@@ -587,7 +588,7 @@ class PumpsSpeedControl(Resource):
         scp = Controls_data_all["PumpsSpeedControl"]
         if not (scp["AllowableMin"] <= new_sp <= scp["AllowableMax"]):
             return {
-                "error": f"pump_speed needs to be between {scp['AllowableMin']} and {scp['AllowableMax']}"
+                "error": f"pump_speed needs to be between {scp['AllowableMin']} and {scp['AllowableMax']} or 0"
             }, 400
 
         # 轉發到內部控制 API
@@ -778,7 +779,9 @@ class FetchSensorsById(Resource):
         @see https://www.dmtf.org/sites/default/files/standards/documents/DSP2064_1.1.0.pdf Section 5.6.6, 5.13
         """
         chassis_service = RfChassisService()
-        return chassis_service.fetch_sensors_by_name(chassis_id, sensor_id)
+        rep = chassis_service.fetch_sensors_by_name(chassis_id, sensor_id)
+
+        return rep
 #================================================
 # 散熱子系統（ThermalSubsystem）
 #================================================
