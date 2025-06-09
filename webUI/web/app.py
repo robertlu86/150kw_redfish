@@ -428,6 +428,12 @@ sensorData = {
         "rack_leakage1_broken": False,
         "rack_leakage2_leak": False,
         "rack_leakage2_broken": False,
+        "rack_leakage3_leak": False,
+        "rack_leakage3_broken": False,
+        "rack_leakage4_leak": False,
+        "rack_leakage4_broken": False,
+        "rack_leakage5_leak": False,
+        "rack_leakage5_broken": False,
     },
     "err_log": {
         "warning": {
@@ -583,6 +589,12 @@ sensorData = {
             "rack_leakage1_broken": "M431 Rack Leakage Sensor 1 Broken",
             "rack_leakage2_leak": "M432 Rack Leakage Sensor 2 Leak",
             "rack_leakage2_broken": "M433 Rack Leakage Sensor 2 Broken",
+            "rack_leakage3_leak": "M434 Rack Leakage Sensor 3 Leak",
+            "rack_leakage3_broken": "M435 Rack Leakage Sensor 3 Broken",
+            "rack_leakage4_leak": "M436 Rack Leakage Sensor 4 Leak",
+            "rack_leakage4_broken": "M437 Rack Leakage Sensor 4 Broken",
+            "rack_leakage5_leak": "M438 Rack Leakage Sensor 5 Leak",
+            "rack_leakage5_broken": "M439 Rack Leakage Sensor 5 Broken",
         },
     },
     "unit": {
@@ -1043,6 +1055,12 @@ thrshd = OrderedDict(
         "Delay_rack_leakage1_broken": 0,
         "Delay_rack_leakage2_leak": 0,
         "Delay_rack_leakage2_broken": 0,
+        "Delay_rack_leakage3_leak": 0,
+        "Delay_rack_leakage3_broken": 0,
+        "Delay_rack_leakage4_leak": 0,
+        "Delay_rack_leakage4_broken": 0,
+        "Delay_rack_leakage5_leak": 0,
+        "Delay_rack_leakage5_broken": 0,
         "W_TempClntSply_trap": False,
         "A_TempClntSply_trap": False,
         "W_TempClntSplySpare_trap": False,
@@ -1148,6 +1166,12 @@ thrshd = OrderedDict(
         "E_rack_leakage1_broken_trap": False,
         "E_rack_leakage2_leak_trap": False,
         "E_rack_leakage2_broken_trap": False,
+        "E_rack_leakage3_leak_trap": False,
+        "E_rack_leakage3_broken_trap": False,
+        "E_rack_leakage4_leak_trap": False,
+        "E_rack_leakage4_broken_trap": False,
+        "E_rack_leakage5_leak_trap": False,
+        "E_rack_leakage5_broken_trap": False,
     }
 )
 
@@ -1232,6 +1256,12 @@ time_data = {
         "rack_leakage1_broken": 0,
         "rack_leakage2_leak": 0,
         "rack_leakage2_broken": 0,
+        "rack_leakage3_leak": 0,
+        "rack_leakage3_broken": 0,
+        "rack_leakage4_leak": 0,
+        "rack_leakage4_broken": 0,
+        "rack_leakage5_leak": 0,
+        "rack_leakage5_broken": 0,
     },
     "start": {
         "rack1_broken": 0,
@@ -1268,6 +1298,12 @@ time_data = {
         "rack_leakage1_broken": 0,
         "rack_leakage2_leak": 0,
         "rack_leakage2_broken": 0,
+        "rack_leakage3_leak": 0,
+        "rack_leakage3_broken": 0,
+        "rack_leakage4_leak": 0,
+        "rack_leakage4_broken": 0,
+        "rack_leakage5_leak": 0,
+        "rack_leakage5_broken": 0,
     },
     "end": {
         "rack1_broken": 0,
@@ -1304,6 +1340,12 @@ time_data = {
         "rack_leakage1_broken": 0,
         "rack_leakage2_leak": 0,
         "rack_leakage2_broken": 0,
+        "rack_leakage3_leak": 0,
+        "rack_leakage3_broken": 0,
+        "rack_leakage4_leak": 0,
+        "rack_leakage4_broken": 0,
+        "rack_leakage5_leak": 0,
+        "rack_leakage5_broken": 0,
     },
     "errorlog_start": {
         "rack1": 0,
@@ -1333,6 +1375,9 @@ ver_switch = {
     "liquid_level_3_switch": False,
     "leakage_sensor_1_switch": False,
     "leakage_sensor_2_switch": False,
+    "leakage_sensor_3_switch": False,
+    "leakage_sensor_4_switch": False,
+    "leakage_sensor_5_switch": False,
 }
 
 
@@ -1481,6 +1526,12 @@ thrshd_factory = {
     "Delay_rack_leakage1_leak": 0,
     "Delay_rack_leakage2_broken": 0,
     "Delay_rack_leakage2_leak": 0,
+    "Delay_rack_leakage3_broken": 0,
+    "Delay_rack_leakage3_leak": 0,
+    "Delay_rack_leakage4_broken": 0,
+    "Delay_rack_leakage4_leak": 0,
+    "Delay_rack_leakage5_broken": 0,
+    "Delay_rack_leakage5_leak": 0,
     "E_ATS1_Communication_trap": False,
     "E_ATS2_Communication_trap": False,
     "E_ATS_trap": False,
@@ -1550,6 +1601,12 @@ thrshd_factory = {
     "E_rack_leakage1_leak_trap": False,
     "E_rack_leakage2_broken_trap": False,
     "E_rack_leakage2_leak_trap": False,
+    "E_rack_leakage3_broken_trap": False,
+    "E_rack_leakage3_leak_trap": False,
+    "E_rack_leakage4_broken_trap": False,
+    "E_rack_leakage4_leak_trap": False,
+    "E_rack_leakage5_broken_trap": False,
+    "E_rack_leakage5_leak_trap": False,
     "Thr_A_AC_H": 45,
     "Thr_A_AmbientTemp_H": 45,
     "Thr_A_AmbientTemp_L": 18,
@@ -3859,7 +3916,7 @@ def read_modbus_data():
                 ctr_data["mc"]["fan_mc2"] = read_mc3.bits[1]
                 ctr_data["mc"]["fan_mc2_result"] = read_mc3.bits[1]
 
-                read_ver = client.read_coils((8192 + 803), 8)
+                read_ver = client.read_coils((8192 + 803), 11)
                 ver_switch["median_switch"] = read_ver.bits[0]
                 ver_switch["coolant_quality_meter_switch"] = read_ver.bits[1]
                 ver_switch["fan_count_switch"] = read_ver.bits[2]
@@ -3868,6 +3925,9 @@ def read_modbus_data():
                 ver_switch["liquid_level_3_switch"] = read_ver.bits[5]
                 ver_switch["leakage_sensor_1_switch"] = read_ver.bits[6]
                 ver_switch["leakage_sensor_2_switch"] = read_ver.bits[7]
+                ver_switch["leakage_sensor_3_switch"] = read_ver.bits[8]
+                ver_switch["leakage_sensor_4_switch"] = read_ver.bits[9]
+                ver_switch["leakage_sensor_5_switch"] = read_ver.bits[10]
                 
                 if not os.path.exists(f"{web_path}/json/version.json"):
                     with open(f"{web_path}/json/version.json", "w") as file:
@@ -8245,6 +8305,43 @@ def set_rack_engineer():
             status="error", message="Error occurred while updating rack settings"
         )
 
+@app.route("/version_switch_admin", methods=["POST"])
+def version_switch_admin():
+    data = request.get_json()
+    leakage_sensor_1_switch = data["leakage_sensor_1_switch"]
+    leakage_sensor_2_switch = data["leakage_sensor_2_switch"]
+    leakage_sensor_3_switch = data["leakage_sensor_3_switch"]
+    leakage_sensor_4_switch = data["leakage_sensor_4_switch"]
+    leakage_sensor_5_switch = data["leakage_sensor_5_switch"]
+    try:
+        with ModbusTcpClient(
+            host=modbus_host, port=modbus_port, unit=modbus_slave_id
+        ) as client:
+            client.write_coils(
+                (8192 + 809),
+                [
+                    leakage_sensor_1_switch,
+                    leakage_sensor_2_switch,
+                    leakage_sensor_3_switch,
+                    leakage_sensor_4_switch,
+                    leakage_sensor_5_switch,
+                ],
+            )
+        op_logger.info(f"Version setting updated successfully. {data}")
+        return jsonify(status="success", message="Version setting updated successfully")
+    except Exception as e:
+        print(f"Error: {e}")
+        return retry_modbus(
+            (8092 + 809), 
+            [
+                leakage_sensor_1_switch,
+                leakage_sensor_2_switch,
+                leakage_sensor_3_switch,
+                leakage_sensor_4_switch,
+                leakage_sensor_5_switch,
+            ],
+            "coil"
+        )
 
 @app.route("/version_switch", methods=["POST"])
 def version_switch():
@@ -8258,29 +8355,57 @@ def version_switch():
     liquid_level_3_switch = data["liquid_level_3_switch"]
     leakage_sensor_1_switch = data["leakage_sensor_1_switch"]
     leakage_sensor_2_switch = data["leakage_sensor_2_switch"]
+    leakage_sensor_3_switch = data["leakage_sensor_3_switch"]
+    leakage_sensor_4_switch = data["leakage_sensor_4_switch"]
+    leakage_sensor_5_switch = data["leakage_sensor_5_switch"]
     try:
         with ModbusTcpClient(
             host=modbus_host, port=modbus_port, unit=modbus_slave_id
         ) as client:
-            client.write_coils((8192 + 803), [median_switch])
-            client.write_coils((8192 + 804), [coolant_quality_meter_switch])
-            client.write_coils((8192 + 805), [fan_count_switch])
-            client.write_coils((8192 + 806), [liquid_level_1_switch])
-            client.write_coils((8192 + 807), [liquid_level_2_switch])
-            client.write_coils((8192 + 808), [liquid_level_3_switch])
-            client.write_coils((8192 + 809), [leakage_sensor_1_switch])
-            client.write_coils((8192 + 810), [leakage_sensor_2_switch])
+            # client.write_coils((8192 + 803), [median_switch])
+            # client.write_coils((8192 + 804), [coolant_quality_meter_switch])
+            # client.write_coils((8192 + 805), [fan_count_switch])
+            # client.write_coils((8192 + 806), [liquid_level_1_switch])
+            # client.write_coils((8192 + 807), [liquid_level_2_switch])
+            # client.write_coils((8192 + 808), [liquid_level_3_switch])
+            # client.write_coils((8192 + 809), [leakage_sensor_1_switch])
+            # client.write_coils((8192 + 810), [leakage_sensor_2_switch])
+            client.write_coils(
+                (8192 + 803),
+                [
+                    median_switch,
+                    coolant_quality_meter_switch,
+                    fan_count_switch,
+                    liquid_level_1_switch,
+                    liquid_level_2_switch,
+                    liquid_level_3_switch,
+                    leakage_sensor_1_switch,
+                    leakage_sensor_2_switch,
+                    leakage_sensor_3_switch,
+                    leakage_sensor_4_switch,
+                    leakage_sensor_5_switch
+                ],
+            )
         op_logger.info(f"Version setting updated successfully. {data}")
         return jsonify(status="success", message="Version setting updated successfully")
     except Exception as e:
         print(f"Error: {e}")
-        return retry_modbus_3coil(
-            (8192 + 803),
-            [median_switch,],
-            (8192 + 804),
-            [coolant_quality_meter_switch],
-            ((8192 + 805), 
-            [fan_count_switch]),
+        return retry_modbus(
+            (8092 + 803),
+            [
+                median_switch,
+                coolant_quality_meter_switch,
+                fan_count_switch,
+                liquid_level_1_switch,
+                liquid_level_2_switch,
+                liquid_level_3_switch,
+                leakage_sensor_1_switch,
+                leakage_sensor_2_switch,
+                leakage_sensor_3_switch,
+                leakage_sensor_4_switch,
+                leakage_sensor_5_switch,
+            ],
+            "coil",
         )
 
 
@@ -9364,7 +9489,7 @@ def read_rack_status():
         #         sensorData["rack_no_connection"][f"rack{index}_leak"] = False
         #     index += 1
         # send_error_log()
-
+        
         try:
             rack_key = list(sensorData["rack"].keys())
             rack_key_len = len(sensorData["rack"].keys())
@@ -9372,41 +9497,64 @@ def read_rack_status():
             value_r = [0] * rack_reg
             with ModbusTcpClient(
                 host=modbus_host, port=modbus_port) as client:
-                rack_leak = client.read_discrete_inputs(36, 4, unit=modbus_slave_id)
-                rack_leakage1_leak = rack_leak.bits[0]
-                rack_leakage1_broken = rack_leak.bits[1]
-                rack_leakage2_leak = rack_leak.bits[2]
-                rack_leakage2_broken = rack_leak.bits[3]
+                r1 = client.read_discrete_inputs(36, 10, unit=modbus_slave_id)
+                rack_leakage1_leak = r1.bits[0]
+                rack_leakage1_broken = r1.bits[1]
+                rack_leakage2_leak = r1.bits[2]
+                rack_leakage2_broken = r1.bits[3]
+                r2 = client.read_discrete_inputs(4, 6, unit=modbus_slave_id)
+                rack_leakage3_leak = r2.bits[0]
+                rack_leakage3_broken = r2.bits[1]
+                rack_leakage4_leak = r2.bits[2]
+                rack_leakage4_broken = r2.bits[3]
+                rack_leakage5_leak = r2.bits[4]
+                rack_leakage5_broken = r2.bits[5]
+                rack_leakage_leak_list = [rack_leakage1_leak, rack_leakage2_leak, rack_leakage3_leak, rack_leakage4_leak, rack_leakage5_leak]
+                rack_leakage_broken_list = [rack_leakage1_broken, rack_leakage2_broken, rack_leakage3_broken, rack_leakage4_broken, rack_leakage5_broken]
+            for i in range(1, 6):
+                if not ver_switch.get(f"leakage_sensor_{i}_switch", False):
+                    check_rack_leakage_sensor_status(
+                        f"rack_leakage{i}_leak",
+                        rack_leakage_leak_list[i - 1],
+                        f"Delay_rack_leakage{i}_leak",
+                    )
+                    check_rack_leakage_sensor_status(
+                        f"rack_leakage{i}_broken",
+                        rack_leakage_broken_list[i - 1],
+                        f"Delay_rack_leakage{i}_broken",
+                    )
+                else:
+                    sensorData["rack"][f"rack_leakage{i}_leak"] = False
+                    sensorData["rack"][f"rack_leakage{i}_broken"] = False
+            # if not ver_switch["leakage_sensor_1_switch"]:
+            #     check_rack_leakage_sensor_status(
+            #         "rack_leakage1_leak",
+            #         rack_leakage1_leak,
+            #         "Delay_rack_leakage1_leak",
+            #     )
+            #     check_rack_leakage_sensor_status(
+            #         "rack_leakage1_broken",
+            #         rack_leakage1_broken,
+            #         "Delay_rack_leakage1_broken",
+            #     )
+            # else:
+            #     sensorData["rack"]["rack_leakage1_leak"] = False
+            #     sensorData["rack"]["rack_leakage1_broken"] = False
                 
-            if not ver_switch["leakage_sensor_1_switch"]:
-                check_rack_leakage_sensor_status(
-                    "rack_leakage1_leak",
-                    rack_leakage1_leak,
-                    "Delay_rack_leakage1_leak",
-                )
-                check_rack_leakage_sensor_status(
-                    "rack_leakage1_broken",
-                    rack_leakage1_broken,
-                    "Delay_rack_leakage1_broken",
-                )
-            else:
-                sensorData["rack"]["rack_leakage1_leak"] = False
-                sensorData["rack"]["rack_leakage1_broken"] = False
-                
-            if not ver_switch["leakage_sensor_2_switch"]:
-                check_rack_leakage_sensor_status(
-                    "rack_leakage2_leak",
-                    rack_leakage2_leak,
-                    "Delay_rack_leakage2_leak",
-                )
-                check_rack_leakage_sensor_status(
-                    "rack_leakage2_broken",
-                    rack_leakage2_broken,
-                    "Delay_rack_leakage2_broken",
-                )
-            else:
-                sensorData["rack"]["rack_leakage2_leak"] = False
-                sensorData["rack"]["rack_leakage2_broken"] = False
+            # if not ver_switch["leakage_sensor_2_switch"]:
+            #     check_rack_leakage_sensor_status(
+            #         "rack_leakage2_leak",
+            #         rack_leakage2_leak,
+            #         "Delay_rack_leakage2_leak",
+            #     )
+            #     check_rack_leakage_sensor_status(
+            #         "rack_leakage2_broken",
+            #         rack_leakage2_broken,
+            #         "Delay_rack_leakage2_broken",
+            #     )
+            # else:
+            #     sensorData["rack"]["rack_leakage2_leak"] = False
+            #     sensorData["rack"]["rack_leakage2_broken"] = False
                 
             for i in range(0, rack_key_len):
                 key = rack_key[i]

@@ -2008,185 +2008,21 @@ class ErrorMessages(Resource):
 
         try:
             sensor = read_sensor_data()
-
-            key_mapping = {
-                "M100": "temp_clntSply_high",
-                "M101": "temp_clntSplySpare_high",
-                "M102": "temp_clntRtn_high",
-                "M103": "temp_clntRtnSpare_high",
-                "M104": "prsr_clntSply_high",
-                "M105": "prsr_clntSplySpare_high",
-                "M106": "prsr_clntRtn_high",
-                "M107": "prsr_clntRtnSpare_high",
-                "M108": "prsr_fltIn_low",
-                "M109": "prsr_fltIn_high",
-                "M110": "prsr_fltOut_high",
-                "M111": "clnt_flow_low",
-                "M112": "ambient_temp_low",
-                "M113": "ambient_temp_high",
-                "M114": "relative_humid_low",
-                "M115": "relative_humid_high",
-                "M116": "dew_point_low",
-                "M117": "pH_low",
-                "M118": "pH_high",
-                "M119": "cdct_low",
-                "M120": "cdct_high",
-                "M121": "tbd_low",
-                "M122": "tbd_high",
-                "M123": "AC_high",
-            }
-
-            for msg_key, sensor_key in key_mapping.items():
-                messages["warning"][msg_key][1] = sensor["warning"][sensor_key]
-            
-            key_mapping = {
-                "M200": "temp_clntSply_high",
-                "M201": "temp_clntSplySpare_high",
-                "M202": "temp_clntRtn_high",
-                "M203": "temp_clntRtnSpare_high",
-                "M204": "prsr_clntSply_high",
-                "M205": "prsr_clntSplySpare_high",
-                "M206": "prsr_clntRtn_high",
-                "M207": "prsr_clntRtnSpare_high",
-                "M208": "prsr_fltIn_low",
-                "M209": "prsr_fltIn_high",
-                "M210": "prsr_fltOut_high",
-                "M211": "clnt_flow_low",
-                "M212": "ambient_temp_low",
-                "M213": "ambient_temp_high",
-                "M214": "relative_humid_low",
-                "M215": "relative_humid_high",
-                "M216": "dew_point_low",
-                "M217": "pH_low",
-                "M218": "pH_high",
-                "M219": "cdct_low",
-                "M220": "cdct_high",
-                "M221": "tbd_low",
-                "M222": "tbd_high",
-                "M223": "AC_high",
-            }
-
-            for msg_key, sensor_key in key_mapping.items():
-                messages["alert"][msg_key][1] = sensor["alert"][sensor_key]
-
-            key_mapping = {
-                "M300": "Inv1_OverLoad",
-                "M301": "Inv2_OverLoad",
-                "M302": "Inv3_OverLoad",
-                "M303": "Fan_OverLoad1",
-                "M304": "Fan_OverLoad2",
-                "M305": "Inv1_Error",
-                "M306": "Inv2_Error",
-                "M307": "Inv3_Error",
-                "M308": "ATS1",
-                "M309": "Inv1_Com",
-                "M310": "Inv2_Com",
-                "M311": "Inv3_Com",
-                # "M312": "Clnt_Flow_Com",
-                "M313": "Ambient_Temp_Com",
-                "M314": "Relative_Humid_Com",
-                "M315": "Dew_Point_Com",
-                "M316": "Cdct_Sensor_Com",
-                "M317": "pH_Com",
-                "M318": "Tbd_Com",
-                "M319": "ATS1_Com",
-                "M320": "ATS2_Com",
-                "M321": "Power_Meter_Com",
-                "M322": "Average_Current_Com",
-                "M323": "Fan1_Com",
-                "M324": "Fan2_Com",
-                "M325": "Fan3_Com",
-                "M326": "Fan4_Com",
-                "M327": "Fan5_Com",
-                "M328": "Fan6_Com",
-                "M329": "Fan7_Com",
-                "M330": "Fan8_Com",
-                "M331": "TempClntSply_broken",
-                "M332": "TempClntSplySpare_broken",
-                "M333": "TempClntRtn_broken",
-                "M334": "TempClntRtnSpare_broken",
-                "M335": "PrsrClntSply_broken",
-                "M336": "PrsrClntSplySpare_broken",
-                "M337": "PrsrClntRtn_broken",
-                "M338": "PrsrClntRtnSpare_broken",
-                "M339": "PrsrFltIn_broken",
-                "M340": "PrsrFltOut_broken",
-                "M341": "Clnt_Flow_broken",
-                "M342": "pc1_error",
-                "M343": "pc2_error",
-                "M344": "leakage1_leak",
-                "M345": "leakage1_broken",
-                "M346": "level1",
-                "M347": "level2",
-                "M348": "level3",
-                "M349": "power24v1",
-                "M350": "power24v2",
-                "M351": "power12v1",
-                "M352": "power12v2",
-                "M353": "main_mc_error",
-                "M354": "fan1_error",
-                "M355": "fan2_error",
-                "M356": "fan3_error",
-                "M357": "fan4_error",
-                "M358": "fan5_error",
-                "M359": "fan6_error",
-                "M360": "fan7_error",
-                "M361": "fan8_error",
-                "M362": "Low_Coolant_Level_Warning",
-                "M363": "PLC",
-            }
-            for msg_key, sensor_key in key_mapping.items():
-                messages["error"][msg_key][1] = sensor["error"][sensor_key]
-
-            rack_mapping = {
-                "M400": "rack1_broken",
-                "M401": "rack2_broken",
-                "M402": "rack3_broken",
-                "M403": "rack4_broken",
-                "M404": "rack5_broken",
-                "M405": "rack1_leak_com",
-                "M406": "rack2_leak_com",
-                "M407": "rack3_leak_com",
-                "M408": "rack4_leak_com",
-                "M409": "rack5_leak_com",
-                "M410": "rack1_leak",
-                "M411": "rack2_leak",
-                "M412": "rack3_leak",
-                "M413": "rack4_leak",
-                "M414": "rack5_leak",
-                "M415": "rack1_status_com",
-                "M416": "rack2_status_com",
-                "M417": "rack3_status_com",
-                "M418": "rack4_status_com",
-                "M419": "rack5_status_com",
-                "M420": "rack1_error",
-                "M421": "rack2_error",
-                "M422": "rack3_error",
-                "M423": "rack4_error",
-                "M424": "rack5_error",
-                "M425": "rack6_error",
-                "M426": "rack7_error",
-                "M427": "rack8_error",
-                "M428": "rack9_error",
-                "M429": "rack10_error",
-                "M430": "rack_leakage1_leak",
-                "M431": "rack_leakage1_broken",
-                "M432": "rack_leakage2_leak",
-                "M433": "rack_leakage2_broken",
-            }
-
-            for msg_key, sensor_key in rack_mapping.items():
-                messages["rack"][msg_key][1] = sensor["rack"][sensor_key]
+            error_messages = []
+            for category in ["warning", "alert", "error", "rack"]:
+                for key, status in sensor[category].items():
+                    if status:
+                        msg = sensor["err_log"][category][key].split(" ", 1)
+                        code = msg[0]
+                        messages = msg[1]
+                        error_messages.append({"error_code": code, "message": messages})
+        # error_messages = []
+        # for category in ["warning", "alert", "error", "rack"]:
+        #     for code, message in messages[category].items():
+        #         if message[1]:
+        #             error_messages.append({"error_code": code, "message": message[0]})
         except Exception as e:
-            print(f"error message issue:{e}")
             return plc_error()
-
-        error_messages = []
-        for category in ["warning", "alert", "error", "rack"]:
-            for code, message in messages[category].items():
-                if message[1]:
-                    error_messages.append({"error_code": code, "message": message[0]})
-
         return error_messages
 
 

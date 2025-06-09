@@ -1,12 +1,12 @@
 {
     "sensor_value_data": {
         "CoolantSupplyTemperature": {
-            "Warning": true,
-            "Alert": true
-        },
-        "CoolantSupplyTemperatureSpare": {
             "Warning": false,
             "Alert": false
+        },
+        "CoolantSupplyTemperatureSpare": {
+            "Warning": true,
+            "Alert": true
         },
         "CoolantReturnTemperature": {
             "Warning": false,
@@ -142,6 +142,12 @@
         "RackLeakage1Leak": false,
         "RackLeakage1Broken": false,
         "RackLeakage2Leak": false,
-        "RackLeakage2Broken": false
+        "RackLeakage2Broken": false,
+        "RackLeakage3Leak": false,
+        "RackLeakage3Broken": false,
+        "RackLeakage4Leak": false,
+        "RackLeakage4Broken": false,
+        "RackLeakage5Leak": false,
+        "RackLeakage5Broken": false
     }
 }
