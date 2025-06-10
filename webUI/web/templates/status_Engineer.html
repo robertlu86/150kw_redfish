@@ -1276,7 +1276,7 @@ styles %}
             if (p3 == "-" || p4 == "-") {
                 fillter_val = "-";
                 $("#prsr_fltDiff_image").text("-").css("color", "red");
-                
+
             } else {
                 fillter_val = p3 - p4;
 
@@ -1368,7 +1368,7 @@ styles %}
                 if (data["warning_notice"].hasOwnProperty(key)) {
                     let status_w = data["warning_notice"][key];
                     let status_a = data["alert_notice"][key];
-                    if (key.includes("prsr_fltOut")){
+                    if (key.includes("prsr_fltOut")) {
                         if (status_a === true) {
                             $("#filter_deltaP_status")
                                 .css("color", "red")
@@ -1382,7 +1382,7 @@ styles %}
                                 .css("color", "black")
                                 .text("Valid");
                         }
-                    }else{
+                    } else {
                         if (status_a === true) {
                             $("#" + key + "_status")
                                 .css("color", "red")
@@ -1552,7 +1552,7 @@ styles %}
                         }
                     }
 
-                    if(data["error"]["PrsrFltIn_broken"] || data["error"]["PrsrFltOut_broken"]){
+                    if (data["error"]["PrsrFltIn_broken"] || data["error"]["PrsrFltOut_broken"]) {
                         $("#filter_deltaP_status").css("color", "red").text("Broken Error");
                         $("#filter_deltaP").css("color", "red").text("-");
                     }
@@ -1729,7 +1729,7 @@ styles %}
                 }
             }
 
-            
+
 
             //PD計算
             let prsr_diff;
@@ -1813,7 +1813,7 @@ styles %}
                 let broken = data["rack"][`rack_leakage${i}_broken`];
                 let leak = data["rack"][`rack_leakage${i}_leak`];
                 let $sensor = $(`#rack_leakage${i}`);
-            
+
                 if (broken) {
                     $sensor.css("color", "red").text("Broken");
                 } else if (leak) {
@@ -2144,15 +2144,15 @@ styles %}
                     }
                     ///////////測試用結束///////////
 
-                    if (get_fan_speed(data)) {
-                        let value = data["value"]["resultFan"];
-                        $("#fan_freq_image").text(value.toFixed(0));
-                        if (value > 100) {
-                            $("#fan_freq_image").text(100);
-                        }
-                    } else {
-                        $("#fan_freq_image").text(0);
+                    // if (get_fan_speed(data)) {
+                    let resultFan = data["value"]["resultFan"];
+                    $("#fan_freq_image").text(resultFan.toFixed(0));
+                    if (resultFan > 100) {
+                        $("#fan_freq_image").text(100);
                     }
+                    // } else {
+                    //     $("#fan_freq_image").text(0);
+                    // }
 
                     for (let key in data["rack_visibility"]) {
                         if (data["rack_visibility"].hasOwnProperty(key)) {

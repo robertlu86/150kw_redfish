@@ -4527,37 +4527,67 @@ def read_modbus_data():
                 "fan7": 7460,
                 "fan8": 7500,
             }
-  
-        for k, v in ctr_data["inv"].items():
-            if k.startswith("fan"):
-                if v:
-                    address = fan_inv_addresses.get(k)
-                    try:
-                        with ModbusTcpClient(
-                            host=modbus_host, port=modbus_port, unit=modbus_slave_id
-                        ) as client:
-                            r = client.read_holding_registers(
-                                address=(20480 + address), count=1
-                            ) 
-                            
-                            ### 轉換 freq
-                            
-                            fs = r.registers[0]
-                            fs = fs / 16000 * 100
-                            # print(f'fs:{fs}')
-                            
-                            ### 如果速度小於7, 速度就為0 
-                            
-                            if fs < 7:
-                                fs = 0
+        
+        if sensorData["opMod"] == "Auto":
+            for fan, address in fan_inv_addresses.items():
+                try:
+                    with ModbusTcpClient(
+                        host=modbus_host, port=modbus_port, unit=modbus_slave_id
+                    ) as client:
+                        r = client.read_holding_registers(
+                            address=(20480 + address), count=1
+                        ) 
+                        
+                        ### 轉換 freq
+                        
+                        fs = r.registers[0]
+                        fs = fs / 16000 * 100
+                        # print(f'fs:{fs}')
+                        
+                        ### 如果速度小於7, 速度就為0 
+                        
+                        if fs < 7:
+                            fs = 0
+                        # 如果該 fan 的寄存器值不為 0，設置 resultFan 並跳出循環
+                        if fs != 0:
                             ctr_data["value"]["resultFan"] = round(fs)
-                            break
-                    except Exception as e:
-                        print(f"fan speed error: {e}")
-                    break
+                            break  # 找到第一個不為 0 的寄存器後停止遍歷
+                except Exception as e:
+                    print(f"fan speed error: {e}")
+                
+            
+        else:
+  
+            for k, v in ctr_data["inv"].items():
+                if k.startswith("fan"):
+                    if v:
+                        address = fan_inv_addresses.get(k)
+                        try:
+                            with ModbusTcpClient(
+                                host=modbus_host, port=modbus_port, unit=modbus_slave_id
+                            ) as client:
+                                r = client.read_holding_registers(
+                                    address=(20480 + address), count=1
+                                ) 
+                                
+                                ### 轉換 freq
+                                
+                                fs = r.registers[0]
+                                fs = fs / 16000 * 100
+                                # print(f'fs:{fs}')
+                                
+                                ### 如果速度小於7, 速度就為0 
+                                
+                                if fs < 7:
+                                    fs = 0
+                                ctr_data["value"]["resultFan"] = round(fs)
+                                break
+                        except Exception as e:
+                            print(f"fan speed error: {e}")
+                        break
 
-        if not any(v for k, v in ctr_data["inv"].items() if k.startswith("fan")):
-            ctr_data["value"]["resultFan"] = 0      
+            if not any(v for k, v in ctr_data["inv"].items() if k.startswith("fan")):
+                ctr_data["value"]["resultFan"] = 0      
             
         ### 讀取pump runtime
         
