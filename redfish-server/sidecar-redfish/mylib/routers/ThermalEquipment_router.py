@@ -196,7 +196,7 @@ PrimaryCoolantConnectors_data_1 ={
         "State": "Enabled"
     },
     "Coolant": {
-        "CoolantType": "PropyleneGlycolAq",
+        "CoolantType": "Water",
         "DensityKgPerCubicMeter": 1030,
         "SpecificHeatkJoulesPerKgK": 3900,
         # "@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Coolant"
@@ -589,22 +589,31 @@ LeakDetection_data = {
 # }
 # -------------------------------------
 # Automatic setting patch設置
+oem_supermicro = ThermalEquipment_ns.model('OemSupermicro', {
+            'DeltaTemperatureCelsius': fields.Integer(
+                required=True,
+                description='temperature setting',
+                default=50,
+            ),
+            "DeltaPressurekPa": fields.Integer(
+                required=True,
+                description='pressure setting',
+                default=50,
+            ),
+            "PumpSwapTime": fields.Integer(
+                required=True,
+                description='pump swap time setting',
+                default=50,
+            ),
+})
+# 再定義 Oem 物件，包含 supermicro 這個巢狀 model
+oem_model = ThermalEquipment_ns.model('PrimaryCoolantConnectorsOem', {
+    'Supermicro': fields.Nested(oem_supermicro, description='Supermicro OEM settings')
+})
+
+# 最後定義整個 patch payload
 PrimaryCoolantConnectors_patch = ThermalEquipment_ns.model('PrimaryCoolantConnectors1Patch', {
-    'DeltaTemperatureCelsius': fields.Integer(
-        required=True,
-        description='temperature setting',
-        default=50,
-    ),
-    "DeltaPressurekPa": fields.Integer(
-        required=True,
-        description='pressure setting',
-        default=50,
-    ),
-    "PumpSwapTime": fields.Integer(
-        required=True,
-        description='pump swap time setting',
-        default=50,
-    ),
+    'Oem': fields.Nested(oem_model, required=True, description='OEM specific parameters')
 })
 
 # pumpspeed patch設置
@@ -944,32 +953,9 @@ class LeakDetectionLeakDetectors1(MyBaseThermalEquipment):
     # # @requires_auth
     @ThermalEquipment_ns.doc("thermal_equipment_cdus_1_LeakDetection_LeakDetectors_1")
     def get(self, cdu_id, leak_detector_id):
-        leak = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/thermal_equipment/summary")["leak_detector"]
-        LeakDetectors_1_data = {
-            "@odata.id": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/LeakDetection/LeakDetectors/{leak_detector_id}",
-            "@odata.type": "#LeakDetector.v1_3_0.LeakDetector",
-            
-            "Id": leak_detector_id,
-            "Name": f"Leak Detector {leak_detector_id}",
-            "Description": f"Leak Detector {leak_detector_id} for CDU {cdu_id}",
-            
-            "DetectorState": "OK",
-            "LeakDetectorType": "Moisture",
-            "Location": {
-                "PartLocation": {
-                    "ServiceLabel": f"Leak Detector {leak_detector_id}",
-                    "LocationType": "Bay"
-                }
-            },
-            "Status": {
-                "State": leak["status"]["state"],
-                "Health": leak["status"]["health"]
-            },
-            
-        }
         rep = RfThermalEquipmentService().fetch_CDUs_LeakDetection_LeakDetectors_id(cdu_id, leak_detector_id)
-        # return LeakDetectors_1_data
         return rep
+    
 # 0513新增 /redfish/v1/ThermalEquipment/CDUs/{CoolingUnitId}/Oem
 # @ThermalEquipment_ns.route('/ThermalEquipment/CDUs/<string:id>/Oem')
 # class CduOem(Resource):

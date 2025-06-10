@@ -322,6 +322,18 @@ ResetPostModel = managers_ns.model('ResetPostModel', {
     ),
 })
 
+ShutdownPostModel = managers_ns.model('ShutdownPostModel', {
+    'ResetType': fields.String(
+        required=True,
+        description='The reset type.',
+        example='ForceRestart',
+        enum=[
+            RfResetType.ForceRestart.value,
+            RfResetType.GracefulRestart.value,
+        ]
+    ),
+})
+
 #====================================================== 
 # Managers
 #====================================================== 
@@ -375,6 +387,17 @@ class ManagersCDUActionsReset(Resource):
         resp = RfManagersService().reset(reset_type)
         return resp
 
+@managers_ns.route("/Managers/CDU/Actions/Manager.Shutdown")
+class ManagersCDUActionsShutdown(Resource):
+    """Shutdown
+    (關機)
+    """
+    @managers_ns.expect(ShutdownPostModel, validate=True)
+    def post(self):
+        req_json = request.json or {}
+        reset_type = req_json.get("ResetType")
+        resp = RfManagersService().shutdown(reset_type)
+        return resp
 
 #====================================================== 
 # NetworkProtocol

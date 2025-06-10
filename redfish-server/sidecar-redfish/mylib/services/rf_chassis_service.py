@@ -2,6 +2,7 @@
 這是Redfish的chassis service
 '''
 import os, re, json
+import requests
 from typing import Optional
 from mylib.models.rf_sensor_model import (
     RfSensorCollectionModel, 
@@ -11,11 +12,13 @@ from mylib.models.rf_status_model import RfStatusModel, RfStatusHealth, RfStatus
 from mylib.services.base_service import BaseService
 from mylib.models.rf_power_supply_model import RfPowerSupplyCollectionModel, RfPowerSupplyModel
 from mylib.models.rf_cdu_model import RfCduModel, RfCduCollectionModel
+from mylib.models.rf_control_collection_model import RfControlCollectionExcerptModel
 from cachetools import LRUCache, cached
 from typing import Dict, Any
 
 from load_env import hardware_info
-
+from mylib.utils.load_api import load_raw_from_api, CDU_BASE
+from mylib.utils.controlUtil import ControlMode_change
 
 class RfChassisService(BaseService):
     SENSOR_IDS = {
@@ -382,3 +385,132 @@ class RfChassisService(BaseService):
 
             
         return item 
+    
+    def patch_thermal_subsystem_fans_data(self, chassis_id: str, fan_id: str, body: dict):
+        # 這裡是 patch 的內容
+        ControlMode = body["ControlMode"]
+        SetPoint = body["SetPoint"]
+        ControlMode = ControlMode_change(ControlMode)
+        
+        max = os.getenv("MAX_FAN_SPEED", 100)
+        min = os.getenv("MIN_FAN_SPEED", 15)
+        if SetPoint > max  or SetPoint < min:
+            return {"Speed Error": f"Fan speed must be between {min} and {max}"}, 400
+        # 轉發到內部控制 API
+        try:
+            r = requests.patch(
+                f"{CDU_BASE}/api/v1/cdu/status/op_mode",
+                json={"mode": ControlMode, f"fan_speed": SetPoint },
+                timeout=3
+            )
+            r.raise_for_status()
+            return body, 200
+        except requests.HTTPError:
+            # 如果 CDU 回了 4xx/5xx，直接把它的 status code 和 body 回來
+            try:
+                err_body = r.json()
+            except ValueError:
+                err_body = {"error": r.text}
+            return err_body, r.status_code
+
+        except requests.RequestException as e:
+            # 純粹網路／timeout／連線失敗
+            return {
+                "error": "Forwarding to the CDU control service failed",
+                "details": str(e)
+            }, 502
+            
+        return "update success"
+    
+    _operation_mapping = {
+        "ControlMode",
+        "TargetTemperature",
+        "TargetPressure",
+        "PumpSwapTime",
+        "FanSetPoint",
+        "PumpSetPoint",
+        "Pump1Switch",
+        "Pump2Switch",
+        "Pump3Switch",  
+    }
+    def patch_Oem_Spuermicro_Operation(self, chassis_id: str, body: dict):
+        ControlMode = body["ControlMode"]
+        TargetTemperature = body["TargetTemperature"]
+        TargetPressure = body["TargetPressure"]
+        PumpSwapTime = body["PumpSwapTime"]
+        FanSetPoint = body["FanSetPoint"]
+        PumpSetPoint = body["PumpSetPoint"]
+        Pump1Switch = body["Pump1Switch"]
+        Pump2Switch = body["Pump2Switch"]
+        Pump3Switch = body["Pump3Switch"]
+        
+        fan_max = hardware_info["Fans"]["1"]["AllowableMax"]
+        fan_min = hardware_info["Fans"]["1"]["AllowableMin"]
+        pump_max = hardware_info["Pumps"]["1"]["AllowableMax"]
+        pump_min = hardware_info["Pumps"]["1"]["AllowableMin"]
+        
+        if FanSetPoint > fan_max  or FanSetPoint < fan_min:
+            return {"Fan Speed Error": f"Fan speed must be between {fan_min} and {fan_max}"}, 400
+        if PumpSetPoint > pump_max  or PumpSetPoint < pump_min:
+            return {"Pump Speed Error": f"Pump speed must be between {pump_min} and {pump_max}"}, 400
+        # 轉換redfish格式至rest格式
+        ControlMode = ControlMode_change(ControlMode)
+        # 轉發到內部控制 API
+        try:
+            r = requests.patch(
+                f"{CDU_BASE}/api/v1/cdu/status/op_mode",
+                json={
+                    "mode": ControlMode, 
+                    "temp_set": TargetTemperature,
+                    "pressure_set": TargetPressure,
+                    "pump_swap_time": PumpSwapTime,
+                    "pump_speed": PumpSetPoint,
+                    "pump1_switch": Pump1Switch,
+                    "pump2_switch": Pump2Switch,
+                    "pump3_switch": Pump3Switch,
+                    "fan_speed": FanSetPoint,
+                    },
+                timeout=3
+            )
+            r.raise_for_status()      
+            code = r.status_code
+            return body, code
+        except requests.HTTPError:
+            # 如果 CDU 回了 4xx/5xx，直接把它的 status code 和 body 回來
+            try:
+                err_body = r.json()
+            except ValueError:
+                err_body = {"error": r.text}
+            return err_body, r.status_code
+
+        except requests.RequestException as e:
+            # 純粹網路／timeout／連線失敗
+            return {
+                "error": "Forwarding to the CDU control service failed",
+                "details": str(e)
+            }, 502
+            
+        
+        
+    def get_control(self, chassis_id: str):
+        m = RfControlCollectionExcerptModel(chassis_id = chassis_id)
+        
+        data = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/Oem")
+        Oem = {
+            "Supermicro": {
+                "@odata.id": "/redfish/v1/Chassis/1/Controls/Oem/Supermicro/Operation",
+                "@odata.type": "#Supermicro.Control",
+                "ControlMode":ControlMode_change(data["ControlMode"]), # Disable / Automatic / Manual
+                "TargetTemperature": data["TargetTemperature"],
+                "TargetPressure": data["TargetPressure"],
+                "PumpSwapTime": data["PumpSwapTime"],
+                "FanSetPoint": data["FanSetPoint"],
+                "PumpSetPoint": data["PumpSetPoint"],
+                "Pump1Switch": data["Pump1Switch"],
+                "Pump2Switch": data["Pump2Switch"],
+                "Pump3Switch": data["Pump3Switch"],
+            }
+        }
+        m.Oem = Oem
+        
+        return m.to_dict()

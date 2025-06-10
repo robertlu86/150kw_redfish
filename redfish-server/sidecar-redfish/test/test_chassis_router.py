@@ -24,10 +24,10 @@ ThermalSubsystem_Fans_testcases = [
             "@odata.type": "#Fan.v1_5_0.Fan",
             "@odata.context": "/redfish/v1/$metadata#Fan.v1_5_0.Fan",
             "PhysicalContext": "Chassis",
-            "Description": hardware_info["Fans"][str(sn)]["LocatedAt"]
+            "Description": hardware_info["Fans"].get(str(sn), {}).get("LocatedAt")
         }
     } 
-    for sn in range(1, int(os.getenv("REDFISH_FAN_COLLECTION_CNT", 1)) + 1) # 故意+2，多一組
+    for sn in range(1, int(os.getenv("REDFISH_FAN_COLLECTION_CNT", 1)) + 2) # 故意+2，多一組
 ]
 
 Sensors_FanN_testcases = [
@@ -256,6 +256,7 @@ chassis_normal_testcases = [
         }
     }
 ] + Sensors_FanN_testcases[:-1]
+
 
 ##
 # PATCH testcase

@@ -2547,7 +2547,23 @@ class network(Resource):
                 rep[str(idx + 1)] = entry
                 
         return rep, 200
-
+    
+@default_ns.route("/cdu/components/Oem")  
+class Oem(Resource):
+    def get(self):
+        data = read_ctr_data()
+        rep = {}
+        rep["ControlMode"] = data["value"]["opMod"]
+        rep["TargetTemperature"] = data["value"]["resultTemp"]
+        rep["TargetPressure"] = data["value"]["resultPressure"]
+        rep["PumpSwapTime"] = data["value"]["resultSwap"]
+        rep["FanSetPoint"] = data["value"]["fan_speed"]
+        rep["PumpSetPoint"] = data["value"]["pump_speed"]
+        rep["Pump1Switch"] = data["value"]["pump1_check"]
+        rep["Pump2Switch"] = data["value"]["pump2_check"]
+        rep["Pump3Switch"] = data["value"]["pump3_check"]
+        
+        return rep
 api.add_namespace(default_ns)
 
 if __name__ == "__main__":
