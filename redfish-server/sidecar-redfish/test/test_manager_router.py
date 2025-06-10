@@ -65,6 +65,36 @@ managers_cdu_reset_testcases = [
     },
 ]
 
+managers_cdu_shutdown_testcases = [
+    {
+        "endpoint": f"/redfish/v1/Managers/CDU/Actions/Manager.Shutdown",
+        "payload": {
+            "ResetType": RfResetType.ForceRestart.value
+        },
+        "assert_cases": { 
+            "status_code": HTTPStatus.OK,
+        }
+    },
+    {
+        "endpoint": f"/redfish/v1/Managers/CDU/Actions/Manager.Shutdown",
+        "payload": {
+            "ResetType": RfResetType.GracefulRestart.value
+        },
+        "assert_cases": { 
+            "status_code": HTTPStatus.OK,
+        }
+    },
+    {
+        "endpoint": f"/redfish/v1/Managers/CDU/Actions/Manager.Shutdown",
+        "payload": {
+            "ResetType": "Invalid"
+        },
+        "assert_cases": { 
+            "status_code": HTTPStatus.BAD_REQUEST,
+        }
+    },
+]
+
 @pytest.mark.parametrize("testcase", managers_cdu_reset_to_defaults_testcases)
 def test_manager_cdu_reset_to_defaults(client, basic_auth_header, testcase):
     """[TestCase] manager CDU reset_to_defaults"""
@@ -102,3 +132,21 @@ def test_manager_cdu_reset(client, basic_auth_header, testcase):
         print(f"PASS: POST {endpoint} by MagicMock response HTTPStatus={testcase['assert_cases']['status_code']}")
 
     
+@pytest.mark.parametrize("testcase", managers_cdu_shutdown_testcases)
+def test_manager_cdu_shutdown(client, basic_auth_header, testcase):
+    """[TestCase] manager CDU shutdown"""
+    endpoint = testcase["endpoint"]
+    print(f"Endpoint: {endpoint}")
+    
+    with patch('mylib.adapters.webapp_api_adapter.WebAppAPIAdapter.shutdown') as mock:
+        mock.return_value = Response(
+            status=HTTPStatus.OK,
+            response=json.dumps({"message": "Shutdown Successfully"}),
+        )
+    
+        resp = client.post(endpoint, headers=basic_auth_header, json=testcase["payload"])
+        print_response_details(resp)
+
+        assert resp.status_code == testcase["assert_cases"]["status_code"]
+        print(f"PASS: POST {endpoint} by MagicMock response HTTPStatus={testcase['assert_cases']['status_code']}")
+

@@ -81,3 +81,7 @@ class RfManagersService(BaseService):
         """
         resp = WebAppAPIAdapter.reset(reset_type)
         return resp
+
+    def shutdown(self, reset_type: str):
+        resp = WebAppAPIAdapter.shutdown(reset_type)
+        return resp

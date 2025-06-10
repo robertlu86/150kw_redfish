@@ -152,7 +152,7 @@ class RfCduModel(RfResourceBaseModel):
     Version: Optional[str] = Field(default="", description="")
     ProductionDate: Optional[str] = Field(default="", description="The production or manufacturing date of this equipment.")
 
-    CoolingCapacityWatts: Optional[int] = Field(default=1000, description="")
+    CoolingCapacityWatts: Optional[int] = Field(default=-1, description="The cooling capacity (W) of this equipment.")
     EquipmentType: Optional[str] = Field(default="CDU", description="")
 
     Filters: Optional[Dict[str, Any]] = Field(default={}, description="")
@@ -201,7 +201,7 @@ class RfCduModel(RfResourceBaseModel):
             "@odata.id": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/LeakDetection"
         }
         self.Coolant = {
-            "CoolantType": "PropyleneGlycolAq",
+            "CoolantType": "Water",
             "DensityKgPerCubicMeter": 1030, 
             "SpecificHeatkJoulesPerKgK": 3900,
         }

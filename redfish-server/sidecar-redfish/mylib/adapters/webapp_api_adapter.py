@@ -45,3 +45,18 @@ class WebAppAPIAdapter:
             raise ProjError(HTTPStatus.BAD_REQUEST.value, f"Invalid reset type: {reset_type}")
         response = HttpRequestUtil.send_get(url)
         return response
+
+    @classmethod
+    def shutdown(cls, reset_type: str=RfResetType.ForceRestart.value) -> dict:
+        """Reset
+        @note:
+            Fetch scc api: /api/v1/shutdown
+        """
+        if reset_type == RfResetType.ForceRestart.value:
+            url = f"{os.environ['ITG_WEBAPP_HOST']}/api/v1/shutdown"
+        elif reset_type == RfResetType.GracefulRestart.value:
+            url = f"{os.environ['ITG_WEBAPP_HOST']}/api/v1/shutdown"
+        else:
+            raise ProjError(HTTPStatus.BAD_REQUEST.value, f"Invalid reset type: {reset_type}")
+        response = HttpRequestUtil.send_get(url)
+        return response
