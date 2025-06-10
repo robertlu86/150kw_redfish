@@ -90,6 +90,9 @@ class RfStatusModel(BaseModel):
                     include=set(self.__class__.model_fields.keys()),
                     exclude_none=True
                 )
+    
+    def is_critical(self) -> bool:
+        return self.Health == RfStatusHealth.Critical
                 
     def numeric_health_value(self) -> int:
         hashmap = RfStatusHealth.numeric_map()

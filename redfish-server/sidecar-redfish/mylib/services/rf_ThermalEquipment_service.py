@@ -28,6 +28,7 @@ from mylib.models.rf_leak_detector_id import RfLeakDetectionIdModel
 from load_env import hardware_info
 from mylib.routers.Chassis_router import GetControlMode
 from mylib.utils.StatusUtil import StatusUtil
+from load_env import hardware_info
 
 class RfThermalEquipmentService(BaseService):
     def fetch_CDUs(self, cdu_id: Optional[str] = None) -> dict:
@@ -48,6 +49,7 @@ class RfThermalEquipmentService(BaseService):
             m.FirmwareVersion = self._read_version_from_cache()["version"]["WebUI"]
             m.Version = self._read_version_from_cache()["fw_info"]["Version"]
             m.SerialNumber = self._read_version_from_cache()["fw_info"]["SN"]
+            m.CoolingCapacityWatts = hardware_info.get("CDU", {}).get("CoolingCapacityWatts", -1)
             m.Oem = {}
             
         return m.to_dict()
@@ -89,6 +91,10 @@ class RfThermalEquipmentService(BaseService):
                     "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/HumidityPercent",
                     "Reading": "Null"
                 },
+                # "Status": {
+                #     "State": "Enabled",
+                #     "Health": "OK"
+                # },
             }
         ]
         

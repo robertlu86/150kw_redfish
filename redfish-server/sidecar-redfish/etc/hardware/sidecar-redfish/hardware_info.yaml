@@ -1,11 +1,12 @@
 ---
 ProjectName: "sidecar-redfish"
+Manufacturer: "Supermicro"
 PowerSupplies:
   "1":
     FirmwareVersion: "0"
     HotPluggable: false
     InputNominalVoltageType: "AC400V" 
-    Manufacturer: "Supermicro"
+    Manufacturer: ${Manufacturer}
     PartNumber: "WDR-240-24"
     # SerialNumber: "TBD"
     PowerCapacityWatts: 240
@@ -15,7 +16,7 @@ PowerSupplies:
     FirmwareVersion: "0"
     HotPluggable: false
     InputNominalVoltageType: "AC400V" 
-    Manufacturer: "Supermicro"
+    Manufacturer: ${Manufacturer}
     PartNumber: "WDR-240-24"
     # SerialNumber: "TBD"
     PowerCapacityWatts: 240
@@ -25,7 +26,7 @@ PowerSupplies:
     FirmwareVersion: "0"
     HotPluggable: false
     InputNominalVoltageType: "AC400V" 
-    Manufacturer: "Supermicro"
+    Manufacturer: ${Manufacturer}
     PartNumber: "WDR-120-12"
     # SerialNumber: "TBD"
     PowerCapacityWatts: 120
@@ -35,7 +36,7 @@ PowerSupplies:
     FirmwareVersion: "0"
     HotPluggable: false
     InputNominalVoltageType: "AC400V" 
-    Manufacturer: "Supermicro"
+    Manufacturer: ${Manufacturer}
     PartNumber: "WDR-120-12"
     # SerialNumber: "TBD"
     PowerCapacityWatts: 120
@@ -126,9 +127,10 @@ Fans:
         ServiceLabel: "Leak Detector 1"
         LocationType: "Bay"
 CDU:
-  Manufacturer: KAORI
+  Manufacturer: ${Manufacturer}
   Model: 200KW SideCar L/A Colling CDU
   SerialNumber: 02753000A-XXXX
   PartNumber: LCS-SCDU-200AR001
   FirmwareVersion: ""
   Version: ""
+  CoolingCapacityWatts: 200000

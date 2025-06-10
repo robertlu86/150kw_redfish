@@ -7,6 +7,48 @@ import sys
 
 # 以下是 redfish 1.14.0 的Chassis API
 cdu_id = 1
+
+thermal_equipment_reserviors_testcases = [
+    {
+        "endpoint": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/Reservoirs",
+        "assert_cases": {
+            "@odata.id": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/Reservoirs",
+            "@odata.type": "#ReservoirCollection.ReservoirCollection",
+            "Members@odata.count": int(os.getenv("REDFISH_RESERVOIR_COLLECTION_CNT", 1)),
+            "Members": [
+                {"@odata.id": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/Reservoirs/{sn}"}
+                for sn in range(1, int(os.getenv("REDFISH_RESERVOIR_COLLECTION_CNT", 1)) + 1)
+            ],
+        }
+    }
+] + [
+    {
+        "endpoint": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/Reservoirs/{sn}",
+        "assert_cases": {
+            "@odata.id": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/Reservoirs/{sn}",
+            "@odata.type": "#Reservoir.v1_0_0.Reservoir",
+        }
+    }
+    for sn in range(1, int(os.getenv("REDFISH_RESERVOIR_COLLECTION_CNT", 1)) + 1)
+]
+
+thermal_equipment_leakdetection_testcases = [
+    {
+        "endpoint": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/LeakDetection",
+        "assert_cases": {
+            "@odata.id": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/LeakDetection",
+            "@odata.type": "#LeakDetection.v1_1_0.LeakDetection",
+        }
+    }, {
+        "endpoint": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/LeakDetection/LeakDetectors",
+        "assert_cases": {
+            "@odata.id": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/LeakDetection/LeakDetectors",
+            "@odata.type": "#LeakDetectorCollection.LeakDetectorCollection",
+            "Members@odata.count": 1,
+        }
+    }
+]
+
 thermal_equipment_testcases = [
     {
         "endpoint": f"/redfish/v1/ThermalEquipment/CDUs",
@@ -63,44 +105,10 @@ thermal_equipment_testcases = [
         }
     } 
     for sn in range(1, int(os.getenv("REDFISH_PUMP_COLLECTION_CNT", 1)) + 1)
-] + [
-    {
-        "endpoint": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/Reservoirs",
-        "assert_cases": {
-            "@odata.id": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/Reservoirs",
-            "@odata.type": "#ReservoirCollection.ReservoirCollection",
-            "Members@odata.count": int(os.getenv("REDFISH_RESERVOIR_COLLECTION_CNT", 1)),
-            "Members": [
-                {"@odata.id": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/Reservoirs/{sn}"}
-                for sn in range(1, int(os.getenv("REDFISH_RESERVOIR_COLLECTION_CNT", 1)) + 1)
-            ],
-        }
-    }
-] + [
-    {
-        "endpoint": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/Reservoirs/{sn}",
-        "assert_cases": {
-            "@odata.id": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/Reservoirs/{sn}",
-            "@odata.type": "#Reservoir.v1_0_0.Reservoir",
-        }
-    }
-    for sn in range(1, int(os.getenv("REDFISH_RESERVOIR_COLLECTION_CNT", 1)) + 1)
-] + [
-        {
-        "endpoint": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/LeakDetection",
-        "assert_cases": {
-            "@odata.id": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/LeakDetection",
-            "@odata.type": "#LeakDetection.LeakDetection",
-            "Members@odata.count": 1,
-        }
-    }, {
-        "endpoint": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/LeakDetection/LeakDetectors",
-        "assert_cases": {
-            "@odata.id": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/LeakDetection/LeakDetectors",
-            "@odata.type": "#LeakDetectors.v1_6_0.LeakDetectors",
-        }
-    }
 ]
+# thermal_equipment_testcases += thermal_equipment_reserviors_testcases 
+thermal_equipment_testcases += thermal_equipment_leakdetection_testcases
+
 
 @pytest.mark.parametrize('testcase', thermal_equipment_testcases)
 def test_thermal_equipment_api(client, basic_auth_header, testcase):

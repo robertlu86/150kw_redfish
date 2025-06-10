@@ -106,13 +106,26 @@ Controls_data = {
     "@odata.context": "/redfish/v1/$metadata#ControlCollection.ControlCollection",
     "Name": "Control Collection",
     "Description": "Contains all control interfaces for issuing commands",
-    "Members@odata.count": 3,
+    "Members@odata.count": 0,
     "Members": [
-        {"@odata.id": "/redfish/v1/Chassis/1/Controls/OperationMode"},
-        {"@odata.id": "/redfish/v1/Chassis/1/Controls/PumpsSpeedControl"},
-        {"@odata.id": "/redfish/v1/Chassis/1/Controls/FansSpeedControl"},
+        # {"@odata.id": "/redfish/v1/Chassis/1/Controls/OperationMode"},
+        # {"@odata.id": "/redfish/v1/Chassis/1/Controls/PumpsSpeedControl"},
+        # {"@odata.id": "/redfish/v1/Chassis/1/Controls/FansSpeedControl"},
     ],
     "Oem": {
+        "Supermicro": {
+            "@odata.id": "/redfish/v1/Chassis/1/Controls/Oem/Supermicro/Operation",
+            "@odata.type": "#Supermicro.Control",
+            "ControlMode":"N/A", # Disable / Automatic / Manual
+            "TargetTemperature": -1,
+            "TargetPressure": -1,
+            "PumpSwapTime": -1,
+            "FanSetPoint": -1,
+            "PumpSetPoint": -1,
+            "Pump1Switch": False,
+            "Pump2Switch": False,
+            "Pump3Switch": False,
+        }
     }
 }
 
@@ -368,6 +381,15 @@ def GetControlMode():
     }
     ctrl = mapping.get(mode, Controls_data_all["OperationMode"]["ControlMode"])
     return ctrl
+
+def ControlMode_change(new_mode):
+    mapping = {
+        "Automatic" : "auto",     
+        "Manual"    : "manual",   
+        "Disabled"  : "stop", 
+        "Override"  : "override" 
+    }
+    return mapping.get(new_mode)
 #================================================
 # 機箱資源（Chassis）
 #================================================
@@ -493,223 +515,225 @@ fanspeed_patch = Chassis_ns.model('FanSpeedControlPatch', {
 class Controls(Resource):
     # @requires_auth
     def get(self, chassis_id):
-        return Controls_data
+        
+        # return Controls_data
+        return RfChassisService().get_control(chassis_id)
 
 # operation mode 控制
-@Chassis_ns.route("/Chassis/<chassis_id>/Controls/OperationMode")
-class OperationMode(Resource):
-    # # @requires_auth
-    def get(self, chassis_id):
-        Controls_data_all["OperationMode"]["ControlMode"] = GetControlMode()
-        return Controls_data_all["OperationMode"], 200
+# @Chassis_ns.route("/Chassis/<chassis_id>/Controls/OperationMode")
+# class OperationMode(Resource):
+#     # # @requires_auth
+#     def get(self, chassis_id):
+#         Controls_data_all["OperationMode"]["ControlMode"] = GetControlMode()
+#         return Controls_data_all["OperationMode"], 200
     
-    @Chassis_ns.expect(OperationMode_patch, validate=True)
-    # @requires_auth
-    def patch(self, chassis_id):
-        global mode_all
-        payload = request.get_json(force=True)
-        new_mode  = payload["mode"]
-        inv = {
-            "Automatic": "auto",
-            "Manual":    "manual",
-            "Disabled":  "stop",
-            "Override":  "override"
-        }
+#     @Chassis_ns.expect(OperationMode_patch, validate=True)
+#     # @requires_auth
+#     def patch(self, chassis_id):
+#         global mode_all
+#         payload = request.get_json(force=True)
+#         new_mode  = payload["mode"]
+#         inv = {
+#             "Automatic": "auto",
+#             "Manual":    "manual",
+#             "Disabled":  "stop",
+#             "Override":  "override"
+#         }
         
-        api_payload = inv[new_mode]
-        print(api_payload)
-        try:
-            r = requests.patch(
-                f"{CDU_BASE}/api/v1/cdu/status/op_mode",
-                json={"mode": api_payload},  
-                timeout=3
-            )
-            r.raise_for_status()
-        except requests.HTTPError:
-            # 如果 CDU 回了 4xx/5xx，直接把它的 status code 和 body 回來
-            try:
-                err_body = r.json()
-            except ValueError:
-                err_body = {"error": r.text}
-            return err_body, r.status_code
+#         api_payload = inv[new_mode]
+#         print(api_payload)
+#         try:
+#             r = requests.patch(
+#                 f"{CDU_BASE}/api/v1/cdu/status/op_mode",
+#                 json={"mode": api_payload},  
+#                 timeout=3
+#             )
+#             r.raise_for_status()
+#         except requests.HTTPError:
+#             # 如果 CDU 回了 4xx/5xx，直接把它的 status code 和 body 回來
+#             try:
+#                 err_body = r.json()
+#             except ValueError:
+#                 err_body = {"error": r.text}
+#             return err_body, r.status_code
 
-        except requests.RequestException as e:
-            # 純粹網路／timeout／連線失敗
-            return {
-                "error": "Forwarding to the CDU control service failed",
-                "details": str(e)
-            }, 502
+#         except requests.RequestException as e:
+#             # 純粹網路／timeout／連線失敗
+#             return {
+#                 "error": "Forwarding to the CDU control service failed",
+#                 "details": str(e)
+#             }, 502
 
-        # 內部服務回傳 OK，更新 Redfish 內存資料
-        Controls_data_all["OperationMode"]["ControlMode"] = new_mode
+#         # 內部服務回傳 OK，更新 Redfish 內存資料
+#         Controls_data_all["OperationMode"]["ControlMode"] = new_mode
 
-        # 回傳更新後的 Redfish Control 資源
-        return Controls_data_all["OperationMode"], 200
+#         # 回傳更新後的 Redfish Control 資源
+#         return Controls_data_all["OperationMode"], 200
     
-# pump speed 控制
-@Chassis_ns.route("/Chassis/<chassis_id>/Controls/PumpsSpeedControl")
-class PumpsSpeedControl(Resource):
-    # @requires_auth
-    def get(self, chassis_id):
+# # pump speed 控制
+# @Chassis_ns.route("/Chassis/<chassis_id>/Controls/PumpsSpeedControl")
+# class PumpsSpeedControl(Resource):
+#     # @requires_auth
+#     def get(self, chassis_id):
         
-        pump_set_speed = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/control/pump_speed")
-        Controls_data_all["PumpsSpeedControl"]["SetPoint"] = pump_set_speed["pump_speed"]
-        Controls_data_all["PumpsSpeedControl"]["ControlMode"] = GetControlMode()
-        # 回傳各 pump 速度
-        # control_speed = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/control/pump_speed")
-        # Controls_data_all["PumpsSpeedControl"]["oem"]["pump1_speed"] = control_speed["pump1_speed"]
-        # Controls_data_all["PumpsSpeedControl"]["oem"]["pump2_speed"] = control_speed["pump2_speed"]
-        # Controls_data_all["PumpsSpeedControl"]["oem"]["pump3_speed"] = control_speed["pump3_speed"]
-        return Controls_data_all["PumpsSpeedControl"]
+#         pump_set_speed = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/control/pump_speed")
+#         Controls_data_all["PumpsSpeedControl"]["SetPoint"] = pump_set_speed["pump_speed"]
+#         Controls_data_all["PumpsSpeedControl"]["ControlMode"] = GetControlMode()
+#         # 回傳各 pump 速度
+#         # control_speed = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/control/pump_speed")
+#         # Controls_data_all["PumpsSpeedControl"]["oem"]["pump1_speed"] = control_speed["pump1_speed"]
+#         # Controls_data_all["PumpsSpeedControl"]["oem"]["pump2_speed"] = control_speed["pump2_speed"]
+#         # Controls_data_all["PumpsSpeedControl"]["oem"]["pump3_speed"] = control_speed["pump3_speed"]
+#         return Controls_data_all["PumpsSpeedControl"]
     
-    # @requires_auth
-    @Chassis_ns.expect(pumpspeed_patch_all, validate=True)
-    def patch(self, chassis_id):
-        body = request.get_json(force=True)
+#     # @requires_auth
+#     @Chassis_ns.expect(pumpspeed_patch_all, validate=True)
+#     def patch(self, chassis_id):
+#         body = request.get_json(force=True)
         
-        Controls_data_all["PumpsSpeedControl"]["ControlMode"] = GetControlMode()
-        # 驗證模式
-        if Controls_data_all["PumpsSpeedControl"]["ControlMode"] != "Manual": 
-            return {
-                "error": {
-                    "code": "Base.1.0.PropertyValueNotInSupportedRange",
-                    "message": "Only Manual mode can be used for this operation.",
-                }
-            }, 400      
+#         Controls_data_all["PumpsSpeedControl"]["ControlMode"] = GetControlMode()
+#         # 驗證模式
+#         if Controls_data_all["PumpsSpeedControl"]["ControlMode"] != "Manual": 
+#             return {
+#                 "error": {
+#                     "code": "Base.1.0.PropertyValueNotInSupportedRange",
+#                     "message": "Only Manual mode can be used for this operation.",
+#                 }
+#             }, 400      
 
             
         
-        new_sp = body['speed_set']
-        new_sw1 = body['pump1_switch']
-        new_sw2 = body['pump2_switch']
-        new_sw3 = body['pump3_switch']
+#         new_sp = body['speed_set']
+#         new_sw1 = body['pump1_switch']
+#         new_sw2 = body['pump2_switch']
+#         new_sw3 = body['pump3_switch']
         
-        # 驗證範圍
-        scp = Controls_data_all["PumpsSpeedControl"]
-        if not (scp["AllowableMin"] <= new_sp <= scp["AllowableMax"]):
-            return {
-                "error": f"pump_speed needs to be between {scp['AllowableMin']} and {scp['AllowableMax']} or 0"
-            }, 400
+#         # 驗證範圍
+#         scp = Controls_data_all["PumpsSpeedControl"]
+#         if not (scp["AllowableMin"] <= new_sp <= scp["AllowableMax"]):
+#             return {
+#                 "error": f"pump_speed needs to be between {scp['AllowableMin']} and {scp['AllowableMax']} or 0"
+#             }, 400
 
-        # 轉發到內部控制 API
-        try:
-            r = requests.patch(
-                f"{CDU_BASE}/api/v1/cdu/control/pump1_speed",
-                json={"pump_speed": new_sp, "pump_switch": new_sw1},
-                timeout=3
-            )
-            r.raise_for_status()
-            r = requests.patch(
-                f"{CDU_BASE}/api/v1/cdu/control/pump2_speed",
-                json={"pump_speed": new_sp, "pump_switch": new_sw2},
-                timeout=3
-            )
-            r.raise_for_status()
-            r = requests.patch(
-                f"{CDU_BASE}/api/v1/cdu/control/pump3_speed",
-                json={"pump_speed": new_sp, "pump_switch": new_sw3},
-                timeout=3
-            )
-            r.raise_for_status()
-        except requests.HTTPError:
-            # 如果 CDU 回了 4xx/5xx，直接把它的 status code 和 body 回來
-            try:
-                err_body = r.json()
-            except ValueError:
-                err_body = {"error": r.text}
-            return err_body, r.status_code
+#         # 轉發到內部控制 API
+#         try:
+#             r = requests.patch(
+#                 f"{CDU_BASE}/api/v1/cdu/control/pump1_speed",
+#                 json={"pump_speed": new_sp, "pump_switch": new_sw1},
+#                 timeout=3
+#             )
+#             r.raise_for_status()
+#             r = requests.patch(
+#                 f"{CDU_BASE}/api/v1/cdu/control/pump2_speed",
+#                 json={"pump_speed": new_sp, "pump_switch": new_sw2},
+#                 timeout=3
+#             )
+#             r.raise_for_status()
+#             r = requests.patch(
+#                 f"{CDU_BASE}/api/v1/cdu/control/pump3_speed",
+#                 json={"pump_speed": new_sp, "pump_switch": new_sw3},
+#                 timeout=3
+#             )
+#             r.raise_for_status()
+#         except requests.HTTPError:
+#             # 如果 CDU 回了 4xx/5xx，直接把它的 status code 和 body 回來
+#             try:
+#                 err_body = r.json()
+#             except ValueError:
+#                 err_body = {"error": r.text}
+#             return err_body, r.status_code
 
-        except requests.RequestException as e:
-            # 純粹網路／timeout／連線失敗
-            return {
-                "error": "Forwarding to the CDU control service failed",
-                "details": str(e)
-            }, 502
+#         except requests.RequestException as e:
+#             # 純粹網路／timeout／連線失敗
+#             return {
+#                 "error": "Forwarding to the CDU control service failed",
+#                 "details": str(e)
+#             }, 502
 
-        # 更新內存資料
-        scp["SetPoint"] = new_sp
-        # pump_switch 控制 State
-        # cdus_pumps_1["Status"]["State"] = "Enabled" if new_sw1 else "Disabled"
-        # cdus_pumps_2["Status"]["State"] = "Enabled" if new_sw2 else "Disabled"
-        # cdus_pumps_3["Status"]["State"] = "Enabled" if new_sw3 else "Disabled"
+#         # 更新內存資料
+#         scp["SetPoint"] = new_sp
+#         # pump_switch 控制 State
+#         # cdus_pumps_1["Status"]["State"] = "Enabled" if new_sw1 else "Disabled"
+#         # cdus_pumps_2["Status"]["State"] = "Enabled" if new_sw2 else "Disabled"
+#         # cdus_pumps_3["Status"]["State"] = "Enabled" if new_sw3 else "Disabled"
 
-        # 回傳整個 Pump 資源
-        return Controls_data_all["PumpsSpeedControl"], 200
+#         # 回傳整個 Pump 資源
+#         return Controls_data_all["PumpsSpeedControl"], 200
 
-# fanspeed 控制
-@Chassis_ns.route("/Chassis/<chassis_id>/Controls/FansSpeedControl")
-class FansSpeedControl(Resource):
-    # @requires_auth
-    def get(self, chassis_id):
-        fan_control_speed = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/control/fan_speed")["fan_set"]
-        Controls_data_all["FansSpeedControl"]["SetPoint"] = fan_control_speed
-        Controls_data_all["FansSpeedControl"]["ControlMode"] = GetControlMode()
-        print(fan_control_speed)
-        return Controls_data_all["FansSpeedControl"], 200
+# # fanspeed 控制
+# @Chassis_ns.route("/Chassis/<chassis_id>/Controls/FansSpeedControl")
+# class FansSpeedControl(Resource):
+#     # @requires_auth
+#     def get(self, chassis_id):
+#         fan_control_speed = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/control/fan_speed")["fan_set"]
+#         Controls_data_all["FansSpeedControl"]["SetPoint"] = fan_control_speed
+#         Controls_data_all["FansSpeedControl"]["ControlMode"] = GetControlMode()
+#         print(fan_control_speed)
+#         return Controls_data_all["FansSpeedControl"], 200
     
-    @Chassis_ns.expect(fanspeed_patch, validate=True)
-    # @requires_auth
-    def patch(self, chassis_id):
-        payload = request.get_json(force=True)
-        new_sp = payload["fan_speed"]
-        fan1_switch = payload["fan1_switch"]
-        fan2_switch = payload["fan2_switch"]
-        fan3_switch = payload["fan3_switch"]
-        fan4_switch = payload["fan4_switch"]
-        fan5_switch = payload["fan5_switch"]
-        fan6_switch = payload["fan6_switch"]
-        # fan7_switch = payload["fan7_switch"]
-        # fan8_switch = payload["fan8_switch"]
+#     @Chassis_ns.expect(fanspeed_patch, validate=True)
+#     # @requires_auth
+#     def patch(self, chassis_id):
+#         payload = request.get_json(force=True)
+#         new_sp = payload["fan_speed"]
+#         fan1_switch = payload["fan1_switch"]
+#         fan2_switch = payload["fan2_switch"]
+#         fan3_switch = payload["fan3_switch"]
+#         fan4_switch = payload["fan4_switch"]
+#         fan5_switch = payload["fan5_switch"]
+#         fan6_switch = payload["fan6_switch"]
+#         # fan7_switch = payload["fan7_switch"]
+#         # fan8_switch = payload["fan8_switch"]
 
-        Controls_data_all["FansSpeedControl"]["ControlMode"] = GetControlMode()
-        # 驗證模式
-        if Controls_data_all["FansSpeedControl"]["ControlMode"] != "Manual": 
-            return {"error": "Only Manual mode can set fan speed"}, 405
+#         Controls_data_all["FansSpeedControl"]["ControlMode"] = GetControlMode()
+#         # 驗證模式
+#         if Controls_data_all["FansSpeedControl"]["ControlMode"] != "Manual": 
+#             return {"error": "Only Manual mode can set fan speed"}, 405
 
-        try:
-            r = requests.patch(
-                f"{CDU_BASE}/api/v1/cdu/control/fan_speed",
-                json={"fan_speed": new_sp},  
-                timeout=3
-            )
-            r.raise_for_status()
-            r = requests.patch(
-                f"{CDU_BASE}/api/v1/cdu/status/op_mode",
-                json={  
-                    "mode": "manual",
-                    "fan1_switch": fan1_switch,
-                    "fan2_switch": fan2_switch,
-                    "fan3_switch": fan3_switch,
-                    "fan4_switch": fan4_switch,
-                    "fan5_switch": fan5_switch,
-                    "fan6_switch": fan6_switch,
-                    # "fan7_switch": fan7_switch,
-                    # "fan8_switch": fan8_switch
-                },  
-                timeout=3
-            )
-            r.raise_for_status()
+#         try:
+#             r = requests.patch(
+#                 f"{CDU_BASE}/api/v1/cdu/control/fan_speed",
+#                 json={"fan_speed": new_sp},  
+#                 timeout=3
+#             )
+#             r.raise_for_status()
+#             r = requests.patch(
+#                 f"{CDU_BASE}/api/v1/cdu/status/op_mode",
+#                 json={  
+#                     "mode": "manual",
+#                     "fan1_switch": fan1_switch,
+#                     "fan2_switch": fan2_switch,
+#                     "fan3_switch": fan3_switch,
+#                     "fan4_switch": fan4_switch,
+#                     "fan5_switch": fan5_switch,
+#                     "fan6_switch": fan6_switch,
+#                     # "fan7_switch": fan7_switch,
+#                     # "fan8_switch": fan8_switch
+#                 },  
+#                 timeout=3
+#             )
+#             r.raise_for_status()
 
-        except requests.HTTPError:
-            # 如果 CDU 回了 4xx/5xx，直接把它的 status code 和 body 回來
-            try:
-                err_body = r.json()
-            except ValueError:
-                err_body = {"error": r.text}
-            return err_body, r.status_code
+#         except requests.HTTPError:
+#             # 如果 CDU 回了 4xx/5xx，直接把它的 status code 和 body 回來
+#             try:
+#                 err_body = r.json()
+#             except ValueError:
+#                 err_body = {"error": r.text}
+#             return err_body, r.status_code
 
-        except requests.RequestException as e:
-            # 純粹網路／timeout／連線失敗
-            return {
-                "error": "Forwarding to the CDU control service failed",
-                "details": str(e)
-            }, 502
+#         except requests.RequestException as e:
+#             # 純粹網路／timeout／連線失敗
+#             return {
+#                 "error": "Forwarding to the CDU control service failed",
+#                 "details": str(e)
+#             }, 502
 
-        # 內部服務回傳 OK，更新 Redfish 內存資料
-        Controls_data_all["FansSpeedControl"]["SetPoint"] = new_sp
+#         # 內部服務回傳 OK，更新 Redfish 內存資料
+#         Controls_data_all["FansSpeedControl"]["SetPoint"] = new_sp
 
-        # 回傳更新後的 Redfish Control 資源
-        return Controls_data_all["FansSpeedControl"], 200
+#         # 回傳更新後的 Redfish Control 資源
+#         return Controls_data_all["FansSpeedControl"], 200
 #================================================
 # 電源子系統（PowerSubsystem）
 #================================================
@@ -787,11 +811,18 @@ class FetchSensorsById(Resource):
 #================================================
 # OperationMode patch設置
 FanSwitch_patch = Chassis_ns.model('FanSwitchpatch', {
-    'fan_switch': fields.Boolean(
+    'SetPoint': fields.Integer(
         required=True,
-        description='Fan_Switch',
-        default=True,   # 設定預設值
-        example=True,   # 讓 UI 顯示範例
+        description='Fan_Speed',
+        default=True,   # 是否設定預設值
+        example=50,   # 讓 UI 顯示範例
+    ),
+    'ControlMode': fields.String(
+        required=True,
+        description='Switch_Mode',
+        default=True,   # 是否設定預設值
+        example="Manual",   # 讓 UI 顯示範例
+        enum=['Automatic', 'Manual', 'Disabled']
     ),
 })
 
@@ -831,42 +862,46 @@ class ThermalSubsystem_Fans_by_id(MyBaseChassis):
     
     @Chassis_ns.expect(FanSwitch_patch, validate=True)
     def patch(self, chassis_id, fan_id):
-        
         body = request.get_json(force=True)
+        # rep = RfChassisService().patch_thermal_subsystem_fans_data(chassis_id, fan_id, body)
+        
+        return RfChassisService().patch_thermal_subsystem_fans_data(chassis_id, fan_id, body)
+        # return rep, 200
         # 驗證模式
-        if Controls_data_all["OperationMode"]["ControlMode"] != "Manual": return "only Manual can setting"
-        fan_switch = body["fan_switch"]
+        # if Controls_data_all["OperationMode"]["ControlMode"] != "Manual": return "only Manual can setting"
+        # fan_switch = body["fan_switch"]
 
-        # 轉發到內部控制 API
-        try:
-            r = requests.patch(
-                f"{CDU_BASE}/api/v1/cdu/status/op_mode",
-                json={"mode": "manual", f"fan{fan_id}_switch": fan_switch },
-                timeout=3
-            )
-            r.raise_for_status()
+        # # 轉發到內部控制 API
+        # try:
+        #     r = requests.patch(
+        #         f"{CDU_BASE}/api/v1/cdu/status/op_mode",
+        #         json={"mode": "manual", f"fan{fan_id}_switch": fan_switch },
+        #         timeout=3
+        #     )
+        #     r.raise_for_status()
 
-        except requests.HTTPError:
-            # 如果 CDU 回了 4xx/5xx，直接把它的 status code 和 body 回來
-            try:
-                err_body = r.json()
-            except ValueError:
-                err_body = {"error": r.text}
-            return err_body, r.status_code
+        # except requests.HTTPError:
+        #     # 如果 CDU 回了 4xx/5xx，直接把它的 status code 和 body 回來
+        #     try:
+        #         err_body = r.json()
+        #     except ValueError:
+        #         err_body = {"error": r.text}
+        #     return err_body, r.status_code
 
-        except requests.RequestException as e:
-            # 純粹網路／timeout／連線失敗
-            return {
-                "error": "Forwarding to the CDU control service failed",
-                "details": str(e)
-            }, 502
+        # except requests.RequestException as e:
+        #     # 純粹網路／timeout／連線失敗
+        #     return {
+        #         "error": "Forwarding to the CDU control service failed",
+        #         "details": str(e)
+        #     }, 502
         
-        # 內部儲存
-        state = "Enabled" if fan_switch else "Disabled"
-        # Sensors_data_all[f"Fan{fan_id}"]["ControlMode"] = state
-        ThermalSubsystem_Fans_by_id = RfChassisService()
+        # # 內部儲存
+        # state = "Enabled" if fan_switch else "Disabled"
+        # # Sensors_data_all[f"Fan{fan_id}"]["ControlMode"] = state
+        # ThermalSubsystem_Fans_by_id = RfChassisService()
         
-        return ThermalSubsystem_Fans_by_id.get_thermal_subsystem_fans_data(chassis_id, fan_id), 200
+        # return ThermalSubsystem_Fans_by_id.get_thermal_subsystem_fans_data(chassis_id, fan_id), 200
+        
     
 @Chassis_ns.route("/Chassis/<chassis_id>/ThermalSubsystem/ThermalMetrics")
 class ThermalMetrics(Resource):
@@ -1450,4 +1485,72 @@ class PowerSuppliesMetrics(MyBaseChassis):
 #             },
 #             "TrustedComponentType": "Discrete",
 #         }
-#         return TrustedComponents_component_data         
+#         return TrustedComponents_component_data      
+Operation_patch = Chassis_ns.model('Operation', {
+    'ControlMode': fields.String(
+        required=True,
+        description='Switch_Mode',
+        default=True,   # 是否設定預設值
+        example="Manual",   # 讓 UI 顯示範例
+        enum=['Automatic', 'Manual', 'Disabled']
+    ),
+    'TargetTemperature': fields.Integer(
+        required=True,
+        description='Target_Temperature',
+        default=True,   # 是否設定預設值
+        example=50,   # 讓 UI 顯示範例
+    ),
+    'TargetPressure': fields.Integer(
+        required=True,
+        description='Target_Pressure',
+        default=True,   # 是否設定預設值
+        example=10,   # 讓 UI 顯示範例
+    ),
+    'PumpSwapTime': fields.Integer(
+        required=True,
+        description='Pump_Swap_Time',
+        default=True,   # 是否設定預設值
+        example=100,   # 讓 UI 顯示範例
+    ),
+    'FanSetPoint': fields.Integer(
+        required=True,
+        description='Fan_Set_Point',
+        default=True,   # 是否設定預設值
+        example=50,   # 讓 UI 顯示範例
+    ),
+    'PumpSetPoint': fields.Integer(
+        required=True,
+        description='Pump_Set_Point',
+        default=True,   # 是否設定預設值
+        example=50,   # 讓 UI 顯示範例
+    ),
+    'Pump1Switch': fields.Boolean(
+        required=True,
+        description='Pump1_Switch',
+        default=True,   # 是否設定預設值
+        example=True,   # 讓 UI 顯示範例
+    ),
+    'Pump2Switch': fields.Boolean(
+        required=True,
+        description='Pump2_Switch',
+        default=True,   # 是否設定預設值
+        example=True,   # 讓 UI 顯示範例
+    ),
+    'Pump3Switch': fields.Boolean(
+        required=True,
+        description='Pump3_Switch',
+        default=True,   # 是否設定預設值
+        example=True,   # 讓 UI 顯示範例
+    )
+
+})   
+
+@Chassis_ns.route("/Chassis/<chassis_id>/Controls/Oem/Supermicro/Operation")
+class Operation(Resource):
+    # @requires_auth
+    @Chassis_ns.expect(Operation_patch, validate=True)
+    def patch(self, chassis_id):
+        body = request.get_json(force=True)
+        
+        return RfChassisService().patch_Oem_Spuermicro_Operation(chassis_id, body)
+    
