@@ -470,7 +470,9 @@ styles %}
                                 <div class="result resultFan6" id="resultFan6"></div>
                             </div>
                         </div>
-                        <div class="row" id="Fan7_set">
+                        <!-- 預設關閉顯示 -->
+
+                        <div class="row" id="Fan7_set" style="display: none;">
                             <div class="col-6 center_text" id="Fan7_name">Fan7:</div>
                             <div class="col-3 sideNum">
                                 <div class="form-check">
@@ -481,7 +483,8 @@ styles %}
                                 <div class="result resultFan7" id="resultFan7"></div>
                             </div>
                         </div>
-                        <div class="row" id="Fan8_set">
+                        <!-- 預設關閉顯示 -->
+                        <div class="row" id="Fan8_set" style="display: none;">
                             <div class="col-6 center_text">Fan8:</div>
                             <div class="col-3 sideNum">
                                 <div class="form-check">
@@ -1903,8 +1906,8 @@ styles %}
         }
 
 
-            $(`#FilterResetBtn`).click(() => resetFilter());
-        
+        $(`#FilterResetBtn`).click(() => resetFilter());
+
 
 
         $("#settings_export_bt").click(function () {
@@ -2550,11 +2553,25 @@ styles %}
                                     if (typeof value === "string") {
                                         element.value = value;
                                     } else if (typeof value === "boolean") {
-                                        element.checked = value;
+                                        if (userType == "superuser" || userType == "admin") {
+                                            element.checked = value;
+                                        }
+                                        else {
+                                            console.log("value:", value, "element:", element);
+                                        }
                                     } else {
                                         if (key.includes("pressure")) {
                                             value = Math.round(value * 10) / 10;
                                             element.value = value;
+                                            /// 增加fan speed 判斷, 設定小於7 會出現0
+                                        } else if (key.includes("fan_speed")) {
+                                            if (value < 7) {
+                                                value = 0
+                                                element.value = value;
+                                            } else {
+                                                value = Math.round(value);
+                                                element.value = value;
+                                            }
                                         } else {
                                             if (element) {
                                                 value = Math.round(value);

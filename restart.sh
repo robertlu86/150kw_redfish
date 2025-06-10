@@ -8,52 +8,12 @@ sudo usermod -aG dialout user
 # cd /home/user/service/PLC
 # pip install --no-index --find-links=./wheelhouse --upgrade -r requirements.txt || true
 
-# python3 -m venv /home/user/service/webUI/webvenv
-# sudo chmod 777 -R /home/user/service/webUI/webvenv/bin
-# source /home/user/service/webUI/webvenv/bin/activate
-# cd /home/user/service/webUI
-# pip install --no-index --find-links=./wheelhouse --upgrade -r requirements.txt || true
-
-# python3 -m venv /home/user/service/RestAPI/apienv
-# sudo chmod 777 -R /home/user/service/RestAPI/apienv/bin
-# source /home/user/service/RestAPI/apienv/bin/activate
-# cd /home/user/service/RestAPI
-# pip install --no-index --find-links=./wheelhouse --upgrade -r requirements.txt || true
-
-# python3 -m venv /home/user/service/modbus_proxy/venv
-# sudo chmod 777 -R /home/user/service/modbus_proxy/venv/bin
-# source /home/user/service/modbus_proxy/venv/bin/activate
-# cd /home/user/service/modbus_proxy
-# pip install --no-index --find-links=./wheelhouse --upgrade -r requirements.txt || true
-
-# python3 -m venv /home/user/service/snmp/snmpvenv
-# sudo chmod 777 -R /home/user/service/snmp/snmpvenv/bin
-# source /home/user/service/snmp/snmpvenv/bin/activate
-# cd /home/user/service/snmp
-# pip install --no-index --find-links=./wheelhouse --upgrade -r requirements.txt || true
-
-
-
 # cd /home/user/service
 
 # SCRIPT_DIR="$(dirname "$0")"
 
 
 # TARGET_SCRIPT="$SCRIPT_DIR/webUI/install_ntpdate.sh"
-
-# sudo chmod +x "$TARGET_SCRIPT"
-
-# "$TARGET_SCRIPT"
-
-
-# TARGET_SCRIPT="$SCRIPT_DIR/network.sh"
-
-# chmod +x "$TARGET_SCRIPT"
-
-# "$TARGET_SCRIPT"
-
-
-# TARGET_SCRIPT="$SCRIPT_DIR/new_user_sh/disable_onboard.sh"
 
 # sudo chmod +x "$TARGET_SCRIPT"
 
