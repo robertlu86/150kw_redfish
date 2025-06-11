@@ -4527,7 +4527,7 @@ def read_modbus_data():
                 "fan7": 7460,
                 "fan8": 7500,
             }
-  
+          
         for k, v in ctr_data["inv"].items():
             if k.startswith("fan"):
                 if v:
@@ -6257,7 +6257,7 @@ def write_version():
 
     FW_Info["SN"] = data["SN"]
     FW_Info["Model"] = data["Model"]
-    FW_Info["Version"] = data["Version"]
+    # FW_Info["Version"] = data["Version"]
     FW_Info["PartNumber"] = data["PartNumber"]
 
     with open(f"{web_path}/fw_info.json", "w") as file:
