@@ -465,6 +465,9 @@ def test_chassis_normal_api(client, basic_auth_header, testcase):
             
 
 redundant_testcases = [
+    {
+        "endpoint": f'/redfish/v1/Chassis/9999',
+    },
     ThermalSubsystem_Fans_testcases[-1],
     Sensors_FanN_testcases[-1],
     PowerSupplies_testcases[-1]
@@ -478,8 +481,10 @@ def test_redundant_chassis_api(client, basic_auth_header, redundant_testcase):
         resp_json = response.json
         print(f"Response json: {json.dumps(resp_json, indent=2, ensure_ascii=False)}")
         assert response.status_code == 404
+        print(f"PASS: Endpoint: {redundant_testcase['endpoint']} is expected to return 404")
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"FAIL: Endpoint: {redundant_testcase['endpoint']} is expected to return 404, but got {e}")
+        raise e
         
     
 @pytest.mark.parametrize('testcase', Sensors_FanN_testcases[:-1])

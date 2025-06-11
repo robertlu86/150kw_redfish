@@ -5,6 +5,7 @@ from mylib.utils.load_api import CDU_BASE
 from mylib.services.rf_managers_service import RfManagersService
 from mylib.models.rf_resource_model import RfResetType
 from mylib.models.rf_manager_model import RfResetToDefaultsType
+from mylib.utils.system_info import get_mac_uuid
 
 managers_ns = Namespace('', description='Chassis Collection')
 
@@ -361,6 +362,7 @@ class ManagersCDU(Resource):
         # status
         heath = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/mc")["cdu_status"]
         rep["Status"] = {"State": "Enabled", "Health": heath}
+        rep["UUID"] = get_mac_uuid()
         return rep, 200
 
 @managers_ns.route("/Managers/CDU/Actions/Manager.ResetToDefaults")

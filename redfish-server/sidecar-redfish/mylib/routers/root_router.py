@@ -1,6 +1,8 @@
 import os
 from flask import current_app, request, jsonify, make_response, send_file, Response
 from flask_restx import Namespace, Resource
+from mylib.utils.load_api import load_raw_from_api, CDU_BASE
+from mylib.utils.system_info import get_mac_uuid
 
 root_ns = Namespace('', description='Redfish V1')
 
@@ -79,7 +81,9 @@ class Root(Resource):
         odata_ver = request.headers.get('OData-Version')
         if odata_ver is not None and odata_ver != '4.0':
             return Response(status=412)
-        
+        version = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/display/version")
+        root_data["Product"] = version["fw_info"]["Model"]
+        root_data["UUID"] = get_mac_uuid()
         resp = make_response(jsonify(root_data), 200)
         resp.headers['Allow'] = 'OPTIONS, GET, HEAD'
         resp.headers['Cache-Control'] = 'no-cache'

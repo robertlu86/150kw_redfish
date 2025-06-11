@@ -14,6 +14,22 @@ from mylib.models.rf_manager_model import RfResetToDefaultsType
 from flask import Response
 
 
+
+managers_testcases = [
+    {
+        "endpoint": f'/redfish/v1/Managers/CDU',
+        "assert_cases": {
+            "@odata.id": f"/redfish/v1/Managers/CDU",
+            "@odata.type": "#Manager.v1_15_0.Manager",
+            "@odata.context": "/redfish/v1/$metadata#Manager.v1_15_0.Manager",
+            "Manufacturer": "Supermicro",
+            "PartNumber": "LCS-SCDU-200AR001",
+            "Model": "200KW-SideCar-L/A-Colling-CDU",
+            "ServiceIdentification": "ServiceRoot",
+        }
+    } 
+]
+
 managers_cdu_reset_to_defaults_testcases = [
     {
         "endpoint": f"/redfish/v1/Managers/CDU/Actions/Manager.ResetToDefaults",
@@ -150,3 +166,54 @@ def test_manager_cdu_shutdown(client, basic_auth_header, testcase):
         assert resp.status_code == testcase["assert_cases"]["status_code"]
         print(f"PASS: POST {endpoint} by MagicMock response HTTPStatus={testcase['assert_cases']['status_code']}")
 
+
+
+
+##                                                                                                             
+# NNNNNNNN        NNNNNNNN                                                                               lllllll 
+# N:::::::N       N::::::N                                                                               l:::::l 
+# N::::::::N      N::::::N                                                                               l:::::l 
+# N:::::::::N     N::::::N                                                                               l:::::l 
+# N::::::::::N    N::::::N   ooooooooooo   rrrrr   rrrrrrrrr      mmmmmmm    mmmmmmm     aaaaaaaaaaaaa    l::::l 
+# N:::::::::::N   N::::::N oo:::::::::::oo r::::rrr:::::::::r   mm:::::::m  m:::::::mm   a::::::::::::a   l::::l 
+# N:::::::N::::N  N::::::No:::::::::::::::or:::::::::::::::::r m::::::::::mm::::::::::m  aaaaaaaaa:::::a  l::::l 
+# N::::::N N::::N N::::::No:::::ooooo:::::orr::::::rrrrr::::::rm::::::::::::::::::::::m           a::::a  l::::l 
+# N::::::N  N::::N:::::::No::::o     o::::o r:::::r     r:::::rm:::::mmm::::::mmm:::::m    aaaaaaa:::::a  l::::l 
+# N::::::N   N:::::::::::No::::o     o::::o r:::::r     rrrrrrrm::::m   m::::m   m::::m  aa::::::::::::a  l::::l 
+# N::::::N    N::::::::::No::::o     o::::o r:::::r            m::::m   m::::m   m::::m a::::aaaa::::::a  l::::l 
+# N::::::N     N:::::::::No::::o     o::::o r:::::r            m::::m   m::::m   m::::ma::::a    a:::::a  l::::l 
+# N::::::N      N::::::::No:::::ooooo:::::o r:::::r            m::::m   m::::m   m::::ma::::a    a:::::a l::::::l
+# N::::::N       N:::::::No:::::::::::::::o r:::::r            m::::m   m::::m   m::::ma:::::aaaa::::::a l::::::l
+# N::::::N        N::::::N oo:::::::::::oo  r:::::r            m::::m   m::::m   m::::m a::::::::::aa:::al::::::l
+# NNNNNNNN         NNNNNNN   ooooooooooo    rrrrrrr            mmmmmm   mmmmmm   mmmmmm  aaaaaaaaaa  aaaallllllll
+##
+@pytest.mark.parametrize("testcase", managers_testcases)
+def test_manager_normal_api(client, basic_auth_header, testcase):
+    """[TestCase] manager API"""
+    # 獲取當前測試案例的序號
+    index = managers_testcases.index(testcase) + 1
+    print(f"Running test case {index}/{len(managers_testcases)}: {testcase}")
+
+    print(f"Endpoint: {testcase['endpoint']}")
+    response = client.get(testcase['endpoint'], headers=basic_auth_header)
+    assert response.status_code == 200
+    
+    resp_json = response.json
+    print(f"Response json: {json.dumps(resp_json, indent=2, ensure_ascii=False)}")
+    for key, value in testcase['assert_cases'].items():
+        try:
+            # Members比較特殊，排序後確認內容
+            if key == "Members":
+                resp_json[key] = sorted(resp_json[key], key=lambda x: x['@odata.id'])
+                assert resp_json[key] == value
+            elif key == "Status":
+                assert isinstance(resp_json["Status"], dict)
+                # assert resp_json["Status"]["State"] in ["Absent", "Enabled", "Disabled"]
+                assert resp_json["Status"]["Health"] in ["OK", "Warning", "Critical"]
+            else:
+                assert resp_json[key] == value
+            
+            print(f"PASS: `{key}` of response json is expected to be {value}")
+        except AssertionError as e:
+            print(f"AssertionError: {e}, key: {key}, value: {value}")
+            #raise

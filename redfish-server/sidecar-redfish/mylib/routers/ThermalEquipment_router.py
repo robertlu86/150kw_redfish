@@ -590,12 +590,12 @@ LeakDetection_data = {
 # -------------------------------------
 # Automatic setting patch設置
 oem_supermicro = ThermalEquipment_ns.model('OemSupermicro', {
-            'DeltaTemperatureCelsius': fields.Integer(
+            'TargetTemperature': fields.Integer(
                 required=True,
                 description='temperature setting',
                 default=50,
             ),
-            "DeltaPressurekPa": fields.Integer(
+            "TargetPressure": fields.Integer(
                 required=True,
                 description='pressure setting',
                 default=50,
@@ -632,6 +632,7 @@ pumpspeed_patch = ThermalEquipment_ns.model('PumpSpeedControlPatch', {
 
 class MyBaseThermalEquipment(MyResource):
     def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.cdu_count = int(os.getenv("REDFISH_CDUS_COLLECTION_CNT", 1))
         self.primary_coolant_connector_count = 1
         self.secondary_coolant_connector_count = 1
@@ -685,10 +686,6 @@ class ThermalEquipmentCdus1(MyBaseThermalEquipment):
     def get(self, cdu_id: str):
         # return CDUs_data_1
         rep = RfThermalEquipmentService().fetch_CDUs(cdu_id)
-        rep["Status"] = {
-            "State": "Enabled",
-            "Health": "OK"
-        }
         return rep
     
 @ThermalEquipment_ns.route("/ThermalEquipment/CDUs/<cdu_id>/PrimaryCoolantConnectors")
@@ -727,9 +724,9 @@ class PrimaryCoolantConnectors1(Resource):
         # 驗證模式
         if GetControlMode() != "Automatic": return "only Automatic can setting"
         
-        temp_set = body["DeltaTemperatureCelsius"]
-        pressure_set = body["DeltaPressurekPa"]
-        pump_swap_time = body["PumpSwapTime"]
+        temp_set = body["Oem"]["Supermicro"]["TargetTemperature"]
+        pressure_set = body["Oem"]["Supermicro"]["TargetPressure"]
+        pump_swap_time = body["Oem"]["Supermicro"]["PumpSwapTime"]
         # 轉發到內部控制 API
         try:
             r = requests.patch(
@@ -759,7 +756,7 @@ class PrimaryCoolantConnectors1(Resource):
         PrimaryCoolantConnectors_data_1["DeltaPressurekPa"]["Reading"] = pressure_set
         PrimaryCoolantConnectors_data_1["Oem"]["supermicro"]["PumpSwapTime"]["SetPoint"]["Value"] = pump_swap_time
         
-        return PrimaryCoolantConnectors_data_1, 200
+        return body, 200
     
 @ThermalEquipment_ns.route("/ThermalEquipment/CDUs/<string:cdu_id>/Pumps")
 class ThermalEquipmentCdus1Pumps(Resource):
@@ -955,7 +952,27 @@ class LeakDetectionLeakDetectors1(MyBaseThermalEquipment):
     def get(self, cdu_id, leak_detector_id):
         rep = RfThermalEquipmentService().fetch_CDUs_LeakDetection_LeakDetectors_id(cdu_id, leak_detector_id)
         return rep
-    
+
+CoolingUnit_patch = ThermalEquipment_ns.model('CoolingUnitPatch', {
+    'ControlMode': fields.String(
+        required=True,
+        description='Automatic Switch',
+        default=True,
+        example="Enabled",
+        enum = ['Enabled', 'Disabled']
+    ),
+})
+
+@ThermalEquipment_ns.route("/ThermalEquipment/CDUs/<string:cdu_id>/Actions/CoolingUnit.SetMode")
+class CoolingUnitSetMode(Resource):
+    # # @requires_auth
+    @ThermalEquipment_ns.expect(CoolingUnit_patch, validate=True)
+    def patch(self, cdu_id):
+        data = request.get_json(force=True)
+        return RfThermalEquipmentService().fetch_CDUs_SetMode(cdu_id, data)
+
+
+
 # 0513新增 /redfish/v1/ThermalEquipment/CDUs/{CoolingUnitId}/Oem
 # @ThermalEquipment_ns.route('/ThermalEquipment/CDUs/<string:id>/Oem')
 # class CduOem(Resource):
