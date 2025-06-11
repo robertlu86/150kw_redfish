@@ -6257,7 +6257,7 @@ def write_version():
 
     FW_Info["SN"] = data["SN"]
     FW_Info["Model"] = data["Model"]
-    FW_Info["Version"] = data["Version"]
+    # FW_Info["Version"] = data["Version"]
     FW_Info["PartNumber"] = data["PartNumber"]
 
     with open(f"{web_path}/fw_info.json", "w") as file:

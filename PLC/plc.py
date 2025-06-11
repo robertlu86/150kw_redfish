@@ -137,11 +137,19 @@ bit_output_regs = {
     "mc_fan1": False,
     "mc_fan2": False,
 }
-
+### pump 或 fan 有無啟動
 inv = {
     "inv1": False,
     "inv2": False,
     "inv3": False,
+    "fan1": False,
+    "fan2": False,  
+    "fan3": False,
+    "fan4": False,
+    "fan5": False,
+    "fan6": False,
+    "fan7": False,
+    "fan8": False,
 }
 
 color_light = {
@@ -3828,11 +3836,39 @@ def control():
                     inv3 = client.read_holding_registers(
                         address=(20480 + 6740), count=1
                     )
+                    fan1 = client.read_holding_registers(address=(20480 + 7020), count=1)
+                    fan2 = client.read_holding_registers(address=(20480 + 7060), count=1)
+                    fan3 = client.read_holding_registers(address=(20480 + 7100), count=1)
+                    fan4 = client.read_holding_registers(address=(20480 + 7140), count=1)
+                    fan5 = client.read_holding_registers(address=(20480 + 7380), count=1)
+                    fan6 = client.read_holding_registers(address=(20480 + 7420), count=1)
+                    fan7 = client.read_holding_registers(address=(20480 + 7460), count=1)
+                    fan8 = client.read_holding_registers(address=(20480 + 7500), count=1)
+                    
                     ### 待確認  轉換 freq
                     inv1_v = inv1.registers[0] / 16000 * 100
                     inv2_v = inv2.registers[0] / 16000 * 100
                     inv3_v = inv3.registers[0] / 16000 * 100
-
+                    ### 依照風扇數量轉換要讀取的寄存器
+                    
+                    if ver_switch["fan_count_switch"]:
+                        fan1_v = fan1.registers[0] / 16000 * 100
+                        fan2_v = fan2.registers[0] / 16000 * 100
+                        fan3_v = fan3.registers[0] / 16000 * 100
+                        fan4_v = fan5.registers[0] / 16000 * 100
+                        fan5_v = fan6.registers[0] / 16000 * 100
+                        fan6_v = fan7.registers[0] / 16000 * 100
+                    else:
+                        fan1_v = fan1.registers[0] / 16000 * 100
+                        fan2_v = fan2.registers[0] / 16000 * 100
+                        fan3_v = fan3.registers[0] / 16000 * 100
+                        fan4_v = fan4.registers[0] / 16000 * 100
+                        fan5_v = fan5.registers[0] / 16000 * 100
+                        fan6_v = fan6.registers[0] / 16000 * 100
+                        fan7_v = fan7.registers[0] / 16000 * 100
+                        fan8_v = fan8.registers[0] / 16000 * 100
+                        
+                        
                     if not bit_output_regs["mc1"] or not word_regs["p1_check"]:
                         inv1_v = 0
 
@@ -3845,6 +3881,22 @@ def control():
                     inv["inv1"] = inv1_v >= 25
                     inv["inv2"] = inv2_v >= 25
                     inv["inv3"] = inv3_v >= 25
+                    if ver_switch["fan_count_switch"]:
+                        inv["fan1"] = fan1_v >= 6
+                        inv["fan2"] = fan2_v >= 6
+                        inv["fan3"] = fan3_v >= 6
+                        inv["fan4"] = fan4_v >= 6
+                        inv["fan5"] = fan5_v >= 6
+                        inv["fan6"] = fan6_v >= 6
+                    else:
+                        inv["fan1"] = fan1_v >= 6
+                        inv["fan2"] = fan2_v >= 6
+                        inv["fan3"] = fan3_v >= 6
+                        inv["fan4"] = fan4_v >= 6
+                        inv["fan5"] = fan5_v >= 6
+                        inv["fan6"] = fan6_v >= 6
+                        inv["fan7"] = fan7_v >= 6
+                        inv["fan8"] = fan8_v >= 6
             except Exception as e:
                 print(f"read inv_en 2 error:{e}")
 
@@ -5636,7 +5688,7 @@ def control():
 
             ### 計算 fan1 runtime
             ###如果有速度
-            if raw_485_data["Fan1Com"]:
+            if raw_485_data["Fan1Com"] or inv["fan1"]:
                 fan1_run_current_time = time.time()
 
                 if fan1_run_current_time - fan1_run_last_min >= 60:
@@ -5662,7 +5714,7 @@ def control():
                 fan1_run_last_min = time.time()
 
             ### 計算 fan2 runtime
-            if raw_485_data["Fan2Com"]:
+            if raw_485_data["Fan2Com"] or inv["fan2"]:
                 fan2_run_current_time = time.time()
 
                 if fan2_run_current_time - fan2_run_last_min >= 60:
@@ -5688,7 +5740,7 @@ def control():
                 fan2_run_last_min = time.time()
 
             ### 計算 fan3 runtime
-            if raw_485_data["Fan3Com"]:
+            if raw_485_data["Fan3Com"] or inv["fan3"]:
                 fan3_run_current_time = time.time()
 
                 if fan3_run_current_time - fan3_run_last_min >= 60:
@@ -5714,7 +5766,7 @@ def control():
                 fan3_run_last_min = time.time()
 
             ### 計算 fan4 runtime
-            if raw_485_data["Fan4Com"]:
+            if raw_485_data["Fan4Com"] or inv["fan4"]:
                 fan4_run_current_time = time.time()
 
                 if fan4_run_current_time - fan4_run_last_min >= 60:
@@ -5740,7 +5792,7 @@ def control():
                 fan4_run_last_min = time.time()
 
             ### 計算 fan5 runtime
-            if raw_485_data["Fan5Com"]:
+            if raw_485_data["Fan5Com"] or inv["fan5"]:
                 fan5_run_current_time = time.time()
 
                 if fan5_run_current_time - fan5_run_last_min >= 60:
@@ -5766,7 +5818,7 @@ def control():
                 fan5_run_last_min = time.time()
 
             ### 計算 fan6 runtime
-            if raw_485_data["Fan6Com"]:
+            if raw_485_data["Fan6Com"] or inv["fan6"]:
                 fan6_run_current_time = time.time()
 
                 if fan6_run_current_time - fan6_run_last_min >= 60:
@@ -5792,7 +5844,7 @@ def control():
                 fan6_run_last_min = time.time()
 
             ### 計算 fan7 runtime
-            if raw_485_data["Fan7Com"]:
+            if raw_485_data["Fan7Com"] or inv["fan7"]:
                 fan7_run_current_time = time.time()
 
                 if fan7_run_current_time - fan7_run_last_min >= 60:
@@ -5818,7 +5870,7 @@ def control():
                 fan7_run_last_min = time.time()
 
             ### 計算 fan8 runtime
-            if raw_485_data["Fan8Com"]:
+            if raw_485_data["Fan8Com"] or inv["fan8"]:
                 fan8_run_current_time = time.time()
 
                 if fan8_run_current_time - fan8_run_last_min >= 60:
