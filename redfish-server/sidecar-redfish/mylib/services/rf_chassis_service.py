@@ -297,7 +297,7 @@ class RfChassisService(BaseService):
             } 
         }
         # 動態調整風扇數量
-        fan_cnt = int(os.getenv("REDFISH_FAN_COLLECTION_CNT", 8))
+        fan_cnt = int(os.getenv("REDFISH_FAN_COLLECTION_CNT", 6))
         for i in range(fan_cnt):
             id_readingInfo_map[f"Fan{i+1}"] = {
                 "ReadingUnits": "rpm", 
@@ -305,7 +305,7 @@ class RfChassisService(BaseService):
             }
             
         
-        reading_info = id_readingInfo_map.get(sensor_id, {})
+        reading_info = id_readingInfo_map.get(sensor_id)
         if reading_info:
             sensor_value_json = self._read_components_chassis_summary_from_cache()
             if reading_info['fieldNameToFetchSensorValue'] == "EnergykWh":
@@ -391,16 +391,12 @@ class RfChassisService(BaseService):
         ControlMode = body["ControlMode"]
         SetPoint = body["SetPoint"]
         ControlMode = ControlMode_change(ControlMode)
-        
-        max = os.getenv("MAX_FAN_SPEED", 100)
-        min = os.getenv("MIN_FAN_SPEED", 15)
-        if SetPoint > max  or SetPoint < min:
-            return {"Speed Error": f"Fan speed must be between {min} and {max}"}, 400
+
         # 轉發到內部控制 API
         try:
             r = requests.patch(
                 f"{CDU_BASE}/api/v1/cdu/status/op_mode",
-                json={"mode": ControlMode, f"fan_speed": SetPoint },
+                json={"mode": ControlMode, "fan_speed": SetPoint },
                 timeout=3
             )
             r.raise_for_status()
@@ -420,7 +416,6 @@ class RfChassisService(BaseService):
                 "details": str(e)
             }, 502
             
-        return "update success"
     
     _operation_mapping = {
         "ControlMode",
@@ -444,15 +439,6 @@ class RfChassisService(BaseService):
         Pump2Switch = body["Pump2Switch"]
         Pump3Switch = body["Pump3Switch"]
         
-        fan_max = hardware_info["Fans"]["1"]["AllowableMax"]
-        fan_min = hardware_info["Fans"]["1"]["AllowableMin"]
-        pump_max = hardware_info["Pumps"]["1"]["AllowableMax"]
-        pump_min = hardware_info["Pumps"]["1"]["AllowableMin"]
-        
-        if FanSetPoint > fan_max  or FanSetPoint < fan_min:
-            return {"Fan Speed Error": f"Fan speed must be between {fan_min} and {fan_max}"}, 400
-        if PumpSetPoint > pump_max  or PumpSetPoint < pump_min:
-            return {"Pump Speed Error": f"Pump speed must be between {pump_min} and {pump_max}"}, 400
         # 轉換redfish格式至rest格式
         ControlMode = ControlMode_change(ControlMode)
         # 轉發到內部控制 API

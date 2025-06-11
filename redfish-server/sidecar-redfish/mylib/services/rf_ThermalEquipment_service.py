@@ -45,7 +45,12 @@ class RfThermalEquipmentService(BaseService):
                 cdu_id=cdu_id,
                 **hardware_info["CDU"]
             )
-            m.Status = {"State": "Enabled", "Health": "OK"}
+            # m.Status = {"State": "Enabled", "Health": "OK"}
+            status = {
+                "State": "Enabled",
+                "Health": "OK"
+            }
+            m.Status = RfStatusModel.from_dict(status)
             m.FirmwareVersion = self._read_version_from_cache()["version"]["WebUI"]
             m.Version = self._read_version_from_cache()["fw_info"]["Version"]
             m.SerialNumber = self._read_version_from_cache()["fw_info"]["SN"]
@@ -53,6 +58,35 @@ class RfThermalEquipmentService(BaseService):
             m.Oem = {}
             
         return m.to_dict()
+    
+    def fetch_CDUs_SetMode(self, cdu_id: str, body: dict) -> dict:
+        ControlMode = body["ControlMode"]
+        if ControlMode == "Enabled": 
+            ControlMode = "auto"
+        else:
+            ControlMode = "stop"    
+        try:
+            r = requests.patch(
+                f"{CDU_BASE}/api/v1/cdu/status/op_mode",
+                json={"mode": ControlMode},  
+                timeout=3
+            )
+            r.raise_for_status()
+        except requests.HTTPError:
+            # 如果 CDU 回了 4xx/5xx，直接把它的 status code 和 body 回來
+            try:
+                err_body = r.json()
+            except ValueError:
+                err_body = {"error": r.text}
+            return err_body, r.status_code
+
+        except requests.RequestException as e:
+            # 純粹網路／timeout／連線失敗
+            return {
+                "error": "Forwarding to the CDU control service failed",
+                "details": str(e)
+            }, 502
+        return body, 200
     
     def fetch_CDUs_EnvironmentMetrics(self, cdu_id: str) -> dict:
         """
@@ -89,7 +123,7 @@ class RfThermalEquipmentService(BaseService):
                 # 必要
                 "HumidityPercent": {
                     "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/HumidityPercent",
-                    "Reading": "Null"
+                    "Reading": self._read_reading_value_by_sensor_id("HumidityPercent")
                 },
                 # "Status": {
                 #     "State": "Enabled",

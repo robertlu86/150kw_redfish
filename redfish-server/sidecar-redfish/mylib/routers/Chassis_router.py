@@ -273,6 +273,7 @@ ThermalSubsystem_data = {
 
 class MyBaseChassis(MyResource):
     def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.chassis_count = 1
         self.power_supply_count = int(os.getenv("REDFISH_POWERSUPPLY_COLLECTION_CNT", 1))
         self.fan_count = int(os.getenv("REDFISH_FAN_COLLECTION_CNT", 1))
@@ -512,7 +513,7 @@ fanspeed_patch = Chassis_ns.model('FanSpeedControlPatch', {
 })
 # controls 資源
 @Chassis_ns.route("/Chassis/<chassis_id>/Controls")
-class Controls(Resource):
+class Controls(MyBaseChassis):
     # @requires_auth
     def get(self, chassis_id):
         
@@ -739,7 +740,7 @@ class Controls(Resource):
 #================================================
 
 @Chassis_ns.route("/Chassis/<chassis_id>/PowerSubsystem")
-class PowerSubsystem(Resource):
+class PowerSubsystem(MyBaseChassis):
     # @requires_auth
     def get(self, chassis_id):
         rep = PowerSubsystem_data
@@ -749,7 +750,7 @@ class PowerSubsystem(Resource):
 
 
 @Chassis_ns.route("/Chassis/<chassis_id>/PowerSubsystem/PowerSupplies")
-class PowerSupplies(Resource):
+class PowerSupplies(MyBaseChassis):
     # @requires_auth
     def get(self, chassis_id):
         chassis_service = RfChassisService()
@@ -770,7 +771,7 @@ class PowerSuppliesById(MyBaseChassis):
         return rep
     
 @Chassis_ns.route("/Chassis/<chassis_id>/PowerSubsystem/PowerSupplies/<power_supply_id>/Assembly")
-class Assembly(Resource):    
+class Assembly(MyBaseChassis):    
     # @requires_auth
     def get(self, chassis_id: str, power_supply_id: int):
         Assembly_data = {
@@ -785,7 +786,7 @@ class Assembly(Resource):
 # 感測器（Sensors）
 #================================================
 @Chassis_ns.route("/Chassis/<chassis_id>/Sensors")
-class Sensors(Resource):
+class Sensors(MyBaseChassis):
     # @requires_auth
     def get(self, chassis_id):
         chassis_service = RfChassisService()
@@ -793,7 +794,7 @@ class Sensors(Resource):
 
 
 @Chassis_ns.route("/Chassis/<chassis_id>/Sensors/<sensor_id>")
-class FetchSensorsById(Resource):
+class FetchSensorsById(MyBaseChassis):
     # @requires_auth
     def get(self, chassis_id: str, sensor_id: str) -> Dict:
         """
@@ -827,14 +828,14 @@ FanSwitch_patch = Chassis_ns.model('FanSwitchpatch', {
 })
 
 @Chassis_ns.route("/Chassis/1/ThermalSubsystem")
-class ThermalSubsystem(Resource):
+class ThermalSubsystem(MyBaseChassis):
     # @requires_auth
     def get(self):
         return ThermalSubsystem_data
 
 
 @Chassis_ns.route("/Chassis/<chassis_id>/ThermalSubsystem/Fans")
-class ThermalSubsystem_Fans(Resource):
+class ThermalSubsystem_Fans(MyBaseChassis):
     # @requires_auth
     def get(self, chassis_id):
         ThermalSubsystem_Fans_data = RfChassisService()
@@ -904,7 +905,7 @@ class ThermalSubsystem_Fans_by_id(MyBaseChassis):
         
     
 @Chassis_ns.route("/Chassis/<chassis_id>/ThermalSubsystem/ThermalMetrics")
-class ThermalMetrics(Resource):
+class ThermalMetrics(MyBaseChassis):
     # @requires_auth
     def get(self, chassis_id):
         ThermalMetrics_data = {
@@ -1546,7 +1547,7 @@ Operation_patch = Chassis_ns.model('Operation', {
 })   
 
 @Chassis_ns.route("/Chassis/<chassis_id>/Controls/Oem/Supermicro/Operation")
-class Operation(Resource):
+class Operation(MyBaseChassis):
     # @requires_auth
     @Chassis_ns.expect(Operation_patch, validate=True)
     def patch(self, chassis_id):

@@ -16,16 +16,13 @@ class MyResource(Resource):
         Override Resource.dispatch_request to inject validation logic.
         This is called before calling get/post/etc.
         """
-        method = getattr(self, request.method.lower(), None)
-        if method is None:
-            return super().dispatch_request(*args, **kwargs)
-
-        @wraps(method)
-        def wrapper(*args, **kwargs):
-            self._validate_request()  # 自訂驗證邏輯
-            return method(*args, **kwargs)
-
-        return wrapper(*args, **kwargs)
+        # def wrapper(*args, **kwargs):
+        #     self._validate_request()  # 自訂驗證邏輯
+        #     return super().dispatch_request(*args, **kwargs)
+        # return wrapper(*args, **kwargs)
+        
+        self._validate_request()  # 自訂驗證邏輯
+        return super().dispatch_request(*args, **kwargs)
 
     def _validate_request(self):
         # abort(400, description="Invalid input")
