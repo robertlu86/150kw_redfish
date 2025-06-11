@@ -35,6 +35,7 @@ load_dotenv()
 USER_CREDENTIALS = {
     "admin": os.getenv("ADMIN"),
     "superuser": os.getenv("SUPERUSER"),
+    "user": os.getenv("USER"),
 }
 
 if platform.system() == "Linux":
