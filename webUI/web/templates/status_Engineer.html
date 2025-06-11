@@ -1930,8 +1930,8 @@ styles %}
         function change_fan_light(data) {
             index = 1;
             for (key in data["value"]) {
-                if (key.startsWith("fan") && key.includes("check")) {
-                    if (data["value"][key] && data["value"]["resultFan"]) {
+                if (key.startsWith("fan_freq")) {
+                    if (data["value"][key] > 15) {
                         $(`#fan_freq${index}_light`).css("background-color", "green")
                     } else {
                         $(`#fan_freq${index}_light`).css("background-color", "transparent")
@@ -2105,9 +2105,9 @@ styles %}
                     });
 
                     ///////////暫時測試用///////////
-                    change_fan_light(data)
-                    const currentVersion = window.sharedData.version;
                     const currentData = window.sharedData.data;
+                    const currentVersion = window.sharedData.version;
+                    change_fan_light(currentData)
                     // console.log(`currentVersion${currentVersion["fan_count_switch"]}`);
 
                     if (currentVersion["fan_count_switch"] === false) {
@@ -2141,18 +2141,47 @@ styles %}
 
                             }
                         }
+                        if (get_fan_speed(data)) {
+                            let resultFan = data["value"]["resultFan"];
+                            $("#fan_freq_image").text(resultFan.toFixed(0));
+                            if (resultFan > 100) {
+                                $("#fan_freq_image").text(100);
+                            }
+                        } else {
+                            $("#fan_freq_image").text(0);
+                        }
+                    } else {
+                        let fan1 = currentData["value"]["fan_freq1"];
+                        let fan2 = currentData["value"]["fan_freq2"];
+                        let fan3 = currentData["value"]["fan_freq3"];
+                        let fan4 = currentData["value"]["fan_freq4"];
+                        let fan5 = currentData["value"]["fan_freq5"];
+                        let fan6 = currentData["value"]["fan_freq6"];
+
+
+                        // 用來檢查 fan1~fan8 的變數
+                        let resultFan = 0; // 初始為 0
+
+                        // 把 fan1 到 fan8 存到一個陣列中
+                        let fans = [fan1, fan2, fan3, fan4, fan5, fan6];
+
+                        // 檢查陣列中的每個 fan 變數，找到第一個不為 0 的值
+                        for (let i = 0; i < fans.length; i++) {
+                            if (fans[i] !== 0) {
+                                resultFan = fans[i];
+                                break; // 找到第一個不為 0 的值後停止檢查
+                            }
+                        }
+
+                        $("#fan_freq_image").text(resultFan.toFixed(0));
+                        if (resultFan > 100) {
+                            $("#fan_freq_image").text(100);
+                        }
                     }
+
+
                     ///////////測試用結束///////////
 
-                    // if (get_fan_speed(data)) {
-                    let resultFan = data["value"]["resultFan"];
-                    $("#fan_freq_image").text(resultFan.toFixed(0));
-                    if (resultFan > 100) {
-                        $("#fan_freq_image").text(100);
-                    }
-                    // } else {
-                    //     $("#fan_freq_image").text(0);
-                    // }
 
                     for (let key in data["rack_visibility"]) {
                         if (data["rack_visibility"].hasOwnProperty(key)) {
