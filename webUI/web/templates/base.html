@@ -180,37 +180,37 @@
         }
 
         .overload_error-container {
-          position: fixed;
-          top: 90px; 
-          left: 0;
-          display: none;
-          padding: 5px;
-          border: 1px solid #ccc;
-          border-radius: 8px;
-          background-color: rgba(0, 0, 0, 0.01);
+            position: fixed;
+            top: 90px;
+            left: 0;
+            display: none;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: rgba(0, 0, 0, 0.01);
         }
 
         .error_text,
-        .overload_error-btn{
+        .overload_error-btn {
             font-size: 16px;
             margin: 2px;
         }
-        
-        .overload_error-btn{
+
+        .overload_error-btn {
             border-radius: 7px;
         }
 
-        .overload_error-btn:hover{
+        .overload_error-btn:hover {
             background-color: #778899;
             color: #fff;
         }
 
         .overload_error-row {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          min-width: 220px;
-          margin: 2px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-width: 220px;
+            margin: 2px 0;
         }
     </style>
     {% block styles %} {% endblock %}
@@ -677,63 +677,63 @@
             // }
         }
 
-        window.sharedData = {};  // 宣告全域物件
 
-        function handleToStop(data, ver_switch){
+
+        function handleToStop(data, ver_switch) {
             const container = $(".overload_error-container");
             let messages = [];
-            if(data["opMod"] === "Auto"){
-              if(
-                  !ver_switch["liquid_level_1_switch"] &&
-                  !ver_switch["liquid_level_2_switch"] &&
-                  !ver_switch["liquid_level_3_switch"]
-              ){
-                  if(
-                      data["alert"]["clnt_flow_low"] &&
-                      data["error"]["level1"] &&
-                      data["error"]["level2"] &&
-                      data["error"]["level3"]
-                  ){
-                    messages.push(`Change to stop mode`);
-                  }
-              }
-              else if(
-                  !ver_switch["liquid_level_1_switch"] &&
-                  !ver_switch["liquid_level_2_switch"]
-              ){
-                  if(
-                      data["alert"]["clnt_flow_low"] &&
-                      data["error"]["level1"] &&
-                      data["error"]["level2"]
-                  ){
-                    messages.push(`Change to stop mode`);
-                  }
-              }
-              else if(!ver_switch["liquid_level_1_switch"]){
-                  if(
-                      data["alert"]["clnt_flow_low"] &&
-                      data["error"]["level1"]
-                  ){
-                      messages.push(`Change to stop mode`);
-                  }
-              }
+            if (data["opMod"] === "Auto") {
+                if (
+                    !ver_switch["liquid_level_1_switch"] &&
+                    !ver_switch["liquid_level_2_switch"] &&
+                    !ver_switch["liquid_level_3_switch"]
+                ) {
+                    if (
+                        data["alert"]["clnt_flow_low"] &&
+                        data["error"]["level1"] &&
+                        data["error"]["level2"] &&
+                        data["error"]["level3"]
+                    ) {
+                        messages.push(`Change to stop mode`);
+                    }
+                }
+                else if (
+                    !ver_switch["liquid_level_1_switch"] &&
+                    !ver_switch["liquid_level_2_switch"]
+                ) {
+                    if (
+                        data["alert"]["clnt_flow_low"] &&
+                        data["error"]["level1"] &&
+                        data["error"]["level2"]
+                    ) {
+                        messages.push(`Change to stop mode`);
+                    }
+                }
+                else if (!ver_switch["liquid_level_1_switch"]) {
+                    if (
+                        data["alert"]["clnt_flow_low"] &&
+                        data["error"]["level1"]
+                    ) {
+                        messages.push(`Change to stop mode`);
+                    }
+                }
 
-              if (messages.length > 0) {
-                  let html = messages.map(msg => {
-                      return `<div class="overload_error-row"><span class="error_text">${msg}</span><button class="overload_error-btn" id="stop_btn" onclick="stop_handleClick()">Stop</button></div>`;
-                  }).join("");
-                  container.html(html).fadeIn();
-              } else {
-                  container.fadeOut();
-              }
+                if (messages.length > 0) {
+                    let html = messages.map(msg => {
+                        return `<div class="overload_error-row"><span class="error_text">${msg}</span><button class="overload_error-btn" id="stop_btn" onclick="stop_handleClick()">Stop</button></div>`;
+                    }).join("");
+                    container.html(html).fadeIn();
+                } else {
+                    container.fadeOut();
+                }
             }
         }
 
-        window.stop_handleClick = function(){
+        window.stop_handleClick = function () {
             $.ajax({
                 url: "/change_to_stop_mode",
                 method: "POST",
-                success: function(r){
+                success: function (r) {
                     if (r.status == "success") {
                         Swal.fire({
                             title: "Success",
@@ -747,32 +747,8 @@
             });
         }
 
-        async function show_stop_message(){
-            while(true) {
-                try{
-                    const data = await $.ajax({
-                      url: "/get_data",
-                      method: "GET",
-                      dataType: "json",
-                      timeout: 10000,
-                      loader: false,
-                    });
-                    const version = await $.ajax({
-                      url: "/get_data_version",
-                      method: "GET",
-                      loader: false,
-                      timeout: 10000,
-                      dataType: "json",
-                    });
-                    handleToStop(data, version);
-                } catch (err) {
-                    console.error("取得資料錯誤:", err);
-                }
-                await new Promise(resolve => setTimeout(resolve, 2000));
-            }
-        }
 
-        show_stop_message();
+        window.sharedData = {};  // 宣告全域物件
 
         async function get_change_light_data() {
             while (true) {
@@ -795,9 +771,9 @@
                     window.sharedData.version = version;
                     // console.log(`version_level_1:${version["liquid_level_1_switch"]}`);
                     // console.log(`coolant_quality_meter_switch:${version["coolant_quality_meter_switch"]}`);
-                    
+
                     change_light(data, version);
-                    
+
                     if (data["error"]["PLC"]) {
                         $(".plc_disconnect").show();
                     } else {
@@ -812,6 +788,42 @@
         }
 
         get_change_light_data();
+
+
+        async function show_stop_message() {
+            while (!window.sharedData.data || !window.sharedData.version) {
+                // 等待 base.html 資料初始化
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+            while (true) {
+                try {
+                    // const data = await $.ajax({
+                    //   url: "/get_data",
+                    //   method: "GET",
+                    //   dataType: "json",
+                    //   timeout: 10000,
+                    //   loader: false,
+                    // });
+                    // const version = await $.ajax({
+                    //   url: "/get_data_version",
+                    //   method: "GET",
+                    //   loader: false,
+                    //   timeout: 10000,
+                    //   dataType: "json",
+                    // });
+
+                    //透過全域抓取base.html的數值
+                    const currentData = window.sharedData.data;
+                    const currentVersion = window.sharedData.version;
+                    handleToStop(currentData, currentVersion);
+                } catch (err) {
+                    console.error("取得資料錯誤:", err);
+                }
+                await new Promise(resolve => setTimeout(resolve, 2000));
+            }
+        }
+
+        show_stop_message();
 
         function startBouncing() {
             let x = window.innerWidth / 2;
