@@ -137,7 +137,8 @@ class AccountModel(MyOrmBaseModel):
 
     @staticmethod
     def validate_name(user_name):
-        pattern =  r'^[A-Za-z][A-Za-z0-9@_.-]{0,14}[A-Za-z0-9]$'
+        # Check basic pattern: starts and ends with alphanumeric, 2-16 chars total
+        pattern = r'^[A-Za-z0-9][A-Za-z0-9@_.-]{0,14}[A-Za-z0-9]$'
         return bool(re.match(pattern, user_name))
     
     @staticmethod
@@ -178,12 +179,19 @@ class AccountModel(MyOrmBaseModel):
     def password_len_validation(password: str):
         # Password length validation
         min_password_length_setting = SettingModel.get_by_key('AccountService.MinPasswordLength')
+        max_password_length_setting = SettingModel.get_by_key('AccountService.MaxPasswordLength')
         if min_password_length_setting:
             min_password_length = int(min_password_length_setting.value)
             if len(password) < min_password_length:
-                return int(min_password_length_setting.value)
-        return 0
-    
+                print(f"Password length {len(password)} is less than minimum required {min_password_length}.")
+                return ">=", min_password_length
+        if max_password_length_setting:
+            max_password_length = int(max_password_length_setting.value)
+            if len(password) > max_password_length:
+                print(f"Password length {len(password)} is greater than maximum allowed {max_password_length}.")
+                return "<=", max_password_length
+        return "ok", 0
+
     @classmethod
     def all(cls):
         ret = db.session.query(cls).all()
@@ -229,10 +237,9 @@ class AccountBaseModel(BaseModel):
     def validate_password(cls, value):
         if not AccountModel.validate_password(value):
             raise ValueError("should be containing chars of at least 3 categories (a-z, A-Z, 0-9, special)")
-        ret_len = AccountModel.password_len_validation(value)
-        print(f"ret_len={ret_len}")
-        if ret_len > 0:
-            raise ValueError(f"length should >= {ret_len}")
+        ret_res,ret_val = AccountModel.password_len_validation(value)
+        if ret_res != 'ok':
+            raise ValueError(f"length should {ret_res} {ret_val}")
         return value
 
     @field_validator('password',mode='after')
@@ -249,6 +256,13 @@ class AccountBaseModel(BaseModel):
         if not role:
             raise ValueError(f"{value} does not exist.")
         return role.id
+    
+    @field_validator('user_name',mode='before')
+    @classmethod
+    def validate_user_name(cls, value):
+        if not AccountModel.validate_name(value):
+            raise ValueError("must contain only characters from A–Z,a–z,0–9,@,_,.,and -")
+        return value
 
 class AccountUpdateModel(AccountBaseModel):
     enabled: Optional[bool] = Field(default=None, alias='Enabled', 
@@ -270,6 +284,8 @@ class AccountUpdateModel(AccountBaseModel):
         if enabled is None and locked is None and pass_change_required is None and \
            user_name is None and password is None and role_id is None:
             raise ValueError(f"{values} must contain at least one valid field to update.")
+        if password is not None:
+            values['PasswordChangeRequired'] = False
         return values
     
     @field_validator('locked',mode='before')
@@ -286,13 +302,7 @@ class AccountCreateModel(AccountBaseModel):
     role_id: int = Field(default=..., alias='RoleId', description="The ID of the role assigned to the user.")
     password: str = Field(default=..., alias='Password', description="The password for the user.")
     
-    @field_validator('user_name',mode='before')
-    @classmethod
-    def validate_user_name(cls, value):
-        if not AccountModel.validate_name(value):
-            raise ValueError("must start with a letter"
-                             " and contain only characters from A–Z,a–z,0–9,@,_,.,and -")
-        return value
+
         
 @dataclass
 class SessionModel(MyOrmBaseModel):

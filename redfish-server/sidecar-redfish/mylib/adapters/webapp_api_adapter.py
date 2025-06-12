@@ -1,10 +1,10 @@
 import os
-from mylib.utils.HttpRequestUtil import HttpRequestUtil
-from typing import Dict
+from http import HTTPStatus
+import requests
+from cachetools import cached, TTLCache
 from mylib.models.rf_resource_model import RfResetType
 from mylib.common.proj_error import ProjError
-from http import HTTPStatus
-from flask import abort
+
 
 """
 webapp 就是 大家稱為webUI的東西
@@ -13,50 +13,104 @@ webapp 就是 大家稱為webUI的東西
 @note:
     `webUI` is a confused naming. in fact it is a CDU web app, including backend api.
 """
+
+
+
 class WebAppAPIAdapter:
 
-    @classmethod
-    def reset_to_defaults(cls, reset_type: str) -> dict:
+    def __init__(self):
+        """
+        webUI使用的認證機制是flask user_login，是session cookie機制
+        """
+        self.username = os.getenv("ITG_WEBAPP_USERNAME")
+        self.password = os.getenv("ITG_WEBAPP_PASSWORD")
+        self.host = os.getenv("ITG_WEBAPP_HOST")
+
+        self.session = self.create_login_session()
+ 
+    @cached(cache=TTLCache(maxsize=1, ttl=30))
+    def create_login_session(self):
+        session = requests.Session()
+        
+        # For check_auth() in scc_app.py
+        session.auth = (self.username, self.password)
+        
+        # For @login_required() decorator in flask process
+        login_url = f"{self.host}/login"
+        payload = {
+            "username": self.username,
+            "password": self.password
+        }
+        login_response = session.post(login_url, data=payload)
+
+        return session
+
+    def _handle_response(self, response):
+        # response.raise_for_status() # for Authentication
+        if response.status_code != HTTPStatus.OK:
+            raise ProjError(response.status_code, response.text)
+        return response
+
+    def reset_to_defaults(self, reset_type: str) -> dict:
         """Reset to defaults
         @note:
             Fetch /restore_factory_setting_all from webUI
             {
             }
         """
-        url = f"{os.environ['ITG_WEBAPP_HOST']}/restore_factory_setting_all"
+        url = f"{self.host}/restore_factory_setting_all"
         post_body = {
             "ResetType": reset_type
         }
-        response = HttpRequestUtil.send_post(url, post_body)
+        response = self.session.post(url, data=post_body)
+        self._handle_response(response)
         return response
 
-    @classmethod
-    def reset(cls, reset_type: str=RfResetType.ForceRestart.value) -> dict:
+    def reset(self, reset_type: str=RfResetType.ForceRestart.value) -> dict:
         """Reset
         @note:
-            Fetch scc api: /api/v1/reboot
+            Fetch scc api: /api/v1/reboot, is delay reboot
         """
         if reset_type == RfResetType.ForceRestart.value:
-            url = f"{os.environ['ITG_WEBAPP_HOST']}/api/v1/reboot"
+            url = f"{self.host}/api/v1/reboot"
         elif reset_type == RfResetType.GracefulRestart.value:
-            url = f"{os.environ['ITG_WEBAPP_HOST']}/api/v1/reboot"
+            url = f"{self.host}/api/v1/reboot"
         else:
             # abort(HTTPStatus.BAD_REQUEST, f"Invalid reset type: {reset_type}")
             raise ProjError(HTTPStatus.BAD_REQUEST.value, f"Invalid reset type: {reset_type}")
-        response = HttpRequestUtil.send_get(url)
+        response = self.session.get(url) # raise NewConnectionError if server is not running
+        self._handle_response(response)
         return response
 
-    @classmethod
-    def shutdown(cls, reset_type: str=RfResetType.ForceRestart.value) -> dict:
-        """Reset
+    def shutdown(self, reset_type: str=RfResetType.ForceRestart.value) -> dict:
+        """Shutdown
         @note:
-            Fetch scc api: /api/v1/shutdown
+            Fetch webUI api: /shutdown
         """
         if reset_type == RfResetType.ForceRestart.value:
-            url = f"{os.environ['ITG_WEBAPP_HOST']}/api/v1/shutdown"
+            url = f"{self.host}/shutdown"
         elif reset_type == RfResetType.GracefulRestart.value:
-            url = f"{os.environ['ITG_WEBAPP_HOST']}/api/v1/shutdown"
+            url = f"{self.host}/shutdown"
         else:
             raise ProjError(HTTPStatus.BAD_REQUEST.value, f"Invalid reset type: {reset_type}")
-        response = HttpRequestUtil.send_get(url)
+        response = self.session.get(url)
+        self._handle_response(response)
+        return response
+
+    def read_version(self) -> dict:
+        """read version from webUI
+        """
+        url = f"{self.host}/read_version"
+        response = self.session.get(url)
+        self._handle_response(response)
+        return response
+    
+    def setting_snmp(self, data: dict) -> dict:
+        '''
+        POST from webUI
+        '''
+        url = f"{self.host}/store_snmp_setting"
+        response = self.session.post(url, json=data)
+        self._handle_response(response)
+
         return response

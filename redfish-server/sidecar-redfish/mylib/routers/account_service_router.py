@@ -23,6 +23,12 @@ account_servive_patch_model = AccountService_ns.model('AccountServicePatch', {
         example=8,
         minimum=1  # Must be greater than 0
     ),
+    'MaxPasswordLength': fields.Integer(
+        required=False,
+        description='The minimum length of a password.',
+        example=15,
+        maximum=50  # Must be less than or equal to 50
+    ),
     'AccountLockoutThreshold': fields.Integer(
         required=False,
         description='The number of failed login attempts before the account is locked out.',
@@ -46,8 +52,7 @@ account_post_model = AccountService_ns.model('AccountsPost', {
         required=True,
         description='The user name of the account.',
         example='MyUserName',
-        pattern='^[A-Za-z][A-Za-z0-9@_.-]{0,14}[A-Za-z0-9]$'
-                
+        pattern='^[A-Za-z0-9][A-Za-z0-9@_.-]{0,14}[A-Za-z0-9]$'
     ),
     'Password': fields.String(
         required=True,
@@ -73,12 +78,12 @@ account_post_model = AccountService_ns.model('AccountsPost', {
 })
 
 account_patch_model = AccountService_ns.model('AccountsPatch', {
-    # 'UserName': fields.String(
-    #     required=False,
-    #     description='The user name of the account.',
-    #     example='MyUserName',
-    #     pattern='^[A-Za-z][A-Za-z0-9@_.-]{0,14}[A-Za-z0-9]$'
-    # ),
+    'UserName': fields.String(
+        required=False,
+        description='The user name of the account.',
+        example='MyUserName',
+        pattern='^[A-Za-z0-9][A-Za-z0-9@_.-]{0,14}[A-Za-z0-9]$'
+    ),
     'Password': fields.String(
         required=False,
         description='The password of the account.',
