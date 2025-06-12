@@ -8073,6 +8073,9 @@ def get_inspection_result():
 
     with open(f"{web_path}/fw_info.json", "r") as file:
         fw_info_data = json.load(file)
+    
+    with open(f"{web_path}/fw_info_version.json", "r") as file:
+        fw_info_version = json.load(file)
 
     whole_data = {
         "result_data": result_data,
@@ -8082,6 +8085,7 @@ def get_inspection_result():
         "measure_data": measure_data,
         "inspection_time_last_check": inspection_time_last_check,
         "fw_info_data": fw_info_data,
+        "fw_info_version": fw_info_version,
         "ver_switch": ver_switch,
     }
     return jsonify(whole_data)

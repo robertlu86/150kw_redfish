@@ -1516,7 +1516,7 @@ styles %}
                 dataType: "json",
                 success: function (data) {
                     let fw_info_data = data["fw_info_data"];
-
+                    let fw_info_version = data["fw_info_version"];
                     let r1 = "";
                     let inspectionTime = time || "N/A";
 
@@ -1528,18 +1528,29 @@ styles %}
                         let order = [
                             "SN",
                             "Model",
-                            "Version",
-                            "WebUI",
-                            "SCC_API",
-                            "SNMP",
-                            "Modbus_Server",
-                            "Redfish",
-                            "PLC",
                         ]
 
                         order.forEach(key => {
                             if (fw_info_data.hasOwnProperty(key)) {
                                 r1 += `${key},${fw_info_data[key]}\n`;
+                            }
+                        })
+
+                    }
+
+                    if (fw_info_version) {
+                        let order = [
+                            "WebUI",
+                            "SCC_API",
+                            "SNMP",
+                            "Modbus_Server",
+                            "Redfish_Server",
+                            "PLC",
+                        ]
+
+                        order.forEach(key => {
+                            if (fw_info_version.hasOwnProperty(key)) {
+                                r1 += `${key},${fw_info_version[key]}\n`;
                             }
                         })
 
