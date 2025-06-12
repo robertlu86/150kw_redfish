@@ -1,0 +1,7 @@
+2025-06-12 09:39:23,553 - INFO - pump1 speed updated successfully. pump speed 50.0
+2025-06-12 09:39:23,601 - INFO - pump2 speed updated successfully. pump speed 50.0
+2025-06-12 09:39:23,645 - INFO - pump3 speed updated successfully. pump speed 50.0
+2025-06-12 09:39:23,806 - INFO - Fan speed updated successfully: 50
+2025-06-12 09:39:23,807 - INFO - mode updated successfully manual
+2025-06-12 09:42:08,334 - INFO - Failed to activate due to Inverter MC1.
+2025-06-12 09:42:08,452 - INFO - Fan speed updated successfully: 50

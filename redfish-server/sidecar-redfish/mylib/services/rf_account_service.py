@@ -4,7 +4,7 @@ from mylib.models.account_model import (
 from mylib.db.extensions import db
 from mylib.utils.rf_error import *
 from werkzeug.security import generate_password_hash
-from mylib.models.rf_account_service_model import RfAccountServiceModel
+from mylib.models.rf_account_service_model import RfAccountServiceModel,RfAccountServiceUpdateModel
 from mylib.models.setting_model import SettingModel
 import copy
 
@@ -26,11 +26,17 @@ class RfAccountService():
         Update account service from settings.
         """
         try:
-            acc_ser = RfAccountServiceModel(**json_input)
+            acc_ser = RfAccountServiceUpdateModel(**json_input)
             if acc_ser.save_to_settings() == False:
                 return error_response('Failed to save account service settings', 500, 'Base.GeneralError')
             return cls.fetch_service(), 200
         except ValueError as ve:
+            # Check which field might have failed
+            for error in ve.errors():
+                if not error['loc']:
+                    return error_response(msg=error['msg'],http_status=400,code='Base.PropertyValueFormatError')
+                err_msg= (f"{error['loc'][0]}: {error['msg']}")#
+                return error_response(msg=err_msg,http_status=400,code='Base.PropertyValueFormatError')
             return ERROR_PROPERTY_FORMAT
         except Exception as e:
             return error_response('Failed to update account service', 500, 'Base.GeneralError')
@@ -145,8 +151,15 @@ class RfAccountService():
             validated = AccountUpdateModel(**json_input)
             if not validated:
                 return error_response('Invalid input data', 400, 'Base.PropertyValueFormatError')
+            
+            new_username_user = AccountModel.query.filter_by(user_name=validated.user_name).first()
+            if new_username_user:
+                return error_response('The user with this user name already exists', 400, 'Base.ResourceAlreadyExists')
+            
+            
             for key, value in validated.model_dump(exclude_none=True).items():
                 existing_user.__setattr__(key, value)
+                
             db.session.commit()
         except ValueError as ve:
             # Check which field might have failed
@@ -197,6 +210,7 @@ class RfAccountService():
         "ServiceEnabled": True,
         "AuthFailureLoggingThreshold": 0,
         "MinPasswordLength": 0,
+        "MaxPasswordLength": 0,
         "AccountLockoutThreshold": 0,
         "AccountLockoutDuration": 0,
         "AccountLockoutCounterResetAfter": 0,

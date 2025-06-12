@@ -2564,6 +2564,59 @@ class Oem(Resource):
         rep["Pump3Switch"] = data["value"]["pump3_check"]
         
         return rep
+
+def read_snmp():
+    try:
+        with open(f"{log_path}/snmp/snmp.json", "r") as json_file:
+            data = json.load(json_file)
+            return data
+
+    except Exception as e:
+        print(f"read ctr_data error: {e}")
+        return plc_error()
+    
+Snmp_patch = default_ns.model('SnmpPatch', {
+    'trap_ip_address': fields.String(
+        required=True,
+        description='snmp trap ip',
+        default=True,
+        example="127.0.0.1",
+    ),
+    'read_community': fields.String(
+        required=True,
+        description='snmp community',
+        default=True,   # 是否設定預設值
+        example="public",   # 讓 UI 顯示範例
+    ),
+    'v3_switch': fields.Boolean(
+        required=True,
+        description='Switch_Mode',
+        default=True,   # 是否設定預設值
+        example=False,   # 讓 UI 顯示範例
+    ),
+})  
+
+@default_ns.route("/cdu/components/Snmp")  
+class Snmp(Resource):
+    def get(self):
+        data = read_snmp()
+        return data
+    
+    @default_ns.expect(Snmp_patch, validate=True)
+    def patch(self):
+        # data = read_snmp()
+        body = request.get_json(force=True)
+        data_to_write = {
+            "trap_ip_address": body["trap_ip_address"],
+            "read_community": body["read_community"],
+            "v3_switch": False
+        }
+        with open(f"{log_path}/snmp/snmp.json", "w", encoding="utf-8") as file:
+            json.dump(data_to_write, file, ensure_ascii=False, indent=2)
+
+        return data_to_write
+    
+    
     
 api.add_namespace(default_ns)
 

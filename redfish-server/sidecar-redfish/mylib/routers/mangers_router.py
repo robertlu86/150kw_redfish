@@ -1,6 +1,6 @@
 from flask import request
 from flask_restx import Namespace, Resource, fields
-from mylib.utils.load_api import load_raw_from_api 
+from mylib.utils.load_api import load_raw_from_api ,ITG_WEBAPP_HOST
 from mylib.utils.load_api import CDU_BASE
 from mylib.services.rf_managers_service import RfManagersService
 from mylib.models.rf_resource_model import RfResetType
@@ -371,7 +371,7 @@ class ManagersCDUActionsResetToDefaults(Resource):
     (回復到預設值)
     """
     @managers_ns.expect(ResetToDefaultsPostModel, validate=True)
-    def post(self):
+    def patch(self):
         req_json = request.json or {}
         reset_type = req_json.get("ResetType")
         resp = RfManagersService().reset_to_defaults(reset_type)
@@ -539,18 +539,19 @@ class ManagersCDUNetworkProtocol(Resource):
         RfManagersService().NetworkProtocol_service_patch(ntp)
             
         return "", 200
+
+@managers_ns.route("/Managers/CDU/NetworkProtocol/Oem/Supermicro/SNMPServers")
+class ManagersCDUNetworkProtocolOemSupermicroSNMPServers(Resource):
+    @managers_ns.doc("managers_cdu_network_protocol_oem_supermicro_snmpservers")
+    # @requires_auth
+    def get(self):
+        return RfManagersService().NetworkProtocol_Snmp_get()
     
-# @managers_ns.route("/Managers/CDU/NetworkProtocol/Oem/Supermicro/SNMPServers")
-# class ManagersCDUNetworkProtocolOemSupermicroSNMPServers(Resource):
-#     @managers_ns.doc("managers_cdu_network_protocol_oem_supermicro_snmpservers")
-#     # @requires_auth
-#     def get(self):
-#         return RfManagersService().NetworkProtocol_Snmp_get()
-    
-#     @managers_ns.expect(SnmpPatch)
-#     def patch(self):
-#         body = request.json or {}
-#         return RfManagersService().NetworkProtocol_Snmp_patch(body)
+    @managers_ns.expect(SnmpPatch)
+    def post(self):
+        body = request.json or {}
+        # return RfManagersService().NetworkProtocol_Snmp_Patch(body)
+        return RfManagersService().NetworkProtocol_Snmp_Post(body)
         
 @managers_ns.route("/Managers/CDU/NetworkProtocol/HTTPS/Certificates")
 class ManagersCDUNetworkProtocolHTTPS(Resource):
