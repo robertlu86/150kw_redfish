@@ -264,7 +264,7 @@ styles %}
                         <td class="w16 tdCenterAlign" id="f1_status">*</td>
                         <td class="w16 tdCenterAlign" id="f1_result">*</td>
                         <!-- <td class="w16 tdCenterAlign" id="f1_stat"></td> -->
-                        <td class="w16 tdCenterAlign" id="f1_expect">100 ~ 136</td>
+                        <td class="w16 tdCenterAlign" id="f1_expect">65 ~ 145</td>
                         <td class="w16 tdCenterAlign" id="f1_measure"></td>
                         <td class="w16 tdCenterAlign unit_flow">-</td>
                     </tr>
@@ -1194,7 +1194,6 @@ styles %}
             let measure_data = data["measure_data"];
             let inspection_time_last_check = data["inspection_time_last_check"];
             const currentData = window.sharedData.data;
-            check_f1_expect_value(currentData);
             for (let key in status_data) {
                 if (status_data.hasOwnProperty(key)) {
                     let value = status_data[key];
@@ -1354,19 +1353,6 @@ styles %}
                 console.error("Error fetching data:", error);
             },
         });
-
-        function check_f1_expect_value(data) {
-            let t2_value = data["value"]["temp_clntRtn"];
-            if (t2_value >= 50) {
-                $("#f1_expect").text("100 ~ 130");
-            } else if (t2_value >= 40 && t2_value < 50) {
-                $("#f1_expect").text("80 ~ 110");
-            } else if (t2_value >= 30 && t2_value < 40) {
-                $("#f1_expect").text("60 ~ 90");
-            } else if (t2_value >= 20 && t2_value < 30) {
-                $("#f1_expect").text("40 ~ 70");
-            }
-        }
 
         async function fetch_data_version() {
             while (!window.sharedData.data || !window.sharedData.version) {
@@ -1530,7 +1516,7 @@ styles %}
                 dataType: "json",
                 success: function (data) {
                     let fw_info_data = data["fw_info_data"];
-
+                    let fw_info_version = data["fw_info_version"];
                     let r1 = "";
                     let inspectionTime = time || "N/A";
 
@@ -1542,18 +1528,29 @@ styles %}
                         let order = [
                             "SN",
                             "Model",
-                            "Version",
-                            "WebUI",
-                            "SCC_API",
-                            "SNMP",
-                            "Modbus_Server",
-                            "Redfish",
-                            "PLC",
                         ]
 
                         order.forEach(key => {
                             if (fw_info_data.hasOwnProperty(key)) {
                                 r1 += `${key},${fw_info_data[key]}\n`;
+                            }
+                        })
+
+                    }
+
+                    if (fw_info_version) {
+                        let order = [
+                            "WebUI",
+                            "SCC_API",
+                            "SNMP",
+                            "Modbus_Server",
+                            "Redfish_Server",
+                            "PLC",
+                        ]
+
+                        order.forEach(key => {
+                            if (fw_info_version.hasOwnProperty(key)) {
+                                r1 += `${key},${fw_info_version[key]}\n`;
                             }
                         })
 

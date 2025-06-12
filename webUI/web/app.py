@@ -1361,6 +1361,10 @@ time_data = {
     },
 }
 
+rack_opening_setting = {
+    "setting_value" : 100,
+    "factor_value" : 100,
+}
 
 valve_factory = {"ambient": 20, "coolant": 20}
 
@@ -3006,6 +3010,20 @@ def adjust_import(input):
 
     return "Inputs received successfully"
 
+def rack_opening_import(data):
+    try:
+        with ModbusTcpClient(
+            host=modbus_host, port=modbus_port, unit=modbus_slave_id
+        ) as client:
+            client.write_registers(370, int(data))
+    except Exception as e:
+        print(f"rack opening setting:{e}")
+        return retry_modbus(370, [int(data)], "register")
+
+    op_logger.info(
+        "Rack Opening Setting Inputs received successfully"
+    )
+    return "Inputs received successfully"
 
 def pid_import(data):
     for key in data.keys():
@@ -5134,6 +5152,17 @@ def read_modbus_data():
             except Exception as e:
                 print(f"read auto setting error:{e}")
                 flag = True
+                
+            try:
+                with ModbusTcpClient(
+                    host=modbus_host, port=modbus_port, unit=modbus_slave_id
+                ) as client:
+                    r = client.read_holding_registers(370, 1, unit=modbus_slave_id)
+
+                    rack_opening_setting["setting_value"] = r.registers[0]
+            except Exception as e:
+                print(f"read rack opening setting error:{e}")
+                flag = True
 
             try:
                 with ModbusTcpClient(
@@ -5590,6 +5619,7 @@ def get_data_engineerMode():
             "visibility": ctr_data["rack_visibility"],
             "auto_setting": auto_setting,
             "ver_switch": ver_switch,
+            "rack_opening_setting": rack_opening_setting["setting_value"],
         }
     )
 
@@ -8052,6 +8082,9 @@ def get_inspection_result():
 
     with open(f"{web_path}/fw_info.json", "r") as file:
         fw_info_data = json.load(file)
+    
+    with open(f"{web_path}/fw_info_version.json", "r") as file:
+        fw_info_version = json.load(file)
 
     whole_data = {
         "result_data": result_data,
@@ -8061,6 +8094,7 @@ def get_inspection_result():
         "measure_data": measure_data,
         "inspection_time_last_check": inspection_time_last_check,
         "fw_info_data": fw_info_data,
+        "fw_info_version": fw_info_version,
         "ver_switch": ver_switch,
     }
     return jsonify(whole_data)
@@ -8168,6 +8202,26 @@ def auto_setting_apply():
  
     op_logger.info(f"Update Auto Setting Successfully. {data}")
     return jsonify(message="Update Auto Setting Successfully")
+
+@app.route("/rack_opening_setting_apply", methods=["POST"])
+def rack_opening_setting_apply():
+    data = request.get_json("data")
+    value = data["rack_opening_setting"]
+    try:
+        with ModbusTcpClient(
+            host=modbus_host, port=modbus_port, unit=modbus_slave_id
+        ) as client:
+            client.write_register(370, int(value))
+    except Exception as e:
+        print(f"rack opening setting:{e}")
+    op_logger.info(f"Update Rack Opening Setting Successfully. {data}")
+    return jsonify(message="Update Rack Opening Setting Successfully")
+
+@app.route("/resetRackOpening", methods=["POST"])
+def resetRackOpening():
+    rack_opening_import(rack_opening_setting["factor_value"])
+    op_logger.info("Reset Rack Opening to Factory Setting Successfully")
+    return jsonify(message="Reset Rack Opening to Factory Setting Successfully")
 
 
 @app.route("/resetAdjust", methods=["POST"])
@@ -8826,16 +8880,12 @@ def check_rack_error(rack, delay="Delay_rack_error"):
     error = rack + "_error"
     broken_occur = not sensorData["rack_broken"][broken]
     leak_occur = not sensorData["rack_leak"][leak]
-    rack_enable = 0
-    for key in ctr_data["rack_set"]:
-        if ctr_data["rack_set"][key] and key.endswith("_result"):
-            rack_enable += 1
-    opening_min_error = 25 + (rack_enable - 1) * 5 if rack_enable >= 1 else 0
-    opening_max_error = 45 + (rack_enable - 1) * 5 if rack_enable >= 1 else 0
+    thrsd_low = rack_opening_setting["setting_value"] - 10
+    thrsd_high = rack_opening_setting["setting_value"] + 10
     error_occur = (
         ctr_data["rack_set"][f"{rack}_sw"]
-        and (sensorData["rack_status"][f"{rack}_status"] < opening_min_error
-        or sensorData["rack_status"][f"{rack}_status"] > opening_max_error)
+        and (sensorData["rack_status"][f"{rack}_status"] < thrsd_low or
+        sensorData["rack_status"][f"{rack}_status"] > thrsd_high)
     ) or (
         not ctr_data["rack_set"][f"{rack}_sw"]
         and sensorData["rack_status"][f"{rack}_status"] > 10
