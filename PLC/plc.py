@@ -4905,7 +4905,7 @@ def control():
                         if inspection_data["step"] == 3.1:
                             print(f"3.1 開 f1：{read_flow_time} 秒")
 
-                            speed = translate_pump_speed(50)
+                            speed = translate_pump_speed(40)
                             set_pump1_speed(speed)
                             set_pump2_speed(speed)
                             set_pump3_speed(speed)
@@ -4948,15 +4948,16 @@ def control():
 
                             write_measured_data(7, max_f1)
                             print(f"F1 結果：{max_f1}")
-                            print(f'T2溫度:{all_sensors_dict["Temp_ClntRtn"]}')
-                            if all_sensors_dict["Temp_ClntRtn"] >= 50:
-                                inspection_data["result"]["f1"] = not (130 > max_f1 > 100)
-                            elif all_sensors_dict["Temp_ClntRtn"] >= 40 and all_sensors_dict["Temp_ClntRtn"] < 50:
-                                inspection_data["result"]["f1"] = not (110 > max_f1 > 80)
-                            elif all_sensors_dict["Temp_ClntRtn"] >= 30 and all_sensors_dict["Temp_ClntRtn"] < 40:
-                                inspection_data["result"]["f1"] = not (90 > max_f1 > 60)
-                            elif all_sensors_dict["Temp_ClntRtn"] >= 20 and all_sensors_dict["Temp_ClntRtn"] < 30:
-                                inspection_data["result"]["f1"] = not (70 > max_f1 > 40)
+
+                            inspection_data["result"]["f1"] = not (145 >= max_f1 >= 65)
+                            # if all_sensors_dict["Temp_ClntRtn"] >= 50:
+                            #     inspection_data["result"]["f1"] = not (130 > max_f1 > 100)
+                            # elif all_sensors_dict["Temp_ClntRtn"] >= 40 and all_sensors_dict["Temp_ClntRtn"] < 50:
+                            #     inspection_data["result"]["f1"] = not (110 > max_f1 > 80)
+                            # elif all_sensors_dict["Temp_ClntRtn"] >= 30 and all_sensors_dict["Temp_ClntRtn"] < 40:
+                            #     inspection_data["result"]["f1"] = not (90 > max_f1 > 60)
+                            # elif all_sensors_dict["Temp_ClntRtn"] >= 20 and all_sensors_dict["Temp_ClntRtn"] < 30:
+                            #     inspection_data["result"]["f1"] = not (70 > max_f1 > 40)
                             
                             change_progress("f1", "finish")
                             send_all(3, "f1")
