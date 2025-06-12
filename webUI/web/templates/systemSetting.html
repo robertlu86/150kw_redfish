@@ -89,7 +89,6 @@ block styles %}
         </div>
     </div>
     <!-- 密碼設定 Password Setting -->
-    {% if user != 'kiosk' %}
     <div class="passwordSetting">
         <div class="row">
             <div class="col-4">
@@ -132,15 +131,15 @@ block styles %}
                 <button id="psw_apply" class="btn btn-outline-success" style="margin-right: 10px; margin-top: 20px">
                     Apply
                 </button>
-                {% if user == 'superuser' or user == 'admin' %}
+
                 <button id="psw_reset" class="btn btn-outline-success" style="margin-right: 10px; margin-top: 20px">
                     Reset to default
                 </button>
-                {% endif %}
+
             </div>
         </div>
+
     </div>
-    {% endif %}
     <!-- Date Time Setting -->
     <div class="datetimeSetting">
         <div class="row mb-2">
@@ -340,6 +339,9 @@ block styles %}
 <script>
     jQuery(document).ready(function () {
         let userType = "{{user}}";
+        if (userType == "kiosk" && window.location.hostname !== "127.0.0.1") {
+            $(".passwordSetting").hide()
+        }
 
         jQuery(".unitSetting").attr("data-before", "Unit Setting");
         jQuery(".passwordSetting").attr("data-before", "User Password Setting");
