@@ -2564,7 +2564,8 @@ class Oem(Resource):
         rep["Pump3Switch"] = data["value"]["pump3_check"]
         
         return rep
-api.add_nacespace(default_ns)
+    
+api.add_namespace(default_ns)
 
 if __name__ == "__main__":
     app.run(debug=False, host="0.0.0.0", port=5001)
