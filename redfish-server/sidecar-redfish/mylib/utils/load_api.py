@@ -17,3 +17,4 @@ def load_raw_from_api(
 
 # curl資料
 CDU_BASE = os.environ.get("ITG_REST_HOST", "http://192.168.3.137:5001")
+ITG_WEBAPP_HOST = os.environ.get("ITG_WEBAPP_HOST", "http://127.0.0.1:5501")

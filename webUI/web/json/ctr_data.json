@@ -46,7 +46,8 @@
         "Fan5_run_time": 0,
         "Fan6_run_time": 0,
         "Fan7_run_time": 0,
-        "Fan8_run_time": 0
+        "Fan8_run_time": 0,
+        "Filter_run_time": 0
     },
     "mc": {
         "mc1_sw": false,
