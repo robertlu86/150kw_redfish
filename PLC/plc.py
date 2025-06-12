@@ -871,6 +871,7 @@ rack_data = {
         "Rack_9_Pass": False,
         "Rack_10_Pass": False,
     },
+    "rack_opening": 0,
 }
 
 
@@ -4851,7 +4852,7 @@ def control():
                             else:
                                 # p1_data = [50]
                                 max_p1 = max(p1_data)
-                                print(f"max_p1{max_p1}")
+                                print(f"max_p1:{max_p1}")
 
                                 ###超過範圍就送NG給前端
                                 inspection_data["result"]["p1_speed"] = not (
@@ -4947,14 +4948,15 @@ def control():
 
                             write_measured_data(7, max_f1)
                             print(f"F1 結果：{max_f1}")
-                            if all_sensors_dict["Temp_ClntSply"] <= 50:
+                            print(f'T2溫度:{all_sensors_dict["Temp_ClntRtn"]}')
+                            if all_sensors_dict["Temp_ClntRtn"] >= 50:
                                 inspection_data["result"]["f1"] = not (130 > max_f1 > 100)
-                            elif all_sensors_dict["Temp_ClntSply"] >= 40 and all_sensors_dict["Temp_ClntSply"] < 50:
-                                inspection_data["result"]["f1"] = not (80 > max_f1 > 110)
-                            elif all_sensors_dict["Temp_ClntSply"] >= 30 and all_sensors_dict["Temp_ClntSply"] < 40:
-                                inspection_data["result"]["f1"] = not (60 > max_f1 > 90)
-                            elif all_sensors_dict["Temp_ClntSply"] >= 20 and all_sensors_dict["Temp_ClntSply"] < 30:
-                                inspection_data["result"]["f1"] = not (40 > max_f1 > 70)
+                            elif all_sensors_dict["Temp_ClntRtn"] >= 40 and all_sensors_dict["Temp_ClntRtn"] < 50:
+                                inspection_data["result"]["f1"] = not (110 > max_f1 > 80)
+                            elif all_sensors_dict["Temp_ClntRtn"] >= 30 and all_sensors_dict["Temp_ClntRtn"] < 40:
+                                inspection_data["result"]["f1"] = not (90 > max_f1 > 60)
+                            elif all_sensors_dict["Temp_ClntRtn"] >= 20 and all_sensors_dict["Temp_ClntRtn"] < 30:
+                                inspection_data["result"]["f1"] = not (70 > max_f1 > 40)
                             
                             change_progress("f1", "finish")
                             send_all(3, "f1")
@@ -6320,20 +6322,27 @@ def rack_thread():
                 continue
 
             try:
-                rack_sw_count = 0
-                for i in range(10):
-                    control_key = f"Rack_{i + 1}_Control"
-                    if rack_data["rack_control"][control_key]:
-                        rack_sw_count += 1
-                percent = 35 + (rack_sw_count - 1) * 5 if rack_sw_count >= 1 else 0
-                opening_value = 4095 * percent / 100
+                # rack_sw_count = 0
+                # for i in range(10):
+                #     control_key = f"Rack_{i + 1}_Control"
+                #     if rack_data["rack_control"][control_key]:
+                #         rack_sw_count += 1
+                # percent = 35 + (rack_sw_count - 1) * 5 if rack_sw_count >= 1 else 0
+                # opening_value = 4095 * percent / 100
+                try:
+                    with ModbusTcpClient(host=modbus_host, port=modbus_port) as client:
+                        r = client.read_holding_registers(370, 1)
+                        rack_data["rack_opening"] = r.registers[0]
+                except Exception as e:
+                    print(f"rack control error: {e}")
+
                 for i in range(10):
                     enable_key = f"Rack_{i + 1}_Enable"
                     control_key = f"Rack_{i + 1}_Control"
                     ip_key = f"rack{i + 1}"
                     rack_ip = host[ip_key]
                     pass_key = f"Rack_{i + 1}_Pass"
-
+                    opening_value = 4095 * rack_data["rack_opening"] / 100
                     if rack_data["rack_control"][enable_key]:
                         try:
                             with ModbusTcpClient(
