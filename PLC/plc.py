@@ -4745,6 +4745,8 @@ def control():
                             stop_p2()
                             stop_p3()
                             stop_fan()
+                            ###　增加延遲時間讓pump跟fan可關閉到更小數值
+                            time.sleep(2)
                             count += 1
 
                             if count > 3:

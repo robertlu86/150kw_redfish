@@ -6249,6 +6249,12 @@ def reset_password():
     op_logger.info("User password updated successfully")
     return jsonify({"status": "success", "message": "Password Updated Successfully"})
 
+@app.route("/get_user_password", methods=["GET"])
+@login_required
+def get_user_password():
+               
+    return USER_DATA["user"]
+
 
 @app.route("/get_modbus_ip", methods=["GET"])
 def get_modbus_ip():
@@ -6950,104 +6956,8 @@ def export_settings():
                 export_data["users"]["kiosk"] = encrypted_password_kiosk
 
         if data.get("exp_alt_chk", False):
-            read_unit()
-
-            try:
-                thr_reg = (sum(1 for key in thrshd if "Thr_" in key)) * 2
-                delay_reg = sum(1 for key in thrshd if "Delay_" in key)
-                trap_reg = sum(1 for key in thrshd if "_trap" in key)
-                start_address = 1000
-                total_registers = thr_reg
-                read_num = 120
-
-                with ModbusTcpClient(
-                    host=modbus_host, port=modbus_port, unit=modbus_slave_id
-                ) as client:
-                    for counted_num in range(0, total_registers, read_num):
-                        count = min(read_num, total_registers - counted_num)
-                        result = client.read_holding_registers(
-                            start_address + counted_num, count, unit=modbus_slave_id
-                        )
-
-                        if result.isError():
-                            print(f"Modbus Errorxxx: {result}")
-                            continue
-                        else:
-                            keys_list = list(thrshd.keys())
-                            j = counted_num // 2
-                            for i in range(0, count, 2):
-                                if i + 1 < len(result.registers) and j < len(keys_list):
-                                    temp1 = [
-                                        result.registers[i],
-                                        result.registers[i + 1],
-                                    ]
-                                    decoder_big_endian = (
-                                        BinaryPayloadDecoder.fromRegisters(
-                                            temp1,
-                                            byteorder=Endian.Big,
-                                            wordorder=Endian.Little,
-                                        )
-                                    )
-                                    decoded_value_big_endian = (
-                                        decoder_big_endian.decode_32bit_float()
-                                    )
-                                    thrshd[keys_list[j]] = decoded_value_big_endian
-                                    if "Thr_" in keys_list[j] and "pH" in keys_list[j]:
-                                        thrshd[keys_list[j]] = round(thrshd[keys_list[j]], 2)
-                                    j += 1
-
-                with ModbusTcpClient(
-                    host=modbus_host, port=modbus_port, unit=modbus_slave_id
-                ) as client:
-                    result = client.read_holding_registers(
-                        1000 + thr_reg, delay_reg, unit=modbus_slave_id
-                    )
-
-                    if result.isError():
-                        print(f"Modbus Error: {result}")
-                    else:
-                        keys_list = list(thrshd.keys())
-                        j = int(thr_reg / 2)
-                        for i in range(0, delay_reg):
-                            thrshd[keys_list[j]] = result.registers[i]
-                            j += 1
-
-                with ModbusTcpClient(
-                    host=modbus_host, port=modbus_port, unit=modbus_slave_id
-                ) as client:
-                    r = client.read_coils((8192 + 2000), trap_reg)
-
-                    if r.isError():
-                        print(f"Modbus Error: {r}")
-                    else:
-                        keys_list = list(thrshd.keys())
-                        j = int(thr_reg / 2 + delay_reg)
-                        for i in range(0, trap_reg):
-                            thrshd[keys_list[j]] = r.bits[i]
-                            j += 1
-
-                    with open(f"{web_path}/json/thrshd.json", "w") as json_file:
-                        json.dump(thrshd, json_file)
-            except Exception as e:
-                print(f"read thrshd error:{e}")
-
-            if system_data["value"]["unit"] == "metric":
-                export_data["thrshd"] = thrshd
-            else:
-                for key in thrshd:
-                    if not key.endswith("_trap") and not key.startswith("Delay_"):
-                        if "Temp" in key:
-                            thrshd[key] = (thrshd[key] - 32.0) * 5.0 / 9.0
-
-                        if "DewPoint" in key:
-                            thrshd[key] = thrshd[key] / 9.0 * 5.0
-
-                        if "Prsr" in key:
-                            thrshd[key] = thrshd[key] / 0.145038
-
-                        if "Flow" in key:
-                            thrshd[key] = thrshd[key] / 0.2642
-                export_data["thrshd"] = thrshd
+           
+            export_data["thrshd"] = thrshd
 
         if data.get("exp_ntw_chk", False):
             export_data["network_set"] = collect_allnetwork_info()
@@ -7870,9 +7780,9 @@ def restoreFactorySettingAll():
     ###13. *Ststua Indicator Delay:3000010
     try:
         with open(f"{web_path}/json/timeout_light.json", "w") as file:
-            json.dump({"timeoutLight": "300010"}, file)
+            json.dump({"timeoutLight": "30000"}, file)
         op_logger.info(
-            f"Update indicator delay successfully. Indicator delay:300010"
+            f"Update indicator delay successfully. Indicator delay:30000"
         )
     except Exception as e:  
         print(f"timeout light error:{e}")   
