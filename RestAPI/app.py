@@ -2388,7 +2388,7 @@ def leak_judge(leak_broken, leak_leak):
         health = "Critical"
         state = "Disabled"
     elif leak_leak:
-        health = "warning"    
+        health = "Critical"    
         state = "Enabled"
     else:
         health = "OK"    

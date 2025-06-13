@@ -28,6 +28,13 @@ load_dotenv(dotenv_path=dotenv_path, verbose=True, override=True)
 PROJECT_NAME = os.getenv("PROJ_NAME")
 
 hardware_info: dict = {}
-with open(os.path.join(proj_root, "etc", "hardware", f"{PROJECT_NAME}", "hardware_info.yaml")) as f:
+with open(os.path.join(proj_root, "etc", "hardware", f"{PROJECT_NAME}", "hardware_info.yaml"), encoding="utf-8") as f:
     hardware_info = yaml.safe_load(f)
+    print("## hardware_info:")
     print(hardware_info)
+
+redfish_info: dict = {}
+with open(os.path.join(proj_root, "etc", "software", f"{PROJECT_NAME}", "redfish_info.yaml"), encoding="utf-8") as f:
+    redfish_info = yaml.safe_load(f)
+    print("## redfish_info:")
+    print(redfish_info)

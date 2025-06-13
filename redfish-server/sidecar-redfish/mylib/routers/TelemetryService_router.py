@@ -4,8 +4,8 @@ TelemetryService_ns = Namespace('', description='Telemetry Collection')
 
 TelemetryService_data = {
     "@odata.id": "/redfish/v1/TelemetryService",
-    "@odata.type": "#TelemetryService.v1_0_0.TelemetryService",
-    "@odata.context": "/redfish/v1/$metadata#TelemetryService.v1_0_0.TelemetryService",
+    "@odata.type": "#TelemetryService.v1_3_4.TelemetryService",
+    "@odata.context": "/redfish/v1/$metadata#TelemetryService.v1_3_4.TelemetryService",
     
     "Id": "TelemetryService",
     "Name": "CDU Telemetry Service",
