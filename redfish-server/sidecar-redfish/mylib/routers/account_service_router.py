@@ -175,16 +175,32 @@ class Account(Resource):
         account = RfAccountService.fetch_account_by_id(account_id)
         if account is None:
             return ERROR_RESOURCE_NOT_FOUND
-        account_etag = f'"{hex(hash(json.dumps(account)))}"'  
-        account['@odata.etag'] = account_etag
         resp = Response(json.dumps(account), status=200, content_type="application/json")
         resp.headers['Allow'] = 'GET, PATCH, DELETE'
-        resp.headers['ETag'] = account_etag
+        resp.headers['ETag'] = account['@odata.etag']
         return resp
     
     @AccountService_ns.expect(account_patch_model, validate=True)
     def patch(self, account_id):
+        # Check if account exists first
+        account = RfAccountService.fetch_account_by_id(account_id)
+        if account is None:
+            return ERROR_RESOURCE_NOT_FOUND
+
+        # Check If-Match header
+        if_match = request.headers.get('If-Match')
+        account_etag = account.get('@odata.etag', '')
+
+        print(f"Account ID: {account_id}")
+        print(f"Account ETag: {account_etag}")
+        print(f"If-Match header: {if_match}")
+
+        # If If-Match header is provided but doesn't match the current ETag
+        if if_match and if_match != account_etag:
+            return ERROR_PRECONDITION_FAILED
+
         body = request.get_json(force=True)
+
         try:
             return RfAccountService.update_account(account_id, body)
         except Exception:

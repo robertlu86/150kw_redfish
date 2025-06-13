@@ -2,6 +2,7 @@ import time
 import datetime
 from datetime import timedelta
 from dateutil import relativedelta
+from typing import Literal
 
 class DateTimeUtil:
     @staticmethod
@@ -66,3 +67,16 @@ class DateTimeUtil:
     @staticmethod
     def add_hours(_datetime, hours):
         return _datetime + timedelta(hours=hours)
+
+    @staticmethod
+    def parse_timezone(_datetime: datetime.datetime, time_separator:Literal[':', ''] = '') -> str:
+        """
+        @param _datetime {datetime.datetime}
+        @param time_separator {Literal[':', '']} default is ''
+        @return {str} timezone in format of '+0800' or '+08:00'
+        """
+        ret = _datetime.astimezone().strftime("%z")
+        if time_separator == ':':
+            ret = ret[:3] + ':00'
+        return ret
+        

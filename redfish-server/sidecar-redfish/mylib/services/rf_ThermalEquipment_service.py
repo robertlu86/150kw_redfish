@@ -361,7 +361,7 @@ class RfThermalEquipmentService(BaseService):
         
         # 驗證範圍
         scp = hardware_info["Pumps"][pump_id]
-        if not (scp["AllowableMin"] <= new_sp <= scp["AllowableMax"]):
+        if not (scp["AllowableMin"] <= new_sp <= scp["AllowableMax"]) and new_sp != 0:
             return {
                 "error": f"pump_speed needs to be between {scp['AllowableMin']} and {scp['AllowableMax']} or 0"
             }, 400

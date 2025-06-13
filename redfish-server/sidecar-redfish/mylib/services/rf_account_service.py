@@ -97,8 +97,9 @@ class RfAccountService():
                 }
             }
             json_data["@odata.id"]="/redfish/v1/AccountService/Accounts/{0}".format(user.user_name)
+            account_etag = f'"{hex(hash(json.dumps(json_data, sort_keys=True)))}"'
+            json_data['@odata.etag'] = account_etag
             return  json_data
-        
     
     @classmethod
     def create_account(cls, json_input):
