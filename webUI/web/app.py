@@ -6977,7 +6977,7 @@ def export_settings():
     data = request.json
 
     export_data.clear()
-
+    ctr_data_temp = ctr_data.copy()
     try:
         if data.get("exp_system_chk", False):
             export_data["unit"] = system_data["value"]["unit"]
@@ -6999,9 +6999,16 @@ def export_settings():
                     USER_DATA["user"].encode()
                 ).decode()
                 export_data["users"]["kiosk"] = encrypted_password_kiosk
+        if data.get("exp_mode_chk", False):
+            for key, v in ctr_data_temp["value"].items():
+                if isinstance(v, float):
+                    ctr_data_temp["value"][key] = round(v, 2)
+            export_data["mode_set"] = ctr_data_temp["value"]
 
         if data.get("exp_alt_chk", False):
-           
+            for key in thrshd.keys():
+                if key.startswith("Thr_"):
+                    thrshd[key] = round(thrshd[key], 2)
             export_data["thrshd"] = thrshd
 
         if data.get("exp_ntw_chk", False):
