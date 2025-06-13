@@ -1685,32 +1685,6 @@ styles %}
             });
         });
 
-        $("#water_factory").click(function () {
-            $.ajax({
-                url: "/reset_water",
-                method: "POST",
-                success: function (r) {
-                    if (r.status == "success") {
-                        Swal.fire({
-                            title: "Success",
-                            text: r.message,
-                            icon: "success",
-                            confirmButtonText: "OK",
-                        });
-                    } else {
-                        Swal.fire({
-                            title: "Error",
-                            text: r.message,
-                            icon: "info",
-                            confirmButtonText: "OK",
-                        });
-                    }
-                },
-                error: function (error) {
-                    console.error("Error fetching data:", error);
-                },
-            });
-        });
 
         $("#resetCurrentBtn").click(function () {
             let mode = $("#opMod").val();
