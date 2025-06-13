@@ -723,6 +723,14 @@ sensorData = {
     },
     "opMod": "Auto",
     "plc_version": "",
+    "temporary_data":{
+        "command_pressure":0,
+        "feedback_pressure":0,
+        "pressure_output":0,
+        "command_temperature":0,
+        "feedback_temperature":0,
+        "temperature_output":0,
+    }
 }
 
 ctr_data = {
@@ -2169,6 +2177,14 @@ ctrl_map = {
     "resultFan8": "Fan 8 Speed Setting",
 }
 
+temporary_map = {
+    "command_pressure": "Command Pressure",
+    "feedback_pressure": "Feedback Pressure",
+    "pressure_output":  "Pressure Output",
+    "command_temperature":  "Command Temperature",
+    "feedback_temperature":  "Feedback Temperature",
+    "temperature_output":   "Temperature Output",
+}
 
 logData = {
     "value": {
@@ -2221,6 +2237,14 @@ logData = {
         "resultFan6": False,
         "resultFan7": False,
         "resultFan8": False,
+    },
+    "temporary_data": {
+        "command_pressure": 0,
+        "feedback_pressure": 0,
+        "pressure_output": 0,
+        "command_temperature": 0,
+        "feedback_temperature": 0,
+        "temperature_output": 0,
     },
 }
 
@@ -2513,7 +2537,7 @@ def delete_old_logs(location, days_to_keep=1100):
 
 def write_sensor_log():
     try:
-        column_names = ["time"] + list(sensor_map.values()) + list(ctrl_map.values())
+        column_names = ["time"] + list(sensor_map.values()) + list(ctrl_map.values()) + list(temporary_map.values())
         log_dir = f"{log_path}/logs/sensor"
         if not os.path.exists(log_dir):
             os.makedirs(log_dir)
@@ -2552,6 +2576,7 @@ def write_sensor_log():
                 [timestamp]
                 + list(logData["value"].values())
                 + list(logData["setting"].values())
+                + list(logData["temporary_data"].values())
             )
     except Exception as e:
         journal_logger.info(f"write sensor log error: {e}")
@@ -4041,8 +4066,25 @@ def read_modbus_data():
                     )
                     sensorData["eletricity"][keys_list[j]] = decoder.decode_32bit_float()
         except Exception as e:
-            print(f"read status data error:{e}")
+            print(f"read eletricity data error:{e}")
         # 測試用結束
+        # 臨時log開始
+        try:
+            with ModbusTcpClient(
+                host=modbus_host, port=modbus_port, unit=modbus_slave_id
+            ) as client:
+                value_reg = (len(sensorData["temporary_data"].keys())) * 2
+                r = client.read_holding_registers(7004, value_reg, unit=modbus_slave_id)
+                keys_list = list(sensorData["temporary_data"].keys())
+                for j, i in enumerate(range(0, value_reg, 2)):
+                    temp1 = [r.registers[i], r.registers[i + 1]]
+                    decoder = BinaryPayloadDecoder.fromRegisters(
+                        temp1, byteorder=Endian.Big, wordorder=Endian.Little
+                    )
+                    sensorData["temporary_data"][keys_list[j]] = decoder.decode_32bit_float()
+        except Exception as e:
+            print(f"read temporary data error:{e}")
+        # 臨時log結束
         try:
             with ModbusTcpClient(
                 host=modbus_host, port=modbus_port, unit=modbus_slave_id
@@ -4127,6 +4169,9 @@ def read_modbus_data():
                         else:
                             new_data_setting = round(ctr_data["value"][key], 1)
                             logData["setting"][key] = new_data_setting
+                for key in sensorData["temporary_data"]:
+                    if key in logData["temporary_data"]:
+                        logData["temporary_data"][key] = round(sensorData["temporary_data"][key], 1)
             except Exception as e:
                 print(f"write log error: {e}")
 
