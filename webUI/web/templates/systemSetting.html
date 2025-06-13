@@ -61,9 +61,8 @@ block styles %}
 </style>
 {% endblock %} {% block content %}
 <div class="container-fluid" style="margin-top: 100px; margin-bottom: 60px">
-    <div class="unitSetting">
+    <!--<div class="unitSetting">
         <div class="container-fluid">
-            <!-- Temperature Unit -->
             <div class="row">
                 <div class="col-4">
                     <p>Unit:</p>
@@ -87,7 +86,7 @@ block styles %}
                 </div>
             </div>
         </div>
-    </div>
+    </div>-->
     <!-- 密碼設定 Password Setting -->
     <div class="passwordSetting">
         <div class="row">
@@ -398,7 +397,7 @@ block styles %}
             },
         });
 
-        $.ajax({
+        /*$.ajax({
             url: "/get_data_systemset",
             method: "GET",
             success: function (data) {
@@ -415,7 +414,7 @@ block styles %}
 
                 $("#unit").val(unit_set);
             },
-        });
+        });*/
 
         $.ajax({
             url: "/get_system_time",
@@ -675,7 +674,7 @@ block styles %}
             });
         });
 
-        $("#unitAplBt").click(function () {
+        /*$("#unitAplBt").click(function () {
             var selectedValue = $("#unit").val();
             console.log(selectedValue);
 
@@ -721,7 +720,7 @@ block styles %}
                     console.error("Error fetching data:", error);
                 },
             });
-        }
+        }*/
 
         $("#timeAplBt").click(function () {
             var selectedTime = $("#systemTime").val();

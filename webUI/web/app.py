@@ -723,6 +723,14 @@ sensorData = {
     },
     "opMod": "Auto",
     "plc_version": "",
+    "temporary_data":{
+        "command_pressure":0,
+        "feedback_pressure":0,
+        "pressure_output":0,
+        "command_temperature":0,
+        "feedback_temperature":0,
+        "temperature_output":0,
+    }
 }
 
 ctr_data = {
@@ -2169,6 +2177,14 @@ ctrl_map = {
     "resultFan8": "Fan 8 Speed Setting",
 }
 
+temporary_map = {
+    "command_pressure": "Command Pressure",
+    "feedback_pressure": "Feedback Pressure",
+    "pressure_output":  "Pressure Output",
+    "command_temperature":  "Command Temperature",
+    "feedback_temperature":  "Feedback Temperature",
+    "temperature_output":   "Temperature Output",
+}
 
 logData = {
     "value": {
@@ -2221,6 +2237,14 @@ logData = {
         "resultFan6": False,
         "resultFan7": False,
         "resultFan8": False,
+    },
+    "temporary_data": {
+        "command_pressure": 0,
+        "feedback_pressure": 0,
+        "pressure_output": 0,
+        "command_temperature": 0,
+        "feedback_temperature": 0,
+        "temperature_output": 0,
     },
 }
 
@@ -2513,7 +2537,7 @@ def delete_old_logs(location, days_to_keep=1100):
 
 def write_sensor_log():
     try:
-        column_names = ["time"] + list(sensor_map.values()) + list(ctrl_map.values())
+        column_names = ["time"] + list(sensor_map.values()) + list(ctrl_map.values()) + list(temporary_map.values())
         log_dir = f"{log_path}/logs/sensor"
         if not os.path.exists(log_dir):
             os.makedirs(log_dir)
@@ -2552,6 +2576,7 @@ def write_sensor_log():
                 [timestamp]
                 + list(logData["value"].values())
                 + list(logData["setting"].values())
+                + list(logData["temporary_data"].values())
             )
     except Exception as e:
         journal_logger.info(f"write sensor log error: {e}")
@@ -4041,8 +4066,25 @@ def read_modbus_data():
                     )
                     sensorData["eletricity"][keys_list[j]] = decoder.decode_32bit_float()
         except Exception as e:
-            print(f"read status data error:{e}")
+            print(f"read eletricity data error:{e}")
         # 測試用結束
+        # 臨時log開始
+        try:
+            with ModbusTcpClient(
+                host=modbus_host, port=modbus_port, unit=modbus_slave_id
+            ) as client:
+                value_reg = (len(sensorData["temporary_data"].keys())) * 2
+                r = client.read_holding_registers(7004, value_reg, unit=modbus_slave_id)
+                keys_list = list(sensorData["temporary_data"].keys())
+                for j, i in enumerate(range(0, value_reg, 2)):
+                    temp1 = [r.registers[i], r.registers[i + 1]]
+                    decoder = BinaryPayloadDecoder.fromRegisters(
+                        temp1, byteorder=Endian.Big, wordorder=Endian.Little
+                    )
+                    sensorData["temporary_data"][keys_list[j]] = decoder.decode_32bit_float()
+        except Exception as e:
+            print(f"read temporary data error:{e}")
+        # 臨時log結束
         try:
             with ModbusTcpClient(
                 host=modbus_host, port=modbus_port, unit=modbus_slave_id
@@ -4127,6 +4169,9 @@ def read_modbus_data():
                         else:
                             new_data_setting = round(ctr_data["value"][key], 1)
                             logData["setting"][key] = new_data_setting
+                for key in sensorData["temporary_data"]:
+                    if key in logData["temporary_data"]:
+                        logData["temporary_data"][key] = round(sensorData["temporary_data"][key], 1)
             except Exception as e:
                 print(f"write log error: {e}")
 
@@ -6249,6 +6294,12 @@ def reset_password():
     op_logger.info("User password updated successfully")
     return jsonify({"status": "success", "message": "Password Updated Successfully"})
 
+@app.route("/get_user_password", methods=["GET"])
+@login_required
+def get_user_password():
+               
+    return USER_DATA["user"]
+
 
 @app.route("/get_modbus_ip", methods=["GET"])
 def get_modbus_ip():
@@ -6926,7 +6977,7 @@ def export_settings():
     data = request.json
 
     export_data.clear()
-
+    ctr_data_temp = ctr_data.copy()
     try:
         if data.get("exp_system_chk", False):
             export_data["unit"] = system_data["value"]["unit"]
@@ -6948,106 +6999,17 @@ def export_settings():
                     USER_DATA["user"].encode()
                 ).decode()
                 export_data["users"]["kiosk"] = encrypted_password_kiosk
+        if data.get("exp_mode_chk", False):
+            for key, v in ctr_data_temp["value"].items():
+                if isinstance(v, float):
+                    ctr_data_temp["value"][key] = round(v, 2)
+            export_data["mode_set"] = ctr_data_temp["value"]
 
         if data.get("exp_alt_chk", False):
-            read_unit()
-
-            try:
-                thr_reg = (sum(1 for key in thrshd if "Thr_" in key)) * 2
-                delay_reg = sum(1 for key in thrshd if "Delay_" in key)
-                trap_reg = sum(1 for key in thrshd if "_trap" in key)
-                start_address = 1000
-                total_registers = thr_reg
-                read_num = 120
-
-                with ModbusTcpClient(
-                    host=modbus_host, port=modbus_port, unit=modbus_slave_id
-                ) as client:
-                    for counted_num in range(0, total_registers, read_num):
-                        count = min(read_num, total_registers - counted_num)
-                        result = client.read_holding_registers(
-                            start_address + counted_num, count, unit=modbus_slave_id
-                        )
-
-                        if result.isError():
-                            print(f"Modbus Errorxxx: {result}")
-                            continue
-                        else:
-                            keys_list = list(thrshd.keys())
-                            j = counted_num // 2
-                            for i in range(0, count, 2):
-                                if i + 1 < len(result.registers) and j < len(keys_list):
-                                    temp1 = [
-                                        result.registers[i],
-                                        result.registers[i + 1],
-                                    ]
-                                    decoder_big_endian = (
-                                        BinaryPayloadDecoder.fromRegisters(
-                                            temp1,
-                                            byteorder=Endian.Big,
-                                            wordorder=Endian.Little,
-                                        )
-                                    )
-                                    decoded_value_big_endian = (
-                                        decoder_big_endian.decode_32bit_float()
-                                    )
-                                    thrshd[keys_list[j]] = decoded_value_big_endian
-                                    if "Thr_" in keys_list[j] and "pH" in keys_list[j]:
-                                        thrshd[keys_list[j]] = round(thrshd[keys_list[j]], 2)
-                                    j += 1
-
-                with ModbusTcpClient(
-                    host=modbus_host, port=modbus_port, unit=modbus_slave_id
-                ) as client:
-                    result = client.read_holding_registers(
-                        1000 + thr_reg, delay_reg, unit=modbus_slave_id
-                    )
-
-                    if result.isError():
-                        print(f"Modbus Error: {result}")
-                    else:
-                        keys_list = list(thrshd.keys())
-                        j = int(thr_reg / 2)
-                        for i in range(0, delay_reg):
-                            thrshd[keys_list[j]] = result.registers[i]
-                            j += 1
-
-                with ModbusTcpClient(
-                    host=modbus_host, port=modbus_port, unit=modbus_slave_id
-                ) as client:
-                    r = client.read_coils((8192 + 2000), trap_reg)
-
-                    if r.isError():
-                        print(f"Modbus Error: {r}")
-                    else:
-                        keys_list = list(thrshd.keys())
-                        j = int(thr_reg / 2 + delay_reg)
-                        for i in range(0, trap_reg):
-                            thrshd[keys_list[j]] = r.bits[i]
-                            j += 1
-
-                    with open(f"{web_path}/json/thrshd.json", "w") as json_file:
-                        json.dump(thrshd, json_file)
-            except Exception as e:
-                print(f"read thrshd error:{e}")
-
-            if system_data["value"]["unit"] == "metric":
-                export_data["thrshd"] = thrshd
-            else:
-                for key in thrshd:
-                    if not key.endswith("_trap") and not key.startswith("Delay_"):
-                        if "Temp" in key:
-                            thrshd[key] = (thrshd[key] - 32.0) * 5.0 / 9.0
-
-                        if "DewPoint" in key:
-                            thrshd[key] = thrshd[key] / 9.0 * 5.0
-
-                        if "Prsr" in key:
-                            thrshd[key] = thrshd[key] / 0.145038
-
-                        if "Flow" in key:
-                            thrshd[key] = thrshd[key] / 0.2642
-                export_data["thrshd"] = thrshd
+            for key in thrshd.keys():
+                if key.startswith("Thr_"):
+                    thrshd[key] = round(thrshd[key], 2)
+            export_data["thrshd"] = thrshd
 
         if data.get("exp_ntw_chk", False):
             export_data["network_set"] = collect_allnetwork_info()
@@ -7870,9 +7832,9 @@ def restoreFactorySettingAll():
     ###13. *Ststua Indicator Delay:3000010
     try:
         with open(f"{web_path}/json/timeout_light.json", "w") as file:
-            json.dump({"timeoutLight": "300010"}, file)
+            json.dump({"timeoutLight": "30000"}, file)
         op_logger.info(
-            f"Update indicator delay successfully. Indicator delay:300010"
+            f"Update indicator delay successfully. Indicator delay:30000"
         )
     except Exception as e:  
         print(f"timeout light error:{e}")   

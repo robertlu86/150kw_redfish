@@ -1931,7 +1931,7 @@ styles %}
             index = 1;
             for (key in data["value"]) {
                 if (key.startsWith("fan_freq")) {
-                    if (data["value"][key] > 15) {
+                    if (data["value"][key] > 13) {
                         $(`#fan_freq${index}_light`).css("background-color", "green")
                     } else {
                         $(`#fan_freq${index}_light`).css("background-color", "transparent")

@@ -871,6 +871,7 @@ rack_data = {
         "Rack_9_Pass": False,
         "Rack_10_Pass": False,
     },
+    "rack_opening": 0,
 }
 
 
@@ -1490,6 +1491,25 @@ fan_raw_status = {
         "Fan6": 0,
         "Fan7": 0,
         "Fan8": 0,
+    },
+}
+
+temporary_data = {
+    "raw_value": {
+        "command_pressure": 0,
+        "feedback_pressure": 0,
+        "pressure_output": 0,
+        "command_temperature": 0,
+        "feedback_temperature": 0,
+        "temperature_output": 0,
+    },
+    "cvt_value": {
+        "command_pressure": 0,
+        "feedback_pressure": 0,
+        "pressure_output": 0,
+        "command_temperature": 0,
+        "feedback_temperature": 0,
+        "temperature_output": 0,
     },
 }
 
@@ -4063,7 +4083,7 @@ def control():
                         )
                         dword_regs["p_swap"] = swap
                 except Exception as e:
-                    print(f"read pump1 runtime error: {e}")
+                    print(f"read pump and fan runtime error: {e}")
 
                 try:
                     with ModbusTcpClient(host=modbus_host, port=modbus_port) as client:
@@ -4405,8 +4425,49 @@ def control():
                     with ModbusTcpClient(host=modbus_host, port=modbus_port) as client:
                         client.write_registers(7000, registers_eletricity)
                 except Exception as e:
-                    print(f"write into thrshd error: {e}")
+                    print(f"write electricity data error: {e}")
                 # 測試用結束
+                # 追加臨時log開始
+                try:
+                    with ModbusTcpClient(host=modbus_host, port=modbus_port) as client:
+                        r = client.read_holding_registers(80, 6, unit=modbus_slave_id)
+                        if not r.isError():
+                            for i, key in enumerate(temporary_data["raw_value"].keys()):
+                                temporary_data["raw_value"][key] = r.registers[i]
+                        key_list = list(temporary_data["raw_value"].keys())
+                        for key in key_list:
+                            if "pressure" in key:
+                                if 6400 > temporary_data["raw_value"][key] > 6080:
+                                    temporary_data["raw_value"][key] = 6400
+                                temporary_data["cvt_value"][key] = (float(temporary_data["raw_value"][key]) - 6400) / 25600.0
+                            elif "temperature" in key:
+                                temporary_data["cvt_value"][key] = float(temporary_data["raw_value"][key]) / 10.0
+                        unit_r = client.read_coils((8192 + 500), 1)
+                        if unit_r.bits[0]:
+                            for key in key_list:
+                                if "temperature" in key:
+                                    temporary_data["cvt_value"][key] = (
+                                        temporary_data["cvt_value"][key] * 9.0 / 5.0 + 32.0
+                                    )
+                                elif "pressure" in key:
+                                    temporary_data["cvt_value"][key] = (
+                                        temporary_data["cvt_value"][key] * 0.145038
+                                    )
+                except Exception as e:
+                    print(f"read temporary data error: {e}")
+                    
+                registers = []
+                for key in temporary_data["cvt_value"].keys():
+                    value = temporary_data["cvt_value"][key]
+                    word1, word2 = cvt_float_byte(value)
+                    registers.append(word2)
+                    registers.append(word1)
+                try:
+                    with ModbusTcpClient(host=modbus_host, port=modbus_port) as client:
+                        client.write_registers(7004, registers)
+                except Exception as e:
+                    print(f"write into temp data error: {e}")
+                # 追加臨時log結束
                 trigger_overload_from_oc_detection()
 
                 if mode in ["auto", "stop"]:
@@ -4813,6 +4874,8 @@ def control():
                                 stop_p2()
                                 stop_p3()
                                 stop_fan()
+                                ###　增加延遲時間讓pump跟fan可關閉到更小數值
+                                time.sleep(2)
                                 count += 1
 
                                 if count > 3:
@@ -4920,7 +4983,7 @@ def control():
                                 else:
                                     # p1_data = [50]
                                     max_p1 = max(p1_data)
-                                    print(f"max_p1{max_p1}")
+                                    print(f"max_p1:{max_p1}")
 
                                     ###超過範圍就送NG給前端
                                     inspection_data["result"]["p1_speed"] = not (
@@ -4973,7 +5036,7 @@ def control():
                             if inspection_data["step"] == 3.1:
                                 print(f"3.1 開 f1：{read_flow_time} 秒")
 
-                                speed = translate_pump_speed(50)
+                                speed = translate_pump_speed(40)
                                 set_pump1_speed(speed)
                                 set_pump2_speed(speed)
                                 set_pump3_speed(speed)
@@ -5016,14 +5079,16 @@ def control():
 
                                 write_measured_data(7, max_f1)
                                 print(f"F1 結果：{max_f1}")
-                                if all_sensors_dict["Temp_ClntSply"] <= 50:
-                                    inspection_data["result"]["f1"] = not (130 > max_f1 > 100)
-                                elif all_sensors_dict["Temp_ClntSply"] >= 40 and all_sensors_dict["Temp_ClntSply"] < 50:
-                                    inspection_data["result"]["f1"] = not (80 > max_f1 > 110)
-                                elif all_sensors_dict["Temp_ClntSply"] >= 30 and all_sensors_dict["Temp_ClntSply"] < 40:
-                                    inspection_data["result"]["f1"] = not (60 > max_f1 > 90)
-                                elif all_sensors_dict["Temp_ClntSply"] >= 20 and all_sensors_dict["Temp_ClntSply"] < 30:
-                                    inspection_data["result"]["f1"] = not (40 > max_f1 > 70)
+
+                                inspection_data["result"]["f1"] = not (150 >= max_f1 >= 50)
+                                # if all_sensors_dict["Temp_ClntRtn"] >= 50:
+                                #     inspection_data["result"]["f1"] = not (130 > max_f1 > 100)
+                                # elif all_sensors_dict["Temp_ClntRtn"] >= 40 and all_sensors_dict["Temp_ClntRtn"] < 50:
+                                #     inspection_data["result"]["f1"] = not (110 > max_f1 > 80)
+                                # elif all_sensors_dict["Temp_ClntRtn"] >= 30 and all_sensors_dict["Temp_ClntRtn"] < 40:
+                                #     inspection_data["result"]["f1"] = not (90 > max_f1 > 60)
+                                # elif all_sensors_dict["Temp_ClntRtn"] >= 20 and all_sensors_dict["Temp_ClntRtn"] < 30:
+                                #     inspection_data["result"]["f1"] = not (70 > max_f1 > 40)
                                 
                                 change_progress("f1", "finish")
                                 send_all(3, "f1")
@@ -5985,7 +6050,7 @@ def control():
                                 client.write_registers(366, filter_rt1_hr)
 
                         except Exception as e:
-                            print(f"read pump1 runtime error: {e}")
+                            print(f"read pump runtime error: {e}")
                 else:
                     filter_run_last_min = time.time()
 
@@ -6186,13 +6251,13 @@ def rtu_thread():
                     # Apparent Power
                     try:
                         r = client.read_holding_registers(3075, 2, unit=3)
-                        power_factor = cvt_registers_to_float(
+                        apparent_power = cvt_registers_to_float(
                             r.registers[1], r.registers[0]
                         )
-                        raw_485_data_eletricity["power_factor"] = power_factor
-                        raw_485_comm_eletricity["power_factor"] = False
+                        raw_485_data_eletricity["apparent_power"] = apparent_power
+                        raw_485_comm_eletricity["apparent_power"] = False
                     except Exception as e:
-                        raw_485_comm_eletricity["power_factor"] = True
+                        raw_485_comm_eletricity["apparent_power"] = True
                         print(f"Average Voltage error: {e}")
                     # 測試用結束
                     time.sleep(duration)
@@ -6295,7 +6360,7 @@ def rtu_thread():
                     # journal_logger.info(f"485 通訊：{raw_485_comm}")
                 except Exception as e:
                     print(f"enclosed: {e}")
-                        
+            
             ### 與PLC相同 結束
 
     except Exception as e:
@@ -6338,20 +6403,27 @@ def rack_thread():
                     continue
 
                 try:
-                    rack_sw_count = 0
-                    for i in range(10):
-                        control_key = f"Rack_{i + 1}_Control"
-                        if rack_data["rack_control"][control_key]:
-                            rack_sw_count += 1
-                    percent = 35 + (rack_sw_count - 1) * 5 if rack_sw_count >= 1 else 0
-                    opening_value = 4095 * percent / 100
+                    # rack_sw_count = 0
+                    # for i in range(10):
+                    #     control_key = f"Rack_{i + 1}_Control"
+                    #     if rack_data["rack_control"][control_key]:
+                    #         rack_sw_count += 1
+                    # percent = 35 + (rack_sw_count - 1) * 5 if rack_sw_count >= 1 else 0
+                    # opening_value = 4095 * percent / 100
+                    try:
+                        with ModbusTcpClient(host=modbus_host, port=modbus_port) as client:
+                            r = client.read_holding_registers(370, 1)
+                            rack_data["rack_opening"] = r.registers[0]
+                    except Exception as e:
+                        print(f"rack control error: {e}")
+
                     for i in range(10):
                         enable_key = f"Rack_{i + 1}_Enable"
                         control_key = f"Rack_{i + 1}_Control"
                         ip_key = f"rack{i + 1}"
                         rack_ip = host[ip_key]
                         pass_key = f"Rack_{i + 1}_Pass"
-
+                        opening_value = 4095 * rack_data["rack_opening"] / 100
                         if rack_data["rack_control"][enable_key]:
                             try:
                                 with ModbusTcpClient(
@@ -6377,7 +6449,7 @@ def rack_thread():
                     print(f"pass error: {e}")
             except Exception as e:
                 print(f"enclosed: {e}")
-    
+
             ### 與PLC相同 結束
 
             time.sleep(2)
