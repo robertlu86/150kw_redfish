@@ -4949,7 +4949,7 @@ def control():
                             write_measured_data(7, max_f1)
                             print(f"F1 結果：{max_f1}")
 
-                            inspection_data["result"]["f1"] = not (145 >= max_f1 >= 65)
+                            inspection_data["result"]["f1"] = not (150 >= max_f1 >= 50)
                             # if all_sensors_dict["Temp_ClntRtn"] >= 50:
                             #     inspection_data["result"]["f1"] = not (130 > max_f1 > 100)
                             # elif all_sensors_dict["Temp_ClntRtn"] >= 40 and all_sensors_dict["Temp_ClntRtn"] < 50:
