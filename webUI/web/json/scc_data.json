@@ -5,8 +5,8 @@
             "Alert": false
         },
         "CoolantSupplyTemperatureSpare": {
-            "Warning": true,
-            "Alert": true
+            "Warning": false,
+            "Alert": false
         },
         "CoolantReturnTemperature": {
             "Warning": false,

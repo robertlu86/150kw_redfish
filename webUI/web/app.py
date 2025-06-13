@@ -7662,25 +7662,30 @@ def restoreFactorySettingAll():
         op_logger.info("reset Filter and Fan Running Time failed!")
 
     ###4. Error Table: 隱藏或刪除所有已經回復的Message(superuser保留)
-    global signal_records
-    if signal_records:
-        signal_records = []
-        save_to_json()
+    try:
+        global signal_records
+        if signal_records:
+            signal_records = []
+            save_to_json()
         # return jsonify({"status": "success", "message": "All records deleted successfully."})
-    else:
-        # return jsonify({"status": "fail", "message": "No records to delete."})
-        print(f"No records to delete.")
+        else:
+            # return jsonify({"status": "fail", "message": "No records to delete."})
+            print(f"No records to delete.")
+    except Exception as e:
+        print(f"Error deleting records: {e}")
     
-    global downtime_signal_records
-    if downtime_signal_records:
-        downtime_signal_records = []
-        save_to_downtime_json()
-        # return jsonify({"status": "success", "message": "All records deleted successfully."})
-    else:
-        # return jsonify({"status": "fail", "message": "No records to delete."})
-        print(f"No records to delete.")
+    try:
+        global downtime_signal_records
+        if downtime_signal_records:
+            downtime_signal_records = []
+            save_to_downtime_json()
+            # return jsonify({"status": "success", "message": "All records deleted successfully."})
+        else:
+            # return jsonify({"status": "fail", "message": "No records to delete."})
+            print(f"No records to delete.")
 
-    
+    except Exception as e:
+        print(f"Error deleting downtime records: {e}")    
     ###5. Inspection: Set Inspection Time(sec) *EV:30 *PV1:30 *Pump Speed:25
     # inspect_data = [30,30,25]
     # try:
@@ -7696,7 +7701,7 @@ def restoreFactorySettingAll():
     # return "Inspection Time Updated Successfully"
     
     
-    ###6. Logs:刪除所有Log檔(superuser保留)
+    ###6. Logs:軟刪除所有Log檔: 將其轉至old_xxx 資料夾(superuser可見)
   
     try:
         error_dir = os.path.join(log_path, "logs", "error")
@@ -7717,20 +7722,6 @@ def restoreFactorySettingAll():
     except Exception as e:
         print(f"Move log error: {e}")
         
-
-    # try:
-    #     file_path = os.path.join(log_path, "logs", "operation")
-
-    #     if os.path.exists(file_path) and os.path.isdir(file_path):
-    #         for filename in os.listdir(file_path):
-    #             file_to_delete = os.path.join(file_path, filename)
-    #             if os.path.isfile(file_to_delete):
-    #                 os.remove(file_to_delete)
-    #         print("All files deleted successfully.")
-    #     else:
-    #         print("Directory does not exist.")
-    # except Exception as e:  
-    #     print(f"delete log error:{e}")
 
     try:
         operation_dir = os.path.join(log_path, "logs", "operation")
@@ -7771,27 +7762,45 @@ def restoreFactorySettingAll():
     except Exception as e:
         print(f"Move log error: {e}")
         
-    try:
-        file_path = os.path.join(snmp_path, "RestAPI", "logs", "operation")
+    # try:
+    #     file_path = os.path.join(snmp_path, "RestAPI", "logs", "operation")
 
-        if os.path.exists(file_path) and os.path.isdir(file_path):
-            for filename in os.listdir(file_path):
-                file_to_delete = os.path.join(file_path, filename)
-                if os.path.isfile(file_to_delete):
-                    os.remove(file_to_delete)
-            print("All files deleted successfully.")
-        else:
-            print("Directory does not exist.")
-    except Exception as e:  
-        print(f"delete log error:{e}")
+    #     if os.path.exists(file_path) and os.path.isdir(file_path):
+    #         for filename in os.listdir(file_path):
+    #             file_to_delete = os.path.join(file_path, filename)
+    #             if os.path.isfile(file_to_delete):
+    #                 os.remove(file_to_delete)
+    #         print("All files deleted successfully.")
+    #     else:
+    #         print("Directory does not exist.")
+    # except Exception as e:  
+    #     print(f"delete log error:{e}")
         
-    ###7. Engineer Mode: Sensor Adjustment恢復預設值
+    # ###7. Engineer Mode: Sensor Adjustment恢復預設值
+    # try:
+    #     adjust_import(adjust_factory)
+    #     op_logger.info("Reset Adjust to Factory Setting Successfully")
+    # except Exception as e:
+    #     print(f"adjust import error:{e}")
     try:
-        adjust_import(adjust_factory)
-        op_logger.info("Reset Adjust to Factory Setting Successfully")
+        operation_dir = os.path.join(snmp_path, "RestAPI", "logs", "operation")
+        old_operation_dir = os.path.join(snmp_path, "RestAPI", "logs", "old_operation")
+
+        if os.path.exists(operation_dir) and os.path.isdir(operation_dir):
+            if not os.path.exists(old_operation_dir):
+                os.makedirs(old_operation_dir)
+
+            for filename in os.listdir(operation_dir):
+                src_file = os.path.join(operation_dir, filename)
+                dst_file = os.path.join(old_operation_dir, filename)
+                if os.path.isfile(src_file):
+                    shutil.move(src_file, dst_file)
+            print("All operation log files moved to old_operation successfully.")
+        else:
+            print("operation log directory does not exist.")
     except Exception as e:
-        print(f"adjust import error:{e}")
-        
+        print(f"Move log operation: {e}")
+         
     ###8. Engineer Mode: Alert Threshold Setting恢復預設值
     try:
         if system_data["value"]["unit"] == "metric":

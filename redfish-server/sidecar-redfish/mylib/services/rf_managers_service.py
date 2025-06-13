@@ -2,11 +2,15 @@
 這是Redfish的managers service
 '''
 import subprocess, json
+import requests
+from flask import jsonify
 from mylib.services.base_service import BaseService
 from mylib.models.rf_networkprotocol_model import RfNetworkProtocolModel
 from mylib.models.rf_snmp_model import RfSnmpModel
 from mylib.adapters.webapp_api_adapter import WebAppAPIAdapter
 from mylib.models.rf_resource_model import RfResetType
+from mylib.common.proj_response_message import ProjResponseMessage
+from mylib.utils.load_api import load_raw_from_api, CDU_BASE
 
 class RfManagersService(BaseService):
     # ================NetworkProtocol================
@@ -26,34 +30,42 @@ class RfManagersService(BaseService):
         '''
         取得 SNMP 設定
         '''
-        m = RfSnmpModel()
-        return m.to_dict()
-    
-    def NetworkProtocol_Snmp_patch(self, body: dict) -> dict:
-        """
-        更新 SNMPServers 設定，只處理收到的欄位
-        """
-        np_current = RfNetworkProtocolModel().model_dump(by_alias=True, exclude_none=True)
-        snmp_current = np_current.get("SNMP", {})
-        trap_ip    = body.get("TrapIP", None)
-        default_trap_port = snmp_current.get("Port", 162)
-        default_enabled = snmp_current.get("ProtocolEnabled", False)
-        # 取得前端是否有傳 TrapPort、TrapFormat、Enabled
-        trap_port  = body.get("TrapPort", default_trap_port)
-        community  = body.get("Community", None)
-        trap_fmt   = body.get("TrapFormat", None)
-        enabled    = body.get("Enabled", default_enabled)
-
-        # 用傳進來的值，建立一個新的 RfSnmpModel 實例
-        # 如果某個參數是 None，代表要用 Model 裡的 default
-        new_model = RfSnmpModel(
-            TrapIP    = trap_ip,
-            TrapPort  = trap_port,
-            Community = community,
-            TrapFormat= trap_fmt,
-            Enabled   = enabled
+        snmp_data = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/Snmp")
+        m = RfSnmpModel(
+            TrapIP = snmp_data["trap_ip_address"],
+            Community = snmp_data["read_community"]
         )
-        return new_model.model_dump(by_alias=True, exclude_none=True)
+        
+
+        return m.to_dict()
+       
+    def NetworkProtocol_Snmp_Post(self, body: dict) -> dict:
+        trap_ip_address = body["TrapIP"]
+        read_community = body["Community"]
+        data = {
+            "trap_ip_address": trap_ip_address,
+            "read_community":  read_community
+        }
+
+        try:
+            resp = WebAppAPIAdapter().setting_snmp(data)
+            return jsonify({ "message": resp.text })      
+            # return r.json(), r.status_code
+        except requests.HTTPError:
+            # 如果 CDU 回了 4xx/5xx，直接把它的 status code 和 body 回來
+            try:
+                err_body = r.json()
+            except ValueError:
+                err_body = {"error": r.text}
+            return err_body, r.status_code
+
+        except requests.RequestException as e:
+            # 純粹網路／timeout／連線失敗
+            return {
+                "error": "Forwarding to the CDU control service failed",
+                "details": str(e)
+            }, 502  
+        
 
     ##
     #      ___        ______ .___________. __    ______   .__   __.      _______.
@@ -71,17 +83,17 @@ class RfManagersService(BaseService):
         @note:
             API will return jsonify(message="Reset all to factory settings Successfully")
         """
-        resp = WebAppAPIAdapter.reset_to_defaults(reset_type)
-        return resp
+        resp = WebAppAPIAdapter().reset_to_defaults(reset_type)
+        return jsonify(ProjResponseMessage(code=resp.status_code, message=resp.text).to_dict())
     
     def reset(self, reset_type: str):
         """
         :param reset_type: str
             e.g., "ForceRestart" or "GracefulRestart"
         """
-        resp = WebAppAPIAdapter.reset(reset_type)
-        return resp
+        resp = WebAppAPIAdapter().reset(reset_type)
+        return jsonify(ProjResponseMessage(code=resp.status_code, message=resp.text).to_dict())
 
     def shutdown(self, reset_type: str):
-        resp = WebAppAPIAdapter.shutdown(reset_type)
-        return resp
+        resp = WebAppAPIAdapter().shutdown(reset_type)
+        return jsonify(ProjResponseMessage(code=resp.status_code, message=resp.text).to_dict())
