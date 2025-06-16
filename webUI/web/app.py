@@ -6268,7 +6268,7 @@ def update_password():
             }
         )
 
-    if last_pwd != USER_DATA["user"]:
+    if last_pwd != USER_DATA["admin"]:
         return jsonify(
             {
                 "status": "error",
@@ -6276,29 +6276,29 @@ def update_password():
             }
         )
 
-    USER_DATA["user"] = password
+    USER_DATA["admin"] = password
 
-    set_key(f"{web_path}/.env", "USER", USER_DATA["user"])
+    set_key(f"{web_path}/.env", "USER", USER_DATA["admin"])
     os.chmod(f"{web_path}/.env", 0o666)
-    op_logger.info("User password updated successfully")
+    op_logger.info("Admin password updated successfully")
     return jsonify({"status": "success", "message": "Password Updated Successfully"})
 
 
 @app.route("/reset_password", methods=["POST"])
 @login_required
 def reset_password():
-    USER_DATA["user"] = "0000"
+    USER_DATA["admin"] = "password"
 
-    set_key(f"{web_path}/.env", "USER", USER_DATA["user"])
+    set_key(f"{web_path}/.env", "USER", USER_DATA["admin"])
     os.chmod(f"{web_path}/.env", 0o666)
-    op_logger.info("User password updated successfully")
+    op_logger.info("Admin password updated successfully")
     return jsonify({"status": "success", "message": "Password Updated Successfully"})
 
-@app.route("/get_user_password", methods=["GET"])
+@app.route("/get_admin_password", methods=["GET"])
 @login_required
-def get_user_password():
+def get_admin_password():
                
-    return USER_DATA["user"]
+    return USER_DATA["admin"]
 
 
 @app.route("/get_modbus_ip", methods=["GET"])
@@ -6365,6 +6365,7 @@ def read_version():
             file2.write("")
     with open(f"{web_path}/fw_info_version.json", "r") as file2:
         FW_Info_Version = json.load(file2)
+
         
     plc_version = sensorData["plc_version"]
     
@@ -8047,6 +8048,7 @@ def get_inspection_result():
     
     with open(f"{web_path}/fw_info_version.json", "r") as file:
         fw_info_version = json.load(file)
+        fw_info_version["PLC"]= sensorData["plc_version"]
 
     whole_data = {
         "result_data": result_data,

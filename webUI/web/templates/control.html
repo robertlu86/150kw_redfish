@@ -289,7 +289,7 @@ styles %}
                         <option value="manual">Manual</option>
                         <option value="auto">Auto</option>
                         <option value="stop">Stop</option>
-                        {% if user == 'superuser' or user == 'admin' %}
+                        {% if user == 'superuser' or user == 'admin' or user =='root' %}
                         <option class="hidden" value="engineer">
                             Engineer
                         </option>
@@ -403,7 +403,7 @@ styles %}
                                 <div class="result resultFan" id="resultFan"></div>
                             </div>
                         </div>
-                        {% if user == 'superuser' or user == 'admin' %}
+                        {% if user == 'superuser' or user == 'admin' or user =='root'%}
                         <div class="row">
                             <div class="col-6 center_text">Fan1:</div>
                             <div class="col-3 sideNum">
@@ -515,7 +515,7 @@ styles %}
         </div>
     </div>
 
-    {% if user == 'superuser' or user == 'admin' %}
+    {% if user == 'superuser' or user == 'admin' or user =='root'%}
     <div class="mcSet title" data-default="collapsed" data-label="Magnetic Contactor">
         <div class="data-before-trigger"></div>
         <div class="content">
@@ -645,7 +645,7 @@ styles %}
                         <p>hr</p>
                     </div>
                 </div>
-                {% if user == 'superuser' or user == 'admin' %}
+                {% if user == 'superuser' or user == 'admin'  or user =='root' %}
                 <div class="col-2" style="padding-left: 115px">
                     <button id="Pump2ResetBtn" class="btn btn-outline-success" type="submit">
                         Reset
@@ -664,7 +664,7 @@ styles %}
                         <p>hr</p>
                     </div>
                 </div>
-                {% if user == 'superuser' or user == 'admin' %}
+                {% if user == 'superuser' or user == 'admin' or user =='root' %}
                 <div class="col-2" style="padding-left: 115px">
                     <button id="Pump3ResetBtn" class="btn btn-outline-success" type="submit">
                         Reset
@@ -684,7 +684,7 @@ styles %}
                         <p>hr</p>
                     </div>
                 </div>
-                {% if user == 'superuser' or user == 'admin' %}
+                {% if user == 'superuser' or user == 'admin' or user =='root' %}
                 <div class="col-2" style="padding-left: 115px">
                     <button id="Fan1ResetBtn" class="btn btn-outline-success" type="submit">
                         Reset
@@ -722,7 +722,7 @@ styles %}
                         <p>hr</p>
                     </div>
                 </div>
-                {% if user == 'superuser' or user == 'admin' %}
+                {% if user == 'superuser' or user == 'admin' or user =='root' %}
                 <div class="col-2" style="padding-left: 115px">
                     <button id="Fan3ResetBtn" class="btn btn-outline-success" type="submit">
                         Reset
@@ -741,7 +741,7 @@ styles %}
                         <p>hr</p>
                     </div>
                 </div>
-                {% if user == 'superuser' or user == 'admin' %}
+                {% if user == 'superuser' or user == 'admin' or user =='root' %}
                 <div class="col-2" style="padding-left: 115px">
                     <button id="Fan4ResetBtn" class="btn btn-outline-success" type="submit">
                         Reset
@@ -760,7 +760,7 @@ styles %}
                         <p>hr</p>
                     </div>
                 </div>
-                {% if user == 'superuser' or user == 'admin' %}
+                {% if user == 'superuser' or user == 'admin' or user =='root' %}
                 <div class="col-2" style="padding-left: 115px">
                     <button id="Fan5ResetBtn" class="btn btn-outline-success" type="submit">
                         Reset
@@ -779,7 +779,7 @@ styles %}
                         <p>hr</p>
                     </div>
                 </div>
-                {% if user == 'superuser' or user == 'admin' %}
+                {% if user == 'superuser' or user == 'admin' or user =='root' %}
                 <div class="col-2" style="padding-left: 115px">
                     <button id="Fan6ResetBtn" class="btn btn-outline-success" type="submit">
                         Reset
@@ -798,7 +798,7 @@ styles %}
                         <p>hr</p>
                     </div>
                 </div>
-                {% if user == 'superuser' or user == 'admin' %}
+                {% if user == 'superuser' or user == 'admin' or user =='root' %}
                 <div class="col-2" style="padding-left: 115px">
                     <button id="Fan7ResetBtn" class="btn btn-outline-success" type="submit">
                         Reset
@@ -817,7 +817,7 @@ styles %}
                         <p>hr</p>
                     </div>
                 </div>
-                {% if user == 'superuser' or user == 'admin' %}
+                {% if user == 'superuser' or user == 'admin' or user =='root' %}
                 <div class="col-2" style="padding-left: 115px">
                     <button id="Fan8ResetBtn" class="btn btn-outline-success" type="submit">
                         Reset
@@ -837,7 +837,7 @@ styles %}
                         <p>hr</p>
                     </div>
                 </div>
-                {% if user == 'superuser' or user == 'admin' %}
+                {% if user == 'superuser' or user == 'admin' or user =='root' %}
                 <div class="col-2" style="padding-left: 115px">
                     <button id="FilterResetBtn" class="btn btn-outline-success" type="submit">
                         Reset
@@ -1337,7 +1337,7 @@ styles %}
                     }
                 }
 
-                if (userType == "superuser" || userType == "admin") {
+                if (userType == "superuser" || userType == "admin" || userType == "root") {
                     for (var key in data["mc"]) {
                         if (!key.includes("result")) {
                             if (data["mc"].hasOwnProperty(key)) {
@@ -1536,7 +1536,7 @@ styles %}
                     }
                 }
 
-                if (userType == "superuser" || userType == "admin") {
+                if (userType == "superuser" || userType == "admin" || userType == "root") {
                     const evElements = $("#ev1_sw, #ev2_sw, #ev3_sw, #ev4_sw");
                     evElements.attr("disabled", true);
                     if (
@@ -1596,7 +1596,7 @@ styles %}
                 }
             }
 
-            if (userType == "superuser" || userType == "admin") {
+            if (userType == "superuser" || userType == "admin" || userType == "root") {
                 for (var key in data["mc"]) {
                     if (key.includes("result")) {
                         if (data["mc"].hasOwnProperty(key)) {
@@ -1903,7 +1903,7 @@ styles %}
             //     var pid = document.getElementById("exp_pid_set").checked;
             //     var alert = document.getElementById("exp_alt_chk").checked;
             // }
-            if (userType === "superuser" || userType === "admin" || userType === "user") {
+            if (userType === "superuser" || userType === "admin" || userType === "user" || userType == "root") {
                 var mode_set = document.getElementById("exp_modset_chk").checked;
                 var alert = document.getElementById("exp_alt_chk").checked;
             }
@@ -2305,7 +2305,7 @@ styles %}
             mode_input.p1 = $("#pump1_check").prop("checked");
             mode_input.p2 = $("#pump2_check").prop("checked");
             mode_input.p3 = $("#pump3_check").prop("checked");
-            if (userType == "superuser" || userType == "admin") {
+            if (userType == "superuser" || userType == "admin" || userType == "root") {
                 mode_input.f1 = $("#fan1_check").prop("checked");
                 mode_input.f2 = $("#fan2_check").prop("checked");
                 mode_input.f3 = $("#fan3_check").prop("checked");
@@ -2440,7 +2440,7 @@ styles %}
             }
         });
 
-        if (userType == "superuser" || userType == "admin") {
+        if (userType == "superuser" || userType == "admin" || userType == "root") {
             $("#evSetBnt").click(function () {
                 let ev1_sw = document.getElementById("ev1_sw").checked;
                 let ev2_sw = document.getElementById("ev2_sw").checked;
@@ -2544,7 +2544,7 @@ styles %}
                                     if (typeof value === "string") {
                                         element.value = value;
                                     } else if (typeof value === "boolean") {
-                                        if (userType == "superuser" || userType == "admin") {
+                                        if (userType == "superuser" || userType == "admin" || userType == "root") {
                                             element.checked = value;
                                         }
                                         else {

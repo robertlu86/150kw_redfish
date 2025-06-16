@@ -158,40 +158,50 @@ class SimpleUpdateActionInfo(Resource):
 @update_ns.route("/UpdateService/Actions/UpdateCdu.SimpleUpdate")
 class ActionsUpdateCduSimpleUpdate(Resource):
     @update_ns.expect(upload_parser) 
-    @update_ns.doc(consumes=['multipart/form-data'])       
+    @update_ns.doc(consumes=['multipart/form-data'])
     def post(self):
         
         ORIGIN_UPLOAD_API = f"{CDU_BASE}/api/v1/update_firmware"
-        file = request.files.get("File")
-        image_uri = request.form.get("ImageURI")  # 從表單中獲取 ImageURI
 
-        # 如果同時有上傳檔案和 ImageURI，優先處理 ImageURI
-        if image_uri:
+        # 檢查是否是 JSON 請求
+        if request.is_json:
             try:
-                # 下載檔案
-                print(f"[Update] 下載 ZIP：{image_uri}")
-                zip_resp = requests.get(image_uri, timeout=60)
-                if zip_resp.status_code != 200:
-                    return {"error": f"Download failed: HTTP {zip_resp.status_code}"}, 400
+                data = request.get_json()
+                image_uri = data.get("ImageURI")
 
-                # 下載成功後，準備檔案傳遞給內部 API
-                files = {"file": ("update.zip", zip_resp.content, "application/zip")}
-                r = requests.post(ORIGIN_UPLOAD_API, files=files, timeout=(10, None))
-                return "upload success, it will reboot", 200
+                if image_uri:
+                    # 下載檔案
 
+                    file_download = requests.get(image_uri, timeout=60)
+                    if file_download.status_code != 200:
+                        return {"error": f"Download failed: HTTP {file_download.status_code}"}, 400
+
+                    # 下載成功後，準備檔案傳遞給內部 API
+                    files = {"file": ("upload.gpg", file_download.content, "application/pgp-encrypted")}
+                    r = requests.post(ORIGIN_UPLOAD_API, files=files, timeout=(10, None))
+                    return "upload success, it will reboot", 200
+                else:
+                    return {"error": "Missing ImageURI in JSON"}, 400
             except requests.RequestException as e:
                 return {"error": "Download or upload failed", "details": str(e)}, 502
+            except Exception as e:
+                return {"error": f"Internal Error: {str(e)}"}, 500
 
-        # 如果只有檔案上傳
-        if file:
+        # 檢查是否有檔案上傳
+        elif 'File' in request.files:
             try:
+                file = request.files.get("File")
+                if not file:
+                     return {"error": "No file uploaded"}, 400
                 files = {"file": (file.filename, file.stream, file.mimetype)}
                 r = requests.post(ORIGIN_UPLOAD_API, files=files, timeout=(10, None))
                 return "upload success, it will reboot", 200
+            except requests.HTTPError:
+                return r.json() if r.headers.get("Content-Type","").startswith("application/json") else {"error": r.text}, r.status_code
             except requests.RequestException as e:
                 return {"error": "upload failed", "details": str(e)}, 502
-
-        # 如果沒有檔案也沒有 ImageURI，返回錯誤
+        
+        # 如果既沒有檔案也沒有 ImageURI，返回錯誤
         return {"error": "No file or ImageURI provided"}, 400
         
         

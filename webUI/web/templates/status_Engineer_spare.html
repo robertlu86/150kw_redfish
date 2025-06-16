@@ -565,7 +565,7 @@ styles %}
                         <td scope="row">kW</td>
                     </tr>
 
-                    {% if (user == 'admin') or (user == 'superuser') %}
+                    {% if (user == 'admin') or (user == 'superuser') or (user == 'root')%}
                     <tr id="AC_status_set">
                         <td class="tdCenterAlign" scope="row">
                             Average Current
@@ -858,7 +858,7 @@ styles %}
             </table>
         </div>
     </div>
-    {% if (user == 'admin') or (user == 'superuser') %}
+    {% if (user == 'admin') or (user == 'superuser') or (user == 'root')%}
     <div class="mcInfo title" data-label="Magnetic Contactor Information">
         <div class="data-before-trigger"></div>
         <div class="content">
