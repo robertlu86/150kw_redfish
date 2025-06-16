@@ -6278,7 +6278,7 @@ def update_password():
 
     USER_DATA["admin"] = password
 
-    set_key(f"{web_path}/.env", "USER", USER_DATA["admin"])
+    set_key(f"{web_path}/.env", "ADMIN", USER_DATA["admin"])
     os.chmod(f"{web_path}/.env", 0o666)
     op_logger.info("Admin password updated successfully")
     return jsonify({"status": "success", "message": "Password Updated Successfully"})
@@ -6289,7 +6289,7 @@ def update_password():
 def reset_password():
     USER_DATA["admin"] = "password"
 
-    set_key(f"{web_path}/.env", "USER", USER_DATA["admin"])
+    set_key(f"{web_path}/.env", "ADMIN", USER_DATA["admin"])
     os.chmod(f"{web_path}/.env", 0o666)
     op_logger.info("Admin password updated successfully")
     return jsonify({"status": "success", "message": "Password Updated Successfully"})
