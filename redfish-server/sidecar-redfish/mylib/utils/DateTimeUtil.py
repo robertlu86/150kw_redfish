@@ -18,6 +18,29 @@ class DateTimeUtil:
         # time.strftime('%Y%m%d%H%M%S')
         return time.strftime(format_str)
 
+    @staticmethod
+    def convert_format_string_to_another(format_datetime_str: str, src_format: str, dst_format: str="%Y-%m-%dT%H%M%SZ"):
+        """
+        @param format_datetime_str {str} datetime string, e.g., "2025-06-13 22:06:27"
+        @param src_format {str} source format, e.g., "%Y-%m-%d %H:%M:%S"
+        @param dst_format {str} destination format, e.g., "%Y-%m-%dT%H%M%SZ"
+        @return {str} datetime string in destination format, e.g., "2025-06-13T220627Z"
+        """
+        return datetime.datetime.strptime(format_datetime_str, src_format).strftime(dst_format)
+
+    @staticmethod
+    def is_match_format(format_datetime_str: str, expected_format: str="%Y-%m-%dT%H%M%SZ"):
+        """
+        @param format_datetime_str {str} datetime string, e.g., "2025-06-13 22:06:27"
+        @param expected_format {str} expected format, e.g., "%Y-%m-%dT%H%M%SZ"
+        @return {bool} True if the datetime string matches the expected format, False otherwise
+        """
+        try:
+            datetime.datetime.strptime(format_datetime_str, expected_format)
+            return True
+        except ValueError:
+            return False
+
     ##
     # @return {datetime.datetime}
     # @note print now.year, now.month, now.day, now.hour, now.minute, now.second

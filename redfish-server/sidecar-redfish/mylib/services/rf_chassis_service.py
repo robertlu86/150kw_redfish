@@ -440,18 +440,21 @@ class RfChassisService(BaseService):
         "Pump3Switch",  
     }
     def patch_Oem_Spuermicro_Operation(self, chassis_id: str, body: dict):
-        ControlMode = body["ControlMode"]
-        TargetTemperature = body["TargetTemperature"]
-        TargetPressure = body["TargetPressure"]
-        PumpSwapTime = body["PumpSwapTime"]
-        FanSetPoint = body["FanSetPoint"]
-        PumpSetPoint = body["PumpSetPoint"]
-        Pump1Switch = body["Pump1Switch"]
-        Pump2Switch = body["Pump2Switch"]
-        Pump3Switch = body["Pump3Switch"]
-        
-        # 轉換redfish格式至rest格式
+        ControlMode = body.get("ControlMode")
+        TargetTemperature = body.get("TargetTemperature")
+        TargetPressure = body.get("TargetPressure")
+        PumpSwapTime = body.get("PumpSwapTime")
+        FanSetPoint = body.get("FanSetPoint")
+        PumpSetPoint = body.get("PumpSetPoint")
+        Pump1Switch = body.get("Pump1Switch")
+        Pump2Switch = body.get("Pump2Switch")
+        Pump3Switch = body.get("Pump3Switch")
+
+        # data = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/Oem")
+
         ControlMode = ControlMode_change(ControlMode)
+
+
         # 轉發到內部控制 API
         try:
             r = requests.patch(
@@ -480,6 +483,7 @@ class RfChassisService(BaseService):
             r.raise_for_status()      
             code = r.status_code
             return body, code
+            # return r.json(), code
         except requests.HTTPError:
             # 如果 CDU 回了 4xx/5xx，直接把它的 status code 和 body 回來
             try:

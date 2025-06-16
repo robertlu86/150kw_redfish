@@ -154,6 +154,7 @@ class SimpleUpdateActionInfo(Resource):
           ]
         }, 200
 
+
 @update_ns.route("/UpdateService/Actions/UpdateCdu.SimpleUpdate")
 class ActionsUpdateCduSimpleUpdate(Resource):
     @update_ns.expect(upload_parser) 
@@ -202,7 +203,6 @@ class ActionsUpdateCduSimpleUpdate(Resource):
         
         # 如果既沒有檔案也沒有 ImageURI，返回錯誤
         return {"error": "No file or ImageURI provided"}, 400
-
         
         
         

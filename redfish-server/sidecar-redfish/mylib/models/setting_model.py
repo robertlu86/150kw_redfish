@@ -28,10 +28,18 @@ class SettingModel(MyOrmBaseModel):
         return setting
 
     @classmethod
-    def update_by_key_value(cls, key, value):
-        fetched_setting = cls.get_by_key(key)
-        if fetched_setting:
-            fetched_setting.value = str(value)
-            db.session.commit()
-            return True
-        return False
+    def save_key_value(cls, key, value):
+        try:
+            fetched_setting = cls.get_by_key(key)
+            if fetched_setting:
+                fetched_setting.value = str(value)
+                db.session.commit()
+            else:
+                new_setting = cls(key=key, value=str(value))
+                db.session.add(new_setting)
+                db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            print(f" * Error updating setting {key}: {e}")
+            return False
+        return True

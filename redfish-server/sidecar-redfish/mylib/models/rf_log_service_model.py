@@ -11,7 +11,7 @@ from pydantic import (
 from mylib.models.rf_base_model import RfResourceBaseModel, RfResourceCollectionBaseModel
 
 
-class RfLogEntryType(str, Enum):
+class RfLogEntryTypes(str, Enum):
     """
     @see https://redfish.dmtf.org/schemas/v1/LogService.v1_8_0.json#/definitions/LogEntryTypes
     """
