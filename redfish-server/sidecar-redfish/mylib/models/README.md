@@ -2,7 +2,7 @@
 
 因為多人開發的關係，這個資料夾有orm model和pydantic model，請注意! 
 
-## redfish model
+## Redfish Model
 
 請注意!  
 redfish model的命名方式是 rf_xxx_model.py  
@@ -69,7 +69,7 @@ class RfCircuitModel(BaseModel):
 
 
 
-## orm model
+## ORM Model
 
 orm model的命名方式是 {TABLE_NAME}.py，請注意! 
 ex:  
@@ -77,3 +77,49 @@ ex:
 - role.py : 代表table <roles>  
 
 
+
+## Sensor Log Model
+定義不同客戶的sensor log model  
+並使用SensorLogModelFactory來產生model  
+
+
+
+## 請AI幫忙產生model
+#### Prompt範例
+[prompt]
+
+這是redfish scehma使用pydantic寫成的model
+```python
+class RfPowerSupplyModel(RfResourceBaseModel):
+  """
+  @see https://redfish.dmtf.org/schemas/v1/PowerSupply.v1_6_0.json
+  @note properties 38 items
+  """
+  MinVersion: Optional[str] = Field(default=None)
+  Assembly: Optional[RfAssemblyModel] = Field(default=None)
+  # Certificates: RfCertificateCollection
+  FirmwareVersion: Optional[str] = Field(default=None)
+  HotPluggable: Optional[bool] = Field(default=None)
+  InputNominalVoltageType: Optional[RfNominalVoltageType] = Field(default=None)
+  LineInputStatus: Optional[RfLineStatus] = Field(default=None)
+  Manufacturer: Optional[str] = Field(default=None)
+  # Metrics: RfPowerSupplyMetricsModel
+  Name: Optional[str] = Field(default=None)
+  PartNumber: Optional[str] = Field(default=None)
+  PowerCapacityWatts: Optional[float] = Field(default=None, extra={"unit": "W"})
+  PowerSupplyType: Optional[RfPowerSupplyType] = Field(default=None)
+  SerialNumber: Optional[str] = Field(default=None)
+  Status: Optional[RfStatusModel] = Field(default=None)
+```
+請參考上方格式
+閱讀下方網址
+https://redfish.dmtf.org/schemas/v1/MetricDefinition.v1_0_0.json
+找到 definitions.MetricDefinitions.properties 處
+把欄位也寫成pydantic格式
+順序不要改，以便我核對
+例如:第一個是 "@odata.context"，在pydantic就是第一個欄位。因為這個欄位名稱無法被json使用，所以在pydantic改用alias呈現
+例如:第五個是 "Accuracy"，在pydantic就是第5個欄位, 官方定義type是number，對照python則是float。
+如果是Enum格式，則另外定義class RfXXX(str, enum), enum值則至 definition.XXX的enum裡找值。
+
+[/prompt]
+(註) 丟給Claude效果較好  

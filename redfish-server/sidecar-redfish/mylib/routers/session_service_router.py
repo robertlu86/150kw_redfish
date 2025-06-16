@@ -22,6 +22,20 @@ session_servive_patch_model = SessionService_ns.model('SessionServicePatch', {
 })
 
 
+session_post_model = SessionService_ns.model('SessionPost', {
+    'UserName': fields.String(
+        required=True,
+        description='The user name of the account.',
+        example='MyUserName'
+    ),
+    'Password': fields.String(
+        required=True,
+        description='The password of the account.',
+        example='P@ssw0rd'
+    )
+})
+
+
 @SessionService_ns.route("/SessionService")
 class SessionService(Resource):
     # # @requires_auth
@@ -48,6 +62,7 @@ class Sessions(Resource):
         resp.headers['Allow'] = 'GET, POST'
         return resp
     
+    @SessionService_ns.expect(session_post_model, validate=True)
     def post(self):
         body = request.get_json(force=True)
         try:

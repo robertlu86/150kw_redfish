@@ -760,66 +760,47 @@ class LogServices(Resource):
         log_service = RfLogService().fetch_LogServices()
         return log_service   
 
-@managers_ns.route("/Managers/CDU/LogServices/<string:log_id>")
+@managers_ns.route("/Managers/CDU/LogServices/<string:log_service_id>")
 class LogServicesId(Resource):
     # @requires_auth
     @managers_ns.doc("LogServices")
-    def get(self, log_id):
-        resp_json = RfLogService().fetch_LogServices_with_id(log_id)
+    def get(self, log_service_id):
+        resp_json = RfLogService().fetch_LogServices_by_logserviceid(log_service_id)
         return resp_json     
     
-@managers_ns.route("/Managers/CDU/LogServices/<string:log_id>/Entries")
+@managers_ns.route("/Managers/CDU/LogServices/<string:log_service_id>/Entries")
 class LogServicesIdEntries(Resource):
     # @requires_auth
     @managers_ns.doc("LogServicesEntries")
-    def get(self, log_id):
-        LogServices_Entries__data = {
-            "@odata.id": f"/redfish/v1/Managers/CDU/LogServices/{log_id}/Entries",
-            "@odata.type": "#LogEntryCollection.LogEntryCollection",
-            "@odata.context": "/redfish/v1/$metadata#LogEntryCollection.LogEntryCollection",
+    def get(self, log_service_id):
+        log_entries = RfLogService().fetch_LogServices_entries_by_logserviceid(log_service_id)
+        return log_entries
 
-            "Name": "System Event Log Service",
-            "Description": "System Event and Error Log Service",
-            
-            "Members@odata.count": 1,
-            "Members": [
-                { 
-                    # service validator 只能讀到這邊 要研究為甚麼
-                    "@odata.id": "/redfish/v1/Managers/CDU/LogServices/1/Entries/1",
-                    
-                    "Id": "1",
-                    "Name": "Log Entry 1",
-                    "EntryType": "Event",
-                }
-            ],
-            "Oem": {}
-        }
-        
-        return LogServices_Entries__data
-
-@managers_ns.route("/Managers/CDU/LogServices/<string:log_id>/Entries/<string:entry_id>")
+@managers_ns.route("/Managers/CDU/LogServices/<string:log_service_id>/Entries/<string:entry_id>")
 class LogServicesIdEntriesId(Resource):
     # @requires_auth
     @managers_ns.doc("LogServicesId")
-    def get(self, log_id, entry_id):
-        LogServices_Entries_id_data = {
-            "@odata.id": f"/redfish/v1/Managers/CDU/LogServices/{log_id}/Entries/{entry_id}",
-            "@odata.type": "#LogEntry.v1_18_0.LogEntry",
-            "@odata.context": "/redfish/v1/$metadata#LogEntry.LogEntry",
+    def get(self, log_service_id, entry_id):
+        # LogServices_Entries_id_data = {
+        #     "@odata.id": f"/redfish/v1/Managers/CDU/LogServices/{log_id}/Entries/{entry_id}",
+        #     "@odata.type": "#LogEntry.v1_18_0.LogEntry",
+        #     "@odata.context": "/redfish/v1/$metadata#LogEntry.LogEntry",
 
-            "Id": str(entry_id),    
-            "Name": "System Event Log Service",
-            "Description": "System Event and Error Log Service",
+        #     "Id": str(entry_id),    
+        #     "Name": "System Event Log Service",
+        #     "Description": "System Event and Error Log Service",
             
-            "EntryType": "Event",
-            "Created": "2021-01-01T00:00:00Z",
-            "MessageId": "CDU001",
-            "Message": "CDU Network Interface Module started successfully.",
-            "Severity": "Critical",
+        #     "EntryType": "Event",
+        #     "Created": "2021-01-01T00:00:00Z",
+        #     "MessageId": "CDU001",
+        #     "Message": "CDU Network Interface Module started successfully.",
+        #     "Severity": "Critical",
             
-            "Oem": {}
-        }    
-        return LogServices_Entries_id_data
+        #     "Oem": {}
+        # }    
+        # return LogServices_Entries_id_data
+        log_entries = RfLogService().fetch_LogServices_entry_by_entryid(log_service_id, entry_id)
+        return log_entries
 
 
 #====================================================== 
