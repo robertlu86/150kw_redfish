@@ -170,14 +170,14 @@ class ActionsUpdateCduSimpleUpdate(Resource):
 
                 if image_uri:
                     # 下載檔案
-                    print(f"[Update] 下載 ZIP：{image_uri}")
-                    zip_resp = requests.get(image_uri, timeout=60)
-                    if zip_resp.status_code != 200:
-                        return {"error": f"Download failed: HTTP {zip_resp.status_code}"}, 400
+
+                    file_download = requests.get(image_uri, timeout=60)
+                    if file_download.status_code != 200:
+                        return {"error": f"Download failed: HTTP {file_download.status_code}"}, 400
 
                     # 下載成功後，準備檔案傳遞給內部 API
-                    files = {"file": ("update.zip", zip_resp.content, "application/zip")}
-                    r = requests.post(ORIGIN_UPLOAD_API, files=files, timeout=60)
+                    files = {"file": ("upload.gpg", file_download.content, "application/pgp-encrypted")}
+                    r = requests.post(ORIGIN_UPLOAD_API, files=files, timeout=(10, None))
                     return "upload success, it will reboot", 200
                 else:
                     return {"error": "Missing ImageURI in JSON"}, 400
@@ -195,11 +195,11 @@ class ActionsUpdateCduSimpleUpdate(Resource):
                 files = {"file": (file.filename, file.stream, file.mimetype)}
                 r = requests.post(ORIGIN_UPLOAD_API, files=files, timeout=(10, None))
                 return "upload success, it will reboot", 200
+            except requests.HTTPError:
+                return r.json() if r.headers.get("Content-Type","").startswith("application/json") else {"error": r.text}, r.status_code
             except requests.RequestException as e:
                 return {"error": "upload failed", "details": str(e)}, 502
-            except Exception as e:
-                return {"error": f"Internal Error: {str(e)}"}, 500
-
+        
         # 如果既沒有檔案也沒有 ImageURI，返回錯誤
         return {"error": "No file or ImageURI provided"}, 400
 
