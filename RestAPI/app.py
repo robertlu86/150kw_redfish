@@ -2209,7 +2209,7 @@ class UploadZipFile(Resource):
 # 0507新增
 sensor_mapping_output = {
     "temp_clntSply": "temp_coolant_supply",
-    "temp_clntSplySpare": " temp_coolant_supply_spare",
+    "temp_clntSplySpare": "temp_coolant_supply_spare",
     "temp_clntRtn": "temp_coolant_return",
     "temp_clntRtnSpare": "temp_coolant_return_spare",
     "prsr_clntSply": "pressure_coolant_supply",
@@ -2254,7 +2254,7 @@ def fan_state_judge(i, sensor):
 
 sensor_mapping_broken = {
     "temp_clntSply": "TempClntSply_broken",
-    "temp_clntSplySpare": " TempClntSplySpare_broken",
+    "temp_clntSplySpare": "TempClntSplySpare_broken",
     "temp_clntRtn": "TempClntRtn_broken",
     "temp_clntRtnSpare": "TempClntRtnSpare_broken",
     "prsr_clntSply": "PrsrClntSply_broken",
