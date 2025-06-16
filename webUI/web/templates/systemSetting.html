@@ -397,24 +397,24 @@ block styles %}
             },
         });
 
-        /*$.ajax({
+        $.ajax({
             url: "/get_data_systemset",
             method: "GET",
             success: function (data) {
                 const { system_data, sampling_rate } = data;
-                let unit_set;
+                //let unit_set;
 
                 $("#sampling_rate").val(sampling_rate["number"]);
 
-                if (system_data["value"]["unit"] == "imperial") {
+                /*if (system_data["value"]["unit"] == "imperial") {
                     unit_set = "imperial";
                 } else if (system_data["value"]["unit"] == "metric") {
                     unit_set = "metric";
                 }
 
-                $("#unit").val(unit_set);
+                $("#unit").val(unit_set);*/
             },
-        });*/
+        });
 
         $.ajax({
             url: "/get_system_time",
