@@ -21,6 +21,7 @@ load_dotenv(override=True)
 
 USER_DATA = {
     "superuser": os.getenv("SUPERUSER"),
+    "root": os.getenv("ROOT"),
     "admin": os.getenv("ADMIN"),
     "user": os.getenv("USER"),
     "kiosk": os.getenv("KIOSK"),
