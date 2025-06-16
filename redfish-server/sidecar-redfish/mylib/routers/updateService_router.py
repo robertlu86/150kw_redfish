@@ -190,6 +190,8 @@ class ActionsUpdateCduSimpleUpdate(Resource):
         elif 'File' in request.files:
             try:
                 file = request.files.get("File")
+                if not file:
+                     return {"error": "No file uploaded"}, 400
                 files = {"file": (file.filename, file.stream, file.mimetype)}
                 r = requests.post(ORIGIN_UPLOAD_API, files=files, timeout=(10, None))
                 return "upload success, it will reboot", 200
