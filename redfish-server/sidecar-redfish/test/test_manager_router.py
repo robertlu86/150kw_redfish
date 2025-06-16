@@ -30,6 +30,7 @@ managers_testcases = [
     } 
 ]
 
+# WATCH OUT the `ITG_WEBAPP_JSON_ROOT` in .env-test file for MacOS!
 managers_cdu_log_services_testcases = [
     {
         "endpoint": f'/redfish/v1/Managers/CDU/LogServices',
@@ -49,6 +50,25 @@ managers_cdu_log_services_testcases = [
             "LogEntryType": "OEM",
             "MaxNumberOfRecords": 500,
             "OverWritePolicy": "WrapsWhenFull",
+        }
+    },
+    {
+        "endpoint": f'/redfish/v1/Managers/CDU/LogServices/1/Entries',
+        "assert_cases": {
+            "@odata.id": "/redfish/v1/Managers/CDU/LogServices/1/Entries",
+            "@odata.type": "#LogEntryCollection.LogEntryCollection",
+            "@odata.context": "/redfish/v1/$metadata#LogEntryCollection.LogEntryCollection",
+        }
+    },
+    {
+        "endpoint": f'/redfish/v1/Managers/CDU/LogServices/1/Entries/1',
+        "assert_cases": {
+            "@odata.id": "/redfish/v1/Managers/CDU/LogServices/1/Entries/1",
+            "@odata.type": "#LogEntry.v1_18_0.LogEntry",
+            "@odata.context": "/redfish/v1/$metadata#LogEntry.LogEntry",
+            "Id": "1",
+            "EntryType": "Oem",
+            "MessageId": "CDU001",
         }
     } 
 ]
@@ -71,7 +91,7 @@ managers_cdu_reset_to_defaults_testcases = [
         "assert_cases": { 
             "status_code": HTTPStatus.BAD_REQUEST,
         }
-    },
+    }
 ]
 
 managers_cdu_reset_testcases = [
@@ -101,14 +121,14 @@ managers_cdu_reset_testcases = [
         "assert_cases": { 
             "status_code": HTTPStatus.BAD_REQUEST,
         }
-    },
+    }
 ]
 
 managers_cdu_shutdown_testcases = [
     {
         "endpoint": f"/redfish/v1/Managers/CDU/Actions/Manager.Shutdown",
         "payload": {
-            "ResetType": RfResetType.ForceRestart.value
+            "ResetType": RfResetType.ForceOff.value
         },
         "assert_cases": { 
             "status_code": HTTPStatus.OK,
@@ -117,7 +137,7 @@ managers_cdu_shutdown_testcases = [
     {
         "endpoint": f"/redfish/v1/Managers/CDU/Actions/Manager.Shutdown",
         "payload": {
-            "ResetType": RfResetType.GracefulRestart.value
+            "ResetType": RfResetType.ForceOff.value
         },
         "assert_cases": { 
             "status_code": HTTPStatus.OK,
@@ -131,7 +151,7 @@ managers_cdu_shutdown_testcases = [
         "assert_cases": { 
             "status_code": HTTPStatus.BAD_REQUEST,
         }
-    },
+    }
 ]
 
 @pytest.mark.parametrize("testcase", managers_cdu_reset_to_defaults_testcases)
@@ -225,6 +245,7 @@ def test_manager_normal_api(client, basic_auth_header, testcase):
 
     print(f"Endpoint: {testcase['endpoint']}")
     response = client.get(testcase['endpoint'], headers=basic_auth_header)
+    print(f"Response: {response.json}")
     assert response.status_code == 200
     
     resp_json = response.json
@@ -244,5 +265,5 @@ def test_manager_normal_api(client, basic_auth_header, testcase):
             
             print(f"PASS: `{key}` of response json is expected to be {value}")
         except AssertionError as e:
-            print(f"AssertionError: {e}, key: {key}, value: {value}")
+            print(f"FAIL: AssertionError: {e}, key: {key}, value: {value}")
             #raise

@@ -38,7 +38,7 @@ class RfSessionService():
         except Exception as e:
             return error_response('Failed to update session service', 500, 'Base.GeneralError')
 
-        if SettingModel.update_by_key_value('SessionService.SessionTimeout', s_model.SessionTimeout):
+        if SettingModel.save_key_value('SessionService.SessionTimeout', s_model.SessionTimeout):
             return cls.fetch_session_service()
         else:
             return error_response('Failed to update SessionService', 500, 'Base.InternalError')

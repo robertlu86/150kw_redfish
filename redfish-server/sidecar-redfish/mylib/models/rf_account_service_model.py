@@ -30,7 +30,7 @@ class RfAccountServiceModel(BaseModel):
         for key, value in self.model_dump(exclude_none=True).items():
             namespaced_key = f"AccountService.{key}"
             
-            if SettingModel.update_by_key_value(namespaced_key, value) == False:
+            if SettingModel.save_key_value(namespaced_key, value) == False:
                 return False
         return True
     

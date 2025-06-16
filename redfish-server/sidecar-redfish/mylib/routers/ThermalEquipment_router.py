@@ -591,17 +591,17 @@ LeakDetection_data = {
 # Automatic setting patch設置
 oem_supermicro = ThermalEquipment_ns.model('OemSupermicro', {
             'TargetTemperature': fields.Integer(
-                required=True,
+                # required=True,
                 description='temperature setting',
                 default=50,
             ),
             "TargetPressure": fields.Integer(
-                required=True,
+                # required=True,
                 description='pressure setting',
                 default=50,
             ),
             "PumpSwapTime": fields.Integer(
-                required=True,
+                # required=True,
                 description='pump swap time setting',
                 default=50,
             ),
@@ -613,7 +613,7 @@ oem_model = ThermalEquipment_ns.model('PrimaryCoolantConnectorsOem', {
 
 # 最後定義整個 patch payload
 PrimaryCoolantConnectors_patch = ThermalEquipment_ns.model('PrimaryCoolantConnectors1Patch', {
-    'Oem': fields.Nested(oem_model, required=True, description='OEM specific parameters')
+    'Oem': fields.Nested(oem_model, required=False, description='OEM specific parameters')
 })
 
 # pumpspeed patch設置
@@ -724,9 +724,19 @@ class PrimaryCoolantConnectors1(Resource):
         # 驗證模式
         if GetControlMode() != "Automatic": return "only Automatic can setting"
         
-        temp_set = body["Oem"]["Supermicro"]["TargetTemperature"]
-        pressure_set = body["Oem"]["Supermicro"]["TargetPressure"]
-        pump_swap_time = body["Oem"]["Supermicro"]["PumpSwapTime"]
+        temp_set = body.get("Oem", {}).get("Supermicro", {}).get("TargetTemperature")
+        pressure_set = body.get("Oem", {}).get("Supermicro", {}).get("TargetPressure")
+        pump_swap_time = body.get("Oem", {}).get("Supermicro", {}).get("PumpSwapTime")
+        print("pump_swap_time", pump_swap_time)
+        automatic_setting = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/op_mode")
+        
+        if temp_set is None:
+            temp_set = automatic_setting["temp_set"]
+        if pressure_set is None:
+            pressure_set = automatic_setting["pressure_set"]
+        if pump_swap_time is None:
+            pump_swap_time = automatic_setting["pump_swap_time"]    
+        
         # 轉發到內部控制 API
         try:
             r = requests.patch(

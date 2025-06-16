@@ -14,6 +14,7 @@ from mylib.utils.load_api import load_raw_from_api, CDU_BASE
 from mylib.models.rf_event_service_model import RfEventServiceModel, RfEventSubscriptionsModel, RfEventSubscriptionIdModel
 from mylib.models.rf_status_model import RfStatusModel
 from mylib.services.rf_managers_service import RfManagersService
+from mylib.models.setting_model import SettingModel
 
 event_setting = {
     "ServiceEnabled": True,
@@ -34,6 +35,28 @@ event_subscriptions_Id = [
 ]
 class RfEventService(BaseService):
     #==========================================
+    # 共用函數
+    #==========================================
+    def get_ServiceEnabled(self):
+        return bool(int(SettingModel().get_by_key("EventService.ServiceEnabled").value))
+    
+    def save_ServiceEnabled(self, value):
+        return SettingModel().save_key_value("EventService.ServiceEnabled", value)
+    
+    def get_Destination(self):
+        return SettingModel().get_by_key("EventService.Destination").value
+    
+    def save_Destination(self, value):
+        return SettingModel().save_key_value("EventService.Destination", value)
+    
+    def get_TrapCommunity(self):
+        return SettingModel().get_by_key("EventService.TrapCommunity").value
+    
+    def save_TrapCommunity(self, value):
+        return SettingModel().save_key_value("EventService.TrapCommunity", value)
+    
+    
+    #==========================================
     # EventService
     #==========================================
     def get_event_service(self):
@@ -42,7 +65,7 @@ class RfEventService(BaseService):
         m.ExcludeRegistryPrefix = False
         m.IncludeOriginOfConditionSupported = False
         m.SubordinateResourcesSupported = False
-        m.ServiceEnabled = event_setting["ServiceEnabled"]
+        m.ServiceEnabled = self.get_ServiceEnabled() #event_setting["ServiceEnabled"]
         m.DeliveryRetryAttempts = event_setting["DeliveryRetryAttempts"] 
         m.DeliveryRetryIntervalSeconds = event_setting["DeliveryRetryIntervalSeconds"]
         m.EventTypesForSubscription = ["Alert"]
@@ -58,7 +81,7 @@ class RfEventService(BaseService):
             "@odata.id": "/redfish/v1/EventService/Subscriptions"
         }
         status = {
-            "State": "Enabled",
+            "State": "Enabled" if self.get_ServiceEnabled() else "Disabled",
             "Health": "OK"
         }
         m.Status = RfStatusModel(**status)
@@ -75,7 +98,20 @@ class RfEventService(BaseService):
         DeliveryRetryAttempts = body.get("DeliveryRetryAttempts")
         DeliveryRetryIntervalSeconds = body.get("DeliveryRetryIntervalSeconds")
         if ServiceEnabled is not None:
-            event_setting["ServiceEnabled"] = ServiceEnabled
+            # event_setting["ServiceEnabled"] = ServiceEnabled
+            if ServiceEnabled is True:
+                s = 1
+            
+            if ServiceEnabled == False:
+                s = 0
+                snmp_post = {
+                    "TrapIP": "",
+                    "Community": "",
+                }
+                RfManagersService().NetworkProtocol_Snmp_Post(snmp_post)
+        self.save_ServiceEnabled(s)      
+        # self.save_Destination(snmp_post["TrapIP"])
+        # self.save_TrapCommunity(snmp_post["Community"])
         if DeliveryRetryAttempts is not None:
             event_setting["DeliveryRetryAttempts"] = DeliveryRetryAttempts
         if DeliveryRetryIntervalSeconds is not None:
@@ -104,13 +140,13 @@ class RfEventService(BaseService):
         m.SubscriptionType = "SNMPTrap"
         m.Context = event_subscriptions_Id[0]["Context"]
         m.DeliveryRetryPolicy = "RetryForever"
-        m.Destination = event_subscriptions_Id[0]["Destination"]
+        m.Destination = self.get_Destination()
         m.Protocol = "SNMPv2c"
         m.EventFormatType = "Event"
         m.RegistryPrefixes = []
         m.ResourceTypes = []
         status = {
-            "State": "Enabled",
+            "State": "Enabled" if self.get_ServiceEnabled() else "Disabled",
             "Health": "OK"
         }
         m.Status = RfStatusModel(**status)
@@ -119,14 +155,17 @@ class RfEventService(BaseService):
     
     def patch_subscriptions_id(self, subscription_id: str, body):
         
-        event_subscriptions_Id[0]["Destination"] = body.get("Destination")
-        event_subscriptions_Id[0]["TrapCommunity"] = body.get("TrapCommunity")
+        self.save_Destination(body.get("Destination"))
+        self.save_TrapCommunity(body.get("TrapCommunity"))
         event_subscriptions_Id[0]["Context"] = body.get("Context")
         
         snmp_post = {
-            "TrapIP": event_subscriptions_Id[0]["Destination"],
-            "Community": event_subscriptions_Id[0]["TrapCommunity"],
+            "TrapIP": self.get_Destination(),# event_subscriptions_Id[0]["Destination"],
+            "Community": self.get_TrapCommunity(),
         }
-        RfManagersService().NetworkProtocol_Snmp_Post(snmp_post)
+        if self.get_ServiceEnabled() == True:
+            RfManagersService().NetworkProtocol_Snmp_Post(snmp_post)
+        else:
+            return "message: Service not enabled", 400   
         
         return self.get_subscriptions_id(subscription_id)

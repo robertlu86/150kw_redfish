@@ -8,8 +8,10 @@ import json
 from dotenv import load_dotenv
 proj_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(proj_root)
-print(f"Testing with .env-test: {os.path.join(proj_root, '.env-test')}")
-load_dotenv(dotenv_path=f"{os.path.join(proj_root, '.env-test')}", verbose=True, override=True)
+
+env_filename = ".env-test"
+print(f"Testing with {env_filename}: {os.path.join(proj_root, env_filename)}")
+load_dotenv(dotenv_path=f"{os.path.join(proj_root, env_filename)}", verbose=True, override=True)
 os.environ['IS_TESTING_MODE'] = 'True'
 
 import base64

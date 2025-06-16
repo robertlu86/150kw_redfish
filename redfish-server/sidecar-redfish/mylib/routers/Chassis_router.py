@@ -806,7 +806,7 @@ class FetchSensorsById(MyBaseChassis):
         chassis_service = RfChassisService()
         rep = chassis_service.fetch_sensors_by_name(chassis_id, sensor_id)
 
-        return rep
+        return jsonify(rep)
 #================================================
 # 散熱子系統（ThermalSubsystem）
 #================================================
@@ -1496,49 +1496,49 @@ Operation_patch = Chassis_ns.model('Operation', {
         enum=['Automatic', 'Manual', 'Disabled']
     ),
     'TargetTemperature': fields.Integer(
-        required=True,
+        # required=True,
         description='Target_Temperature',
         default=True,   # 是否設定預設值
         example=50,   # 讓 UI 顯示範例
     ),
     'TargetPressure': fields.Integer(
-        required=True,
+        # required=True,
         description='Target_Pressure',
         default=True,   # 是否設定預設值
         example=10,   # 讓 UI 顯示範例
     ),
     'PumpSwapTime': fields.Integer(
-        required=True,
+        # required=True,
         description='Pump_Swap_Time',
         default=True,   # 是否設定預設值
         example=100,   # 讓 UI 顯示範例
     ),
     'FanSetPoint': fields.Integer(
-        required=True,
+        # required=True,
         description='Fan_Set_Point',
         default=True,   # 是否設定預設值
         example=50,   # 讓 UI 顯示範例
     ),
     'PumpSetPoint': fields.Integer(
-        required=True,
+        # required=True,
         description='Pump_Set_Point',
         default=True,   # 是否設定預設值
         example=50,   # 讓 UI 顯示範例
     ),
     'Pump1Switch': fields.Boolean(
-        required=True,
+        # required=True,
         description='Pump1_Switch',
         default=True,   # 是否設定預設值
         example=True,   # 讓 UI 顯示範例
     ),
     'Pump2Switch': fields.Boolean(
-        required=True,
+        # required=True,
         description='Pump2_Switch',
         default=True,   # 是否設定預設值
         example=True,   # 讓 UI 顯示範例
     ),
     'Pump3Switch': fields.Boolean(
-        required=True,
+        # required=True,
         description='Pump3_Switch',
         default=True,   # 是否設定預設值
         example=True,   # 讓 UI 顯示範例

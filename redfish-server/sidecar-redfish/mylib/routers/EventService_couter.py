@@ -5,62 +5,6 @@ from flask_restx import Namespace, Resource, fields
 from mylib.services.rf_event_service import RfEventService
 
 EventService_ns = Namespace('', description='EventService Collection')
-
-EventService_data = {
-    "@odata.context": "/redfish/v1/$metadata#EventService.EventService",
-    "@odata.id": "/redfish/v1/EventService",
-    "@odata.type": "#EventService.v1_11_0.EventService",
-    "Id": "EventService",
-    "Name": "Event Service",
-    "Description": "This resource represents an event service for a Redfish implementation.",
-    "Status": {
-        "State": "Enabled",
-        "Health": "OK"
-    },
-    "ExcludeMessageId": False,
-    "ExcludeRegistryPrefix": False,
-    "IncludeOriginOfConditionSupported": False,
-    "SubordinateResourcesSupported": False,
-    "ServiceEnabled": True,
-    "DeliveryRetryAttempts": 3,
-    "DeliveryRetryIntervalSeconds": 60,
-    "EventTypesForSubscription": ["StatusChange"],
-    "ServerSentEventUri": "TBD",
-    "SSEFilterPropertiesSupported": {
-        "RegistryPrefix": True,
-        "ResourceType": True
-    },
-    "ResourceTypes": ["Certificate"],
-    "RegistryPrefixes":[
-        "Base",
-        "EventRegistry"
-    ],
-
-    "Subscriptions": {
-        "@odata.id": "/redfish/v1/EventService/Subscriptions"
-    },
-    # "Actions": {
-    #     "#EventService.SubmitTestEvent": {
-    #     "target": "/redfish/v1/EventService/Actions/EventService.SubmitTestEvent",
-    #     "title": "SubmitTestEvent"
-    #     }
-    # },
-    "Oem": {}
-}
-
-Subscriptions_data = {
-    "@odata.context": "/redfish/v1/$metadata#EventDestinationCollection.EventDestinationCollection",
-    "@odata.id": "/redfish/v1/EventService/Subscriptions",
-    "@odata.type": "#EventDestinationCollection.EventDestinationCollection",
-    "Description": "iLO User Event Subscriptions",
-    "Name": "EventSubscriptions",
-    "Members": [
-        {
-        "@odata.id": "/redfish/v1/EventService/Subscriptions/1"
-        }
-    ],
-    "Members@odata.count": 1
-}
 # =============================================
 # patch/post model
 # =============================================
@@ -72,18 +16,18 @@ EventService_patch = EventService_ns.model('EventServicePatch', {
         default=True,
         example=True
     ),
-    "DeliveryRetryAttempts": fields.Integer(
-        required=True,
-        description='DeliveryRetryAttempts',
-        default=True,
-        example=3
-    ),
-    "DeliveryRetryIntervalSeconds": fields.Integer(
-        required=True,
-        description='DeliveryRetryIntervalSeconds',
-        default=True,
-        example=60
-    )
+    # "DeliveryRetryAttempts": fields.Integer(
+    #     required=True,
+    #     description='DeliveryRetryAttempts',
+    #     default=True,
+    #     example=3
+    # ),
+    # "DeliveryRetryIntervalSeconds": fields.Integer(
+    #     required=True,
+    #     description='DeliveryRetryIntervalSeconds',
+    #     default=True,
+    #     example=60
+    # )
 })
 
 # Event Subscription psot設置
