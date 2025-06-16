@@ -6,6 +6,7 @@ from mylib.services.rf_managers_service import RfManagersService
 from mylib.models.rf_resource_model import RfResetType
 from mylib.models.rf_manager_model import RfResetToDefaultsType
 from mylib.utils.system_info import get_mac_uuid
+from mylib.services.rf_log_service import RfLogService
 
 managers_ns = Namespace('', description='Chassis Collection')
 
@@ -327,10 +328,10 @@ ShutdownPostModel = managers_ns.model('ShutdownPostModel', {
     'ResetType': fields.String(
         required=True,
         description='The reset type.',
-        example='ForceRestart',
+        example='ForceOff',
         enum=[
-            RfResetType.ForceRestart.value,
-            RfResetType.GracefulRestart.value,
+            RfResetType.ForceOff.value,
+            RfResetType.GracefulShutdown.value,
         ]
     ),
 })
@@ -733,21 +734,21 @@ class ManagersCDUEthernetInterfacesMain(Resource):
         }
         return ethernet_interfaces_main_data    
     
-#=========================================0514新增==================================================    
-LogServices_data = {
-        "@odata.id": "/redfish/v1/Managers/CDU/LogServices",
-        "@odata.type": "#LogServiceCollection.LogServiceCollection",
-        "@odata.context": "/redfish/v1/$metadata#LogServiceCollection.LogServiceCollection",
+#=========================================0514新增==================================================  
+# LogServices_data = {
+#         "@odata.id": "/redfish/v1/Managers/CDU/LogServices",
+#         "@odata.type": "#LogServiceCollection.LogServiceCollection",
+#         "@odata.context": "/redfish/v1/$metadata#LogServiceCollection.LogServiceCollection",
 
-        "Name": "System Event Log Service",
-        "Description": "System Event and Error Log Service",
+#         "Name": "System Event Log Service",
+#         "Description": "System Event and Error Log Service",
         
-        "Members@odata.count": 1,
-        "Members": [
-            {"@odata.id": "/redfish/v1/Managers/CDU/LogServices/1"}
-        ],
-        "Oem": {}
-    }
+#         "Members@odata.count": 1,
+#         "Members": [
+#             {"@odata.id": "/redfish/v1/Managers/CDU/LogServices/1"}
+#         ],
+#         "Oem": {}
+#     }
 #====================================================== 
 # LogServices
 #====================================================== 
@@ -756,41 +757,16 @@ class LogServices(Resource):
     # # @requires_auth
     @managers_ns.doc("LogServices")
     def get(self):
-        
-        return LogServices_data   
+        log_service = RfLogService().fetch_LogServices()
+        return log_service   
 
 @managers_ns.route("/Managers/CDU/LogServices/<string:log_id>")
 class LogServicesId(Resource):
     # @requires_auth
     @managers_ns.doc("LogServices")
     def get(self, log_id):
-        LogServices_id_data = {
-            "@odata.id": f"/redfish/v1/Managers/CDU/LogServices/{log_id}",
-            "@odata.type": "#LogService.v1_8_0.LogService",
-            "@odata.context": "/redfish/v1/$metadata#LogService.v1_8_0.LogService",
-
-            "Id": str(log_id),
-            "Name": "System Event Log Service",
-            "Description": "System Event and Error Log Service",
-            
-            "Entries": { "@odata.id": f"/redfish/v1/Managers/CDU/LogServices/{log_id}/Entries" },
-            "LogEntryType": "Event",
-            "DateTime": "2021-01-01T00:00:00Z",
-            "DateTimeLocalOffset": "+08:00",
-            "MaxNumberOfRecords": 1000,
-            "OverWritePolicy": "WrapsWhenFull",
-            "ServiceEnabled": False,
-            "Status": { "State": "Enabled", "Health": "OK" },
-            
-            "Actions": {
-                "#LogService.ClearLog": {
-                    "target": f"/redfish/v1/Managers/CDU/LogServices/{log_id}/Actions/LogService.ClearLog",
-                }
-            },
-            "Oem": {}
-        }
-        
-        return LogServices_id_data     
+        resp_json = RfLogService().fetch_LogServices_with_id(log_id)
+        return resp_json     
     
 @managers_ns.route("/Managers/CDU/LogServices/<string:log_id>/Entries")
 class LogServicesIdEntries(Resource):

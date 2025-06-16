@@ -396,7 +396,18 @@ class RfChassisService(BaseService):
         try:
             r = requests.patch(
                 f"{CDU_BASE}/api/v1/cdu/status/op_mode",
-                json={"mode": ControlMode, "fan_speed": SetPoint },
+                json={
+                    "mode": ControlMode, 
+                    "fan_speed": SetPoint,
+                    "fan1_switch": True,
+                    "fan2_switch": True,
+                    "fan3_switch": True,
+                    "fan4_switch": True,
+                    "fan5_switch": True,
+                    "fan6_switch": True,
+                    "fan7_switch": True,
+                    "fan8_switch": True
+                },
                 timeout=3
             )
             r.raise_for_status()
@@ -455,6 +466,14 @@ class RfChassisService(BaseService):
                     "pump2_switch": Pump2Switch,
                     "pump3_switch": Pump3Switch,
                     "fan_speed": FanSetPoint,
+                    "fan1_switch": True,
+                    "fan2_switch": True,
+                    "fan3_switch": True,
+                    "fan4_switch": True,
+                    "fan5_switch": True,
+                    "fan6_switch": True,
+                    "fan7_switch": True,
+                    "fan8_switch": True
                     },
                 timeout=3
             )

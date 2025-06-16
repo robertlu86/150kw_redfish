@@ -30,6 +30,29 @@ managers_testcases = [
     } 
 ]
 
+managers_cdu_log_services_testcases = [
+    {
+        "endpoint": f'/redfish/v1/Managers/CDU/LogServices',
+        "assert_cases": {
+            "@odata.id": f"/redfish/v1/Managers/CDU/LogServices",
+            "@odata.type": "#LogServiceCollection.LogServiceCollection",
+            "@odata.context": "/redfish/v1/$metadata#LogServiceCollection.LogServiceCollection",
+            "Members@odata.count": 1
+        }
+    },
+    {
+        "endpoint": f'/redfish/v1/Managers/CDU/LogServices/1',
+        "assert_cases": {
+            "@odata.id": f"/redfish/v1/Managers/CDU/LogServices/1",
+            "@odata.type": "#LogService.v1_8_0.LogService",
+            "@odata.context": "/redfish/v1/$metadata#LogService.v1_8_0.LogService",
+            "LogEntryType": "OEM",
+            "MaxNumberOfRecords": 500,
+            "OverWritePolicy": "WrapsWhenFull",
+        }
+    } 
+]
+
 managers_cdu_reset_to_defaults_testcases = [
     {
         "endpoint": f"/redfish/v1/Managers/CDU/Actions/Manager.ResetToDefaults",
@@ -116,6 +139,7 @@ def test_manager_cdu_reset_to_defaults(client, basic_auth_header, testcase):
     """[TestCase] manager CDU reset_to_defaults"""
     endpoint = testcase["endpoint"]
     print(f"Endpoint: {endpoint}")
+    print(f"Payload: {testcase['payload']}")
     
     with patch('mylib.adapters.webapp_api_adapter.WebAppAPIAdapter.reset_to_defaults') as mock:
         mock.return_value = Response(
@@ -134,6 +158,7 @@ def test_manager_cdu_reset(client, basic_auth_header, testcase):
     """[TestCase] manager CDU reset"""
     endpoint = testcase["endpoint"]
     print(f"Endpoint: {endpoint}")
+    print(f"Payload: {testcase['payload']}")
     
     with patch('mylib.adapters.webapp_api_adapter.WebAppAPIAdapter.reset') as mock:
         mock.return_value = Response(
@@ -153,6 +178,7 @@ def test_manager_cdu_shutdown(client, basic_auth_header, testcase):
     """[TestCase] manager CDU shutdown"""
     endpoint = testcase["endpoint"]
     print(f"Endpoint: {endpoint}")
+    print(f"Payload: {testcase['payload']}")
     
     with patch('mylib.adapters.webapp_api_adapter.WebAppAPIAdapter.shutdown') as mock:
         mock.return_value = Response(
@@ -187,6 +213,9 @@ def test_manager_cdu_shutdown(client, basic_auth_header, testcase):
 # N::::::N        N::::::N oo:::::::::::oo  r:::::r            m::::m   m::::m   m::::m a::::::::::aa:::al::::::l
 # NNNNNNNN         NNNNNNN   ooooooooooo    rrrrrrr            mmmmmm   mmmmmm   mmmmmm  aaaaaaaaaa  aaaallllllll
 ##
+
+managers_testcases += managers_cdu_log_services_testcases
+
 @pytest.mark.parametrize("testcase", managers_testcases)
 def test_manager_normal_api(client, basic_auth_header, testcase):
     """[TestCase] manager API"""

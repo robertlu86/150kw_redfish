@@ -27,6 +27,8 @@ def error_response(msg: str, http_status: int, code: Optional[str] = None) -> Un
 
 ERROR_INTERNAL = error_response('Internal Server Error', 500)
 
+ERROR_PRECONDITION_FAILED = error_response('Precondition Failed', 412, 'Base.PreconditionFailed')
+
 ERROR_PROPERTY_MISSING = error_response('Property Missing', 400, 'Base.PropertyMissing')
 
 ERROR_PROPERTY_TYPE = error_response('Property Type Error', 400, 'Base.PropertyValueTypeError')
