@@ -6,6 +6,7 @@ from mylib.services.rf_ThermalEquipment_service import RfThermalEquipmentService
 from mylib.utils.load_api import load_raw_from_api 
 from mylib.utils.load_api import CDU_BASE
 from mylib.routers.Chassis_router import GetControlMode
+from mylib.utils.controlUtil import ControlMode_change
 import requests
 from http import HTTPStatus
 from mylib.common.my_resource import MyResource
@@ -233,6 +234,18 @@ PrimaryCoolantConnectors_data_1 ={
     "DeltaPressurekPa": {
         "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/PrimaryDeltaPressurekPa",
         "Reading": 135.0
+    },
+    "SupplyTemperatureControlCelsius":{
+        "SetPoint": 30,
+        "AllowableMax": 60,
+        "AllowableMin": 20,
+        "ControlMode": "Disabled"
+    },
+    "DeltaPressureControlkPa": {
+        "SetPoint": 150,
+        "AllowableMax": 200,
+        "AllowableMin": 50,
+        "ControlMode": "Disabled"
     },
     "Oem": {
         "supermicro": {  
@@ -589,44 +602,69 @@ LeakDetection_data = {
 # }
 # -------------------------------------
 # Automatic setting patch設置
-oem_supermicro = ThermalEquipment_ns.model('OemSupermicro', {
-            'TargetTemperature': fields.Integer(
-                # required=True,
-                description='temperature setting',
-                default=50,
-            ),
-            "TargetPressure": fields.Integer(
-                # required=True,
-                description='pressure setting',
-                default=50,
-            ),
-            "PumpSwapTime": fields.Integer(
-                # required=True,
-                description='pump swap time setting',
-                default=50,
-            ),
-})
-# 再定義 Oem 物件，包含 supermicro 這個巢狀 model
-oem_model = ThermalEquipment_ns.model('PrimaryCoolantConnectorsOem', {
-    'Supermicro': fields.Nested(oem_supermicro, description='Supermicro OEM settings')
-})
+# oem_supermicro = ThermalEquipment_ns.model('OemSupermicro', {
+#             'TargetTemperature': fields.Integer(
+#                 # required=True,
+#                 description='temperature setting',
+#                 default=50,
+#             ),
+#             "TargetPressure": fields.Integer(
+#                 # required=True,
+#                 description='pressure setting',
+#                 default=50,
+#             ),
+#             "PumpSwapTime": fields.Integer(
+#                 # required=True,
+#                 description='pump swap time setting',
+#                 default=50,
+#             ),
+# })
+# # 再定義 Oem 物件，包含 supermicro 這個巢狀 model
+# oem_model = ThermalEquipment_ns.model('PrimaryCoolantConnectorsOem', {
+#     'Supermicro': fields.Nested(oem_supermicro, description='Supermicro OEM settings')
+# })
 
-# 最後定義整個 patch payload
-PrimaryCoolantConnectors_patch = ThermalEquipment_ns.model('PrimaryCoolantConnectors1Patch', {
+# # 最後定義整個 patch payload
+# PrimaryCoolantConnectors_patch = ThermalEquipment_ns.model('PrimaryCoolantConnectors1Patch', {
+#     'Oem': fields.Nested(oem_model, required=False, description='OEM specific parameters')
+# })
+# ================================================================
+# payload model設置
+# ================================================================
+# primarycoolantconnectors patch設置
+setting = ThermalEquipment_ns.model('setting', {
+    'SetPoint': fields.Float(
+        # required=True,
+        description='point setting',
+        default=50,
+    ),
+    'ControlMode': fields.String(
+        required=True,
+        description='Switch_Mode',
+        default=True,   # 是否設定預設值
+        example="Manual",   # 讓 UI 顯示範例
+        enum=['Automatic', 'Manual', 'Disabled']
+    ),
+})
+pumpswattime = ThermalEquipment_ns.model('pumpswattime', {
+    "PumpSwapTime": fields.Integer(
+        # required=True,
+        description='pump swap time setting',
+        default=50,
+    ),
+})
+oem_model = ThermalEquipment_ns.model('PrimaryCoolantConnectorsOem', {
+    'Supermicro': fields.Nested(pumpswattime, description='Supermicro OEM settings')
+})
+PrimaryCoolantConnectors_model = ThermalEquipment_ns.model('PrimaryCoolantConnectors', {
+    'SupplyTemperatureControlCelsius': fields.Nested(setting, description='PrimaryCoolantConnectors settings'),
+    'DeltaPressureControlkPa': fields.Nested(setting, description='PrimaryCoolantConnectors settings'),
     'Oem': fields.Nested(oem_model, required=False, description='OEM specific parameters')
 })
 
-# pumpspeed patch設置
-pumpspeed_patch = ThermalEquipment_ns.model('PumpSpeedControlPatch', {
-    'pump_speed': fields.Integer(
-        required=True,
-        description='pump speed (0–100)',
-        default=50,
-    ),
-    "pump_switch": fields.Boolean(
-        required=True,
-        description='pump switch',
-    ),
+# pump patch設置
+Pump_model = ThermalEquipment_ns.model('Pump', {
+    'SpeedControlPercent': fields.Nested(setting, description='Pump settings'),
 })
 
 
@@ -716,32 +754,52 @@ class PrimaryCoolantConnectors1(Resource):
         
         PrimaryCoolantConnectors_data_1["Oem"]["supermicro"]["PumpSwapTime"]["SetPoint"]["Value"] = pump_swap_time
         
+        controlmode = GetControlMode()
+        if controlmode == "Automatic":
+            controlmode = "Manual"
+        PrimaryCoolantConnectors_data_1["SupplyTemperatureControlCelsius"]["ControlMode"] = controlmode
+        PrimaryCoolantConnectors_data_1["DeltaPressureControlkPa"]["ControlMode"] = controlmode
         return PrimaryCoolantConnectors_data_1
     
-    @ThermalEquipment_ns.expect(PrimaryCoolantConnectors_patch, validate=True)
+    @ThermalEquipment_ns.expect(PrimaryCoolantConnectors_model, validate=True)
     def patch(self):
         body = request.get_json(force=True)
         # 驗證模式
-        if GetControlMode() != "Automatic": return "only Automatic can setting"
+        # if GetControlMode() != "Automatic": return "only Automatic can setting"
         
-        temp_set = body.get("Oem", {}).get("Supermicro", {}).get("TargetTemperature")
-        pressure_set = body.get("Oem", {}).get("Supermicro", {}).get("TargetPressure")
+        temp_setpoint = body.get("SupplyTemperatureControlCelsius", {}).get("SetPoint")
+        temp_controlmode = body.get("SupplyTemperatureControlCelsius", {}).get("ControlMode")
+        pressure_setpoint = body.get("DeltaPressureControlkPa", {}).get("SetPoint")
+        pressure_controlmode = body.get("DeltaPressureControlkPa", {}).get("ControlMode")
         pump_swap_time = body.get("Oem", {}).get("Supermicro", {}).get("PumpSwapTime")
-        print("pump_swap_time", pump_swap_time)
+        
         automatic_setting = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/op_mode")
-        
-        if temp_set is None:
-            temp_set = automatic_setting["temp_set"]
-        if pressure_set is None:
-            pressure_set = automatic_setting["pressure_set"]
+        # 未填邏輯判斷
+        if temp_setpoint is None:
+            temp_setpoint = automatic_setting["temp_set"]
+        if pressure_setpoint is None:
+            pressure_setpoint = automatic_setting["pressure_set"]
+        # controlmode判斷 
+        if temp_controlmode is None and pressure_controlmode is None:
+            controlmode = automatic_setting["mode"]
+            controlmode = ControlMode_change(controlmode)
+        elif  temp_controlmode is None: 
+            controlmode = pressure_controlmode
+        elif pressure_controlmode is None:
+            controlmode = temp_controlmode
+        else:
+            controlmode = temp_controlmode    
+        if temp_controlmode != pressure_controlmode:    
+            controlmode = automatic_setting["mode"]
+            controlmode = ControlMode_change(controlmode)
         if pump_swap_time is None:
-            pump_swap_time = automatic_setting["pump_swap_time"]    
-        
+            pump_swap_time = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/control/pump_swap_time")["pump_swap_time"]
+        controlmode = ControlMode_change(controlmode)
         # 轉發到內部控制 API
         try:
             r = requests.patch(
                 f"{CDU_BASE}/api/v1/cdu/status/op_mode",
-                json={"mode": "auto", "temp_set": temp_set, "pressure_set": pressure_set, "pump_swap_time": pump_swap_time},
+                json={"mode": controlmode, "temp_set": temp_setpoint, "pressure_set": pressure_setpoint, "pump_swap_time": pump_swap_time},
                 timeout=3
             )
             r.raise_for_status()
@@ -761,12 +819,18 @@ class PrimaryCoolantConnectors1(Resource):
                 "details": str(e)
             }, 502
         
+
+        if controlmode == "auto":
+            controlmode = "manual"
+        controlmode = ControlMode_change(controlmode)
         # 內部儲存
-        PrimaryCoolantConnectors_data_1["DeltaTemperatureCelsius"]["Reading"] = temp_set
-        PrimaryCoolantConnectors_data_1["DeltaPressurekPa"]["Reading"] = pressure_set
+        PrimaryCoolantConnectors_data_1["SupplyTemperatureControlCelsius"]["SetPoint"] = temp_setpoint
+        PrimaryCoolantConnectors_data_1["SupplyTemperatureControlCelsius"]["ControlMode"] = controlmode
+        PrimaryCoolantConnectors_data_1["DeltaPressureControlkPa"]["SetPoint"] = pressure_setpoint
+        PrimaryCoolantConnectors_data_1["DeltaPressureControlkPa"]["ControlMode"] = controlmode
         PrimaryCoolantConnectors_data_1["Oem"]["supermicro"]["PumpSwapTime"]["SetPoint"]["Value"] = pump_swap_time
         
-        return body, 200
+        return PrimaryCoolantConnectors_data_1, 200
     
 @ThermalEquipment_ns.route("/ThermalEquipment/CDUs/<string:cdu_id>/Pumps")
 class ThermalEquipmentCdus1Pumps(Resource):
@@ -790,7 +854,7 @@ class ThermalEquipmentCdus1PumpsPump(MyBaseThermalEquipment):
         return rep
         
     # # @requires_auth
-    @ThermalEquipment_ns.expect(pumpspeed_patch, validate=True)
+    @ThermalEquipment_ns.expect(Pump_model, validate=True)
     @ThermalEquipment_ns.doc("thermal_equipment_cdus_1_pumps_pump")
     def patch(self, cdu_id, pump_id):
         # 驗證 cdu_id 和 pump_id
@@ -964,7 +1028,7 @@ class LeakDetectionLeakDetectors1(MyBaseThermalEquipment):
         return rep
 
 CoolingUnit_patch = ThermalEquipment_ns.model('CoolingUnitPatch', {
-    'ControlMode': fields.String(
+    'Mode': fields.String(
         required=True,
         description='Automatic Switch',
         default=True,
@@ -977,7 +1041,7 @@ CoolingUnit_patch = ThermalEquipment_ns.model('CoolingUnitPatch', {
 class CoolingUnitSetMode(Resource):
     # # @requires_auth
     @ThermalEquipment_ns.expect(CoolingUnit_patch, validate=True)
-    def patch(self, cdu_id):
+    def post(self, cdu_id):
         data = request.get_json(force=True)
         return RfThermalEquipmentService().fetch_CDUs_SetMode(cdu_id, data)
 

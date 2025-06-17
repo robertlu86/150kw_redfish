@@ -41,9 +41,10 @@ pytest -v --html=/tmp/report.html --self-contained-html test/
 ## test normal api
 pytest --html=/tmp/report.html --self-contained-html test/test_chassis_router.py::test_chassis_normal_api
 ## test patch api (測PATCH -> GET -> Wait for sensor value)
-pytest --html=/tmp/report.html --self-contained-html test/test_chassis_router.py::test_chassis_FansSpeedControl_patch_api
-pytest --html=/tmp/report.html --self-contained-html test/test_chassis_router.py::test_chassis_FansSpeedControl_patch_api[testcase0] # 只跑第0個case
-pytest --html=/tmp/report.html --self-contained-html test/test_chassis_router.py::test_chassis_PumpsSpeedControl_patch_api
+pytest --html=/tmp/report.html --self-contained-html test/test_chassis_router.py::test_chassis_Fan_patch_api
+pytest --html=/tmp/report.html --self-contained-html test/test_chassis_router.py::test_chassis_Fan_patch_api[testcase0] # 只跑第0個case
+pytest --html=/tmp/report.html --self-contained-html test/test_chassis_router.py::test_chassis_Pump_patch_api
+pytest --html=/tmp/report.html --self-contained-html test/test_chassis_router.py::test_chassis_Pump_patch_api[testcase0] # 只跑第0個case
 pytest --html=/tmp/report.html --self-contained-html test/test_chassis_router.py::test_chassis_OperationMode_patch_api
 ## test sensor reading value (單純測fan的sensor值是否為目標值附近)
 pytest --html=/tmp/report.html --self-contained-html test/test_chassis_router.py::test_fan_sensors_should_be_corrected

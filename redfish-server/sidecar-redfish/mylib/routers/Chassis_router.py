@@ -9,7 +9,7 @@ import requests
 import os
 from typing import Dict
 from mylib.common.my_resource import MyResource
-from mylib.utils.system_info import get_mac_uuid, list_nics_fullinfo
+from mylib.utils.system_info import get_system_uuid, list_nics_fullinfo
 
 
 Chassis_ns = Namespace('', description='Chassis Collection')
@@ -412,7 +412,7 @@ class Chassis1(Resource):
         Chassis_data_1["PartNumber"] = version_data["PartNumber"]
         Chassis_data_1["Version"] = version["version"]["Redfish_Server"]
         Chassis_data_1["AssetTag"] = version_data["SN"]
-        Chassis_data_1["UUID"] = get_mac_uuid()
+        Chassis_data_1["UUID"] = get_system_uuid()
         Chassis_data_1["Oem"]["supermicro"]["Main MC"]["State"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/mc")["main_mc"]
         return Chassis_data_1
 #================================================
@@ -827,6 +827,10 @@ FanSwitch_patch = Chassis_ns.model('FanSwitchpatch', {
     ),
 })
 
+Fan_model = Chassis_ns.model('FanModel', {
+    'SpeedControlPercent': fields.Nested(FanSwitch_patch, description='Fan settings')
+})
+
 @Chassis_ns.route("/Chassis/1/ThermalSubsystem")
 class ThermalSubsystem(MyBaseChassis):
     # @requires_auth
@@ -848,23 +852,12 @@ class ThermalSubsystem_Fans_by_id(MyBaseChassis):
     def get(self, fan_id, chassis_id):
         ThermalSubsystem_Fans_by_id = RfChassisService()
         rep = ThermalSubsystem_Fans_by_id.get_thermal_subsystem_fans_data(chassis_id, fan_id)
-        # 要優化
-        fan_mc_id = 1 if int(fan_id) <= 3 else 2
-        rep["Oem"] = {
-            "Supermicro": {
-                "@odata.type": "#Supermicro.Fan.v1_5_2.Fan",
-                f"Fan{fan_id} MC": {
-                    "fan MC":load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/mc")[f"fan_mc{fan_mc_id}"]
-                }
-            }
-            
-        }
+
         return  rep, 200
     
-    @Chassis_ns.expect(FanSwitch_patch, validate=True)
+    @Chassis_ns.expect(Fan_model, validate=True)
     def patch(self, chassis_id, fan_id):
         body = request.get_json(force=True)
-        # rep = RfChassisService().patch_thermal_subsystem_fans_data(chassis_id, fan_id, body)
         
         return RfChassisService().patch_thermal_subsystem_fans_data(chassis_id, fan_id, body)
         # return rep, 200
@@ -1229,7 +1222,7 @@ class ThermalMetrics(MyBaseChassis):
 #             "Name": f"NetworkAdapter {NetworkAdapter_id}",
             
 #             "PartNumber": "Transcend-TS2TMTS970T-I",
-#             "SerialNumber": get_mac_uuid(),
+#             "SerialNumber": get_system_uuid(),
 #             "Ports": {"@odata.id": f"/redfish/v1/Chassis/{chassis_id}/NetworkAdapters/{NetworkAdapter_id}/Ports"}
 #         }    
         
@@ -1270,7 +1263,7 @@ class ThermalMetrics(MyBaseChassis):
 #             "Ethernet": {
 #                 "LLDPEnabled": True,
 #                 "LLDPReceive": {
-#                     "ChassisId": get_mac_uuid(), # 放MAC
+#                     "ChassisId": get_system_uuid(), # 放MAC
 #                     "ChassisIdSubtype": "ChassisComp",
 #                     "ManagementAddressIPv4": "192.168.1.100",
 #                     "ManagementAddressMAC": "00:11:22:33:44:55",
@@ -1495,13 +1488,13 @@ Operation_patch = Chassis_ns.model('Operation', {
         example="Manual",   # 讓 UI 顯示範例
         enum=['Automatic', 'Manual', 'Disabled']
     ),
-    'TargetTemperature': fields.Integer(
+    'TargetTemperature': fields.Float(
         # required=True,
         description='Target_Temperature',
         default=True,   # 是否設定預設值
         example=50,   # 讓 UI 顯示範例
     ),
-    'TargetPressure': fields.Integer(
+    'TargetPressure': fields.Float(
         # required=True,
         description='Target_Pressure',
         default=True,   # 是否設定預設值
@@ -1513,13 +1506,13 @@ Operation_patch = Chassis_ns.model('Operation', {
         default=True,   # 是否設定預設值
         example=100,   # 讓 UI 顯示範例
     ),
-    'FanSetPoint': fields.Integer(
+    'FanSetPoint': fields.Float(
         # required=True,
         description='Fan_Set_Point',
         default=True,   # 是否設定預設值
         example=50,   # 讓 UI 顯示範例
     ),
-    'PumpSetPoint': fields.Integer(
+    'PumpSetPoint': fields.Float(
         # required=True,
         description='Pump_Set_Point',
         default=True,   # 是否設定預設值

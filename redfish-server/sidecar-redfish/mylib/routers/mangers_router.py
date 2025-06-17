@@ -5,7 +5,7 @@ from mylib.utils.load_api import CDU_BASE
 from mylib.services.rf_managers_service import RfManagersService
 from mylib.models.rf_resource_model import RfResetType
 from mylib.models.rf_manager_model import RfResetToDefaultsType
-from mylib.utils.system_info import get_mac_uuid
+from mylib.utils.system_info import get_system_uuid
 from mylib.services.rf_log_service import RfLogService
 
 managers_ns = Namespace('', description='Chassis Collection')
@@ -363,7 +363,7 @@ class ManagersCDU(Resource):
         # status
         heath = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/mc")["cdu_status"]
         rep["Status"] = {"State": "Enabled", "Health": heath}
-        rep["UUID"] = get_mac_uuid()
+        rep["UUID"] = get_system_uuid()
         return rep, 200
 
 @managers_ns.route("/Managers/CDU/Actions/Manager.ResetToDefaults")
@@ -541,18 +541,18 @@ class ManagersCDUNetworkProtocol(Resource):
             
         return "", 200
 
-@managers_ns.route("/Managers/CDU/NetworkProtocol/Oem/Supermicro/SNMPServers")
-class ManagersCDUNetworkProtocolOemSupermicroSNMPServers(Resource):
-    @managers_ns.doc("managers_cdu_network_protocol_oem_supermicro_snmpservers")
-    # @requires_auth
-    def get(self):
-        return RfManagersService().NetworkProtocol_Snmp_get()
+# @managers_ns.route("/Managers/CDU/NetworkProtocol/Oem/Supermicro/SNMPServers")
+# class ManagersCDUNetworkProtocolOemSupermicroSNMPServers(Resource):
+#     @managers_ns.doc("managers_cdu_network_protocol_oem_supermicro_snmpservers")
+#     # @requires_auth
+#     def get(self):
+#         return RfManagersService().NetworkProtocol_Snmp_get()
     
-    @managers_ns.expect(SnmpPatch)
-    def post(self):
-        body = request.json or {}
-        # return RfManagersService().NetworkProtocol_Snmp_Patch(body)
-        return RfManagersService().NetworkProtocol_Snmp_Post(body)
+#     @managers_ns.expect(SnmpPatch)
+#     def post(self):
+#         body = request.json or {}
+#         # return RfManagersService().NetworkProtocol_Snmp_Patch(body)
+#         return RfManagersService().NetworkProtocol_Snmp_Post(body)
         
 @managers_ns.route("/Managers/CDU/NetworkProtocol/HTTPS/Certificates")
 class ManagersCDUNetworkProtocolHTTPS(Resource):
