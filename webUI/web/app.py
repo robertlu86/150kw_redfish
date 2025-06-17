@@ -5716,6 +5716,27 @@ def controlPage():
     return render_template("control.html", user=current_user.id)
 
 
+@app.route("/reset_pump_swap", methods=["POST"])
+@login_required
+def reset_pump_swap():
+    word1, word2 = cvt_float_byte(24)
+    try:
+        with ModbusTcpClient(
+            host=modbus_host, port=modbus_port, unit=modbus_slave_id
+        ) as client:
+            client.write_registers(303, [word2, word1])
+        return jsonify(
+                {
+                    "status": "success",
+                    "title": "Success",
+                    "message": "Success",
+                }
+            )
+    except Exception as e:
+        print(f"set pump swap time error:{e}")
+        return retry_modbus(303, [word2, word1], "register")
+    
+    
 @app.route("/set_operation_mode", methods=["POST"])
 @login_required
 def set_operation_mode():
@@ -6988,18 +7009,18 @@ def export_settings():
                 snmp = json.load(file)
             export_data["snmp"] = snmp
 
-            if "users" not in export_data:
-                export_data["users"] = {}
+            # if "users" not in export_data:
+            #     export_data["users"] = {}
 
-                encrypted_password_user = cipher_suite.encrypt(
-                    USER_DATA["user"].encode()
-                ).decode()
-                export_data["users"]["user"] = encrypted_password_user
+            #     encrypted_password_user = cipher_suite.encrypt(
+            #         USER_DATA["user"].encode()
+            #     ).decode()
+            #     export_data["users"]["user"] = encrypted_password_user
 
-                encrypted_password_kiosk = cipher_suite.encrypt(
-                    USER_DATA["user"].encode()
-                ).decode()
-                export_data["users"]["kiosk"] = encrypted_password_kiosk
+            #     encrypted_password_kiosk = cipher_suite.encrypt(
+            #         USER_DATA["user"].encode()
+            #     ).decode()
+            #     export_data["users"]["kiosk"] = encrypted_password_kiosk
         if data.get("exp_mode_chk", False):
             for key, v in ctr_data_temp["value"].items():
                 if isinstance(v, float):
@@ -7056,26 +7077,26 @@ def import_settings():
 
                     network_set_import(interface_name[i], network)
 
-            if "users" in data:
-                try:
-                    decrypted_password_user = cipher_suite.decrypt(
-                        data["users"]["user"].encode()
-                    ).decode()
-                    USER_DATA["user"] = decrypted_password_user
+            # if "users" in data:
+            #     try:
+            #         decrypted_password_user = cipher_suite.decrypt(
+            #             data["users"]["user"].encode()
+            #         ).decode()
+            #         USER_DATA["user"] = decrypted_password_user
 
-                    decrypted_password_kiosk = cipher_suite.decrypt(
-                        data["users"]["kiosk"].encode()
-                    ).decode()
-                    USER_DATA["kiosk"] = decrypted_password_kiosk
+            #         decrypted_password_kiosk = cipher_suite.decrypt(
+            #             data["users"]["kiosk"].encode()
+            #         ).decode()
+            #         USER_DATA["kiosk"] = decrypted_password_kiosk
 
-                    set_key(f"{web_path}/.env", "USER", USER_DATA["user"])
-                    set_key(f"{web_path}/.env", "USER", USER_DATA["kiosk"])
-                    os.chmod(f"{web_path}/.env", 0o666)
+            #         set_key(f"{web_path}/.env", "USER", USER_DATA["user"])
+            #         set_key(f"{web_path}/.env", "USER", USER_DATA["kiosk"])
+            #         os.chmod(f"{web_path}/.env", 0o666)
 
-                except InvalidToken:
-                    return jsonify(
-                        {"status": "error", "message": "Invalid Encrypted Password"}
-                    )
+            #     except InvalidToken:
+            #         return jsonify(
+            #             {"status": "error", "message": "Invalid Encrypted Password"}
+            #         )
 
             if "sensor_adjust" in data:
                 if user_identity["ID"] == "superuser":
@@ -7839,7 +7860,15 @@ def restoreFactorySettingAll():
         )
     except Exception as e:  
         print(f"timeout light error:{e}")   
-        
+    ###14 reset pump swap time
+    try:
+        word1, word2 = cvt_float_byte(24)
+        with ModbusTcpClient(
+            host=modbus_host, port=modbus_port, unit=modbus_slave_id
+        ) as client:
+            client.write_registers(303, [word2, word1])
+    except Exception as e:
+        print(f"set pump swap time error:{e}")
     ##### 最後一步, 重啟電腦
     # subprocess.run(
     #     ["sudo", "reboot"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE

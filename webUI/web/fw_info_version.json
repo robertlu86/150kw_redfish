@@ -1,10 +1,10 @@
 {
-    "WebUI": "0125",
+    "WebUI": "0126",
     "SCC_API": "0106",
     "SNMP": "0103",
     "Redfish_API": "0103",
     "Redfish_Server": "0108",
     "Modbus_Server": "0101",
     "PLC": "0107D",
-    "Release_Time": "2025-06-16"
+    "Release_Time": "2025-06-17"
 }
