@@ -382,14 +382,32 @@ class RfChassisService(BaseService):
 
         item["Status"]["State"] = sensor_value_json["fan" + str(fan_id)]["status"]["state"]
         item["Status"]["Health"] = sensor_value_json["fan" + str(fan_id)]["status"]["health"]
-
+        # 要優化
+        fan_mc_id = 1 if int(fan_id) <= 3 else 2
+        item["Oem"] = {
+            "Supermicro": {
+                "@odata.type": "#Supermicro.Fan.v1_5_2.Fan",
+                f"Fan Gorup{fan_mc_id} MC": {
+                    "fan MC":load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/mc")[f"fan_mc{fan_mc_id}"]
+                }
+            }  
+        }
+        opmode_data = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/op_mode")
+        item["SpeedControlPercent"] = {
+            "SetPoint": load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/control/fan_speed")["fan_set"],
+            "ControlMode": ControlMode_change(opmode_data["mode"]),
+            "AllowableMax": 100,
+            "AllowableMin": 15
+            
+        }
             
         return item 
     
     def patch_thermal_subsystem_fans_data(self, chassis_id: str, fan_id: str, body: dict):
+        import time
         # 這裡是 patch 的內容
-        ControlMode = body["ControlMode"]
-        SetPoint = body["SetPoint"]
+        ControlMode = body["SpeedControlPercent"]["ControlMode"]
+        SetPoint = body["SpeedControlPercent"]["SetPoint"]
         ControlMode = ControlMode_change(ControlMode)
 
         # 轉發到內部控制 API
@@ -411,7 +429,10 @@ class RfChassisService(BaseService):
                 timeout=3
             )
             r.raise_for_status()
-            return body, 200
+           
+            
+            time.sleep(2)  # 延遲問題要解決 setpoint(目前為暫解)
+            return self.get_thermal_subsystem_fans_data(chassis_id, fan_id), 200
         except requests.HTTPError:
             # 如果 CDU 回了 4xx/5xx，直接把它的 status code 和 body 回來
             try:

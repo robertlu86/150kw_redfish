@@ -1,5 +1,6 @@
 import uuid
 import psutil
+import subprocess
 
 # def get_mac_uuid() -> str:
 #     """
@@ -22,6 +23,8 @@ def get_mac_uuid() -> str:
     
     # print(f"MAC Address: {mac_str}, UUID: {u}")
     return str(u)
+
+
 
 def get_first_mac_psutil() -> str:
     """
@@ -70,6 +73,21 @@ def list_nics_fullinfo():
         print(f"NIC: {nic_name}, Up: {is_up}, Speed: {speed} Mbps, MAC: {mac_addr}")
     return result
 
-import psutil
+def get_system_uuid():
+    """
+    Get system uuid by command: `sudo dmidecode -s system-uuid`
+    @Author: Chatgpt, welson
+    @Note: You can impl. this function by `pip install python-dmidecode`, only works on specific Linux. 
+    """
+    try:
+        # FAIL: it will requuest user to type-in password in terminal
+        # output = subprocess.check_output(
+        #     ["sudo", "dmidecode", "-s", "system-uuid"],
+        #     stderr=subprocess.DEVNULL  # 隱藏錯誤訊息
+        # ).decode().strip()
+        # return output
+        return str(uuid.uuid5(uuid.NAMESPACE_DNS, str(get_first_mac_psutil())))
+    except Exception as e:
+        return str(uuid.uuid3(uuid.NAMESPACE_DNS, str(get_first_mac_psutil())))
 
 

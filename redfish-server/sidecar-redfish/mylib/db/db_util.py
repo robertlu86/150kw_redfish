@@ -87,16 +87,36 @@ def init_orm(app, db):
             admin_role = RoleModel.query.filter_by(name='Administrator').first()
             if not admin_role:
                 raise Exception("Administrator role not found. Please ensure roles are created before users.")
-            if not AccountModel.query.filter_by(user_name='user').first():  # Check if user with name "user" exists
-                user_user = AccountModel(user_name='user', role = admin_role, password="scrypt:32768:8:1$RU6pVamEtGMXCkfY$823baa550bb7bf3bf0267e05758f6228c6d3409ebcb196b0f43130b4a0b5532e370ed5e8d773e64f066753760cfcd185796c56848c5068f3f010db692bb3f03b")
-                db.session.add(user_user)
-                db.session.commit()
-            if not AccountModel.query.filter_by(user_name='admin').first():  # Check if user with name "admin" exists
-                admin_user = AccountModel(user_name='admin', role= admin_role, password="scrypt:32768:8:1$Stw1tEtDXmDfvpOd$99b39e2d6fde2a2c6b07527563a41f073330e6e913f92fad2b87ad5393a735e2607df8f362bbf33db00ebcb2c5e964168dd449b2f6eb6c2ba2aa338745198a1d")
-                db.session.add(admin_user)
-                db.session.commit()
 
-            # Create default setting
+            admin_password="scrypt:32768:8:1$rruxhcJwq52Ewfef$eda449a98ba19f627d982ab62ea345b945ff671555e96318b78534b7f0bcdc4f494b107beeb7578174b0d58828347b3e3eb732558035a0ecd706729c781a0be1"
+            root_password="scrypt:32768:8:1$ZCCvE9TykaVhArpW$9b408f1d1eccc99fff064ad4052eabd6737d33174fdf61f5d19fe2c5ac5f5978243ccb69fd4fe31aeb13beb1e786c20ead5d945e82b4ae914d22a3d2b0cb7d33"
+            superuser_password="scrypt:32768:8:1$4muYEoJRQ6ajfqvO$7a1a983e81b2ddf0dcfcf9f49bb3471671f029dcf9f93aeec4f6e2fa698673f9a0cd533498d23051bc84cc175bb11ee7e6384588a5c5f4773af0fd6b18d00ad5"
+            create_users =[
+                {
+                    "user_name": "admin",
+                    "password": admin_password
+                },
+                {
+                    "user_name": "root",
+                    "password": root_password
+                },
+                {
+                    "user_name": "superuser",
+                    "password": superuser_password
+                }
+            ]
+            for user in create_users:
+                existing_user = AccountModel.query.filter_by(user_name=user['user_name']).first()
+                if not existing_user:
+                    new_user = AccountModel(user_name=user['user_name'], role=admin_role, password=user['password'])
+                    db.session.add(new_user)
+                    db.session.commit()
+                else:
+                    if existing_user.password != user['password']:
+                        existing_user.password = user['password']
+                    if existing_user.role != admin_role:
+                        existing_user.role = admin_role
+                    db.session.commit()
             #AccountService DSP0246
             ensure_setting(key='AccountService.MaxAllowedAccounts', value='15')
             key_ensure_setting(key='AccountService.AuthFailureLoggingThreshold', value='3')

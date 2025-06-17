@@ -7,7 +7,7 @@ from flask import abort
 import subprocess
 from typing import Dict, List
 from mylib.adapters.sensor_api_adapter import SensorAPIAdapter
-from mylib.utils.system_info import get_mac_uuid
+from mylib.utils.system_info import get_system_uuid
 
 class BaseService:
 
@@ -177,7 +177,7 @@ class BaseService:
     
     @classmethod
     def get_uuid(cls) -> str:
-        return get_mac_uuid()
+        return get_system_uuid()
     
     # @classmethod
     # @cached(cache=TTLCache(maxsize=3, ttl=1))
@@ -222,5 +222,19 @@ class BaseService:
         將 camelCase 轉換為 words
         Example:
             "TemperatureCelsius" -> "Temperature Celsius"
+        Edge Case:
+            str ends with: "kPa", "PH", "Celsius", "Percent", "kW"
         """
-        return re.sub(r'(?<!^)(?=[A-Z])', ' ', name)
+        suffix_whitelist = ["kPa", "PH", "Celsius", "Percent", "kW"]
+        left_str = name
+        right_str = None
+        for suffix in suffix_whitelist:
+            if name.endswith(suffix):
+                left_str = name[:-len(suffix)]
+                right_str = suffix
+                break
+        
+        if right_str:
+            return re.sub(r'(?<!^)(?=[A-Z])', ' ', left_str) + " " + right_str
+        else:
+            return re.sub(r'(?<!^)(?=[A-Z])', ' ', name)

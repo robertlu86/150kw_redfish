@@ -230,7 +230,7 @@ class RfCduModel(RfResourceBaseModel):
         self.Actions = {
             "#CoolingUnit.SetMode": {
                 "target": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/Actions/CoolingUnit.SetMode",
-                "CoolingUnitMode@Redfish.AllowableValues": [
+                "Mode@Redfish.AllowableValues": [
                     "Enabled",
                     "Disabled"
                 ]

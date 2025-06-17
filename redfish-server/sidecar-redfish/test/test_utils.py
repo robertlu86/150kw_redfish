@@ -7,6 +7,7 @@ import random
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from mylib.models.rf_status_model import RfStatusModel, RfStatusHealth
 from mylib.utils.StatusUtil import StatusUtil
+from mylib.utils import system_info
 
 def test_get_worst_health_model(client):
     """[TestCase] 取得健康度最差的"""
@@ -51,3 +52,11 @@ def test_get_worst_health_dict(client):
     logging.info(f"Testcase lowercase: status_dicts: {status_dicts}")
     worst_health_status = StatusUtil.get_worst_health_dict(status_dicts)
     assert worst_health_status["Health"] == RfStatusHealth.Critical.value
+
+def test_get_system_uuid(client):
+    """[TestCase] 取得系統 UUID"""
+    uuid = system_info.get_system_uuid()
+    logging.info(f"Testcase basic: uuid: {uuid}")
+    assert uuid is not None
+    assert len(uuid) == 36
+    assert uuid.count("-") == 4

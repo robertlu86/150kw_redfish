@@ -13,6 +13,10 @@ from mylib.adapters.sensor_api_adapter import SensorAPIAdapter
 from conftest import TestcaseFinder
 from reading_judger import ReadingJudgerPolicy1, ReadingJudgerPolicy2, ReadingJudgerPolicy3
 
+
+# 用api來開關sensor會產生很多冗餘的程式，因此使用一個controller來包裝
+class TestChassisController:
+    pass
         
 chassis_id = 1
 
@@ -265,46 +269,79 @@ fan_cnt = int(os.getenv("REDFISH_FAN_COLLECTION_CNT", 1))
 pump_cnt = int(os.getenv("REDFISH_PUMP_COLLECTION_CNT", 1))
 powersupply_cnt = int(os.getenv("REDFISH_POWERSUPPLY_COLLECTION_CNT", 1))
 
-endpoint_FansSpeedControl = f'/redfish/v1/Chassis/{chassis_id}/Controls/FansSpeedControl'
-chassis_FansSpeedControl_patch_testcases = [
+# 取得control值(GET)
+endpoint_Control = f'/redfish/v1/Chassis/{chassis_id}/Controls'
+# 設定control值(PATCH)
+endpoint_Control_Oem_Supermicro_Operation = f'/redfish/v1/Chassis/{chassis_id}/Controls/Oem/Supermicro/Operation'
+
+chassis_Fan_patch_testcases = [
     {
         "id": "fan-all-on",
-        "endpoint": endpoint_FansSpeedControl,
-        "payload": {
+        "endpoint": endpoint_Control_Oem_Supermicro_Operation,
+        "get_endpoint": endpoint_Control,
+        "payload":{
             "description": "Manual模式下，風扇全設為ON, speed=50",
-            "fan_speed": 50,
-            **{f"fan{i}_switch": True for i in range(1, fan_cnt + 1)}
-        },
+            
+            "ControlMode": "Manual",
+            # "TargetTemperature": 45,
+            # "TargetPressure": 30,
+            # "PumpSwapTime": 1,
+            "FanSetPoint": 50,
+            # "PumpSetPoint": 35,
+            # "Pump1Switch": False,
+            # "Pump2Switch": True,
+            # "Pump3Switch": False
+        }
     },
     {
         "id": "fan-random-on-case1",
-        "endpoint": endpoint_FansSpeedControl,
-        "payload": {
+        "endpoint": endpoint_Control_Oem_Supermicro_Operation,
+        "get_endpoint": endpoint_Control,
+        "payload":{
             "description": "Manual模式下，風扇亂數隨機開關, speed=15~60之間隨機選 (case1)",
-            "fan_speed": random.randint(15, 60),
-            **{f"fan{i}_switch": random.choice([True, False]) for i in range(1, fan_cnt + 1)}
-        },
+            
+            "ControlMode": "Manual",
+            # "TargetTemperature": 45,
+            # "TargetPressure": 30,
+            # "PumpSwapTime": 1,
+            "FanSetPoint": random.randint(15, 60),
+            # "PumpSetPoint": 35,
+            # "Pump1Switch": False,
+            # "Pump2Switch": True,
+            # "Pump3Switch": False
+        }
     },
     {
         "id": "fan-random-on-case2",
-        "endpoint": endpoint_FansSpeedControl,
+        "endpoint": endpoint_Control_Oem_Supermicro_Operation,
+        "get_endpoint": endpoint_Control,
         "payload": {
             "description": "Manual模式下，風扇亂數隨機開關, speed=15~60之間隨機選 (case2)",
-            "fan_speed": random.randint(15, 60),
-            **{f"fan{i}_switch": random.choice([True, False]) for i in range(1, fan_cnt + 1)}
+            
+            "ControlMode": "Manual",
+            # "TargetTemperature": 45,
+            # "TargetPressure": 30,
+            # "PumpSwapTime": 1,
+            "FanSetPoint": random.randint(15, 60),
+            # "PumpSetPoint": 35,
+            # "Pump1Switch": False,
+            # "Pump2Switch": True,
+            # "Pump3Switch": False
         },
     }
 ] + [
-    {
-        "id": f"fan-individual-on-fan{fan_sn}",
-        "endpoint": endpoint_FansSpeedControl,
-        "payload": {
-            "description": f"Manual模式下，風扇個別開, speed={40 + fan_sn*2} (case{fan_sn})",
-            "fan_speed": 40 + fan_sn*2,
-            **{f"fan{i}_switch": True if i == fan_sn else False for i in range(1, fan_cnt + 1)}
-        },
-    }
-    for fan_sn in range(1, fan_cnt + 1)
+    ## 20250616: 風扇不能各別開，只能全開或全關
+    # {
+    #     "id": f"fan-individual-on-fan{fan_sn}",
+    #     "endpoint": endpoint_Control_Oem_Supermicro_Operation,
+    #     "get_endpoint": endpoint_Control,
+    #     "payload": {
+    #         "description": f"Manual模式下，風扇個別開, speed={40 + fan_sn*2} (case{fan_sn})",
+    #         "fan_speed": 40 + fan_sn*2,
+    #         **{f"fan{i}_switch": True if i == fan_sn else False for i in range(1, fan_cnt + 1)}
+    #     },
+    # }
+    # for fan_sn in range(1, fan_cnt + 1)
 ]
 
 endpoint_OperationMode = f'/redfish/v1/Chassis/{chassis_id}/Controls/OperationMode'
@@ -349,43 +386,72 @@ chassis_OperationMode_patch_fail_testcases = [
 
 
 
-endpoint_PumpsSpeedControl = f'/redfish/v1/Chassis/{chassis_id}/Controls/PumpsSpeedControl'
-chassis_PumpsSpeedControl_patch_testcases = [
+chassis_Pumps_patch_testcases = [
     {
         "id": "pump-all-on",
-        "endpoint": endpoint_PumpsSpeedControl,
+        "endpoint": endpoint_Control_Oem_Supermicro_Operation,
+        "get_endpoint": endpoint_Control,
         "payload": {
             "description": "Manual模式下，pump全設為ON, speed=50",
-            "speed_set": 50,
-            **{f"pump{i}_switch": True for i in range(1, pump_cnt + 1)}
+            
+            "ControlMode": "Manual",
+            # "TargetTemperature": 45,
+            # "TargetPressure": 30,
+            # "PumpSwapTime": 1,
+            # "FanSetPoint": random.randint(15, 60),
+            "PumpSetPoint": 50,
+            "Pump1Switch": False,
+            "Pump2Switch": True,
+            "Pump3Switch": False
         },
     },
     {
         "id": "pump-random-on",
-        "endpoint": endpoint_PumpsSpeedControl,
+        "endpoint": endpoint_Control_Oem_Supermicro_Operation,
+        "get_endpoint": endpoint_Control,
         "payload": {
             "description": "Manual模式下，pump亂數隨機開關, speed=25~60之間隨機選 (case1)",
-            "speed_set": random.randint(25, 60),
-            **{f"pump{i}_switch": random.choice([True, False]) for i in range(1, pump_cnt + 1)}
+            
+            "ControlMode": "Manual",
+            # "TargetTemperature": 45,
+            # "TargetPressure": 30,
+            # "PumpSwapTime": 1,
+            # "FanSetPoint": random.randint(15, 60),
+            "PumpSetPoint": random.randint(25, 60),
+            "Pump1Switch": random.choice([True, False]),
+            "Pump2Switch": random.choice([True, False]),
+            "Pump3Switch": random.choice([True, False])
         },
     },
     {
         "id": "pump-random-on-2",
-        "endpoint": endpoint_PumpsSpeedControl,
+        "endpoint": endpoint_Control_Oem_Supermicro_Operation,
+        "get_endpoint": endpoint_Control,
         "payload": {
             "description": "Manual模式下，pump亂數隨機開關, speed=25~60之間隨機選 (case2)",
-            "speed_set": random.randint(25, 60),
-            **{f"pump{i}_switch": random.choice([True, False]) for i in range(1, pump_cnt + 1)}
+            
+            "ControlMode": "Manual",
+            # "TargetTemperature": 45,
+            # "TargetPressure": 30,
+            # "PumpSwapTime": 1,
+            # "FanSetPoint": random.randint(15, 60),
+            "PumpSetPoint": random.randint(25, 60),
+            "Pump1Switch": random.choice([True, False]),
+            "Pump2Switch": random.choice([True, False]),
+            "Pump3Switch": random.choice([True, False])
         },
     }
 ] + [
     {
         "id": f"pump-individual-on-pump{pump_sn}",
-        "endpoint": endpoint_PumpsSpeedControl,
+        "endpoint": endpoint_Control_Oem_Supermicro_Operation,
+        "get_endpoint": endpoint_Control,
         "payload": {
             "description": f"Manual模式下，pump個別開, speed={40 + pump_sn*2} (case{pump_sn})",
-            "speed_set": 40 + pump_sn*2,
-            **{f"pump{i}_switch": True if i == pump_sn else False for i in range(1, pump_cnt + 1)}
+
+            "ControlMode": "Manual",
+            "PumpSetPoint": 40 + pump_sn*2,
+            **{f"Pump{i}Switch": True if i == pump_sn else False for i in range(1, pump_cnt + 1)}
         },
     }
     for pump_sn in range(1, pump_cnt + 1)
@@ -589,17 +655,9 @@ def test_fan_sensors_should_be_corrected(client, basic_auth_header, testcase):
 # @note pump同上。
 ##                                                                                                       
                                                                                                        
-@pytest.mark.parametrize('testcase', chassis_FansSpeedControl_patch_testcases)
-def test_chassis_FansSpeedControl_patch_api(client, basic_auth_header, testcase):
-    """[TestCase] chassis FansSpeedControl patch API
-    payload:{ 
-        "fan_speed": 50,
-        "fan1_switch": true,
-        "fan2_switch": true,
-        "fan3_switch": true,
-        "fan4_switch": true,
-        ...
-    } // Bad Design! Should use List[Dict[<fan_id>, <is_switch>]] or Dict[<fan_id>, <is_switch>]
+@pytest.mark.parametrize('testcase', chassis_Fan_patch_testcases)
+def test_chassis_Fan_patch_api(client, basic_auth_header, testcase):
+    """[TestCase] chassis Fans patch API
     """
     payload = testcase['payload']
     # 更新設定值
@@ -614,7 +672,7 @@ def test_chassis_FansSpeedControl_patch_api(client, basic_auth_header, testcase)
 
 
     # 取得設定值 (存於PLC的register)
-    target_value = payload['fan_speed']
+    target_value = payload['FanSetPoint']
     wating_seconds = 1
     print(f"## Waiting for PLC to update target value: {target_value}")
     while wating_seconds < 30:
@@ -622,14 +680,14 @@ def test_chassis_FansSpeedControl_patch_api(client, basic_auth_header, testcase)
         time.sleep(wating_seconds)
         wating_seconds = wating_seconds * 2
         print(f"Http method: GET")
-        print(f"Endpoint: {testcase['endpoint']}")
-        response = client.get(testcase['endpoint'], headers=basic_auth_header)
+        print(f"Endpoint: {testcase['get_endpoint']}")
+        response = client.get(testcase['get_endpoint'], headers=basic_auth_header)
         resp_json = response.json   
         print(f"Response json: {json.dumps(resp_json, indent=2, ensure_ascii=False)}")
-        if resp_json['SetPoint'] == target_value:
+        if resp_json['Oem']['Supermicro']['FanSetPoint'] == target_value:
             break
-    assert resp_json['SetPoint'] == target_value
-    print(f"PASS: GET {testcase['endpoint']} is expected resp_json.SetPoint == target_value ({target_value})")
+    assert resp_json['Oem']['Supermicro']['FanSetPoint'] == target_value
+    print(f"PASS: GET {testcase['get_endpoint']} is expected resp_json.Oem.Supermicro.FanSetPoint == target_value ({target_value})")
     
     
     # 取得sensor實際值 (注意，實際值不會這麼快就反應出來，通常要等待幾秒)
@@ -650,38 +708,27 @@ def test_chassis_FansSpeedControl_patch_api(client, basic_auth_header, testcase)
             # m = RfSensorFanExcerpt(**resp_json['Reading'])
             print(f"Response json: {json.dumps(resp_json, indent=2, ensure_ascii=False)}")
             sensor_value = resp_json['Reading']
-            if payload[f"fan{fan_id}_switch"] is True:
-                # assert ReadingJudgerPolicy1.validate_sensor_value_in_reasonable_vibration(sensor_value, payload['fan_speed']) == True
-                # print(f"PASS: Sensor value, {sensor_value}, from `{endpoint}` is expected to be in reasonable vibration range")
 
+            if payload["FanSetPoint"] > 1:
                 judge_result = ReadingJudgerPolicy3(client, uri=endpoint, basic_auth_header=basic_auth_header).judge(target_value)
                 print(f"Judge result: {judge_result}")
                 assert judge_result['is_judge_success'] == True
                 print(f"PASS: Judge reading value from policy2 is judged to {judge_result['is_judge_success']}.")
             else:
-                # assert ReadingJudgerPolicy1.validate_sensor_value_in_reasonable_vibration(sensor_value, 0) == True
-                # print(f"PASS: Sensor value, {sensor_value}, from `{endpoint}` is expected to be 0")
-
                 judge_result = ReadingJudgerPolicy3(client, uri=endpoint, basic_auth_header=basic_auth_header).judge(0)
                 print(f"Judge result: {judge_result}")
                 assert judge_result['is_judge_success'] == True
                 print(f"PASS: Judge reading value from policy2 is judged to be 0.")
+        
         except Exception as e:
             print(f"Error: {e}")
             raise e
             
 
-@pytest.mark.parametrize('testcase', chassis_PumpsSpeedControl_patch_testcases)
-def test_chassis_PumpsSpeedControl_patch_api(client, basic_auth_header, testcase):
-    """[TestCase] chassis FansSpeedControl patch API
-    payload:{ 
-        "speed_set": 50,
-        "pump1_switch": true,
-        "pump2_switch": true,
-        "pump3_switch": true
-        ...
+@pytest.mark.parametrize('testcase', chassis_Pumps_patch_testcases)
+def test_chassis_Pumps_patch_api(client, basic_auth_header, testcase):
+    """[TestCase] chassis Pumps patch API
     @note: N個pump的設定值只會有一個，但會對應N個sensor
-    } 
     """
     payload = testcase['payload']
     # 更新設定值
@@ -695,31 +742,24 @@ def test_chassis_PumpsSpeedControl_patch_api(client, basic_auth_header, testcase
 
 
     # 取得設定值
-    target_value = payload['speed_set']
+    target_value = payload['PumpSetPoint']
     wating_seconds = 1
     print(f"## Waiting for PLC to update target value: {target_value}")
     while wating_seconds < 30:
         time.sleep(wating_seconds)
         wating_seconds = wating_seconds * 2
         print(f"## Http method: GET")
-        print(f"Endpoint: {testcase['endpoint']}")
-        response = client.get(testcase['endpoint'], headers=basic_auth_header)
+        print(f"Endpoint: {testcase['get_endpoint']}")
+        response = client.get(testcase['get_endpoint'], headers=basic_auth_header)
         resp_json = response.json   
         print(f"Response json: {json.dumps(resp_json, indent=2, ensure_ascii=False)}")
-        if resp_json['SetPoint'] == target_value:
+        if resp_json['Oem']['Supermicro']['PumpSetPoint'] == target_value:
             break
-    assert resp_json['SetPoint'] == target_value
-    print(f"PASS: GET {testcase['endpoint']} is expected resp_json.SetPoint == target_value ({target_value})")
+    assert resp_json['Oem']['Supermicro']['PumpSetPoint'] == target_value
+    print(f"PASS: GET {testcase['get_endpoint']} is expected resp_json.Oem.Supermicro.PumpSetPoint == target_value ({target_value})")
     
     # 取得sensor實際值 (注意，實際值不會這麼快就反應出來，通常要等待幾秒)
     # URI: /redfish/v1/ThermalEquipment/CDUs/1/Pumps/1
-    # Response: {
-    #     ...
-    #     "PumpSpeedPercent": {
-    #         "Reading": 49,
-    #         "SpeedRPM": 4.9
-    #     },
-    # }
     print(f"## Wait for pump sensor value reaching the target value: {target_value}")
     time.sleep(10)
     print(f"## Check Sensor Value:")
@@ -737,20 +777,17 @@ def test_chassis_PumpsSpeedControl_patch_api(client, basic_auth_header, testcase
                 basic_auth_header=basic_auth_header,
                 params={ "judge_interval": 1 }
             )
-        if payload[f"pump{pump_id}_switch"] is True:
-            # assert ReadingJudgerPolicy1.validate_sensor_value_in_reasonable_vibration(sensor_value, payload['speed_set']) == True
 
-            judge_result = judge_policy.judge(target_value)
-            print(f"Judge result: {judge_result}")
-            assert judge_result['is_judge_success'] == True
-            print(f"PASS: Judge reading value from policy2 is judged to be {judge_result['is_judge_success']} (target_value: {target_value}).")
-        else:
-            # assert ReadingJudgerPolicy1.validate_sensor_value_in_reasonable_vibration(sensor_value, 0) == True
+        judge_target_value = 0
+        if payload[f"Pump{pump_id}Switch"] is True:
+            judge_target_value = target_value
+        
+        judge_result = judge_policy.judge(judge_target_value)
+        print(f"Judge result: {judge_result}")
+        assert judge_result['is_judge_success'] == True
+        print(f"PASS: Judge reading value from policy2 is judged to be {judge_result['is_judge_success']} (target_value: {judge_target_value}).")
 
-            judge_result = judge_policy.judge(0)
-            print(f"Judge result: {judge_result}")
-            assert judge_result['is_judge_success'] == True
-            print(f"PASS: Judge reading value from policy2 is judged to be {judge_result['is_judge_success']} (target_value: 0).")
+
 
 
 @pytest.mark.parametrize('testcase', chassis_OperationMode_patch_testcases)
@@ -825,7 +862,7 @@ chassis_AutoMode_PumpsSpeedControl_patch_testcases = [
     {
         "before_hands": [
             TestcaseFinder(chassis_OperationMode_patch_testcases).find_testcase_by_id("manual"), # manual mode
-            TestcaseFinder(chassis_PumpsSpeedControl_patch_testcases).find_testcase_by_id("pump-all-on"), # pump全開
+            TestcaseFinder(chassis_Pumps_patch_testcases).find_testcase_by_id("pump-all-on"), # pump全開
         ],
         "id": "auto-mode-to-test-pump",
         "endpoint": endpoint_OperationMode,
