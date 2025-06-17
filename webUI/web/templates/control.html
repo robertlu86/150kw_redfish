@@ -261,22 +261,6 @@ styles %}
 </style>
 {% endblock %} {% block content %}
 <div class="container-fluid" style="margin-top: 100px; margin-bottom: 60px">
-    {#{% if user == 'superuser' or user == 'admin' %}#}
-    <div class="overCurrent" data-label="Error Reset">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-4">
-                    <p>Error Reset:</p>
-                </div>
-                <div class="col-4">
-                    <button class="btn btn-outline-success" id="resetCurrentBtn">
-                        Reset
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-    {#{% endif %}#}
 
     <div class="modeSelect" data-label="Mode Selection">
         <div class="row">
@@ -333,7 +317,10 @@ styles %}
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-6 center_text">Pump Swap Time:</div>
+                            <div class="col-6 center_text">Pump Swap Time:
+                                <button class="btn btn-outline-success" id="reset_pump_swap" style="margin-left: 20px;">reset</button>
+
+                            </div>
                             <div class="col-3 sideNum">
                                 <input id="p_swap" class="form-control keyboard_onlyNumber" placeholder="" />
                                 <div class="col-1">
@@ -645,7 +632,7 @@ styles %}
                         <p>hr</p>
                     </div>
                 </div>
-                {% if user == 'superuser' or user == 'admin'  or user =='root' %}
+                {% if user == 'superuser' or user == 'admin' or user =='root' %}
                 <div class="col-2" style="padding-left: 115px">
                     <button id="Pump2ResetBtn" class="btn btn-outline-success" type="submit">
                         Reset
@@ -972,6 +959,22 @@ styles %}
         </div>
     </div>
     {% endif %}
+    <!-- <div class="overCurrent title" data-default="collapsed" data-label="Error Reset">
+        <div class="data-before-trigger"></div>
+
+        <div class="content">
+            <div class="row">
+                <div class="col-4">
+                    <p>Error Reset:</p>
+                </div>
+                <div class="col-4">
+                    <button class="btn btn-outline-success" id="resetCurrentBtn">
+                        Reset
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div> -->
 
     <div class="rebootPC title" data-default="collapsed" data-label="Reboot Box PC">
         <div class="data-before-trigger"></div>
@@ -1240,8 +1243,8 @@ styles %}
         jQuery(".fanSetting").attr("data-before", "Running Time ▲");
         jQuery(".exportSetting").attr("data-before", "Export/Import Setting ▲");
         jQuery(".modeSelect").attr("data-before", "Mode Selection");
-        jQuery(".uiUpdate").attr("data-before", "Upload Settings ▼");
-        jQuery(".overCurrent").attr("data-before", "Error Reset");
+        jQuery(".uiUpdate").attr("data-before", "Upload Settings ▲");
+        jQuery(".overCurrent").attr("data-before", "Error Reset ▲");
         jQuery(".rack_setting").attr("data-before", "Rack Setting ▲");
         jQuery(".firmware_setting").attr("data-before", "Firmware Update ▲");
         jQuery(".rebootPC").attr("data-before", "Reboot Box PC ▲");
@@ -1313,7 +1316,7 @@ styles %}
                                 } else if (typeof value === "boolean") {
                                     element.checked = value;
                                 } else {
-                                    if (key.includes("pressure")) {
+                                    if (key.includes("pressure") || key.includes("Swap") || key.includes("swap")) {
                                         value = Math.round(value * 10) / 10;
                                         element.value = value;
                                         /// 增加fan speed 判斷, 設定小於7 會出現0
@@ -1522,7 +1525,7 @@ styles %}
                         } else if (typeof value === "boolean") {
                             element.innerHTML = value ? "ON" : "OFF";
                         } else {
-                            if (key.includes("Pressure")) {
+                            if (key.includes("Pressure") || key.includes("Swap")) {
                                 value = Math.round(value * 10) / 10;
                                 element.innerHTML = value;
                             } else {
@@ -1698,39 +1701,69 @@ styles %}
         });
 
 
-        $("#resetCurrentBtn").click(function () {
-            let mode = $("#opMod").val();
+        // $("#resetCurrentBtn").click(function () {
+        //     let mode = $("#opMod").val();
 
-            if (mode == "auto") {
-                $("#ev1_sw").prop("checked", true);
-                $("#ev2_sw").prop("checked", true);
-                $("#ev3_sw").prop("checked", true);
-                $("#ev4_sw").prop("checked", true);
-            }
+        //     $.ajax({
+        //         url: "/reset_current",
+        //         method: "POST",
+        //         success: function (r) {
+        //             if (r.status == "success") {
+        //                 Swal.fire({
+        //                     title: "Success",
+        //                     text: r.message,
+        //                     icon: "success",
+        //                     confirmButtonText: "OK",
+        //                 });
+        //             } else {
+        //                 Swal.fire({
+        //                     title: "Info",
+        //                     text: r.message,
+        //                     icon: "info",
+        //                     confirmButtonText: "OK",
+        //                 });
+        //             }
+        //         },
+        //         error: function (error) {
+        //             console.error("Error fetching data:", error);
+        //         },
+        //     });
+        // });
 
-            $.ajax({
-                url: "/reset_current",
-                method: "POST",
-                success: function (r) {
-                    if (r.status == "success") {
-                        Swal.fire({
-                            title: "Success",
-                            text: r.message,
-                            icon: "success",
-                            confirmButtonText: "OK",
-                        });
-                    } else {
-                        Swal.fire({
-                            title: "Info",
-                            text: r.message,
-                            icon: "info",
-                            confirmButtonText: "OK",
-                        });
-                    }
-                },
-                error: function (error) {
-                    console.error("Error fetching data:", error);
-                },
+        $("#reset_pump_swap").click(function () {
+
+            Swal.fire({
+                title: "Confirm Reset",
+                text: "Confirm to reset Pump Swap Time to 24 hours?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: "No",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "/reset_pump_swap",
+                        type: "POST",
+                        contentType: "application/json",
+
+                        success: function (response) {
+                            Swal.fire({
+                                title: "Success",
+                                text: "Success",
+                                icon: "success",
+                                confirmButtonText: "OK",
+                            });
+                        },
+                        error: function (xhr, status, error) {
+                            Swal.fire({
+                                title: "Error",
+                                text: "Reset Time failed!",
+                                icon: "error",
+                                confirmButtonText: "OK",
+                            });
+                        },
+                    });
+                }
             });
         });
 

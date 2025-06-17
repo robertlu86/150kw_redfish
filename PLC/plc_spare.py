@@ -4718,7 +4718,7 @@ def control():
                     try:
                         if swap_current - swap_last >= 60:
                             dword_regs["swap_min"] += 1
-                            dword_regs["swap_hr"] = int(dword_regs["swap_min"] / 60)
+                            dword_regs["swap_hr"] = float(dword_regs["swap_min"] / 60)
                             swap_last = swap_current
 
                         if dword_regs["swap_hr"] >= dword_regs["p_swap"]:
