@@ -10,9 +10,15 @@ from mylib.models.rf_snmp_model import RfSnmpModel
 from mylib.adapters.webapp_api_adapter import WebAppAPIAdapter
 from mylib.models.rf_resource_model import RfResetType
 from mylib.common.proj_response_message import ProjResponseMessage
+from mylib.models.setting_model import SettingModel
 from mylib.utils.load_api import load_raw_from_api, CDU_BASE
 
 class RfManagersService(BaseService):
+    # =================通用工具===================
+    def save_networkprotocol(self, servie: str, setting):
+        SettingModel().save_key_value(f"Managers.{servie}.ProtocolEnabled", setting["ProtocolEnabled"])
+        SettingModel().save_key_value(f"Managers.{servie}.Port", setting["Port"])
+            
     # ================NetworkProtocol================
     def NetworkProtocol_service(self) -> dict:
         m = RfNetworkProtocolModel()
@@ -20,11 +26,15 @@ class RfManagersService(BaseService):
         m.FQDN = "Null"
         return m.to_dict()
     
-    def NetworkProtocol_service_patch(self, ntp):
+    def NetworkProtocol_service_patch(self, body):
+        snmp_setting ={
+            "ProtocolEnabled": body["SNMP"]["ProtocolEnabled"],
+            "Port": 9001
+        } 
+        
         m = RfNetworkProtocolModel()
-        if "NTPServers" in ntp:
-            m.NTP["NTPServers"] = ntp["NTPServers"]
-        return "test success"
+        self.save_networkprotocol("SNMP", snmp_setting)
+        return m.to_dict(), 200
     
     def NetworkProtocol_Snmp_get(self) -> dict:
         '''

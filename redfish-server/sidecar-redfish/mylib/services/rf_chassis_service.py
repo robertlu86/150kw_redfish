@@ -2,6 +2,7 @@
 這是Redfish的chassis service
 '''
 import os, re, json
+import time
 import requests
 from typing import Optional
 from mylib.models.rf_sensor_model import (
@@ -134,6 +135,7 @@ class RfChassisService(BaseService):
         if m.Status.Health == "Critical":
             if sensor_name in mapping.keys():
                 all_sensor_reading = self._read_components_chassis_summary_from_cache()
+                m.Reading = 0
                 m.Oem = {
                 "Supermicro": {
                     "@odata.type": "#Supermicro.Sensor.v1_0_0.Sensor",
@@ -386,7 +388,7 @@ class RfChassisService(BaseService):
         fan_mc_id = 1 if int(fan_id) <= 3 else 2
         item["Oem"] = {
             "Supermicro": {
-                "@odata.type": "#Supermicro.Fan.v1_5_2.Fan",
+                "@odata.type": "#Supermicro.FanMC",
                 f"Fan Gorup{fan_mc_id} MC": {
                     "fan MC":load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/mc")[f"fan_mc{fan_mc_id}"]
                 }
@@ -394,7 +396,7 @@ class RfChassisService(BaseService):
         }
         opmode_data = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/status/op_mode")
         item["SpeedControlPercent"] = {
-            "SetPoint": load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/control/fan_speed")["fan_set"],
+            "SetPoint": load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/Oem")["FanSetPoint"],
             "ControlMode": ControlMode_change(opmode_data["mode"]),
             "AllowableMax": 100,
             "AllowableMin": 15
@@ -404,7 +406,7 @@ class RfChassisService(BaseService):
         return item 
     
     def patch_thermal_subsystem_fans_data(self, chassis_id: str, fan_id: str, body: dict):
-        import time
+        
         # 這裡是 patch 的內容
         ControlMode = body["SpeedControlPercent"]["ControlMode"]
         SetPoint = body["SpeedControlPercent"]["SetPoint"]
@@ -460,6 +462,17 @@ class RfChassisService(BaseService):
         "Pump2Switch",
         "Pump3Switch",  
     }
+    
+    def get_Oem_Spuermicro_Operation(self, chassis_id: str):
+        rep = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/Oem")
+        rep["ControlMode"] = ControlMode_change(rep["ControlMode"])
+        rep["@odata.id"] = f"/redfish/v1/Chassis/{chassis_id}/Controls/Oem/Supermicro/Operation"
+        rep["@odata.type"] = "#Supermicro.Control"
+        rep["Id"] = "Operation"
+        rep["Name"] = "Supermicro Control Operation"
+        
+        return rep, 200
+    
     def patch_Oem_Spuermicro_Operation(self, chassis_id: str, body: dict):
         ControlMode = body.get("ControlMode")
         TargetTemperature = body.get("TargetTemperature")
@@ -503,7 +516,8 @@ class RfChassisService(BaseService):
             )
             r.raise_for_status()      
             code = r.status_code
-            return body, code
+            time.sleep(2)
+            return self.get_Oem_Spuermicro_Operation(chassis_id)
             # return r.json(), code
         except requests.HTTPError:
             # 如果 CDU 回了 4xx/5xx，直接把它的 status code 和 body 回來

@@ -15,6 +15,8 @@ class SensorReadingUtil:
         close_cnt = 0
         stable_cnt = 0
         fail_cnt = 0
+        zero_cnt = 0
+        max_continuous_zero_cnt = 0 # 最大連續0的次數
         # Step 1: 是否曾經接近過目標值？
         # any([True, False, True]) -> True
         # any([False, False, False]) -> False
@@ -25,6 +27,12 @@ class SensorReadingUtil:
         for v in reading_values:
             if abs(v - target_value) <= tolerance:
                 close_cnt += 1
+            
+            if v == 0:
+                zero_cnt += 1
+                max_continuous_zero_cnt = max(max_continuous_zero_cnt, zero_cnt)
+            else:
+                zero_cnt = 0
 
         # Step 2: 最後一段是否穩定在 target 附近？
         for v in reversed(reading_values):
@@ -38,6 +46,8 @@ class SensorReadingUtil:
             "close_cnt": close_cnt,
             "stable_cnt": stable_cnt,
             "fail_cnt": fail_cnt,
+            "zero_cnt": zero_cnt,
+            "max_continuous_zero_cnt": max_continuous_zero_cnt,
             "is_finally_stabled": (stable_cnt >= stable_duration),
             "reason": ""
         }

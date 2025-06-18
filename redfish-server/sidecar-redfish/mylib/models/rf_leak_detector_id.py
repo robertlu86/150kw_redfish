@@ -42,8 +42,7 @@ class RfLeakDetectionIdModel(RfResourceBaseModel):
     def __init__(self, cdu_id: str, leak_detector_id: str, **kwargs):
         super().__init__(**kwargs)
         self.odata_type = "#LeakDetector.v1_3_0.LeakDetector"
-        self.odata_id = f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/LeakDetection/{leak_detector_id}"
-        
+        self.odata_id = f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/LeakDetection/LeakDetectors/{leak_detector_id}"
         self.Id = leak_detector_id
         self.Name = f"Leak Detection {leak_detector_id}"
         self.Description = f"Leak Detector {leak_detector_id} for CDU {cdu_id}"

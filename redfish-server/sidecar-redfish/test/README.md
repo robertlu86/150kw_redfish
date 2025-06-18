@@ -35,7 +35,7 @@ cd /home/user/service/redfish-server/sidecar-redfish
 # activate venv
 source /home/user/service/redfish-server/redfish_venv/bin/activate
 
-# run test
+# Run test
 ## test all
 pytest -v --html=/tmp/report.html --self-contained-html test/
 ## test normal api
@@ -51,6 +51,11 @@ pytest --html=/tmp/report.html --self-contained-html test/test_chassis_router.py
 ## test Auto mode
 pytest --html=/tmp/report.html --self-contained-html test/test_chassis_router.py::test_chassis_AutoMode_patch_api
 
+
+## test control flow defined by supermicro
+pytest -s -v --html=/tmp/report.html --self-contained-html test/test_control_flow_defined_by_supermicro.py::test_supermicro_defined_test_cases__patch_and_get | tee /tmp/report.log
+# or run in background
+nohup sh -c 'pytest -s -v --html=~/Downloads/report.html --self-contained-html test/test_control_flow_defined_by_supermicro.py::test_supermicro_defined_test_cases__patch_and_get | tee ~/Downloads/report.log' > ~/Downloads/report.nohup.log 2>&1 &
 ```
 
 ### Test Case: reading值

@@ -130,6 +130,7 @@ class RfThermalEquipmentService(BaseService):
                 #     "State": "Enabled",
                 #     "Health": "OK"
                 # },
+                "Status": self._read_leak_detector_status()
             }
         ]
         
