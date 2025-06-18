@@ -3118,7 +3118,7 @@ block styles %}
     </div>
     {% endif %}
 
-    {% if (user == 'admin') or (user == 'superuser') or (user == 'root') %}
+    {% if (user == 'superuser') or (user == 'root') %}
     <div class="screen_setting title" data-default="collapsed" data-label="Status Indicator Setting">
         <div class="data-before-trigger"></div>
         <div class="content">
@@ -3147,7 +3147,7 @@ block styles %}
     </div>
     {% endif %}
 
-    {% if (user == 'superuser') or (user == 'admin') or (user == 'root')%}
+    {% if (user == 'superuser') or (user == 'root')%}
     <div class="switch_version title" data-default="collapsed" data-label="Switch Version">
         <div class="data-before-trigger"></div>
         <div class="content">
@@ -3286,7 +3286,7 @@ block styles %}
     </div>
     {% endif %}
 
-    {% if (user == 'admin') or (user == 'superuser') or (user == 'root') %}
+    {% if (user == 'superuser') or (user == 'root') %}
     <div class="rack_opening_setting title" data-default="collapsed" data-label="Rack Opening Setting">
         <div class="data-before-trigger"></div>
         <div class="content">
@@ -3785,7 +3785,7 @@ block styles %}
                 },
             });
         }
-        if(userType == "admin" || userType == "superuser" || userType == "root") {
+        if(userType == "superuser" || userType == "root") {
             $.ajax({
                 url: "/get_timeout",
                 method: "GET",
@@ -5356,7 +5356,7 @@ block styles %}
                         console.error("Error fetching data:", error);
                     },
                 });
-            }else if(userType === "admin" || userType === "root"){
+            }else if(userType === "root"){
                 combined_data = {
                     leakage_sensor_1_switch: leakage_sensor_1_switch,
                     leakage_sensor_2_switch: leakage_sensor_2_switch,
