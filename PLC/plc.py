@@ -5678,7 +5678,7 @@ def control():
                 print(f"set output data error: {e}")
 
             ### 計算pump runtime
-            if inv["inv1"]:
+            if (raw_485_data["Inv1_Freq"] / 200) > 25:
                 pump1_run_current_time = time.time()
 
                 if pump1_run_current_time - pump1_run_last_min >= 60:
@@ -5703,7 +5703,9 @@ def control():
             else:
                 pump1_run_last_min = time.time()
 
-            if inv["inv2"]:
+            # if inv["inv2"]:
+            if (raw_485_data["Inv2_Freq"] / 200) > 25:
+                
                 pump2_run_current_time = time.time()
 
                 if pump2_run_current_time - pump2_run_last_min >= 60:
@@ -5728,7 +5730,9 @@ def control():
             else:
                 pump2_run_last_min = time.time()
 
-            if inv["inv3"]:
+            # if inv["inv3"]:
+            if (raw_485_data["Inv3_Freq"] / 200) > 25:
+            
                 pump3_run_current_time = time.time()
 
                 if pump3_run_current_time - pump3_run_last_min >= 60:
@@ -5962,7 +5966,7 @@ def control():
                 fan8_run_last_min = time.time()
 
             ### 計算 filter runtime
-            if inv["inv1"] or inv["inv2"] or inv["inv3"]:
+            if (raw_485_data["Inv1_Freq"] / 200) > 25 or (raw_485_data["Inv2_Freq"] / 200) > 25 or (raw_485_data["Inv3_Freq"] / 200) > 25:
                 filter_run_current_time = time.time()
 
                 if filter_run_current_time - filter_run_last_min >= 60:

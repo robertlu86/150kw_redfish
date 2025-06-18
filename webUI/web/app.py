@@ -6389,6 +6389,10 @@ def read_version():
 
         
     plc_version = sensorData["plc_version"]
+    FW_Info_Version["PLC"] = plc_version
+    # 寫回 fw_info_version.json
+    with open(f"{web_path}/fw_info_version.json", "w") as file2:
+        json.dump(FW_Info_Version, file2, indent=4)
     
     # return jsonify({"FW_Info": FW_Info, "plc_version": plc_version})
     return jsonify({"FW_Info": FW_Info,"FW_Info_Version": FW_Info_Version ,"plc_version": plc_version})
