@@ -23,7 +23,7 @@ UpdateService_data = {
     },
     "Actions": {
         "#UpdateService.SimpleUpdate": {
-            "target": "/redfish/v1/UpdateService/Actions/UpdateCdu.SimpleUpdate",
+            "target": "/redfish/v1/UpdateService/Actions/UpdateService.SimpleUpdate",
             "@Redfish.ActionInfo": "/redfish/v1/UpdateService/SimpleUpdateActionInfo"
         }
     },
@@ -56,10 +56,10 @@ WebInterface_data = {
     "Version": "ok",
     "SoftwareId": "WEB-INTERFACE",
     "Oem": {
-        "supermicro": {
-            "@odata.type": "#SMC.WebInterface.v1_0_0.WebInterface",
-            "Redfish": "1.0.0",
-        }
+        # "supermicro": {
+        #     "@odata.type": "#SMC.supermicro.Redfish",
+        #     "Redfish": "N/A",
+        # }
     }
 }
 
@@ -98,12 +98,12 @@ class FirmwareInventory(Resource):
 class FirmwareInventoryWebInterface(Resource):
     def get(self):
         release_date = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/display/version")["version"]["Release_Time"]
-        fmt = os.getenv("DATETIME_FORMAT") 
-        dt = datetime.strptime(release_date, "%Y-%m-%d %H:%M:%S")
-        release_date = dt.strftime(fmt)
-        WebInterface_data["ReleaseDate"] = release_date
+        # fmt = os.getenv("DATETIME_FORMAT") 
+        # dt = datetime.strptime(release_date, "%Y-%m-%d %H:%M:%S")
+        # release_date = dt.strftime(fmt)
+        WebInterface_data["ReleaseDate"] = release_date + "T"
         WebInterface_data["Version"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/display/version")["fw_info"]["WebUI"]
-        WebInterface_data["Oem"]["supermicro"]["Redfish"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/display/version")["version"]["Redfish_Server"]
+        # WebInterface_data["Oem"]["supermicro"]["Redfish"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/display/version")["version"]["Redfish_Server"]
         return WebInterface_data  
 
 from werkzeug.datastructures import FileStorage
@@ -126,7 +126,7 @@ class FirmwareInventoryControlUnit_1(Resource):
             "Name": "PLC version",
             "Manufacturer": "supermicro",
             # 更新日
-            "ReleaseDate": "2025-02-21T06:02:08Z", # TBD
+            # "ReleaseDate": "2025-02-21T06:02:08Z", # TBD
             # 是否可更新
             "Updateable": False,    
             "Version": load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/display/version")["version"]["PLC"],
@@ -142,20 +142,22 @@ class SimpleUpdateActionInfo(Resource):
         return {
           "@odata.context": "/redfish/v1/$metadata#ActionInfo.ActionInfo",
           "@odata.id": "/redfish/v1/UpdateService/SimpleUpdateActionInfo",
-          "@odata.type": "#ActionInfo.v1_4_0.ActionInfo",
+          "@odata.type": "#ActionInfo.v1_4_2.ActionInfo",
           "Id": "SimpleUpdateActionInfo",
+          "Description": "SimpleUpdate ActionInfo",
           "Name": "SimpleUpdate ActionInfo",
+          
           "Parameters": [
-            {"Name":"ImageURI",        "Required":True,  "DataType":"String"},
-            {"Name":"TransferProtocol","Required":False, "DataType":"String","AllowableValues":["HTTP","HTTPS","FTP"]},
-            {"Name":"Targets",         "Required":False, "DataType":"StringArray"},
-            {"Name":"UserName",        "Required":False, "DataType":"String"},
-            {"Name":"Password",        "Required":False, "DataType":"String"}
+            {"Name":"ImageURI",        "Required":True,  "DataType":"String"}, # 必填欄位
+            # {"Name":"TransferProtocol","Required":False, "DataType":"String","AllowableValues":["HTTP","HTTPS","FTP"]},
+            # {"Name":"Targets",         "Required":False, "DataType":"StringArray"},
+            # {"Name":"UserName",        "Required":False, "DataType":"String"},
+            # {"Name":"Password",        "Required":False, "DataType":"String"}
           ]
         }, 200
 
 
-@update_ns.route("/UpdateService/Actions/UpdateCdu.SimpleUpdate")
+@update_ns.route("/UpdateService/Actions/UpdateService.SimpleUpdate")
 class ActionsUpdateCduSimpleUpdate(Resource):
     @update_ns.expect(upload_parser) 
     @update_ns.doc(consumes=['multipart/form-data'])       
@@ -177,7 +179,7 @@ class ActionsUpdateCduSimpleUpdate(Resource):
                 # 下載成功後，準備檔案傳遞給內部 API
                 files = {"file": ("update.zip", zip_resp.content, "application/zip")}
                 r = requests.post(ORIGIN_UPLOAD_API, files=files, timeout=(10, None))
-                return "upload success, it will reboot", 200
+                return {"message": "Upload successful. System will reboot."}, 200
 
             except requests.RequestException as e:
                 return {"error": "Download or upload failed", "details": str(e)}, 502
@@ -187,7 +189,7 @@ class ActionsUpdateCduSimpleUpdate(Resource):
             try:
                 files = {"file": (file.filename, file.stream, file.mimetype)}
                 r = requests.post(ORIGIN_UPLOAD_API, files=files, timeout=(10, None))
-                return "upload success, it will reboot", 200
+                return {"message": "Upload successful. System will reboot."}, 200
             except requests.RequestException as e:
                 return {"error": "upload failed", "details": str(e)}, 502
 

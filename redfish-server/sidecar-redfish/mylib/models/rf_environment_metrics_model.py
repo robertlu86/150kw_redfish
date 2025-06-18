@@ -42,7 +42,7 @@ class RfEnvironmentMetricsModel(RfResourceBaseModel):
     # 絕對濕度（克／立方米)
     AbsoluteHumidity: Optional[dict] = Field(default={
         "DataSourceUri": "/redfish/v1/Chassis/1/Sensors/AbsoluteHumidity",
-        "Reading": "Null"
+        "Reading": None
     })
 
     EnergykWh: Optional[dict] = Field(default={

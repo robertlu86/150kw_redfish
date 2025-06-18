@@ -775,7 +775,7 @@ def test_chassis_Pumps_patch_api(client, basic_auth_header, testcase):
                 client, 
                 uri=endpoint, 
                 basic_auth_header=basic_auth_header,
-                params={ "judge_interval": 1 }
+                params={ "judge_sampling_interval": 1 }
             )
 
         judge_target_value = 0
@@ -916,7 +916,7 @@ def test_chassis_AutoMode_patch_api(client, basic_auth_header, testcase):
                 client, 
                 uri=endpoint, 
                 basic_auth_header=basic_auth_header,
-                params={ "judge_interval": 1 }
+                params={ "judge_sampling_interval": 1 }
             )
         judge_result = judge_policy.judge(target_value)
         judge_result_zero = judge_policy.judge_by_reading_values(0, judge_result['reading_values'])

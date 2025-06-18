@@ -91,7 +91,7 @@ Chassis_data_1 = {
             "LeakDetection": {"@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/LeakDetection"},
             "Pumps": {"@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Pumps"},
             "PrimaryCoolantConnectors": {"@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/PrimaryCoolantConnectors"},
-            "Reservoirs": {"@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Reservoirs"},
+            # "Reservoirs": {"@odata.id": "/redfish/v1/ThermalEquipment/CDUs/1/Reservoirs"},
             "Main MC": {
                 "State":True
             }
@@ -1542,6 +1542,9 @@ Operation_patch = Chassis_ns.model('Operation', {
 @Chassis_ns.route("/Chassis/<chassis_id>/Controls/Oem/Supermicro/Operation")
 class Operation(MyBaseChassis):
     # @requires_auth
+    def get(self, chassis_id):
+        return RfChassisService().get_Oem_Spuermicro_Operation(chassis_id)
+    
     @Chassis_ns.expect(Operation_patch, validate=True)
     def patch(self, chassis_id):
         body = request.get_json(force=True)

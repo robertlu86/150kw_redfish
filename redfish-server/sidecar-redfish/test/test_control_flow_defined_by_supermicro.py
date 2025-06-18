@@ -16,8 +16,10 @@ from mylib.adapters.sensor_api_adapter import SensorAPIAdapter
 from conftest import TestcaseFinder
 from reading_judger import ReadingJudgerPolicy1, ReadingJudgerPolicy2, ReadingJudgerPolicy3
 from pydantic import BaseModel
+from mylib.utils.JsonUtil import JsonUtil
 
 cdu_id = 1
+chassis_id = 1
 
 # class PatchControlTestCase(BaseModel):
 #     endpoint: str
@@ -42,24 +44,52 @@ endpoint_ThermalSubsystem_Fans = f'/redfish/v1/Chassis/{cdu_id}/ThermalSubsystem
 endpoint_Control_Oem_Supermicro_Operation = f'/redfish/v1/Chassis/{cdu_id}/Controls/Oem/Supermicro/Operation'
 
 
+"""
+初始化設定
+@note pump要先設定ON，否則即使有設定 SetPoint 值，Reading值仍為0
+@note fan只要SetPoint有值，就會運轉
+"""
+beforehand_testcases = [
+    {
+        "method": "PATCH",
+        "endpoint": f'/redfish/v1/Chassis/1/Controls/Oem/Supermicro/Operation',
+        "get_endpoint": f'/redfish/v1/ThermalEquipment/CDUs/{cdu_id}',
+        "payload": {
+            "ControlMode": "Manual",
+            "Pump1Switch": True,
+            "Pump2Switch": True,
+            "Pump3Switch": True
+        },
+        "get.endpoint": f'/redfish/v1/Chassis/{chassis_id}/Controls',
+        "get.assert_cases": [
+            {"payload.key": "Pump1Switch", "response.key": "Oem.Supermicro.Pump1Switch"},
+            {"payload.key": "Pump2Switch", "response.key": "Oem.Supermicro.Pump2Switch"},
+            {"payload.key": "Pump3Switch", "response.key": "Oem.Supermicro.Pump3Switch"}
+        ],
+        "check_sensor.required": False
+    },
+]
 
 """
 Supermicro指定的control測項
 @see https://docs.google.com/spreadsheets/d/17wUQT6gknXt-3O08U7qBTuJxTU0cLX-X/edit?gid=156057379#gid=156057379
 """
-supermicro_test_cases = [
+supermicro_defined_test_cases_ControlMode = [
     {
-        "method": "PATCH",
+        "method": "POST",
         "endpoint": f'/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/Actions/CoolingUnit.SetMode',
-        "get_endpoint": f'/redfish/v1/ThermalEquipment/CDUs/{cdu_id}',
         "payload": {
             "Mode": "Disabled"
-        }
+        },
+        "get.endpoint": f'/redfish/v1/Chassis/{chassis_id}/Controls', # 使用get方法呼叫該endpoint
+        "get.assert_cases": [
+            {"payload.key": "Mode", "response.key": "Oem.Supermicro.ControlMode"}, # 使用get方法的response的field_name
+        ],
+        "check_sensor.required": False
     },
     {
         "method": "PATCH",
         "endpoint": f'/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/PrimaryCoolantConnectors/1',
-        "get_endpoint": f'/redfish/v1/ThermalEquipment/CDUs/{cdu_id}',
         "payload": {
             "SupplyTemperatureControlCelsius": {
                 "SetPoint": 30,
@@ -69,12 +99,17 @@ supermicro_test_cases = [
                 "SetPoint": 50,
                 "ControlMode": "Automatic"
             }
-        }
+        },
+        "get.endpoint": f'/redfish/v1/Chassis/{chassis_id}/Controls',
+        "get.assert_cases": [
+            {"payload.key": "SupplyTemperatureControlCelsius.SetPoint", "response.key": "Oem.Supermicro.TargetTemperature"},
+            {"payload.key": "DeltaPressureControlkPa.SetPoint", "response.key": "Oem.Supermicro.TargetPressure"}, 
+        ],
+        "check_sensor.required": False
     },
     {
         "method": "PATCH",
         "endpoint": f'/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/PrimaryCoolantConnectors/1',
-        "get_endpoint": f'/redfish/v1/ThermalEquipment/CDUs/{cdu_id}',
         "payload": {
             "SupplyTemperatureControlCelsius": {
                 "SetPoint": 35,
@@ -84,33 +119,56 @@ supermicro_test_cases = [
                 "SetPoint": 70,
                 "ControlMode": "Automatic"
             }
-        }
+        },
+        "get.endpoint": f'/redfish/v1/Chassis/{chassis_id}/Controls',
+        "get.assert_cases": [
+            {"payload.key": "SupplyTemperatureControlCelsius.SetPoint", "response.key": "Oem.Supermicro.TargetTemperature"},
+            {"payload.key": "DeltaPressureControlkPa.SetPoint", "response.key": "Oem.Supermicro.TargetPressure"},
+        ],
+        "check_sensor.required": False
     },
     {
-        "method": "PATCH",
+        "method": "POST",
         "endpoint": f'/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/Actions/CoolingUnit.SetMode',
         "get_endpoint": f'/redfish/v1/ThermalEquipment/CDUs/{cdu_id}',
         "payload": {
             "Mode": "Disabled"
-        }
+        },
+        "get.endpoint": f'/redfish/v1/Chassis/{chassis_id}/Controls', 
+        "get.assert_cases": [
+            {"payload.key": "Mode", "response.key": "Oem.Supermicro.ControlMode"},
+        ],
+        "check_sensor.required": False
     },
     {
-        "method": "PATCH",
+        "method": "POST",
         "endpoint": f'/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/Actions/CoolingUnit.SetMode',
         "get_endpoint": f'/redfish/v1/ThermalEquipment/CDUs/{cdu_id}',
         "payload": {
             "Mode": "Enabled"
-        }
+        },
+        "get.endpoint": f'/redfish/v1/Chassis/{chassis_id}/Controls', 
+        "get.assert_cases": [
+            {"payload.key": "Mode", "response.key": "Oem.Supermicro.ControlMode"},
+        ],
+        "check_sensor.required": False
     },
     {
-        "method": "PATCH",
+        "method": "POST",
         "endpoint": f'/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/Actions/CoolingUnit.SetMode',
         "get_endpoint": f'/redfish/v1/ThermalEquipment/CDUs/{cdu_id}',
         "payload": {
             "Mode": "Disabled"
-        }
+        },
+        "get.endpoint": f'/redfish/v1/Chassis/{chassis_id}/Controls', 
+        "get.assert_cases": [
+            {"payload.key": "Mode", "response.key": "Oem.Supermicro.ControlMode"},
+        ],
+        "check_sensor.required": False
     },
-] + [
+]
+
+supermicro_defined_test_cases_ManualSetPoint = [
     {
         "method": "PATCH",
         "endpoint": f'/redfish/v1/Chassis/1/ThermalSubsystem/Fans/{sn}',
@@ -120,7 +178,14 @@ supermicro_test_cases = [
                 "SetPoint": 50 - 10*(sn % 2),
                 "ControlMode": "Manual"
             }
-        }
+        },
+        "get.endpoint": f'/redfish/v1/Chassis/{chassis_id}/Controls',
+        "get.assert_cases": [
+            {"payload.key": "SpeedControlPercent.SetPoint", "response.key": "Oem.Supermicro.FanSetPoint"},
+        ],
+        "check_sensor.required": True,
+        "check_sensor.endpoint": f'/redfish/v1/Chassis/{chassis_id}/Sensors/Fan{sn}',
+        "check_sensor.key": "Reading"
     }
     for sn in range(1, fan_cnt + 1)
 ] + [
@@ -133,7 +198,14 @@ supermicro_test_cases = [
                 "SetPoint": 50 - 20*(sn % 2),
                 "ControlMode": "Manual"
             }
-        }
+        },
+        "get.endpoint": f'/redfish/v1/Chassis/{chassis_id}/Controls',
+        "get.assert_cases": [
+            {"payload.key": "SpeedControlPercent.SetPoint", "response.key": "Oem.Supermicro.PumpSetPoint"},
+        ],
+        "check_sensor.required": True,
+        "check_sensor.endpoint": f'/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/Pumps/{sn}',
+        "check_sensor.key": "PumpSpeedPercent.Reading"
     }
     for sn in range(1, pump_cnt + 1)
 ] + [
@@ -146,7 +218,14 @@ supermicro_test_cases = [
                 "SetPoint": 80 - 20*(sn % 2),
                 "ControlMode": "Manual"
             }
-        }
+        },
+        "get.endpoint": f'/redfish/v1/Chassis/{chassis_id}/Controls',
+        "get.assert_cases": [
+            {"payload.key": "SpeedControlPercent.SetPoint", "response.key": "Oem.Supermicro.FanSetPoint"},
+        ],
+        "check_sensor.required": True,
+        "check_sensor.endpoint": f'/redfish/v1/Chassis/{chassis_id}/Sensors/Fan{sn}',
+        "check_sensor.key": "Reading"
     }
     for sn in range(1, fan_cnt + 1)
 ] + [
@@ -159,10 +238,19 @@ supermicro_test_cases = [
                 "SetPoint": 80 - 20*(sn % 2),
                 "ControlMode": "Manual"
             }
-        }
+        },
+        "get.endpoint": f'/redfish/v1/Chassis/{chassis_id}/Controls',
+        "get.assert_cases": [
+            {"payload.key": "SpeedControlPercent.SetPoint", "response.key": "Oem.Supermicro.PumpSetPoint"},
+        ],
+        "check_sensor.required": True,
+        "check_sensor.endpoint": f'/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/Pumps/{sn}',
+        "check_sensor.key": "PumpSpeedPercent.Reading"
     }
     for sn in range(1, pump_cnt + 1)
-] + [
+]
+
+supermicro_defined_test_cases__OemSupermicroOperation = [
     {
         "method": "PATCH",
         "endpoint": f'/redfish/v1/Chassis/1/Controls/Oem/Supermicro/Operation',
@@ -172,7 +260,14 @@ supermicro_test_cases = [
             "Pump1Switch": True,
             "Pump2Switch": True,
             "Pump3Switch": True
-        }
+        },
+        "get.endpoint": f'/redfish/v1/Chassis/{chassis_id}/Controls',
+        "get.assert_cases": [
+            {"payload.key": "Pump1Switch", "response.key": "Oem.Supermicro.Pump1Switch"},
+            {"payload.key": "Pump2Switch", "response.key": "Oem.Supermicro.Pump2Switch"},
+            {"payload.key": "Pump3Switch", "response.key": "Oem.Supermicro.Pump3Switch"}
+        ],
+        "check_sensor.required": False
     },
     {
         "method": "PATCH",
@@ -183,7 +278,14 @@ supermicro_test_cases = [
             "Pump1Switch": True,
             "Pump2Switch": True,
             "Pump3Switch": False
-        }
+        },
+        "get.endpoint": f'/redfish/v1/Chassis/{chassis_id}/Controls',
+        "get.assert_cases": [
+            {"payload.key": "Pump1Switch", "response.key": "Oem.Supermicro.Pump1Switch"},
+            {"payload.key": "Pump2Switch", "response.key": "Oem.Supermicro.Pump2Switch"},
+            {"payload.key": "Pump3Switch", "response.key": "Oem.Supermicro.Pump3Switch"}
+        ],
+        "check_sensor.required": False
     },
     {
         "method": "PATCH",
@@ -194,7 +296,14 @@ supermicro_test_cases = [
             "Pump1Switch": True,
             "Pump2Switch": False,
             "Pump3Switch": False
-        }
+        },
+        "get.endpoint": f'/redfish/v1/Chassis/{chassis_id}/Controls',
+        "get.assert_cases": [
+            {"payload.key": "Pump1Switch", "response.key": "Oem.Supermicro.Pump1Switch"},
+            {"payload.key": "Pump2Switch", "response.key": "Oem.Supermicro.Pump2Switch"},
+            {"payload.key": "Pump3Switch", "response.key": "Oem.Supermicro.Pump3Switch"}
+        ],
+        "check_sensor.required": False
     },
     {
         "method": "PATCH",
@@ -205,11 +314,21 @@ supermicro_test_cases = [
             "Pump1Switch": False,
             "Pump2Switch": False,
             "Pump3Switch": False
-        }
+        },
+        "get.endpoint": f'/redfish/v1/Chassis/{chassis_id}/Controls',
+        "get.assert_cases": [
+            {"payload.key": "Pump1Switch", "response.key": "Oem.Supermicro.Pump1Switch"},
+            {"payload.key": "Pump2Switch", "response.key": "Oem.Supermicro.Pump2Switch"},
+            {"payload.key": "Pump3Switch", "response.key": "Oem.Supermicro.Pump3Switch"}
+        ],
+        "check_sensor.required": False
     },
 ]
 
-
+supermicro_defined_test_cases = beforehand_testcases
+supermicro_defined_test_cases += supermicro_defined_test_cases_ControlMode
+supermicro_defined_test_cases += supermicro_defined_test_cases_ManualSetPoint
+supermicro_defined_test_cases += supermicro_defined_test_cases__OemSupermicroOperation
 
 
 
@@ -236,62 +355,85 @@ supermicro_test_cases = [
 # @note pump同上。
 ##                                                                                                       
 
-@pytest.mark.parametrize('testcase', supermicro_test_cases)
-def test_supermicro_test_cases__only_patch(client, basic_auth_header, testcase):
-    """[TestCase] Supermicro test cases
+@pytest.mark.parametrize('testcase', supermicro_defined_test_cases)
+def test_supermicro_defined_test_cases__only_patch(client, basic_auth_header, testcase):
+    """[TestCase] Supermicro defined test cases only patch
     """
     time.sleep(0.5)
 
-    index = supermicro_test_cases.index(testcase) + 1
-    print(f"Running test case {index}/{len(supermicro_test_cases)}: {testcase}")
+    index = supermicro_defined_test_cases.index(testcase) + 1
+    print(f"## Running test case {index}/{len(supermicro_defined_test_cases)}: {testcase}")
 
     payload = testcase['payload']
     # 更新設定值
     print(f"## Update target value:")
-    print(f"Http method: {testcase['method']}")
-    print(f"Endpoint: {testcase['endpoint']}")
+    print(f"{testcase['method']} {testcase['endpoint']}")
     print(f"Payload: {payload}")
-    response = client.patch(testcase['endpoint'], headers=basic_auth_header, json=payload)
+    # response = client.patch(testcase['endpoint'], headers=basic_auth_header, json=payload)
+    http_method = getattr(client, testcase['method'].lower())
+    response = http_method(testcase['endpoint'], headers=basic_auth_header, json=payload)
     print(f"Response json: {json.dumps(response.json, indent=2, ensure_ascii=False)}")
     assert response.status_code == 200
-    print(f"PASS: PATCH {testcase['endpoint']} with payload {payload} is expected to return 200")
+    print(f"PASS: {testcase['method']} {testcase['endpoint']} with payload {payload} is expected to return 200")
 
 
 
-@pytest.mark.parametrize('testcase', supermicro_test_cases)
-def test_supermicro_test_cases_patch_and_get(client, basic_auth_header, testcase):
-    """[TestCase] Supermicro test cases
+@pytest.mark.parametrize('testcase', supermicro_defined_test_cases)
+def test_supermicro_defined_test_cases__patch_and_get(client, basic_auth_header, testcase):
+    """[TestCase] Supermicro defined test cases patch and get
     """
+    index = supermicro_defined_test_cases.index(testcase) + 1
+    print(f"## Running test case {index}/{len(supermicro_defined_test_cases)}: {testcase}")
+
     payload = testcase['payload']
     # 更新設定值
     print(f"## Update target value:")
-    print(f"Http method: {testcase['method']}")
-    print(f"Endpoint: {testcase['endpoint']}")
+    print(f"{testcase['method']} {testcase['endpoint']}")
     print(f"Payload: {payload}")
-    response = client.patch(testcase['endpoint'], headers=basic_auth_header, json=payload)
+    # response = client.patch(testcase['endpoint'], headers=basic_auth_header, json=payload)
+    http_method = getattr(client, testcase['method'].lower())
+    response = http_method(testcase['endpoint'], headers=basic_auth_header, json=payload)
     print(f"Response json: {json.dumps(response.json, indent=2, ensure_ascii=False)}")
     assert response.status_code == 200
-    print(f"PASS: PATCH {testcase['endpoint']} with payload {payload} is expected to return 200")
+    print(f"PASS: {testcase['method']} {testcase['endpoint']} with payload {payload} is expected to return 200")
 
 
     # 取得設定值 (存於PLC的register)
-    target_value = payload['FanSetPoint']
+    target_value = None #JsonUtil.get_nested_value(payload, payload['get.assert_cases'][0]['payload.key']) # one of target_values, just for print message
     wating_seconds = 1
+    assert_field_success_cnt = 0
+    assert_field_fail_cnt = 0
     print(f"## Waiting for PLC to update target value: {target_value}")
     while wating_seconds < 30:
+        assert_field_success_cnt = 0
+        assert_field_fail_cnt = 0
+
         print(f"Wait {wating_seconds} seconds...")
         time.sleep(wating_seconds)
         wating_seconds = wating_seconds * 2
-        print(f"Http method: GET")
-        print(f"Endpoint: {testcase['get_endpoint']}")
-        response = client.get(testcase['get_endpoint'], headers=basic_auth_header)
+        print(f"GET {testcase['get.endpoint']}")
+        response = client.get(testcase['get.endpoint'], headers=basic_auth_header)
         resp_json = response.json   
         print(f"Response json: {json.dumps(resp_json, indent=2, ensure_ascii=False)}")
-        if resp_json['Oem']['Supermicro']['FanSetPoint'] == target_value:
+        
+        for assert_case in testcase['get.assert_cases']:
+            target_value = JsonUtil.get_nested_value(payload, assert_case['payload.key'])
+            resp_value = JsonUtil.get_nested_value(resp_json, assert_case['response.key'])
+            if resp_value != target_value:
+                assert_field_fail_cnt += 1
+                print(f"... resp_value({resp_value}) != target_value({target_value}). Continue to wait ...")
+                break
+            assert_field_success_cnt += 1
+        
+        if assert_field_success_cnt == len(testcase['get.assert_cases']):
+            print(f"Target value in PLC is updated successfully.")
             break
-    assert resp_json['Oem']['Supermicro']['FanSetPoint'] == target_value
-    print(f"PASS: GET {testcase['get_endpoint']} is expected resp_json.Oem.Supermicro.FanSetPoint == target_value ({target_value})")
     
+    assert assert_field_success_cnt == len(testcase['get.assert_cases'])
+    print(f"PASS: GET {testcase['get.endpoint']} is expected resp_json.{assert_case['response.key']} == target_value ({target_value})")
+    
+    if not testcase['check_sensor.required']:
+        return 
     
     # 取得sensor實際值 (注意，實際值不會這麼快就反應出來，通常要等待幾秒)
     # Endpoint: f'/redfish/v1/Chassis/{chassis_id}/Sensors/Fan{fan_id}'
@@ -301,27 +443,30 @@ def test_supermicro_test_cases_patch_and_get(client, basic_auth_header, testcase
     #     "ReadingUnits": "rpm",
     # }
     print(f"## Wait for fan sensor value reaching the target value: {target_value}")
-    time.sleep(10)
+    # time.sleep(10)
     print(f"## Check Sensor Value:")
     for fan_id in range(1, fan_cnt + 1):
         try:
-            endpoint = f'/redfish/v1/Chassis/{chassis_id}/Sensors/Fan{fan_id}'
+            endpoint = testcase['check_sensor.endpoint']
             response = client.get(endpoint, headers=basic_auth_header)
             resp_json = response.json   
             # m = RfSensorFanExcerpt(**resp_json['Reading'])
+            print(f"GET {endpoint}")
             print(f"Response json: {json.dumps(resp_json, indent=2, ensure_ascii=False)}")
-            sensor_value = resp_json['Reading']
+            sensor_value = JsonUtil.get_nested_value(resp_json, testcase['check_sensor.key'])
 
-            if payload["FanSetPoint"] > 1:
-                judge_result = ReadingJudgerPolicy3(client, uri=endpoint, basic_auth_header=basic_auth_header).judge(target_value)
-                print(f"Judge result: {judge_result}")
-                assert judge_result['is_judge_success'] == True
-                print(f"PASS: Judge reading value from policy2 is judged to {judge_result['is_judge_success']}.")
-            else:
-                judge_result = ReadingJudgerPolicy3(client, uri=endpoint, basic_auth_header=basic_auth_header).judge(0)
-                print(f"Judge result: {judge_result}")
-                assert judge_result['is_judge_success'] == True
-                print(f"PASS: Judge reading value from policy2 is judged to be 0.")
+            judge_result = ReadingJudgerPolicy3(
+                    client, 
+                    uri=endpoint, 
+                    basic_auth_header=basic_auth_header,
+                    params={ 
+                        "judge_sampling_interval": 3, 
+                        "judge_sampling_cnt": 40, 
+                        "is_dry_run": False }
+                ).judge(target_value)
+            print(f"Judge result: {judge_result}")
+            assert judge_result['is_judge_success'] == True
+            print(f"PASS: Judge reading value from policy3 is judged to {judge_result['is_judge_success']}.")
         
         except Exception as e:
             print(f"Error: {e}")
