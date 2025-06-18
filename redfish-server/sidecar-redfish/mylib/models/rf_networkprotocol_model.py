@@ -122,14 +122,14 @@ class RfNetworkProtocolModel(RfResourceBaseModel):
             ProtocolEnabled = st["DHCPEnabled"],
             Port = st["DHCPPort"] 
         )
-        self.Oem = {
-            "Supermicro": {
-                "Snmp":{
-                    "@odata.id": "/redfish/v1/Managers/CDU/NetworkProtocol/Oem/Supermicro/SNMPServers",
-                    "@odata.type": "#Supermicro.SMCManagerNetworkProtocolSnmp",              
-                }
-            }
-        }
+        # self.Oem = {
+        #     "Supermicro": {
+        #         "Snmp":{
+        #             "@odata.id": "/redfish/v1/Managers/CDU/NetworkProtocol/Oem/Supermicro/SNMPServers",
+        #             "@odata.type": "#Supermicro.SMCManagerNetworkProtocolSnmp",              
+        #         }
+        #     }
+        # }
 
         
         

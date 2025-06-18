@@ -266,13 +266,13 @@ managers_cdu_data =    {
                 "GracefulRestart"
             ]
         },
-        "#Manager.Shutdown": {
-            "target": "/redfish/v1/Managers/CDU/Actions/Manager.Shutdown",
-            "ShutdownType@Redfish.AllowableValues": [
-                "ForceRestart",
-                "GracefulRestart"
-            ]
-        },
+        # "#Manager.Shutdown": {
+        #     "target": "/redfish/v1/Managers/CDU/Actions/Manager.Shutdown",
+        #     "ShutdownType@Redfish.AllowableValues": [
+        #         "ForceRestart",
+        #         "GracefulRestart"
+        #     ]
+        # },
         "Oem": {}
     },
     "Oem": {
@@ -339,15 +339,16 @@ ShutdownPostModel = managers_ns.model('ShutdownPostModel', {
 #====================================================== 
 # Managers
 #====================================================== 
-@managers_ns.route("/Managers")
+@managers_ns.route("/Managers") # Get
 class Managers(Resource):
     # # @requires_auth
     @managers_ns.doc("managers")
     def get(self):
         
         return managers_data
+    
 import datetime       
-@managers_ns.route("/Managers/CDU")
+@managers_ns.route("/Managers/CDU") # Get/Patch
 class ManagersCDU(Resource):
     # # @requires_auth
     @managers_ns.doc("managers_cdu")
@@ -365,20 +366,23 @@ class ManagersCDU(Resource):
         rep["Status"] = {"State": "Enabled", "Health": heath}
         rep["UUID"] = get_system_uuid()
         return rep, 200
-
+#====================================================== 
+# Actions
+#======================================================
 @managers_ns.route("/Managers/CDU/Actions/Manager.ResetToDefaults")
+# Post
 class ManagersCDUActionsResetToDefaults(Resource):
     """Reset to defaults
     (回復到預設值)
     """
     @managers_ns.expect(ResetToDefaultsPostModel, validate=True)
-    def patch(self):
+    def post(self):
         req_json = request.json or {}
         reset_type = req_json.get("ResetType")
         resp = RfManagersService().reset_to_defaults(reset_type)
         return resp
 
-@managers_ns.route("/Managers/CDU/Actions/Manager.Reset")
+@managers_ns.route("/Managers/CDU/Actions/Manager.Reset") # Post
 class ManagersCDUActionsReset(Resource):
     """Reset
     (重開機)
@@ -390,17 +394,17 @@ class ManagersCDUActionsReset(Resource):
         resp = RfManagersService().reset(reset_type)
         return resp
 
-@managers_ns.route("/Managers/CDU/Actions/Manager.Shutdown")
-class ManagersCDUActionsShutdown(Resource):
-    """Shutdown
-    (關機)
-    """
-    @managers_ns.expect(ShutdownPostModel, validate=True)
-    def post(self):
-        req_json = request.json or {}
-        reset_type = req_json.get("ResetType")
-        resp = RfManagersService().shutdown(reset_type)
-        return resp
+# @managers_ns.route("/Managers/CDU/Actions/Manager.Shutdown")
+# class ManagersCDUActionsShutdown(Resource):
+#     """Shutdown
+#     (關機)
+#     """
+#     @managers_ns.expect(ShutdownPostModel, validate=True)
+#     def post(self):
+#         req_json = request.json or {}
+#         reset_type = req_json.get("ResetType")
+#         resp = RfManagersService().shutdown(reset_type)
+#         return resp
 
 #====================================================== 
 # NetworkProtocol
@@ -412,39 +416,18 @@ Host_name = managers_ns.model('HttpProtocolPatch', {
         example="CDU-200KW"
     ),
 })
-http_patch = managers_ns.model('HttpProtocolPatch', {
-    'ProtocolEnabled': fields.Boolean(
-        required=True,
-        description='啟用或停用 HTTP (80/TCP)',
-        example=True
-    ),
-    'Port': fields.Integer(
-        required=False,
-        description='HTTP 要監聽的埠號 (1–65535)',
-        example=8080
-    )
-})
 
 # HTTPS 更新時可傳 ProtocolEnabled + Port
-https_patch = managers_ns.model('HttpsProtocolPatch', {
+protocol_commom_model = managers_ns.model('ProtocolCommomModel', {
     'ProtocolEnabled': fields.Boolean(
         required=True,
-        description='啟用或停用 HTTPS (443/TCP)',
+        description='啟用或停用該服務',
         example=False
     ),
     'Port': fields.Integer(
         required=False,
-        description='HTTPS 要監聽的埠號 (1–65535)',
-        example=8443
-    )
-})
-
-# SSH 更新時只需 ProtocolEnabled
-ssh_patch = managers_ns.model('SshProtocolPatch', {
-    'ProtocolEnabled': fields.Boolean(
-        required=True,
-        description='啟用或停用 SSH (22/TCP)',
-        example=True
+        description='指定Port',
+        example=162
     )
 })
 
@@ -452,8 +435,18 @@ ssh_patch = managers_ns.model('SshProtocolPatch', {
 snmp_patch = managers_ns.model('SnmpProtocolPatch', {
     'ProtocolEnabled': fields.Boolean(
         required=True,
-        description='啟用或停用 SNMP (161/UDP)',
+        description='啟用或停用該服務',
         example=False
+    ),
+    'Port': fields.Integer(
+        required=False,
+        description='指定Get Port',
+        example=161
+    ),
+    'TrapPort': fields.Integer(
+        required=False,
+        description='指定Trap Port',
+        example=162
     )
 })
 
@@ -464,6 +457,11 @@ ntp_patch = managers_ns.model('NtpProtocolPatch', {
         description='啟用或停用 NTP (123/UDP)',
         example=True
     ),
+    'Port': fields.Integer(
+        required=False,
+        description='指定Port',
+        example=123
+    ),
     'NTPServers': fields.List(
         fields.String,
         required=False,
@@ -472,59 +470,18 @@ ntp_patch = managers_ns.model('NtpProtocolPatch', {
     )
 })
 
-# DHCP 更新時只需 ProtocolEnabled
-dhcp_patch = managers_ns.model('DhcpProtocolPatch', {
-    'ProtocolEnabled': fields.Boolean(
-        required=True,
-        description='啟用或停用 DHCP (UDP 67/68)',
-        example=False
-    )
-})
-
-# 2) 定義最上層的 NetworkProtocolPatch model，把上述所有 Nested 放進來
+# 定義最上層的 NetworkProtocolPatch model，把上述所有 Nested 放進來
 NetworkProtocolPatch = managers_ns.model('NetworkProtocolPatch', {
-    'HTTP':  fields.Nested(http_patch,  required=False, description='HTTP 協議設定'),
-    'HTTPS': fields.Nested(https_patch, required=False, description='HTTPS 協議設定'),
-    'SSH':   fields.Nested(ssh_patch,   required=False, description='SSH 協議設定'),
-    'SNMP':  fields.Nested(snmp_patch,  required=False, description='SNMP 協議設定'),
-    'NTP':   fields.Nested(ntp_patch,   required=False, description='NTP 協議設定'),
-    'DHCP':  fields.Nested(dhcp_patch,  required=False, description='DHCP 協議設定'),
+    # 'HTTP':  fields.Nested(http_patch,  required=False, description='HTTP setting'),
+    # 'HTTPS': fields.Nested(protocol_commom_model, required=False, description='HTTPS setting'),
+    # 'SSH':   fields.Nested(protocol_commom_model,   required=False, description='SSH setting'),
+    'SNMP':  fields.Nested(snmp_patch,  required=False, description='SNMP setting'),
+    # 'NTP':   fields.Nested(ntp_patch,   required=False, description='NTP setting'),
+    # 'DHCP':  fields.Nested(protocol_commom_model,  required=False, description='DHCP setting'),
 })
 
-SnmpPatch = managers_ns.model('SnmpPatch', {
-    'TrapIP': fields.String(
-        required=True,
-        description='IP address of the SNMP trap receiver',
-        example="127.0.0.1"
-    ),
-    # 'TrapPort': fields.Integer(
-    #     required=True,
-    #     description='Port of the SNMP trap receiver',
-    #     example=162
-    # ),
-    'Community': fields.String(
-        required=True,
-        description='SNMP community string',
-        example="public",
-        enum = ["public", "private"]  # 假設只允許這兩個社群字串
-    ),
-    # 'TrapFormat': fields.String(
-    #     required=True,
-    #     description='SNMP trap format',
-    #     example="v2c",
-    #     enum=["v2c"]
-    # ),
-    'Enabled': fields.Boolean(
-        required=True,
-        description='Enable or disable the SNMP trap',
-        example=True
-    )
-})
-
-
-@managers_ns.route("/Managers/CDU/NetworkProtocol")
+@managers_ns.route("/Managers/CDU/NetworkProtocol") # get/patch
 class ManagersCDUNetworkProtocol(Resource):
-
     @managers_ns.doc("managers_cdu_network_protocol_get")
     def get(self):
 
@@ -534,27 +491,10 @@ class ManagersCDUNetworkProtocol(Resource):
     @managers_ns.doc("managers_cdu_network_protocol_patch")
     # @requires_auth
     def patch(self):
-        body = request.json or {}
-        # 只驗其中一個欄位就夠 validator 用
-        ntp = body.get("NTP", {})
-        RfManagersService().NetworkProtocol_service_patch(ntp)
-            
-        return "", 200
-
-# @managers_ns.route("/Managers/CDU/NetworkProtocol/Oem/Supermicro/SNMPServers")
-# class ManagersCDUNetworkProtocolOemSupermicroSNMPServers(Resource):
-#     @managers_ns.doc("managers_cdu_network_protocol_oem_supermicro_snmpservers")
-#     # @requires_auth
-#     def get(self):
-#         return RfManagersService().NetworkProtocol_Snmp_get()
-    
-#     @managers_ns.expect(SnmpPatch)
-#     def post(self):
-#         body = request.json or {}
-#         # return RfManagersService().NetworkProtocol_Snmp_Patch(body)
-#         return RfManagersService().NetworkProtocol_Snmp_Post(body)
+        body = request.get_json(force=True)
+        return RfManagersService().NetworkProtocol_service_patch(body)
         
-@managers_ns.route("/Managers/CDU/NetworkProtocol/HTTPS/Certificates")
+@managers_ns.route("/Managers/CDU/NetworkProtocol/HTTPS/Certificates") # GET
 class ManagersCDUNetworkProtocolHTTPS(Resource):
     @managers_ns.doc("managers_cdu_network_protocol_https_certificates")
     # @requires_auth
@@ -574,7 +514,7 @@ class ManagersCDUNetworkProtocolHTTPS(Resource):
         }
         return network_Certificates_data
     
-@managers_ns.route("/Managers/CDU/NetworkProtocol/HTTPS/Certificates/<string:cert_id>")
+@managers_ns.route("/Managers/CDU/NetworkProtocol/HTTPS/Certificates/<string:cert_id>") # GET, DELETE 新增憑證要從/redfish/v1/CertificateService
 class ManagersCDUNetworkProtocolHTTPSCertificates(Resource):
     @managers_ns.doc("managers_cdu_network_protocol_https_certificates")
     # @requires_auth
