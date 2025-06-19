@@ -723,14 +723,34 @@ sensorData = {
     },
     "opMod": "Auto",
     "plc_version": "",
-    "temporary_data":{
-        "command_pressure":0,
-        "feedback_pressure":0,
-        "pressure_output":0,
-        "command_temperature":0,
-        "feedback_temperature":0,
-        "temperature_output":0,
-    }
+    "temporary_data": {
+        "command_pressure": 0,
+        "feedback_pressure": 0,
+        "pressure_output": 0,
+        "command_temperature": 0,
+        "feedback_temperature": 0,
+        "temperature_output": 0,
+    },
+    "fan_power": {
+        "Fan1": 0,
+        "Fan2": 0,
+        "Fan3": 0,
+        "Fan4": 0,
+        "Fan5": 0,
+        "Fan6": 0,
+        "Fan7": 0,
+        "Fan8": 0,
+    },
+    "fan_rpm": {
+        "Fan1": 0,
+        "Fan2": 0,
+        "Fan3": 0,
+        "Fan4": 0,
+        "Fan5": 0,
+        "Fan6": 0,
+        "Fan7": 0,
+        "Fan8": 0,
+    },
 }
 
 ctr_data = {
@@ -2186,6 +2206,29 @@ temporary_map = {
     "temperature_output":   "Temperature Output",
 }
 
+fan_status_map = {
+    "fan_power": {
+        "Fan1": "Fan1 Current Power(W)",
+        "Fan2": "Fan2 Current Power(W)",
+        "Fan3": "Fan3 Current Power(W)",
+        "Fan4": "Fan4 Current Power(W)",
+        "Fan5": "Fan5 Current Power(W)",
+        "Fan6": "Fan6 Current Power(W)",
+        "Fan7": "Fan7 Current Power(W)",
+        "Fan8": "Fan8 Current Power(W)",
+    },
+    "fan_rpm": {
+        "Fan1": "Fan1 Speed(RPM)",
+        "Fan2": "Fan2 Speed(RPM)",
+        "Fan3": "Fan3 Speed(RPM)",
+        "Fan4": "Fan4 Speed(RPM)",
+        "Fan5": "Fan5 Speed(RPM)",
+        "Fan6": "Fan6 Speed(RPM)",
+        "Fan7": "Fan7 Speed(RPM)",
+        "Fan8": "Fan8 Speed(RPM)",
+    },
+}
+
 logData = {
     "value": {
         "temp_clntSply": 0,
@@ -2245,6 +2288,26 @@ logData = {
         "command_temperature": 0,
         "feedback_temperature": 0,
         "temperature_output": 0,
+    },
+    "fan_power": {
+        "Fan1": 0,
+        "Fan2": 0,
+        "Fan3": 0,
+        "Fan4": 0,
+        "Fan5": 0,
+        "Fan6": 0,
+        "Fan7": 0,
+        "Fan8": 0,
+    },
+    "fan_rpm": {
+        "Fan1": 0,
+        "Fan2": 0,
+        "Fan3": 0,
+        "Fan4": 0,
+        "Fan5": 0,
+        "Fan6": 0,
+        "Fan7": 0,
+        "Fan8": 0,
     },
 }
 
@@ -2537,7 +2600,14 @@ def delete_old_logs(location, days_to_keep=1100):
 
 def write_sensor_log():
     try:
-        column_names = ["time"] + list(sensor_map.values()) + list(ctrl_map.values()) + list(temporary_map.values())
+        column_names = (
+            ["time"]
+            + list(sensor_map.values())
+            + list(ctrl_map.values())
+            + list(temporary_map.values())
+            + list(fan_status_map["fan_power"].values())
+            + list(fan_status_map["fan_rpm"].values())
+        )
         log_dir = f"{log_path}/logs/sensor"
         if not os.path.exists(log_dir):
             os.makedirs(log_dir)
@@ -2577,6 +2647,8 @@ def write_sensor_log():
                 + list(logData["value"].values())
                 + list(logData["setting"].values())
                 + list(logData["temporary_data"].values())
+                + list(logData["fan_power"].values())
+                + list(logData["fan_rpm"].values())
             )
     except Exception as e:
         journal_logger.info(f"write sensor log error: {e}")
@@ -4084,6 +4156,40 @@ def read_modbus_data():
                     sensorData["temporary_data"][keys_list[j]] = decoder.decode_32bit_float()
         except Exception as e:
             print(f"read temporary data error:{e}")
+        try:
+            with ModbusTcpClient(
+                host=modbus_host, port=modbus_port, unit=modbus_slave_id
+            ) as client:
+                value_reg = (len(sensorData["fan_power"].keys())) * 2
+                r = client.read_holding_registers(7016, value_reg, unit=modbus_slave_id)
+                keys_list = list(sensorData["fan_power"].keys())
+                for j, i in enumerate(range(0, value_reg, 2)):
+                    temp1 = [r.registers[i], r.registers[i + 1]]
+                    decoder = BinaryPayloadDecoder.fromRegisters(
+                        temp1, byteorder=Endian.Big, wordorder=Endian.Little
+                    )
+                    sensorData["fan_power"][keys_list[j]] = (
+                        decoder.decode_32bit_float()
+                    )
+        except Exception as e:
+            print(f"read fan power data error:{e}")
+            
+        try:
+            with ModbusTcpClient(
+                host=modbus_host, port=modbus_port, unit=modbus_slave_id
+            ) as client:
+                value_reg = (len(sensorData["fan_rpm"].keys())) * 2
+                r = client.read_holding_registers(7032, value_reg, unit=modbus_slave_id)
+                keys_list = list(sensorData["fan_rpm"].keys())
+                for j, i in enumerate(range(0, value_reg, 2)):
+                    temp1 = [r.registers[i], r.registers[i + 1]]
+                    decoder = BinaryPayloadDecoder.fromRegisters(
+                        temp1, byteorder=Endian.Big, wordorder=Endian.Little
+                    )
+                    sensorData["fan_rpm"][keys_list[j]] = decoder.decode_32bit_float()
+        except Exception as e:
+            print(f"read fan rpm data error:{e}")
+        
         # 臨時log結束
         try:
             with ModbusTcpClient(
@@ -4172,6 +4278,18 @@ def read_modbus_data():
                 for key in sensorData["temporary_data"]:
                     if key in logData["temporary_data"]:
                         logData["temporary_data"][key] = round(sensorData["temporary_data"][key], 1)
+                        
+                for key in sensorData["fan_power"]:
+                    if key in logData["fan_power"]:
+                        logData["fan_power"][key] = round(
+                            sensorData["fan_power"][key], 1
+                        )
+                        
+                for key in sensorData["fan_rpm"]:
+                    if key in logData["fan_rpm"]:
+                        logData["fan_rpm"][key] = round(
+                            sensorData["fan_rpm"][key], 1
+                        )
             except Exception as e:
                 print(f"write log error: {e}")
 
