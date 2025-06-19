@@ -7873,6 +7873,42 @@ def restoreFactorySettingAll():
             client.write_registers(303, [word2, word1])
     except Exception as e:
         print(f"set pump swap time error:{e}")
+        
+        
+    ### 15 reset auto mode temperature and pressure 
+    try:
+        with ModbusTcpClient(
+            host=modbus_host, port=modbus_port, unit=modbus_slave_id
+        ) as client:
+            temp1, temp2 = cvt_float_byte(35) ## 預設值35度C
+            prsr1, prsr2 = cvt_float_byte(30) ## 預設值30psi
+            
+             # Reset Auto Mode Temperature
+            client.write_registers(226, [temp2, temp1])
+            client.write_registers(993, [temp2, temp1])
+            
+            # Reset Auto Mode Pressure
+            client.write_registers(224, [prsr2, prsr1])  
+            client.write_registers(991, [prsr2, prsr1])
+            
+    except Exception as e:
+        print(f"reset auto mode temperature and pressure error:{e}")    
+    
+    ### 16 reset manual mode pump speed and fan speed
+    
+    try:
+        with ModbusTcpClient(
+            host=modbus_host, port=modbus_port, unit=modbus_slave_id
+        ) as client:
+            speed1, speed2 = cvt_float_byte(70)
+            client.write_registers(246, [speed2, speed1])  # Reset Manual Mode Pump Speed
+            
+            fan1, fan2 = cvt_float_byte(70)
+            
+            client.write_registers(470, [fan2, fan1])  # Reset Manual Mode Fan Speed             
+    except Exception as e:
+        print(f"reset manual mode pump and fan speed error:{e}")
+    
     ##### 最後一步, 重啟電腦
     # subprocess.run(
     #     ["sudo", "reboot"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
