@@ -527,7 +527,7 @@
         "average_voltage": 0.0,
         "apparent_power": 0.0
     },
-    "opMod": "Auto",
+    "opMod": "Stop",
     "plc_version": 0,
     "temporary_data": {
         "command_pressure": -0.25,

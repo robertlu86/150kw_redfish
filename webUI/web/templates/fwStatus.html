@@ -71,21 +71,14 @@ styles %}
         </div>
         <div class="row">
             <div class="col-4">
-                <p>Version</p>
+                <p>System Software</p>
             </div>
             <div class="col-4">
-                <p id="Version"></p>
+                <span id="Version"></span> &nbsp;&nbsp;(Release Date : <span id="Release_Time"></span>)
             </div>
         </div>
-        <div class="row">
-            <div class="col-4">
-                <p>Release Time</p>
-            </div>
-            <div class="col-4">
-                <p id="Release_Time"></p>
-            </div>
-        </div>
-        <hr />
+
+        <!-- <hr />
         <div class="row">
             <div class="col-4">
                 <p>WebUI</p>
@@ -133,10 +126,10 @@ styles %}
             <div class="col-4">
                 <p id="Modbus_Server"></p>
             </div>
-        </div>
+        </div> -->
         <div class="row">
             <div class="col-4">
-                <p>PLC</p>
+                <p>Control Firmware</p>
             </div>
             <div class="col-4">
                 <p id="PLC">231120</p>
@@ -162,13 +155,13 @@ styles %}
                 $("#PartNumber").text(json_data["PartNumber"]);
                 $("#SN").text(json_data["SN"]);
                 $("#Model").text(json_data["Model"]);
-                $("#WebUI").text(FW_Info_Version["WebUI"]);
+                // $("#WebUI").text(FW_Info_Version["WebUI"]);
                 $("#Release_Time").text(FW_Info_Version["Release_Time"]);
-                $("#SCC_API").text(FW_Info_Version["SCC_API"]);
-                $("#SNMP").text(FW_Info_Version["SNMP"]);
-                $("#Redfish_API").text(FW_Info_Version["Redfish_API"]);
-                $("#Redfish_Server").text(FW_Info_Version["Redfish_Server"]);
-                $("#Modbus_Server").text(FW_Info_Version["Modbus_Server"]);
+                // $("#SCC_API").text(FW_Info_Version["SCC_API"]);
+                // $("#SNMP").text(FW_Info_Version["SNMP"]);
+                // $("#Redfish_API").text(FW_Info_Version["Redfish_API"]);
+                // $("#Redfish_Server").text(FW_Info_Version["Redfish_Server"]);
+                // $("#Modbus_Server").text(FW_Info_Version["Modbus_Server"]);
                 $("#PLC").text(`0${plc_version}`);
 
             },

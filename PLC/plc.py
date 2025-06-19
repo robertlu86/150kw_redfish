@@ -1492,6 +1492,46 @@ fan_raw_status = {
         "Fan7": 0,
         "Fan8": 0,
     },
+    "current_power": {
+        "Fan1": 0,
+        "Fan2": 0,
+        "Fan3": 0,
+        "Fan4": 0,
+        "Fan5": 0,
+        "Fan6": 0,
+        "Fan7": 0,
+        "Fan8": 0,
+    },
+    "max_rpm": {
+        "Fan1": 0,
+        "Fan2": 0,
+        "Fan3": 0,
+        "Fan4": 0,
+        "Fan5": 0,
+        "Fan6": 0,
+        "Fan7": 0,
+        "Fan8": 0,
+    },
+    "actual_rpm": {
+        "Fan1": 0,
+        "Fan2": 0,
+        "Fan3": 0,
+        "Fan4": 0,
+        "Fan5": 0,
+        "Fan6": 0,
+        "Fan7": 0,
+        "Fan8": 0,
+    },
+    "cvt_rpm": {
+        "Fan1": 0,
+        "Fan2": 0,
+        "Fan3": 0,
+        "Fan4": 0,
+        "Fan5": 0,
+        "Fan6": 0,
+        "Fan7": 0,
+        "Fan8": 0,
+    },
 }
 
 temporary_data = {
@@ -4247,6 +4287,13 @@ def control():
 
                     ###增加fan_count判斷###
                     if ver_switch["fan_count_switch"]:
+                        for i in range(1,7):
+                            cvt_rpm = (
+                                fan_raw_status["actual_rpm"][f"Fan{i}"]
+                                / 64000
+                                * fan_raw_status["max_rpm"][f"Fan{i}"]
+                            )
+                            fan_raw_status["cvt_rpm"][f"Fan{i}"] = cvt_rpm
                         for i in range(1, 4):
                             key = f"fan_freq{i}"
                             all_sensors_dict[key] = (
@@ -4266,6 +4313,13 @@ def control():
                             if not bit_output_regs["mc_fan2"]:
                                 all_sensors_dict[key] = 0
                     else:
+                        for i in range(1, 9):
+                            cvt_rpm = (
+                                fan_raw_status["actual_rpm"][f"Fan{i}"]
+                                / 64000
+                                * fan_raw_status["max_rpm"][f"Fan{i}"]
+                            )
+                            fan_raw_status["cvt_rpm"][f"Fan{i}"] = cvt_rpm
                         for i in range(1, 5):
                             key = f"fan_freq{i}"
                             all_sensors_dict[key] = (
@@ -4357,6 +4411,30 @@ def control():
                     client.write_registers(7000, registers_eletricity)
             except Exception as e:
                 print(f"write electricity data error: {e}")
+                
+            fan_power_registers = []
+            fan_rpm_registers = []
+            for key in fan_raw_status["current_power"]:
+                value = fan_raw_status["current_power"][key]
+                word1, word2 = cvt_float_byte(value)
+                fan_power_registers.append(word2)
+                fan_power_registers.append(word1)
+            try:
+                with ModbusTcpClient(host=modbus_host, port=modbus_port) as client:
+                    client.write_registers(7016, fan_power_registers)
+            except Exception as e:
+                print(f"write fan power data error: {e}")
+                
+            for key in fan_raw_status["cvt_rpm"]:
+                value = fan_raw_status["cvt_rpm"][key]
+                word1, word2 = cvt_float_byte(value)
+                fan_rpm_registers.append(word2)
+                fan_rpm_registers.append(word1)
+            try:
+                with ModbusTcpClient(host=modbus_host, port=modbus_port) as client:
+                    client.write_registers(7032, fan_rpm_registers)
+            except Exception as e:
+                print(f"write fan power data error: {e}")
             # 測試用結束
             # 追加臨時log開始
             try:
@@ -5678,7 +5756,7 @@ def control():
                 print(f"set output data error: {e}")
 
             ### 計算pump runtime
-            if inv["inv1"]:
+            if (raw_485_data["Inv1_Freq"] / 200) > 25:
                 pump1_run_current_time = time.time()
 
                 if pump1_run_current_time - pump1_run_last_min >= 60:
@@ -5703,7 +5781,9 @@ def control():
             else:
                 pump1_run_last_min = time.time()
 
-            if inv["inv2"]:
+            # if inv["inv2"]:
+            if (raw_485_data["Inv2_Freq"] / 200) > 25:
+                
                 pump2_run_current_time = time.time()
 
                 if pump2_run_current_time - pump2_run_last_min >= 60:
@@ -5728,7 +5808,9 @@ def control():
             else:
                 pump2_run_last_min = time.time()
 
-            if inv["inv3"]:
+            # if inv["inv3"]:
+            if (raw_485_data["Inv3_Freq"] / 200) > 25:
+            
                 pump3_run_current_time = time.time()
 
                 if pump3_run_current_time - pump3_run_last_min >= 60:
@@ -5962,7 +6044,7 @@ def control():
                 fan8_run_last_min = time.time()
 
             ### 計算 filter runtime
-            if inv["inv1"] or inv["inv2"] or inv["inv3"]:
+            if (raw_485_data["Inv1_Freq"] / 200) > 25 or (raw_485_data["Inv2_Freq"] / 200) > 25 or (raw_485_data["Inv3_Freq"] / 200) > 25:
                 filter_run_current_time = time.time()
 
                 if filter_run_current_time - filter_run_last_min >= 60:
@@ -6274,6 +6356,15 @@ def rtu_thread():
                     for i, unit in enumerate(fan_units_6, start=1):
                         try:
                             r = client.read_input_registers(53293, 1, unit=unit)
+                            
+                            energy_r = client.read_input_registers(53287, 1, unit=unit)
+                            actual_rpm = client.read_input_registers(53264, 1, unit=unit)
+                            max_rpm = client.read_holding_registers(53529, 1, unit=unit)
+                            fan_raw_status["current_power"][f"Fan{i}"] = energy_r.registers[0]
+                            fan_raw_status["max_rpm"][f"Fan{i}"] = max_rpm.registers[0]
+                            fan_raw_status["actual_rpm"][f"Fan{i}"] = (
+                                actual_rpm.registers[0]
+                            )
                             ###fan status(error、warning)
                             status_r = client.read_input_registers(53265, 2, unit=unit)
                             fan_raw_status["error"][f"Fan{i}"] = status_r.registers[0]
@@ -6290,6 +6381,19 @@ def rtu_thread():
                     for i, unit in enumerate(fan_units, start=1):
                         try:
                             r = client.read_input_registers(53293, 1, unit=unit)
+                            
+                            energy_r = client.read_input_registers(53287, 1, unit=unit)
+                            actual_rpm = client.read_input_registers(
+                                53264, 1, unit=unit
+                            )
+                            max_rpm = client.read_holding_registers(53529, 1, unit=unit)
+                            fan_raw_status["current_power"][f"Fan{i}"] = (
+                                energy_r.registers[0]
+                            )
+                            fan_raw_status["max_rpm"][f"Fan{i}"] = max_rpm.registers[0]
+                            fan_raw_status["actual_rpm"][f"Fan{i}"] = (
+                                actual_rpm.registers[0]
+                            )
                             ###fan status(error、warning)
                             status_r = client.read_input_registers(53265, 2, unit=unit)
                             fan_raw_status["error"][f"Fan{i}"] = status_r.registers[0]

@@ -273,7 +273,7 @@ styles %}
                         <option value="manual">Manual</option>
                         <option value="auto">Auto</option>
                         <option value="stop">Stop</option>
-                        {% if user == 'superuser' or user == 'admin' or user =='root' %}
+                        {% if user == 'superuser' or user == 'root' %}
                         <option class="hidden" value="engineer">
                             Engineer
                         </option>
@@ -318,11 +318,11 @@ styles %}
                         </div>
                         <div class="row">
                             <div class="col-6 center_text">Pump Swap Time:
-                                <button class="btn btn-outline-success" id="reset_pump_swap" style="margin-left: 20px;">reset</button>
+                                <!-- <button class="btn btn-outline-success" id="reset_pump_swap" style="margin-left: 20px;">reset</button> -->
 
                             </div>
                             <div class="col-3 sideNum">
-                                <input id="p_swap" class="form-control keyboard_onlyNumber" placeholder="" />
+                                <input id="p_swap" class="form-control keyboard_ipv4" placeholder="" />
                                 <div class="col-1">
                                     <p class="">hr</p>
                                 </div>
@@ -390,7 +390,7 @@ styles %}
                                 <div class="result resultFan" id="resultFan"></div>
                             </div>
                         </div>
-                        {% if user == 'superuser' or user == 'admin' or user =='root'%}
+                        {% if user == 'superuser' or user == 'root'%}
                         <div class="row">
                             <div class="col-6 center_text">Fan1:</div>
                             <div class="col-3 sideNum">
@@ -502,7 +502,7 @@ styles %}
         </div>
     </div>
 
-    {% if user == 'superuser' or user == 'admin' or user =='root'%}
+    {% if user == 'superuser' or user == 'root'%}
     <div class="mcSet title" data-default="collapsed" data-label="Magnetic Contactor">
         <div class="data-before-trigger"></div>
         <div class="content">
@@ -614,7 +614,7 @@ styles %}
                         <p>hr</p>
                     </div>
                 </div>
-                {% if user == 'superuser' or user == 'admin' %}
+                {% if user == 'superuser' or user == 'root' %}
                 <div class="col-2" style="padding-left: 115px">
                     <button id="Pump1ResetBtn" class="btn btn-outline-success" type="submit">
                         Reset
@@ -632,7 +632,7 @@ styles %}
                         <p>hr</p>
                     </div>
                 </div>
-                {% if user == 'superuser' or user == 'admin' or user =='root' %}
+                {% if user == 'superuser' or user == 'root' %}
                 <div class="col-2" style="padding-left: 115px">
                     <button id="Pump2ResetBtn" class="btn btn-outline-success" type="submit">
                         Reset
@@ -651,7 +651,7 @@ styles %}
                         <p>hr</p>
                     </div>
                 </div>
-                {% if user == 'superuser' or user == 'admin' or user =='root' %}
+                {% if user == 'superuser' or user == 'root' %}
                 <div class="col-2" style="padding-left: 115px">
                     <button id="Pump3ResetBtn" class="btn btn-outline-success" type="submit">
                         Reset
@@ -671,7 +671,7 @@ styles %}
                         <p>hr</p>
                     </div>
                 </div>
-                {% if user == 'superuser' or user == 'admin' or user =='root' %}
+                {% if user == 'superuser' or user == 'root' %}
                 <div class="col-2" style="padding-left: 115px">
                     <button id="Fan1ResetBtn" class="btn btn-outline-success" type="submit">
                         Reset
@@ -690,7 +690,7 @@ styles %}
                         <p>hr</p>
                     </div>
                 </div>
-                {% if user == 'superuser' or user == 'admin' %}
+                {% if user == 'superuser' or user == 'root' %}
                 <div class="col-2" style="padding-left: 115px">
                     <button id="Fan2ResetBtn" class="btn btn-outline-success" type="submit">
                         Reset
@@ -709,7 +709,7 @@ styles %}
                         <p>hr</p>
                     </div>
                 </div>
-                {% if user == 'superuser' or user == 'admin' or user =='root' %}
+                {% if user == 'superuser' or user == 'root' %}
                 <div class="col-2" style="padding-left: 115px">
                     <button id="Fan3ResetBtn" class="btn btn-outline-success" type="submit">
                         Reset
@@ -728,7 +728,7 @@ styles %}
                         <p>hr</p>
                     </div>
                 </div>
-                {% if user == 'superuser' or user == 'admin' or user =='root' %}
+                {% if user == 'superuser' or user == 'root' %}
                 <div class="col-2" style="padding-left: 115px">
                     <button id="Fan4ResetBtn" class="btn btn-outline-success" type="submit">
                         Reset
@@ -747,7 +747,7 @@ styles %}
                         <p>hr</p>
                     </div>
                 </div>
-                {% if user == 'superuser' or user == 'admin' or user =='root' %}
+                {% if user == 'superuser' or user == 'root' %}
                 <div class="col-2" style="padding-left: 115px">
                     <button id="Fan5ResetBtn" class="btn btn-outline-success" type="submit">
                         Reset
@@ -766,7 +766,7 @@ styles %}
                         <p>hr</p>
                     </div>
                 </div>
-                {% if user == 'superuser' or user == 'admin' or user =='root' %}
+                {% if user == 'superuser' or user == 'root' %}
                 <div class="col-2" style="padding-left: 115px">
                     <button id="Fan6ResetBtn" class="btn btn-outline-success" type="submit">
                         Reset
@@ -785,7 +785,7 @@ styles %}
                         <p>hr</p>
                     </div>
                 </div>
-                {% if user == 'superuser' or user == 'admin' or user =='root' %}
+                {% if user == 'superuser' or user == 'root' %}
                 <div class="col-2" style="padding-left: 115px">
                     <button id="Fan7ResetBtn" class="btn btn-outline-success" type="submit">
                         Reset
@@ -804,7 +804,7 @@ styles %}
                         <p>hr</p>
                     </div>
                 </div>
-                {% if user == 'superuser' or user == 'admin' or user =='root' %}
+                {% if user == 'superuser' or user == 'root' %}
                 <div class="col-2" style="padding-left: 115px">
                     <button id="Fan8ResetBtn" class="btn btn-outline-success" type="submit">
                         Reset
@@ -824,7 +824,7 @@ styles %}
                         <p>hr</p>
                     </div>
                 </div>
-                {% if user == 'superuser' or user == 'admin' or user =='root' %}
+                {% if user == 'superuser' or user == 'root' %}
                 <div class="col-2" style="padding-left: 115px">
                     <button id="FilterResetBtn" class="btn btn-outline-success" type="submit">
                         Reset
@@ -892,7 +892,7 @@ styles %}
                     </div>
                 </div>
             </div>
-            {% if user == 'superuser' or user == 'admin' or user == 'user' %}
+            {% if user == 'superuser' or user == 'admin' or user == 'root' %}
 
             <div class="row">
                 <div class="col-4">
@@ -1300,7 +1300,7 @@ styles %}
 
                 for (var key in data["value"]) {
                     if (data["value"].hasOwnProperty(key)) {
-                        if (userType === "user" || userType === "kiosk") {
+                        if (userType === "user" || userType === "kiosk"  || userType === "admin") {
                             if (key.includes("fan") && key.includes("_check")) {
                                 continue;
                             }
@@ -1340,7 +1340,7 @@ styles %}
                     }
                 }
 
-                if (userType == "superuser" || userType == "admin" || userType == "root") {
+                if (userType == "superuser" || userType == "root") {
                     for (var key in data["mc"]) {
                         if (!key.includes("result")) {
                             if (data["mc"].hasOwnProperty(key)) {
@@ -1362,7 +1362,7 @@ styles %}
                 }
 
                 let selectedValue = $("#opMod").val();
-                if (userType == "kiosk" || userType == "user") {
+                if (userType == "kiosk" || userType == "user" || userType == "admin") {
                     $(".engineer_set").css("display", "none");
 
                     if (selectedValue == "auto") {
@@ -1513,7 +1513,7 @@ styles %}
             for (var key in data["value"]) {
                 if (key.includes("result")) {
                     if (data["value"].hasOwnProperty(key)) {
-                        if (userType === "user" || userType === "kiosk") {
+                        if (userType === "user" || userType === "kiosk"|| userType === "admin") {
                             if (except_keys.includes(key)) {
                                 continue;
                             }
@@ -1539,7 +1539,7 @@ styles %}
                     }
                 }
 
-                if (userType == "superuser" || userType == "admin" || userType == "root") {
+                if (userType == "superuser" || userType == "root") {
                     const evElements = $("#ev1_sw, #ev2_sw, #ev3_sw, #ev4_sw");
                     evElements.attr("disabled", true);
                     if (
@@ -1599,7 +1599,7 @@ styles %}
                 }
             }
 
-            if (userType == "superuser" || userType == "admin" || userType == "root") {
+            if (userType == "superuser" || userType == "root") {
                 for (var key in data["mc"]) {
                     if (key.includes("result")) {
                         if (data["mc"].hasOwnProperty(key)) {
@@ -1610,7 +1610,7 @@ styles %}
                 }
             }
 
-            if (userType == "kiosk" || userType == "user") {
+            if (userType == "kiosk" || userType == "user" || userType == "admin") {
                 $(".engineer_set").css("display", "none");
 
                 if (selectedValue == "auto") {
@@ -1932,11 +1932,11 @@ styles %}
         $("#settings_export_bt").click(function () {
             var network = document.getElementById("exp_ntw_chk").checked;
             var system = document.getElementById("exp_system_chk").checked;
-            // if (userType === "superuser" || userType === "admin") {
+            // if (userType === "superuser" || userType === "root") {
             //     var pid = document.getElementById("exp_pid_set").checked;
             //     var alert = document.getElementById("exp_alt_chk").checked;
             // }
-            if (userType === "superuser" || userType === "admin" || userType === "user" || userType == "root") {
+            if (userType === "superuser" || userType === "root") {
                 var mode_set = document.getElementById("exp_modset_chk").checked;
                 var alert = document.getElementById("exp_alt_chk").checked;
             }
@@ -2187,7 +2187,7 @@ styles %}
             });
         });
 
-        if (userType === "superuser" || userType === "admin") {
+        if (userType === "superuser" || userType === "root") {
             $("#ev1_sw, #ev2_sw, #ev3_sw, #ev4_sw").attr("disabled", true);
         }
 
@@ -2338,7 +2338,7 @@ styles %}
             mode_input.p1 = $("#pump1_check").prop("checked");
             mode_input.p2 = $("#pump2_check").prop("checked");
             mode_input.p3 = $("#pump3_check").prop("checked");
-            if (userType == "superuser" || userType == "admin" || userType == "root") {
+            if (userType == "superuser" || userType == "root") {
                 mode_input.f1 = $("#fan1_check").prop("checked");
                 mode_input.f2 = $("#fan2_check").prop("checked");
                 mode_input.f3 = $("#fan3_check").prop("checked");
@@ -2473,69 +2473,69 @@ styles %}
             }
         });
 
-        if (userType == "superuser" || userType == "admin" || userType == "root") {
-            $("#evSetBnt").click(function () {
-                let ev1_sw = document.getElementById("ev1_sw").checked;
-                let ev2_sw = document.getElementById("ev2_sw").checked;
-                let ev3_sw = document.getElementById("ev3_sw").checked;
-                let ev4_sw = document.getElementById("ev4_sw").checked;
+        // if (userType == "superuser" || userType == "root") {
+        //     $("#evSetBnt").click(function () {
+        //         let ev1_sw = document.getElementById("ev1_sw").checked;
+        //         let ev2_sw = document.getElementById("ev2_sw").checked;
+        //         let ev3_sw = document.getElementById("ev3_sw").checked;
+        //         let ev4_sw = document.getElementById("ev4_sw").checked;
 
-                var dataToSend = {
-                    ev1_sw: ev1_sw,
-                    ev2_sw: ev2_sw,
-                    ev3_sw: ev3_sw,
-                    ev4_sw: ev4_sw,
-                };
+        //         var dataToSend = {
+        //             ev1_sw: ev1_sw,
+        //             ev2_sw: ev2_sw,
+        //             ev3_sw: ev3_sw,
+        //             ev4_sw: ev4_sw,
+        //         };
 
-                $.ajax({
-                    type: "POST",
-                    url: "/ev_set",
-                    contentType: "application/json;charset=UTF-8",
-                    data: JSON.stringify(dataToSend),
-                    success: function (response) {
-                        if (response == "EV Set Updated Successfully") {
-                            Swal.fire({
-                                title: "Success",
-                                text: response,
-                                icon: "success",
-                                confirmButtonText: "OK",
-                            });
-                        } else {
-                            Swal.fire({
-                                title: "Error",
-                                text: response,
-                                icon: "error",
-                                confirmButtonText: "OK",
-                            });
-                        }
-                    },
-                });
-            });
-            $("#evCnsBnt").click(function () {
-                $.ajax({
-                    url: "/get_data_control",
-                    method: "GET",
-                    success: function (data) {
-                        for (var key in data["valve"]) {
-                            if (data["valve"].hasOwnProperty(key)) {
-                                var value = data["valve"][key];
-                                var element = document.getElementById(key);
+        //         $.ajax({
+        //             type: "POST",
+        //             url: "/ev_set",
+        //             contentType: "application/json;charset=UTF-8",
+        //             data: JSON.stringify(dataToSend),
+        //             success: function (response) {
+        //                 if (response == "EV Set Updated Successfully") {
+        //                     Swal.fire({
+        //                         title: "Success",
+        //                         text: response,
+        //                         icon: "success",
+        //                         confirmButtonText: "OK",
+        //                     });
+        //                 } else {
+        //                     Swal.fire({
+        //                         title: "Error",
+        //                         text: response,
+        //                         icon: "error",
+        //                         confirmButtonText: "OK",
+        //                     });
+        //                 }
+        //             },
+        //         });
+        //     });
+        //     $("#evCnsBnt").click(function () {
+        //         $.ajax({
+        //             url: "/get_data_control",
+        //             method: "GET",
+        //             success: function (data) {
+        //                 for (var key in data["valve"]) {
+        //                     if (data["valve"].hasOwnProperty(key)) {
+        //                         var value = data["valve"][key];
+        //                         var element = document.getElementById(key);
 
-                                if (value === true) {
-                                    $("#" + key).text("Open");
-                                    $("." + key).text("Open");
-                                    element.checked = value;
-                                } else {
-                                    $("#" + key).text("Close");
-                                    $("." + key).text("Close");
-                                    element.checked = value;
-                                }
-                            }
-                        }
-                    },
-                });
-            });
-        }
+        //                         if (value === true) {
+        //                             $("#" + key).text("Open");
+        //                             $("." + key).text("Open");
+        //                             element.checked = value;
+        //                         } else {
+        //                             $("#" + key).text("Close");
+        //                             $("." + key).text("Close");
+        //                             element.checked = value;
+        //                         }
+        //                     }
+        //                 }
+        //             },
+        //         });
+        //     });
+        // }
 
         $("#submitButton").click(function () {
             $("#cars").css("border-color", "blue");
@@ -2577,7 +2577,7 @@ styles %}
                                     if (typeof value === "string") {
                                         element.value = value;
                                     } else if (typeof value === "boolean") {
-                                        if (userType == "superuser" || userType == "admin" || userType == "root") {
+                                        if (userType == "superuser" || userType == "root") {
                                             element.checked = value;
                                         }
                                         else {
