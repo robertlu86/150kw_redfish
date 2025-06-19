@@ -908,7 +908,7 @@
   
     jQuery(document).ready(function () {
       let userType = "{{ user }}";
-      if (userType == "kiosk" || userType == "user") {
+      if (userType == "kiosk" || userType == "user" || userType == "admin") {
         $(".network_hide").hide();
       }
       jQuery(".network_option").attr("data-before", "Network Options");
