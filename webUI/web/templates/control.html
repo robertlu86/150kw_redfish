@@ -1300,7 +1300,7 @@ styles %}
 
                 for (var key in data["value"]) {
                     if (data["value"].hasOwnProperty(key)) {
-                        if (userType === "user" || userType === "kiosk") {
+                        if (userType === "user" || userType === "kiosk"  || userType === "admin") {
                             if (key.includes("fan") && key.includes("_check")) {
                                 continue;
                             }
@@ -1362,7 +1362,7 @@ styles %}
                 }
 
                 let selectedValue = $("#opMod").val();
-                if (userType == "kiosk" || userType == "user") {
+                if (userType == "kiosk" || userType == "user" || userType == "admin") {
                     $(".engineer_set").css("display", "none");
 
                     if (selectedValue == "auto") {
@@ -1513,7 +1513,7 @@ styles %}
             for (var key in data["value"]) {
                 if (key.includes("result")) {
                     if (data["value"].hasOwnProperty(key)) {
-                        if (userType === "user" || userType === "kiosk") {
+                        if (userType === "user" || userType === "kiosk"|| userType === "admin") {
                             if (except_keys.includes(key)) {
                                 continue;
                             }
@@ -1610,7 +1610,7 @@ styles %}
                 }
             }
 
-            if (userType == "kiosk" || userType == "user") {
+            if (userType == "kiosk" || userType == "user" || userType == "admin") {
                 $(".engineer_set").css("display", "none");
 
                 if (selectedValue == "auto") {
