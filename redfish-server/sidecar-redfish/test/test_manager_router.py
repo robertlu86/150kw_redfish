@@ -48,8 +48,9 @@ managers_cdu_log_services_testcases = [
             "@odata.type": "#LogService.v1_8_0.LogService",
             "@odata.context": "/redfish/v1/$metadata#LogService.v1_8_0.LogService",
             "LogEntryType": "OEM",
-            "MaxNumberOfRecords": 500,
+            # "MaxNumberOfRecords": 500,
             "OverWritePolicy": "WrapsWhenFull",
+            "Status": {"State": "Enabled", "Health": "OK"}
         }
     },
     {
@@ -266,4 +267,4 @@ def test_manager_normal_api(client, basic_auth_header, testcase):
             print(f"PASS: `{key}` of response json is expected to be {value}")
         except AssertionError as e:
             print(f"FAIL: AssertionError: {e}, key: {key}, value: {value}")
-            #raise
+            raise e

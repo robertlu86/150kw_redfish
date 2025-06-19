@@ -57,7 +57,8 @@ class RfOemActions(Dict[str, Any]):
     pass
 
 class RfActions(BaseModel):
-    Oem: Optional[RfOemActions] = Field(default=None)
+    # Oem: Optional[RfOemActions] = Field(default=None) # why fail?
+    Oem: Optional[Dict[str, Any]] = Field(default=None)
 
 # Main MetricDefinition model
 class RfMetricDefinitionModel(RfResourceBaseModel):
@@ -101,3 +102,11 @@ class RfMetricDefinitionModel(RfResourceBaseModel):
     TimestampAccuracy: Optional[str] = Field(default=None)
     Units: Optional[str] = Field(default=None)
     Wildcards: Optional[List[Optional[RfWildcard]]] = Field(default=None)
+
+
+
+class RfMetricDefinitionCollectionModel(RfResourceCollectionBaseModel):
+    """
+    @see https://redfish.dmtf.org/schemas/v1/MetricDefinitionCollection.json
+    """
+    pass

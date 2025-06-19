@@ -1,11 +1,17 @@
 # mylib/services/rf_telemetry_service.py
 
 import time
+import threading
+from typing import List, Dict, Any
 from collections import deque, defaultdict
 from datetime import datetime, timezone, timedelta
+from cachetools import cached, TTLCache
+from http import HTTPStatus
+from mylib.common.proj_error import ProjError
 from mylib.services.base_service import BaseService
 from mylib.adapters.sensor_csv_adapter import SensorCsvAdapter
-import threading
+from mylib.models.sensor_log_model import SensorLogModel
+from mylib.models.rf_metric_definition_model import RfMetricDefinitionCollectionModel, RfMetricDefinitionModel
 
 
 class RfTelemetryService(BaseService):
@@ -155,3 +161,53 @@ class RfTelemetryService(BaseService):
                 if report["Id"] == report_id:
                     return report.copy()
         return None
+
+
+    @cached(cache=TTLCache(maxsize=1, ttl=30))
+    def load_metric_definitions(self) -> tuple:
+        metrics: List[Dict] = SensorLogModel.to_metric_definitions()
+        metric_dicts = {}
+        for metric in metrics:
+            metric_dicts[ metric['FieldName'] ] = metric
+        return metrics, metric_dicts
+
+    
+    def fetch_TelemetryService_MetricDefinitions(self, metric_definition_id=None) -> dict:
+        """
+        """
+        metrics, metric_dicts = self.load_metric_definitions()
+
+        if metric_definition_id == None:
+            m = RfMetricDefinitionCollectionModel()
+
+            for metric in metrics:
+                m.Members.append(
+                    {
+                        "@odata.id": f"/redfish/v1/TelemetryService/MetricDefinitions/{metric['FieldName']}"
+                    }
+                )
+            
+            m.odata_context = "/redfish/v1/$metadata#MetricDefinitionCollection.MetricDefinitionCollection"
+            m.odata_id = "/redfish/v1/TelemetryService/MetricDefinitions"
+            m.odata_type = "#MetricDefinitionCollection.MetricDefinitionCollection"
+            m.Name = "Metric Definition Collection"
+            m.Members_odata_count = len(m.Members)
+            
+            return m.to_dict()
+        else:
+            metric = metric_dicts.get(metric_definition_id, None)
+            if metric == None:
+                raise ProjError(HTTPStatus.NOT_FOUND, f"MetricDefinition, {metric_definition_id}, not found")
+
+            m = RfMetricDefinitionModel()
+            m.Id = metric['FieldName']
+            m.Name = metric['FieldName']
+            m.MetricDataType = metric['MetricDataType']
+            m.Units = metric['Units']
+            m.odata_context = "/redfish/v1/$metadata#MetricDefinition.MetricDefinition"
+            m.odata_id = f"/redfish/v1/TelemetryService/MetricDefinitions/{metric['FieldName']}"
+            m.odata_type = "#MetricDefinition.v1_0_0.MetricDefinition"
+            
+            return m.to_dict()
+            
+            

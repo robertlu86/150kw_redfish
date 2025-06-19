@@ -1,9 +1,11 @@
 import os
 from http import HTTPStatus
 import requests
+import platform
 from cachetools import cached, TTLCache
 from mylib.models.rf_resource_model import RfResetType
 from mylib.common.proj_error import ProjError
+from mylib.utils.SystemCommandUtil import SystemCommandUtil
 
 
 """
@@ -28,6 +30,28 @@ class WebAppAPIAdapter:
 
         self.session = self.create_login_session()
  
+    @classmethod
+    @cached(cache=TTLCache(maxsize=1, ttl=60))
+    def check_health(cls) -> bool:
+        """Check whether webapp(webUI) is running|healthy
+        @note: 
+            ex. LogService of Redfish requires `Status` field
+        @note: 
+            方案一：看webapp的process是否存在
+            方案二：以 webUI/logs/sensor 與 webUI/web/json 的檔案內容，如果3秒內，則判定為health
+        """
+        try:
+            host = os.getenv("ITG_WEBAPP_HOST", "")
+            port = host.split(":")[-1]
+            linux_cmd = f"lsof -i -P| grep LISTEN | grep {port} | wc -l"
+            result = SystemCommandUtil.exec(linux_cmd)
+            return len(result["stdout_lines"]) >= 1
+        except Exception as e:
+            if platform.system().lower() == "windows":
+               return True
+            else:
+                return False
+
     @cached(cache=TTLCache(maxsize=1, ttl=30))
     def create_login_session(self):
         session = requests.Session()

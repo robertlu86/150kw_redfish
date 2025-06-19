@@ -70,15 +70,11 @@ class RfLogService(BaseService):
             raise ProjError(HTTPStatus.NOT_FOUND.value, f"/LogService/{log_service_id} is not exist!")
         
         log_entries = WebAppJsonReader.read_all_errorlog_entries()
+        is_health = WebAppAPIAdapter.check_health()
 
         status = RfStatusModel()
         status.State = RfStatusState.Enabled
-        if len(log_entries) >= 500:
-            status.Health = RfStatusHealth.OK
-        if len(log_entries) == 0:
-            status.Health = RfStatusHealth.Critical
-        else:
-            status.Health = RfStatusHealth.Warning
+        status.Health = RfStatusHealth.OK if is_health else RfStatusHealth.Critical
 
         # TODO: 專案太趕，先不建rf_log_service_model
         resp_json = {
