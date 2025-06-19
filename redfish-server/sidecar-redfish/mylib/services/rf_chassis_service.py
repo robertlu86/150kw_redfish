@@ -470,6 +470,7 @@ class RfChassisService(BaseService):
         rep["@odata.type"] = "#Supermicro.Control"
         rep["Id"] = "Operation"
         rep["Name"] = "Supermicro Control Operation"
+        rep["PumpSwapTime"] = round(rep["PumpSwapTime"], 2)
         
         return rep, 200
     
@@ -547,7 +548,7 @@ class RfChassisService(BaseService):
                 "ControlMode":ControlMode_change(data["ControlMode"]), # Disable / Automatic / Manual
                 "TargetTemperature": data["TargetTemperature"],
                 "TargetPressure": data["TargetPressure"],
-                "PumpSwapTime": data["PumpSwapTime"],
+                "PumpSwapTime": round(data["PumpSwapTime"], 2),
                 "FanSetPoint": data["FanSetPoint"],
                 "PumpSetPoint": data["PumpSetPoint"],
                 "Pump1Switch": data["Pump1Switch"],

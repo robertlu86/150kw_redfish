@@ -5,7 +5,7 @@ from mylib.utils.load_api import CDU_BASE
 from mylib.services.rf_managers_service import RfManagersService
 from mylib.models.rf_resource_model import RfResetType
 from mylib.models.rf_manager_model import RfResetToDefaultsType
-from mylib.utils.system_info import get_system_uuid
+from mylib.utils.system_info import get_system_uuid, list_nics_fullinfo
 from mylib.services.rf_log_service import RfLogService
 
 managers_ns = Namespace('', description='Chassis Collection')
@@ -438,16 +438,17 @@ snmp_patch = managers_ns.model('SnmpProtocolPatch', {
         description='啟用或停用該服務',
         example=False
     ),
-    'Port': fields.Integer(
-        required=False,
-        description='指定Get Port',
-        example=161
-    ),
-    'TrapPort': fields.Integer(
-        required=False,
-        description='指定Trap Port',
-        example=162
-    )
+    # 有支援再開啟
+    # 'Port': fields.Integer(
+    #     required=False,
+    #     description='指定Get Port',
+    #     example=161
+    # ),
+    # 'TrapPort': fields.Integer(
+    #     required=False,
+    #     description='指定Trap Port',
+    #     example=162
+    # )
 })
 
 # NTP 更新時可傳 ProtocolEnabled + NTPServers 列表
@@ -559,12 +560,12 @@ class ManagersCDUNetworkProtocolHTTPSCertificates(Resource):
 #====================================================== 
 # EthernetInterfaces
 #====================================================== 
-@managers_ns.route("/Managers/CDU/EthernetInterfaces", strict_slashes=False)
+@managers_ns.route("/Managers/CDU/EthernetInterfaces")
 class ManagersCDUEthernetInterfaces(Resource):
     # # @requires_auth
     @managers_ns.doc("managers_cdu_ethernet_interfaces")
     def get(self):
-        
+        list_nics_fullinfo()
         return ethernet_interfaces_data
     
 @managers_ns.route("/Managers/CDU/EthernetInterfaces/<string:ethernet_interfaces_id>")

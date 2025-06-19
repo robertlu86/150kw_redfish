@@ -47,6 +47,7 @@ class ReadingJudgerBase(ABC):
             # for "/redfish/v1/ThermalEquipment/CDUs/1/Pumps/1"
             return resp_json["PumpSpeedPercent"]["Reading"]
         else:
+            self._DEBUG_(f"!!! No proper reading key in resp_json: {resp_json}")
             return None
     
     def _DEBUG_(self, msg):

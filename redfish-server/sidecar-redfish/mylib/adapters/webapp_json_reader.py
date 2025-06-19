@@ -39,6 +39,7 @@ class WebAppJsonReader:
     @cached(cache=TTLCache(maxsize=1, ttl=10))
     def read_all_errorlog_entries(cls) -> List[WebAppSignalRecordModel]:
         """Read all error logs from signal_records.json
+        @note: signal_records.json records max 500s records
         """
         error_log_path = cls._error_log_path()
         log_json_ary = json.loads(FileUtil.read(error_log_path))

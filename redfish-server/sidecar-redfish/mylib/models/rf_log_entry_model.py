@@ -81,3 +81,9 @@ class RfLogEntryModel(RfResourceBaseModel):
     # "SpecificEventExistsInGroup": {5 items},
     # "UserAuthenticationSource": {5 items},
     # "Username": {5 items}
+
+class RfLogEntryCollectionModel(RfResourceCollectionBaseModel):
+    """
+    @see https://redfish.dmtf.org/schemas/v1/LogEntryCollection.json#/definitions/LogEntryCollection
+    """
+    pass

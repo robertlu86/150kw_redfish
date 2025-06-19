@@ -18,12 +18,15 @@ class RfManagersService(BaseService):
     def save_networkprotocol(self, servie: str, setting):
         SettingModel().save_key_value(f"Managers.{servie}.ProtocolEnabled", setting["ProtocolEnabled"])
         SettingModel().save_key_value(f"Managers.{servie}.Port", setting["Port"])
-            
+    
+    def get_networkprotocol(self, servie: str, setting):
+        SettingModel().get_by_key(f"Managers.{servie}.ProtocolEnabled", setting["ProtocolEnabled"])
+        SettingModel().get_by_key(f"Managers.{servie}.Port", setting["Port"])        
     # ================NetworkProtocol================
     def NetworkProtocol_service(self) -> dict:
         m = RfNetworkProtocolModel()
         m.HostName = "TBD"
-        m.FQDN = "Null"
+        m.FQDN = None
         return m.to_dict()
     
     def NetworkProtocol_service_patch(self, body):
@@ -58,8 +61,8 @@ class RfManagersService(BaseService):
         }
 
         try:
-            resp = WebAppAPIAdapter().setting_snmp(data)
-            return jsonify({ "message": resp.text })      
+            r = WebAppAPIAdapter().setting_snmp(data)
+            return jsonify({ "message": r.text })      
             # return r.json(), r.status_code
         except requests.HTTPError:
             # 如果 CDU 回了 4xx/5xx，直接把它的 status code 和 body 回來

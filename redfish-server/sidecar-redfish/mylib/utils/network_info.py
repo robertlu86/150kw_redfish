@@ -29,7 +29,7 @@ def get_network_protocol_status():
         "HTTP": 80,
         "HTTPS": 5501,
         "SSH": 22,
-        "SNMP": 161,
+        "SNMP": 9000,
         "NTP": 123,
         # DHCP 客戶端會監聽 UDP 68，DHCP 伺服器則監聽 UDP 67
         "DHCP_Server": 67,

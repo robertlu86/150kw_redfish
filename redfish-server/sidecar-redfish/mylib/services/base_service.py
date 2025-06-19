@@ -4,10 +4,10 @@ from mylib.utils.HttpRequestUtil import HttpRequestUtil
 from mylib.utils.StatusUtil import StatusUtil
 from werkzeug.exceptions import HTTPException, BadRequest
 from flask import abort
-import subprocess
 from typing import Dict, List
 from mylib.adapters.sensor_api_adapter import SensorAPIAdapter
 from mylib.utils.system_info import get_system_uuid
+from mylib.utils.SystemCommandUtil import SystemCommandUtil
 
 class BaseService:
 
@@ -16,16 +16,7 @@ class BaseService:
         """
         執行Linux命令
         """
-        process = subprocess.Popen(linux_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        stdout, stderr = process.communicate()
-        stdout = stdout.decode("utf-8")
-        stderr = stderr.decode("utf-8")
-
-        return {
-            "command": linux_cmd,
-            "stdout_lines": stdout.splitlines(),
-            "stderr_lines": stderr.splitlines()
-        }
+        return SystemCommandUtil.exec(linux_cmd)
 
     @classmethod
     def send_get(cls, url, params={}):

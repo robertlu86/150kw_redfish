@@ -6,7 +6,7 @@ from flask import abort
 from dotenv import load_dotenv
 from flask import abort
 from mylib.services.rf_telemetry_service import RfTelemetryService
-
+from mylib.models.sensor_log_model import SensorLogModel
 # telemetry_service = RfTelemetryService()
 
 # --- 新增/必要的導入 ---
@@ -90,10 +90,13 @@ METRIC_DEFS = [
 ]
 REPORT_DEFS = [
     {
-        "Id": "PeriodicReport",
-        "Name": "PeriodicReport",
-        #   "MetricReportType": "Periodic",
-        #   "Interval": "PT60S",
+        "Id": "1",
+        "Name": "Periodic Report",
+        "MetricReportDefinitionType": "Periodic",           #產生報告的方式:定期產生報告
+        "ReportUpdates": "AppendWrapsWhenFull",             #更新報告的方式:覆蓋
+        "Schedule": {
+            "RecurrenceInterval": "PT3M"                    #每3分鐘產生一次報告
+        },
         "Metrics": [
             {"@odata.id": f"/redfish/v1/TelemetryService/MetricDefinitions/{m['Id']}"}
             for m in METRIC_DEFS
@@ -114,43 +117,43 @@ REPORT_DEFS = [
 @TelemetryService_ns.route("/TelemetryService/MetricDefinitions")
 class MetricDefinitionCollection(Resource):
     def get(self):
-        members = []
-        for m in METRIC_DEFS:
-            members.append(
-                {
-                    "@odata.id": f"/redfish/v1/TelemetryService/MetricDefinitions/{m['Id']}"
-                }
-            )
-        return {
-            "@odata.context": "/redfish/v1/$metadata#MetricDefinitionCollection.MetricDefinitionCollection",
-            "@odata.id": "/redfish/v1/TelemetryService/MetricDefinitions",
-            "@odata.type": "#MetricDefinitionCollection.MetricDefinitionCollection",
-            "Name": "Metric Definition Collection",
-            "Members@odata.count": len(members),
-            "Members": members,
-        }, 200
+        # members = []
+        # for m in METRIC_DEFS:
+        #     members.append(
+        #         {
+        #             "@odata.id": f"/redfish/v1/TelemetryService/MetricDefinitions/{m['Id']}"
+        #         }
+        #     )
+        # return {
+        #     "@odata.context": "/redfish/v1/$metadata#MetricDefinitionCollection.MetricDefinitionCollection",
+        #     "@odata.id": "/redfish/v1/TelemetryService/MetricDefinitions",
+        #     "@odata.type": "#MetricDefinitionCollection.MetricDefinitionCollection",
+        #     "Name": "Metric Definition Collection",
+        #     "Members@odata.count": len(members),
+        #     "Members": members,
+        # }, 200
+        return telemetry_service.fetch_TelemetryService_MetricDefinitions()
 
 
 # Individual MetricDefinition
-@TelemetryService_ns.route("/TelemetryService/MetricDefinitions/<string:metric_id>")
+@TelemetryService_ns.route("/TelemetryService/MetricDefinitions/<string:metric_definition_id>")
 class MetricDefinition(Resource):
-    def get(self, metric_id):
-        for m in METRIC_DEFS:
-            if m["Id"] == metric_id:
-                m = m.copy()
-                m["@odata.context"] = (
-                    "/redfish/v1/$metadata#MetricDefinition.MetricDefinition"
-                )
-                m["@odata.id"] = (
-                    f"/redfish/v1/TelemetryService/MetricDefinitions/{metric_id}"
-                )
-                m["@odata.type"] = "#MetricDefinition.v1_0_0.MetricDefinition"
-                return m, 200
-        return {"error": "Not found"}, 404
+    def get(self, metric_definition_id):
+        # for m in METRIC_DEFS:
+        #     if m["Id"] == metric_definition_id:
+        #         m = m.copy()
+        #         m["@odata.context"] = (
+        #             "/redfish/v1/$metadata#MetricDefinition.MetricDefinition"
+        #         )
+        #         m["@odata.id"] = (
+        #             f"/redfish/v1/TelemetryService/MetricDefinitions/{metric_definition_id}"
+        #         )
+        #         m["@odata.type"] = "#MetricDefinition.v1_0_0.MetricDefinition"
+        #         return m, 200
+        return telemetry_service.fetch_TelemetryService_MetricDefinitions(metric_definition_id)
 
 
 # MetricReportDefinitions Collection
-'''
 @TelemetryService_ns.route("/TelemetryService/MetricReportDefinitions")
 class MetricReportDefCollection(Resource):
     def get(self):
@@ -176,6 +179,42 @@ class MetricReportDefCollection(Resource):
 )
 class MetricReportDef(Resource):
     def get(self, report_id):
+        m = SensorLogModel.to_metric_definitions()
+        metricdefinition = []
+        for entry in m:
+            metric = {
+                "Id": entry["FieldName"],
+                "Name": entry["Alias"] or entry["FieldName"],
+                "MetricDataType": entry["MetricDataType"],
+            }
+            if entry["Units"] is not None:
+                metric["Units"] = entry["Units"]
+            metricdefinition.append(metric)
+        
+        report = {
+            "@odata.context": "/redfish/v1/$metadata#MetricReportDefinition.MetricReportDefinition",
+            "@odata.id": f"/redfish/v1/TelemetryService/MetricReportDefinitions/{report_id}",
+            "@odata.type": "#MetricReportDefinition.v1_0_0.MetricReportDefinition",
+            "Id": report_id,
+            "Name": "Periodic Report",
+            "MetricReportDefinitionType": "Periodic",   # 產生報告的方式:定期產生報告
+            "ReportUpdates": "AppendWrapsWhenFull",     # 更新報告的方式:當報告達到最大容量時，新的資料會覆蓋最舊的資料
+            "Schedule": {
+                "RecurrenceInterval": "PT3M"            # 每3分鐘產生一次報告
+            },
+            "ReportActions": [
+                "LogToMetricReportsCollection"          
+            ],
+            "Metrics": [
+                {"@odata.id": f"/redfish/v1/TelemetryService/MetricDefinitions/{m['Id']}"}
+                for m in metricdefinition
+            ],
+        }
+        return report, 200
+    
+
+    
+        '''
         for r in REPORT_DEFS:
             if r["Id"] == report_id:
                 r = r.copy()
@@ -190,7 +229,8 @@ class MetricReportDef(Resource):
                 )
                 return r, 200
         return {"error": "Not found"}, 404
-'''
+        '''
+
 
 # Triggers Collection
 # @TelemetryService_ns.route('/TelemetryService/Triggers')
