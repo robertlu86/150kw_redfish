@@ -9,7 +9,7 @@ import requests
 import os
 from typing import Dict
 from mylib.common.my_resource import MyResource
-from mylib.utils.system_info import get_system_uuid, list_nics_fullinfo
+from mylib.utils.system_info import get_system_uuid
 
 
 Chassis_ns = Namespace('', description='Chassis Collection')

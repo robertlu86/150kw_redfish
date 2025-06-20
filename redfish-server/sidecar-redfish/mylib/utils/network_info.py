@@ -26,8 +26,8 @@ def get_network_protocol_status():
     print(f"Listening ports: {listening_ports}")
     # 定義我們關心的協議及其預設埠號
     protocol_ports = {
-        "HTTP": 80,
-        "HTTPS": 5501,
+        "HTTP": None,
+        "HTTPS": 443,
         "SSH": 22,
         "SNMP": 9000,
         "NTP": 123,

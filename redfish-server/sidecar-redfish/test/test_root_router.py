@@ -21,8 +21,7 @@ def test_redfish_v1_root(client):
     resp_json = response.json
     print(f"response.json: {resp_json}") # should use `pytest -s`, or run with `pytest -v --html=report.html`
     assert response.status_code == 200
-    assert resp_json["@odata.type"] == "#ServiceRoot.v1_17_0.ServiceRoot"
-    assert resp_json["@odata.type"] == "#ServiceRoot.v1_17_0.ServiceRoot"
+    assert resp_json["@odata.type"] == "#ServiceRoot.v1_18_0.ServiceRoot"
     assert resp_json["RedfishVersion"] == "1.14.0"
     assert resp_json["Id"] == "RootService"
 

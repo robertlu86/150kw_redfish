@@ -366,7 +366,7 @@ class RfThermalEquipmentService(BaseService):
                 "error": f"pump_speed needs to be between {scp['AllowableMin']} and {scp['AllowableMax']} or 0"
             }, 400
             
-                # 轉發到內部控制 API
+        # 轉發到內部控制 API
         try:
             r = requests.patch(
                 f"{CDU_BASE}/api/v1/cdu/status/op_mode",
@@ -436,3 +436,39 @@ class RfThermalEquipmentService(BaseService):
         m.Status = RfStatusModel.from_dict(status)
 
         return m.to_dict(), 200
+    
+    
+    def fetch_CDUs_Pumps_SetMode(self, cdu_id: str, pump_id: str, body: dict) -> dict:
+        """
+        對應 "/redfish/v1/ThermalEquipment/CDUs/<cdu_id>/Pumps/<pump_id>"
+
+        :param cdu_id: str
+        :param pump_id: str
+        :param body: dict
+        :return: dict
+        """
+        mode = True if body["Mode"] == "Enabled" else False
+        print(f"pump{pump_id}_switch:", mode)
+        # 轉發到內部控制 API
+        try:
+            r = requests.patch(
+                f"{CDU_BASE}/api/v1/cdu/status/op_mode",
+                json={"mode": "manual", f"pump{pump_id}_switch": mode},
+                timeout=5
+            )
+            
+            return {"message": f"Pump{pump_id} Update Success"}, r.status_code
+        except requests.HTTPError:
+            # 如果 CDU 回了 4xx/5xx，直接把它的 status code 和 body 回來
+            try:
+                err_body = r.json()
+            except ValueError:
+                err_body = {"error": r.text}
+            return err_body, r.status_code
+
+        except requests.RequestException as e:
+            # 純粹網路／timeout／連線失敗
+            return {
+                "error": "Forwarding to the CDU control service failed",
+                "details": str(e)
+            }, 502    

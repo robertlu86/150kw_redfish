@@ -12,6 +12,9 @@ from mylib.models.rf_resource_model import RfResetType
 from mylib.common.proj_response_message import ProjResponseMessage
 from mylib.models.setting_model import SettingModel
 from mylib.utils.load_api import load_raw_from_api, CDU_BASE
+from mylib.utils.system_info import get_physical_nics
+from mylib.models.rf_ethernetinterfaces_model import RfEthernetInterfacesModel, RfEthernetInterfacesIdModel
+from mylib.models.rf_status_model import RfStatusModel
 
 class RfManagersService(BaseService):
     # =================通用工具===================
@@ -19,25 +22,48 @@ class RfManagersService(BaseService):
         SettingModel().save_key_value(f"Managers.{servie}.ProtocolEnabled", setting["ProtocolEnabled"])
         SettingModel().save_key_value(f"Managers.{servie}.Port", setting["Port"])
     
-    def get_networkprotocol(self, servie: str, setting):
-        SettingModel().get_by_key(f"Managers.{servie}.ProtocolEnabled", setting["ProtocolEnabled"])
-        SettingModel().get_by_key(f"Managers.{servie}.Port", setting["Port"])        
+    def get_networkprotocol(self, servie: str):
+        # SettingModel().get_by_key(f"Managers.{servie}.ProtocolEnabled")
+        # SettingModel().get_by_key(f"Managers.{servie}.Port")  
+        return {"ProtocolEnabled": bool(int(SettingModel().get_by_key(f"Managers.{servie}.ProtocolEnabled").value)), "Port": int(SettingModel().get_by_key(f"Managers.{servie}.Port").value)}
+            
+        
+    def get_ethernet_data(self):
+        return get_physical_nics()      
+    
+    def get_ethernet_entry(self, target_name, data):
+        entry = next((item for item in data if item['Name'] == target_name), None)
+        return entry
+    
+    def net_info(self, interfaces): # 暫放
+        print(f"共 {len(interfaces)} 張實體網卡：")
+        for iface in interfaces:
+            print(f"\n名稱: {iface['Name']}")
+            print(f"  MAC            : {iface['MAC']}")
+            print(f"  IPv4           : {iface['IPv4']}")
+            print(f"  IPv6           : {iface['IPv6']}")
+            print(f"  Speed (Mbps)   : {iface['Speed_Mbps']}")
+            print(f"  MTU            : {iface['MTU']}")
+            print(f"  Full Duplex    : {iface['FullDuplex']}")
+            print(f"  Is Up          : {iface['isUp']}")
     # ================NetworkProtocol================
     def NetworkProtocol_service(self) -> dict:
         m = RfNetworkProtocolModel()
         m.HostName = "TBD"
-        m.FQDN = None
+        m.FQDN = "null"
+        m.SNMP = self.get_networkprotocol("SNMP")
+        
         return m.to_dict()
     
     def NetworkProtocol_service_patch(self, body):
+        ProtocolEnabled = 1 if body["SNMP"]["ProtocolEnabled"] else 0
         snmp_setting ={
-            "ProtocolEnabled": body["SNMP"]["ProtocolEnabled"],
-            "Port": 9001
+            "ProtocolEnabled": ProtocolEnabled,
+            "Port": 9000
         } 
         
-        m = RfNetworkProtocolModel()
         self.save_networkprotocol("SNMP", snmp_setting)
-        return m.to_dict(), 200
+        return self.NetworkProtocol_service(), 200
     
     def NetworkProtocol_Snmp_get(self) -> dict:
         '''
@@ -78,7 +104,59 @@ class RfManagersService(BaseService):
                 "error": "Forwarding to the CDU control service failed",
                 "details": str(e)
             }, 502  
+            
+    # ================動態抓取本機網路(內網外網要分)================    
+    # def get_ethernetinterfaces(self):
+    #     net_data = self.get_ethernet_data()
         
+    #     m = RfEthernetInterfacesModel()
+    #     m.Members_odata_count = len(net_data)
+    #     for i in range(len(net_data)):
+    #         s = {
+    #             "@odata.id": f"redfish/v1/Managers/CDU/EthernetInterfaces/{net_data[i]['Name']}"
+    #         }
+            
+    #         m.Members.append(s)
+        
+    #     return m.to_dict(), 200
+    
+    # def get_ethernetinterfaces_id(self, id: str):
+    #     net_data_from_rest = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/network")
+    #     print(net_data_from_rest)
+    #     print(len(net_data_from_rest))
+    #     m = RfEthernetInterfacesIdModel(ethernet_interfaces_id=id)
+    #     net_data = self.get_ethernet_data() 
+    #     data = self.get_ethernet_entry(id, net_data)
+    #     self.net_info(net_data) # 測試使用
+    #     if data is None:
+    #         return {"message": f"Ethernet interface {id} not found"}, 404
+    #     m.LinkStatus = "LinkUp" if data["isUp"] else "LinkDown"
+    #     m.InterfaceEnabled = data["isUp"]
+    #     m.MACAddress = data["MAC"]
+    #     m.SpeedMbps = data["Speed_Mbps"]
+    #     m.FullDuplex = data["FullDuplex"]
+    #     m.MTUSize = data["MTU"]
+        
+    #     m.Redfish_WriteableProperties = ["InterfaceEnabled"]
+    #     m.HostName = id
+    #     m.FQDN = None
+    #     # Ipv4
+    #     Ipv4 = RfEthernetInterfacesIdModel._ipv4_addresses()
+    #     Ipv4.Address = data["IPv4"]
+    #     Ipv4.SubnetMask = "255.255.255.0" #TBD
+    #     Ipv4.AddressOrigin = "DHCP" #TBD
+    #     Ipv4.Gateway = "192.168.3.1" #TBD
+        
+    #     m.IPv4Addresses = Ipv4 
+    #     m.NameServers = ["8.8.8.8" ]#TBD
+        
+    #     status = {
+    #         "State": "Enabled",
+    #         "Health": "OK"
+    #     }
+    #     m.Status = RfStatusModel.from_dict(status)
+    #     return m.to_dict(), 200
+    
 
     ##
     #      ___        ______ .___________. __    ______   .__   __.      _______.
