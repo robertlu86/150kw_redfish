@@ -3146,7 +3146,7 @@ def pid_import(data):
                 with ModbusTcpClient(
                     host=modbus_host, port=modbus_port, unit=modbus_slave_id
                 ) as client:
-                    client.write_register(sample_time_address, sample_time)
+                    client.write_register(sample_time_address, int(sample_time))
                     client.write_registers(data_start_address, register)
             except Exception as e:
                 print(f"write pid data error:{e}")

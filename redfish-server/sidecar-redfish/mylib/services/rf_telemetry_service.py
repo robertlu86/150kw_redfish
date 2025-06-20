@@ -12,6 +12,10 @@ from mylib.services.base_service import BaseService
 from mylib.adapters.sensor_csv_adapter import SensorCsvAdapter
 from mylib.models.sensor_log_model import SensorLogModel
 from mylib.models.rf_metric_definition_model import RfMetricDefinitionCollectionModel, RfMetricDefinitionModel
+from mylib.models.rf_metric_report_definition_model import (
+    RfMetricReportDefinitionCollectionModel,
+    RfMetricReportDefinitionModel,
+)
 
 
 class RfTelemetryService(BaseService):
@@ -111,7 +115,7 @@ class RfTelemetryService(BaseService):
                     )
             report = {
                 "@odata.id": f"/redfish/v1/TelemetryService/MetricReports/{report_id}",
-                "@odata.type": "#MetricReport.v1_0_0.MetricReport",
+                "@odata.type": "#MetricReport.v1_5_2.MetricReport",
                 "Id": report_id,
                 "Name": f"CDU 3-Minute Data Collection Report - {report_timestamp_iso}",
                 "Timestamp": report_timestamp_iso,
@@ -211,3 +215,52 @@ class RfTelemetryService(BaseService):
             return m.to_dict()
             
             
+    def fetch_TelemetryService_MetricReportDefinitions(self, metric_report_definition_id=None) -> dict:
+        """
+        """
+
+        metrics, metric_dicts = self.load_metric_definitions()
+
+        if metric_report_definition_id == None:
+            m = RfMetricReportDefinitionCollectionModel()
+
+            m.Members.append(
+                {
+                    "@odata.id": "/redfish/v1/TelemetryService/MetricReportDefinitions/1"
+                }
+            )
+
+            m.odata_context = "/redfish/v1/$metadata#MetricReportDefinitionCollection.MetricReportDefinitionCollection"
+            m.odata_id = "/redfish/v1/TelemetryService/MetricReportDefinitions"
+            m.odata_type = "#MetricReportDefinitionCollection.MetricReportDefinitionCollection"
+            m.Name = "Metric Report Definition Collection"
+            m.Members_odata_count = len(m.Members)
+            return m.to_dict()
+        else:
+            if metric_report_definition_id != "1":
+                raise ProjError(HTTPStatus.NOT_FOUND, f"MetricReportDefinition, {metric_report_definition_id}, not found")
+            
+            m = RfMetricReportDefinitionModel()
+            m.Metrics = []
+            
+            for metric in metrics:
+                m.Metrics.append(
+                    {
+                        "@odata.id": f"/redfish/v1/TelemetryService/MetricDefinitions/{metric['FieldName']}"
+                    }
+                )
+            
+            m.odata_context = "/redfish/v1/$metadata#MetricReportDefinition.MetricReportDefinition"
+            m.odata_id = "/redfish/v1/TelemetryService/MetricReportDefinitions/1"
+            m.odata_type = "#MetricReportDefinition.v1_0_0.MetricReportDefinition"
+            m.Id = "1" # metric_report_definition_id
+            m.Name = "Periodic Reort" 
+            m.MetricReportDefinitionType = "Periodic"
+            m.Schedule = {
+                "RecurrenceInterval": "PT3M"  # ISO 8601 duration format for 3 minutes
+            }
+            m.ReportActions = [
+                "LogToMetricReportsCollection"
+            ]
+            
+            return m.to_dict()

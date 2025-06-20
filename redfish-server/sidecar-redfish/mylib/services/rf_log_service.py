@@ -96,11 +96,11 @@ class RfLogService(BaseService):
             "Status": status.to_dict(),
             
             # Recommended field in interop validator
-            # "Actions": {
-            #     "#LogService.ClearLog": {
-            #         "target": f"/redfish/v1/Managers/CDU/LogServices/{log_id}/Actions/LogService.ClearLog",
-            #     }
-            # },
+            "Actions": {
+                "#LogService.ClearLog": {
+                    "target": f"/redfish/v1/Managers/CDU/LogServices/{log_service_id}/Actions/LogService.ClearLog",
+                }
+            },
             "Oem": {}
         }
 
@@ -143,7 +143,7 @@ class RfLogService(BaseService):
                 "@odata.id": f"/redfish/v1/Managers/CDU/LogServices/{log_service_id}/Entries/{sn}",
                 "Id": str(sn),
                 "Name": f"Log Entry {sn} of log_id:{log_service_id}",
-                "EntryType": RfLogEntryTypes.OEM,
+                "EntryType": RfLogEntryType.Oem,
             })
 
         return resp_json
@@ -158,7 +158,7 @@ class RfLogService(BaseService):
         
         log_entries = WebAppJsonReader.read_all_errorlog_entries()
 
-        if entry_id > str(len(log_entries)) or entry_id < "1":
+        if int(entry_id) > len(log_entries) or int(entry_id) < 1:
             raise ProjError(HTTPStatus.NOT_FOUND.value, f"/LogService/{log_service_id}/Entries/{entry_id} is not exist!")
 
         signal_record = log_entries[int(entry_id) - 1]

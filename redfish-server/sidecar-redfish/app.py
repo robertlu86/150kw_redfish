@@ -93,9 +93,18 @@ api = Api(
 )
 
 
-@app.route("/redfish", methods=["GET"])
+@app.route("/redfish", methods=["GET"], strict_slashes=False)
 def redfish_root():
-    return jsonify({"v1": "/redfish/v1/"})
+    root = {
+        "@odata.id": "/redfish",
+        "@odata.type": "#RedfishVersionCollection.RedfishVersionCollection",
+        "Name": "Redfish Service Versions",
+        "Members@odata.count": 1,
+        "Members": [
+            { "@odata.id": "/redfish/v1" }
+        ]
+    }
+    return root, 200
 
 
 @app.route("/debug", methods=["GET"])

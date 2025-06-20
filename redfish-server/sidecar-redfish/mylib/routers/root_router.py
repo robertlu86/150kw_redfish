@@ -8,7 +8,7 @@ root_ns = Namespace('', description='Redfish V1')
 
 root_data={
     "@odata.id": "/redfish/v1/",
-    "@odata.type": "#ServiceRoot.v1_17_0.ServiceRoot",
+    "@odata.type": "#ServiceRoot.v1_18_0.ServiceRoot",
     "Id": "RootService",
     "Name": "Redfish Service",
     "RedfishVersion": "1.14.0",
