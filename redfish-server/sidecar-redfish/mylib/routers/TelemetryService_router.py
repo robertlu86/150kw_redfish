@@ -7,26 +7,15 @@ from dotenv import load_dotenv
 from flask import abort
 from mylib.services.rf_telemetry_service import RfTelemetryService
 from mylib.models.sensor_log_model import SensorLogModel
-# telemetry_service = RfTelemetryService()
-
-# --- 新增/必要的導入 ---
-from mylib.services.rf_telemetry_service import RfTelemetryService
-
-#load_dotenv(dotenv_path=".env-dev")
-
-# TelemetryService_ns = Namespace("", description="Telemetry Collection")
-
-# 創建 Namespace
-TelemetryService_ns = Namespace("TelemetryService", path="/redfish/v1")
-
-# 創建 Service 的實例，供所有路由方法使用
 telemetry_service = RfTelemetryService()
 
+# load_dotenv(dotenv_path=".env-dev") # marked by welson (`load_dotenv()` is only allowed in app.p)
+TelemetryService_ns = Namespace("TelemetryService", path="/redfish/v1")
 
 TelemetryService_data = {
     "@odata.id": "/redfish/v1/TelemetryService",
     "@odata.type": "#TelemetryService.v1_3_4.TelemetryService",
-    # "@odata.context": "/redfish/v1/$metadata#TelemetryService.v1_3_4.TelemetryService",
+    "@odata.context": "/redfish/v1/$metadata#TelemetryService.v1_3_4.TelemetryService",
     "Id": "TelemetryService",
     "Name": "CDU Telemetry Service",
     # "Description": "Telemetry Service",
@@ -97,6 +86,9 @@ REPORT_DEFS = [
         "Schedule": {
             "RecurrenceInterval": "PT3M"                    #每3分鐘產生一次報告
         },
+        "ReportActions": [
+                "LogToMetricReportsCollection"
+            ],
         "Metrics": [
             {"@odata.id": f"/redfish/v1/TelemetryService/MetricDefinitions/{m['Id']}"}
             for m in METRIC_DEFS
@@ -157,6 +149,8 @@ class MetricDefinition(Resource):
 @TelemetryService_ns.route("/TelemetryService/MetricReportDefinitions")
 class MetricReportDefCollection(Resource):
     def get(self):
+        return telemetry_service.fetch_TelemetryService_MetricReportDefinitions()
+        """
         members = [
             {
                 "@odata.id": f"/redfish/v1/TelemetryService/MetricReportDefinitions/{r['Id']}"
@@ -171,49 +165,16 @@ class MetricReportDefCollection(Resource):
             "Members@odata.count": len(members),
             "Members": members,
         }, 200
+        """
 
 
 # Individual MetricReportDefinition
 @TelemetryService_ns.route(
-    "/TelemetryService/MetricReportDefinitions/<string:report_id>"
+    "/TelemetryService/MetricReportDefinitions/<string:metric_report_definition_id>"
 )
 class MetricReportDef(Resource):
-    def get(self, report_id):
-        m = SensorLogModel.to_metric_definitions()
-        metricdefinition = []
-        for entry in m:
-            metric = {
-                "Id": entry["FieldName"],
-                "Name": entry["Alias"] or entry["FieldName"],
-                "MetricDataType": entry["MetricDataType"],
-            }
-            if entry["Units"] is not None:
-                metric["Units"] = entry["Units"]
-            metricdefinition.append(metric)
-        
-        report = {
-            "@odata.context": "/redfish/v1/$metadata#MetricReportDefinition.MetricReportDefinition",
-            "@odata.id": f"/redfish/v1/TelemetryService/MetricReportDefinitions/{report_id}",
-            "@odata.type": "#MetricReportDefinition.v1_0_0.MetricReportDefinition",
-            "Id": report_id,
-            "Name": "Periodic Report",
-            "MetricReportDefinitionType": "Periodic",   # 產生報告的方式:定期產生報告
-            "ReportUpdates": "AppendWrapsWhenFull",     # 更新報告的方式:當報告達到最大容量時，新的資料會覆蓋最舊的資料
-            "Schedule": {
-                "RecurrenceInterval": "PT3M"            # 每3分鐘產生一次報告
-            },
-            "ReportActions": [
-                "LogToMetricReportsCollection"          
-            ],
-            "Metrics": [
-                {"@odata.id": f"/redfish/v1/TelemetryService/MetricDefinitions/{m['Id']}"}
-                for m in metricdefinition
-            ],
-        }
-        return report, 200
-    
-
-    
+    def get(self, metric_report_definition_id):
+        return telemetry_service.fetch_TelemetryService_MetricReportDefinitions(metric_report_definition_id)
         '''
         for r in REPORT_DEFS:
             if r["Id"] == report_id:

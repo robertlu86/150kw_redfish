@@ -129,13 +129,12 @@ class FirmwareInventoryControlUnit_1(Resource):
             # "ReleaseDate": "2025-02-21T06:02:08Z", # TBD
             # 是否可更新
             "Updateable": False,    
-            "Version": load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/display/version")["version"]["PLC"],
+            "Version": str(load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/display/version")["version"]["PLC"]),
             "SoftwareId": "PLC-VERSION",
             "Oem": {}
         }
         return controlunit1_data
 
-# 要確認
 @update_ns.route("/UpdateService/SimpleUpdateActionInfo")
 class SimpleUpdateActionInfo(Resource):
     def get(self):
@@ -164,7 +163,7 @@ class ActionsUpdateCduSimpleUpdate(Resource):
     def post(self):
         
         ORIGIN_UPLOAD_API = f"{CDU_BASE}/api/v1/update_firmware"
-        file = request.files.get("File")
+        file = request.files.get("ImageFile")
         image_uri = request.form.get("ImageURI")  # 從表單中獲取 ImageURI
 
         # 如果同時有上傳檔案和 ImageURI，優先處理 ImageURI

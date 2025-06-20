@@ -89,12 +89,16 @@ class RfPumpModel(RfResourceBaseModel):
         self.Id = pump_id
         self.PumpType = RfPumpType.Liquid
         self.Name = f"Pump {pump_id}"
-        raw_actions = {
-            "#Pump.SetMode": {
-                "target": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/Pumps/{pump_id}/Actions/Pump.SetMode"
-            }
-        }   
-        self.Actions = RfActions(**raw_actions)
+        m = RfActions()
+        m.PumpSetMode = {
+            "target": f"/redfish/v1/ThermalEquipment/CDUs/{cdu_id}/Pumps/{pump_id}/Actions/Pump.SetMode",
+            "Mode@Redfish.AllowableValues": [
+                "Enabled",
+                "Disabled"
+            ]
+        }
+  
+        self.Actions = m
         self.Location = RfLocationModel(**hardware_info["Pumps"][pump_id]["Location"])
         self.Oem= {
             "supermicro": {

@@ -101,7 +101,7 @@ class RfNetworkProtocolModel(RfResourceBaseModel):
         )
         self.SSH = _rf_SSH(
             ProtocolEnabled = st["SSHEnabled"],
-            Port = st["HTTPPort"]
+            Port = st["SSHPort"]
         )
         self.SNMP = rf_SNMP(
             ProtocolEnabled = st["SNMPEnabled"],

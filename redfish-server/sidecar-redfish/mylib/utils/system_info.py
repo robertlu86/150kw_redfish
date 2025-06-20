@@ -41,19 +41,16 @@ def get_first_mac_psutil() -> str:
 #====================================================
 # get network info 
 # ===================================================
-def list_nics_fullinfo():
-    """
-    同時取得：
-      - 介面數量
-      - 每張網卡的是否啟用、速度 (Mbps)、MAC Address
-    """
+def get_physical_nics():
     stats = psutil.net_if_stats()
     addrs = psutil.net_if_addrs()
     interfaces = []
 
     for name, stat in stats.items():
-        # Filter out down or non-physical (speed == 0) interfaces
+        # 介面必須啟用、速度>0，且名稱不包含 loopback
         if not stat.isup or getattr(stat, 'speed', 0) <= 0:
+            continue
+        if 'loopback' in name.lower():
             continue
 
         iface = {
@@ -64,11 +61,13 @@ def list_nics_fullinfo():
             'Speed_Mbps': stat.speed,
             'MTU': stat.mtu,
             'FullDuplex': stat.duplex == psutil.NIC_DUPLEX_FULL,
-            'isUp': stat.isup
+            'isUp': stat.isup,
+            'Mask': None
         }
 
         for addr in addrs.get(name, []):
             if addr.family == socket.AF_INET:
+                # 只紀錄非 127.x.x.x 地址
                 if not addr.address.startswith('127.'):
                     iface['IPv4'].append(addr.address)
             elif addr.family == socket.AF_INET6:
@@ -80,20 +79,20 @@ def list_nics_fullinfo():
         if not iface['IPv4']:
             continue
 
-        # Convert lists to comma-separated strings
         iface['IPv4'] = ', '.join(iface['IPv4'])
         iface['IPv6'] = ', '.join(iface['IPv6'])
         interfaces.append(iface)
-        print(f"共 {len(interfaces)} 張實體網卡：")
-        for iface in interfaces:
-            print(f"\n名稱: {iface['Name']}")
-            print(f"  MAC            : {iface['MAC']}")
-            print(f"  IPv4           : {iface['IPv4']}")
-            print(f"  IPv6           : {iface['IPv6']}")
-            print(f"  Speed (Mbps)   : {iface['Speed_Mbps']}")
-            print(f"  MTU            : {iface['MTU']}")
-            print(f"  Full Duplex    : {iface['FullDuplex']}")
-            print(f"  Is Up          : {iface['isUp']}")
+        
+        # print(f"共 {len(interfaces)} 張實體網卡：")
+        # for iface in interfaces:
+        #     print(f"\n名稱: {iface['Name']}")
+        #     print(f"  MAC            : {iface['MAC']}")
+        #     print(f"  IPv4           : {iface['IPv4']}")
+        #     print(f"  IPv6           : {iface['IPv6']}")
+        #     print(f"  Speed (Mbps)   : {iface['Speed_Mbps']}")
+        #     print(f"  MTU            : {iface['MTU']}")
+        #     print(f"  Full Duplex    : {iface['FullDuplex']}")
+        #     print(f"  Is Up          : {iface['isUp']}")
 
     return interfaces
 

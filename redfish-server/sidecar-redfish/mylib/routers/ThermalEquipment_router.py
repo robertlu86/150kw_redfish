@@ -755,8 +755,8 @@ class PrimaryCoolantConnectors1(Resource):
         PrimaryCoolantConnectors_data_1["Oem"]["supermicro"]["PumpSwapTime"]["SetPoint"]["Value"] = pump_swap_time
         
         controlmode = GetControlMode()
-        if controlmode == "Automatic":
-            controlmode = "Manual"
+        # if controlmode == "Automatic":
+        #     controlmode = "Manual"
         PrimaryCoolantConnectors_data_1["SupplyTemperatureControlCelsius"]["ControlMode"] = controlmode
         PrimaryCoolantConnectors_data_1["DeltaPressureControlkPa"]["ControlMode"] = controlmode
         return PrimaryCoolantConnectors_data_1
@@ -1027,7 +1027,7 @@ class LeakDetectionLeakDetectors1(MyBaseThermalEquipment):
         rep = RfThermalEquipmentService().fetch_CDUs_LeakDetection_LeakDetectors_id(cdu_id, leak_detector_id)
         return rep
 
-CoolingUnit_patch = ThermalEquipment_ns.model('CoolingUnitPatch', {
+Mode_common = ThermalEquipment_ns.model('CoolingUnitPatch', {
     'Mode': fields.String(
         required=True,
         description='Automatic Switch',
@@ -1040,12 +1040,21 @@ CoolingUnit_patch = ThermalEquipment_ns.model('CoolingUnitPatch', {
 @ThermalEquipment_ns.route("/ThermalEquipment/CDUs/<string:cdu_id>/Actions/CoolingUnit.SetMode")
 class CoolingUnitSetMode(Resource):
     # # @requires_auth
-    @ThermalEquipment_ns.expect(CoolingUnit_patch, validate=True)
+    @ThermalEquipment_ns.expect(Mode_common, validate=True)
     def post(self, cdu_id):
         data = request.get_json(force=True)
         return RfThermalEquipmentService().fetch_CDUs_SetMode(cdu_id, data)
 
 
+
+
+@ThermalEquipment_ns.route("/ThermalEquipment/CDUs/<string:cdu_id>/Pumps/<string:pump_id>/Actions/Pump.SetMode")
+class PumpSetMode(Resource):
+    # # @requires_auth
+    @ThermalEquipment_ns.expect(Mode_common, validate=True)
+    def post(self, cdu_id, pump_id):
+        data = request.get_json(force=True)
+        return RfThermalEquipmentService().fetch_CDUs_Pumps_SetMode(cdu_id, pump_id, data)
 
 # 0513新增 /redfish/v1/ThermalEquipment/CDUs/{CoolingUnitId}/Oem
 # @ThermalEquipment_ns.route('/ThermalEquipment/CDUs/<string:id>/Oem')
