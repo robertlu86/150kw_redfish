@@ -4082,7 +4082,7 @@ block styles %}
                         if (json_data.hasOwnProperty(key)) {
                             var value = json_data[key];
                             var element = document.getElementById(key);
-                            if (["SN", "Model", "Version"].includes(key)) {
+                            if (["SN", "Model", "PartNumber"].includes(key)) {
                                 element.value = value;
                             }
                         }

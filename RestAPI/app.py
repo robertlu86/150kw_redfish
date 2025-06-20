@@ -2557,7 +2557,7 @@ class Oem(Resource):
         rep["TargetTemperature"] = data["value"]["resultTemp"]
         rep["TargetPressure"] = data["value"]["resultPressure"]
         rep["PumpSwapTime"] = data["value"]["resultSwap"]
-        rep["FanSetPoint"] = data["value"]["fan_speed"]
+        rep["FanSetPoint"] = 0 if data["value"]["fan_speed"] < 15 else data["value"]["fan_speed"]
         rep["PumpSetPoint"] = data["value"]["pump_speed"]
         rep["Pump1Switch"] = data["value"]["pump1_check"]
         rep["Pump2Switch"] = data["value"]["pump2_check"]
