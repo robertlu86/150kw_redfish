@@ -603,7 +603,7 @@ sensorData = {
         "unit_flow": "",
     },
     "filter": {"all_filter_sw": False},
-    # "valve": {"EV1": False, "EV2": False, "EV3": False, "EV4": False},
+
     "collapse": {
         "t1sp_adjust_zero": False,
         "p1sp_adjust_zero": False,
@@ -615,16 +615,7 @@ sensorData = {
         "p1sp_show_final": False,
         "p2sp_show_final": False,
     },
-    # "ev": {
-    #     "EV1_Open": False,
-    #     "EV1_Close": False,
-    #     "EV2_Open": False,
-    #     "EV2_Close": False,
-    #     "EV3_Open": False,
-    #     "EV3_Close": False,
-    #     "EV4_Open": False,
-    #     "EV4_Close": False,
-    # },
+
     "rack_status": {
         "rack1_status": 0,
         "rack2_status": 0,
@@ -831,16 +822,7 @@ ctr_data = {
     },
     "checkbox": {"filter_unlock_sw": True, "all_filter_sw": False},
     "unit": {"unit_temp": "", "unit_prsr": ""},
-    # "valve": {
-    #     "ev1_sw": False,
-    #     "ev2_sw": False,
-    #     "ev3_sw": False,
-    #     "ev4_sw": False,
-    #     "resultEV1": False,
-    #     "resultEV2": False,
-    #     "resultEV3": False,
-    #     "resultEV4": False,
-    # },
+
     "filter": {
         "f1": 0,
         "f2": 0,
@@ -5674,58 +5656,55 @@ def download_operation_logs(filename):
 @app.route("/operation_logs_restapi")
 @login_required
 def operation_logs_restapi():
-    directory = f"{snmp_path}/RestAPI/logs/operation"
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-    files = os.listdir(f"{snmp_path}/RestAPI/logs/operation")
+    # directory = f"{snmp_path}/RestAPI/logs/operation"
+    
+    operation_dir = os.path.join(snmp_path, "RestAPI", "logs", "operation")
+    old_operation_dir = os.path.join(snmp_path, "RestAPI", "logs", "old_operation")
+    
 
-    files = [f for f in files if not (f.startswith(".__") or f == ".DS_Store")]
-    sorted_files = sorted(
-        files,
-        key=lambda x: (
-            x != "oplog_api.log",
-            x.split(".")[-1] if x != "oplog_api.log" else "",
-        ),
-        reverse=True,
+    if not os.path.exists(operation_dir):
+        os.makedirs(operation_dir)
+
+    operation_files = os.listdir(operation_dir)
+    operation_files = [f for f in operation_files if not (f.startswith(".__") or f == ".DS_Store")]
+
+    sorted_operation_files = sorted(
+        operation_files, key=lambda x: (x != "oplog_api.log", x.split(".")[-1] if x != "oplog_api.log" else ""),reverse=True
     )
-    if "oplog_api.log" in sorted_files:
-        sorted_files.insert(0, sorted_files.pop(sorted_files.index("oplog_api.log")))
+    if "oplog_api.log" in sorted_operation_files:
+        sorted_operation_files.insert(0, sorted_operation_files.pop(sorted_operation_files.index("oplog_api.log")))
+
+    old_operation_files = []
+    if current_user.id == "superuser":
+        if not os.path.exists(old_operation_dir):
+            os.makedirs(old_operation_dir)
+
+        old_operation_files = os.listdir(old_operation_dir)
+        old_operation_files = [f for f in old_operation_files if not (f.startswith(".__") or f == ".DS_Store")]
+        old_operation_files = sorted(
+            old_operation_files, key=lambda x: os.path.getmtime(os.path.join(old_operation_dir, x)), reverse=True
+        )
 
     return render_template(
-        "operationLogRestAPI.html", files=sorted_files, user=current_user.id
+        "operationLogRestAPI.html",
+        files=sorted_operation_files,
+        old_files=old_operation_files,
+        user=current_user.id
     )
-
 
 @app.route("/operation_logs_restapi/<path:filename>")
 @login_required
 def download_operation_logs_restapi(filename):
-    return send_from_directory(
-        f"{snmp_path}/RestAPI/logs/operation", filename, as_attachment=True
-    )
+    # return send_from_directory(
+    #     f"{snmp_path}/RestAPI/logs/operation", filename, as_attachment=True
+    # )
+    archive = request.args.get("archive")
+    if archive and current_user.id != "superuser":
+        print(f'403')
 
-# @app.route("/error_logs")
-# @login_required
-# def error_logs():
-#     directory = f"{log_path}/logs/error"
-#     if not os.path.exists(directory):
-#         os.makedirs(directory)
-#     files = os.listdir(f"{log_path}/logs/error")
+    base_dir = os.path.join(snmp_path, "RestAPI","logs", "old_operation") if archive else os.path.join(snmp_path, "RestAPI", "logs", "operation")
+    return send_from_directory(base_dir, filename, as_attachment=True)
 
-#     files = [f for f in files if not (f.startswith(".__") or f == ".DS_Store")]
-
-#     sorted_files = sorted(
-#         files,
-#         key=lambda x: (
-#             x != "errorlog.log",
-#             x.split(".")[-1] if x != "errorlog.log" else "",
-#         ),
-#         reverse=True,
-#     )
-
-#     if "errorlog.log" in sorted_files:
-#         sorted_files.insert(0, sorted_files.pop(sorted_files.index("errorlog.log")))
-
-#     return render_template("errorLog.html", files=sorted_files, user=current_user.id)
 
 
 @app.route("/error_logs")
@@ -7373,23 +7352,24 @@ def import_settings():
 
 @app.route("/reboot", methods=["GET"])
 @login_required
-def restart():
-    subprocess.run(
-        ["sudo", "reboot"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
-    )
+def reboot():
+    def delayed_reboot():
+        time.sleep(5)  # 延遲 5 秒，讓 response 有時間送出
+        subprocess.run(["sudo", "reboot"], check=True)
+
+    threading.Thread(target=delayed_reboot).start()
     return "Restarting System"
 
 
 @app.route("/shutdown", methods=["GET"])
 @login_required
 def shutdown():
-    subprocess.run(
-        ["sudo", "shutdown", "now"],
-        check=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-    )
-    return "Shutting Down System"
+    def delayed_shutdown():
+        time.sleep(5)  # 延遲 5 秒，讓 response 有時間送出
+        subprocess.run(["sudo", "shutdown", "now"], check=True)
+
+    threading.Thread(target=delayed_shutdown).start()
+    return "System will shut down in 5 seconds"
 
 
 @app.route("/upload_zip", methods=["GET", "POST"])
@@ -8784,32 +8764,53 @@ def version_switch():
 
 @app.route("/download_logs/error/<date_range>")
 def download_errorlogs_by_range(date_range):
-    """Get Error Logs"""
+    """Get Error Logs within Date Range (Superuser includes old logs)"""
 
     start_date_str, end_date_str = date_range.split("~")
-
     start_date = datetime.strptime(start_date_str, "%Y-%m-%d").date()
     end_date = datetime.strptime(end_date_str, "%Y-%m-%d").date()
-
     today = datetime.now().date()
 
     zip_buffer = BytesIO()
 
     with zipfile.ZipFile(zip_buffer, "w") as zip_file:
-        files = os.listdir(f"{log_path}/logs/error")
+        # 處理 logs/error/
+        error_dir = os.path.join(log_path, "logs", "error")
+        if os.path.exists(error_dir):
+            for file in os.listdir(error_dir):
+                try:
+                    file_path = os.path.join(error_dir, file)
 
-        for file in files:
-            try:
-                if file == "errorlog.log":
-                    file_date = today
-                else:
-                    file_date_str = file.rsplit(".", 1)[-1]
-                    file_date = datetime.strptime(file_date_str, "%Y-%m-%d").date()
+                    if file == "errorlog.log":
+                        file_date = today
+                    else:
+                        file_date_str = file.rsplit(".", 1)[-1]
+                        file_date = datetime.strptime(file_date_str, "%Y-%m-%d").date()
 
-                if start_date <= file_date <= end_date:
-                    zip_file.write(f"{log_path}/logs/error/{file}", arcname=file)
-            except (IndexError, ValueError):
-                continue
+                    if start_date <= file_date <= end_date:
+                        zip_file.write(file_path, arcname=file)
+                except (IndexError, ValueError):
+                    continue
+
+        # ✅ Superuser 額外處理 logs/old_error/
+        if current_user.id == "superuser":
+            old_error_dir = os.path.join(log_path, "logs", "old_error")
+            if os.path.exists(old_error_dir):
+                for file in os.listdir(old_error_dir):
+                    try:
+                        file_path = os.path.join(old_error_dir, file)
+
+                        if file == "errorlog.log":
+                            file_date = today
+                        else:
+                            file_date_str = file.rsplit(".", 1)[-1]
+                            file_date = datetime.strptime(file_date_str, "%Y-%m-%d").date()
+
+                        if start_date <= file_date <= end_date:
+                            arcname = f"old_error/{file}"
+                            zip_file.write(file_path, arcname=arcname)
+                    except (IndexError, ValueError):
+                        continue
 
     zip_buffer.seek(0)
 
@@ -8820,37 +8821,111 @@ def download_errorlogs_by_range(date_range):
         download_name=f"errorlogs_{start_date_str}_to_{end_date_str}.zip",
     )
 
-
-@app.route("/download_logs/operation/<date_range>")
-def download_oplogs_by_range(date_range):
-    """Get Operation Logs"""
+@app.route("/download_logs/operation_restapi/<date_range>")
+def download_oplogs_restapi_by_range(date_range):
+    """Get Operation Logs (superuser includes old_operation logs)"""
 
     start_date_str, end_date_str = date_range.split("~")
 
     start_date = datetime.strptime(start_date_str, "%Y-%m-%d").date()
     end_date = datetime.strptime(end_date_str, "%Y-%m-%d").date()
-
     today = datetime.now().date()
 
     zip_buffer = BytesIO()
 
     with zipfile.ZipFile(zip_buffer, "w") as zip_file:
-        files = os.listdir(f"{log_path}/logs/operation")
+        #  logs/operation
+        op_dir = os.path.join(snmp_path, "RestAPI", "logs", "operation")
+        if os.path.exists(op_dir):
+            for file in os.listdir(op_dir):
+                try:
+                    if file == "oplog_api.log":
+                        file_date = today
+                    else:
+                        file_date_str = file.rsplit(".", 1)[-1]
+                        file_date = datetime.strptime(file_date_str, "%Y-%m-%d").date()
 
-        for file in files:
-            try:
-                if file == "oplog.log":
-                    file_date = today
-                    print(f"filedate{file_date}")
-                else:
-                    file_date_str = file.rsplit(".", 1)[-1]
-                    file_date = datetime.strptime(file_date_str, "%Y-%m-%d").date()
-                    print(f"filedate{file_date}")
+                    if start_date <= file_date <= end_date:
+                        zip_file.write(os.path.join(op_dir, file), arcname=file)
+                except (IndexError, ValueError):
+                    continue
 
-                if start_date <= file_date <= end_date:
-                    zip_file.write(f"{log_path}/logs/operation/{file}", arcname=file)
-            except (IndexError, ValueError):
-                continue
+        #  logs/old_operation (only for superuser)
+        if current_user.id == "superuser":
+            old_op_dir = os.path.join(snmp_path, "RestAPI", "logs", "old_operation")
+            if os.path.exists(old_op_dir):
+                for file in os.listdir(old_op_dir):
+                    try:
+                        if file == "oplog_api.log":
+                            file_date = today
+                        else:
+                            file_date_str = file.rsplit(".", 1)[-1]
+                            file_date = datetime.strptime(file_date_str, "%Y-%m-%d").date()
+
+                        if start_date <= file_date <= end_date:
+                            arcname = f"old_operation/{file}"
+                            zip_file.write(os.path.join(old_op_dir, file), arcname=arcname)
+                    except (IndexError, ValueError):
+                        continue
+
+    zip_buffer.seek(0)
+
+    return send_file(
+        zip_buffer,
+        mimetype="application/zip",
+        as_attachment=True,
+        download_name=f"oplogs_{start_date_str}_to_{end_date_str}.zip",
+    )
+    
+    
+    
+
+@app.route("/download_logs/operation/<date_range>")
+def download_oplogs_by_range(date_range):
+    """Get Operation Logs (superuser includes old_operation logs)"""
+
+    start_date_str, end_date_str = date_range.split("~")
+
+    start_date = datetime.strptime(start_date_str, "%Y-%m-%d").date()
+    end_date = datetime.strptime(end_date_str, "%Y-%m-%d").date()
+    today = datetime.now().date()
+
+    zip_buffer = BytesIO()
+
+    with zipfile.ZipFile(zip_buffer, "w") as zip_file:
+        #  logs/operation
+        op_dir = os.path.join(log_path, "logs", "operation")
+        if os.path.exists(op_dir):
+            for file in os.listdir(op_dir):
+                try:
+                    if file == "oplog.log":
+                        file_date = today
+                    else:
+                        file_date_str = file.rsplit(".", 1)[-1]
+                        file_date = datetime.strptime(file_date_str, "%Y-%m-%d").date()
+
+                    if start_date <= file_date <= end_date:
+                        zip_file.write(os.path.join(op_dir, file), arcname=file)
+                except (IndexError, ValueError):
+                    continue
+
+        #  logs/old_operation (only for superuser)
+        if current_user.id == "superuser":
+            old_op_dir = os.path.join(log_path, "logs", "old_operation")
+            if os.path.exists(old_op_dir):
+                for file in os.listdir(old_op_dir):
+                    try:
+                        if file == "oplog.log":
+                            file_date = today
+                        else:
+                            file_date_str = file.rsplit(".", 1)[-1]
+                            file_date = datetime.strptime(file_date_str, "%Y-%m-%d").date()
+
+                        if start_date <= file_date <= end_date:
+                            arcname = f"old_operation/{file}"
+                            zip_file.write(os.path.join(old_op_dir, file), arcname=arcname)
+                    except (IndexError, ValueError):
+                        continue
 
     zip_buffer.seek(0)
 
@@ -8885,7 +8960,22 @@ def download_sensorlogs_by_range(date_range):
                     zip_file.write(f"{log_path}/logs/sensor/{file}", arcname=file)
             except (IndexError, ValueError):
                 continue
+        # ✅ Superuser 的額外處理：logs/old_sensor/
+        if current_user.id == "superuser":
+            old_sensor_dir = os.path.join(log_path, "logs", "old_sensor")
+            if os.path.exists(old_sensor_dir):
+                old_files = os.listdir(old_sensor_dir)
+                for file in old_files:
+                    try:
+                        file_date_str = file.rsplit(".")[-2]
+                        file_date = datetime.strptime(file_date_str, "%Y-%m-%d")
 
+                        if start_date <= file_date <= end_date:
+                            # arcname 放在子資料夾中，讓 zip 結構清晰
+                            arcname = f"old_sensor/{file}"
+                            zip_file.write(os.path.join(old_sensor_dir, file), arcname=arcname)
+                    except (IndexError, ValueError):
+                        continue
     zip_buffer.seek(0)
 
     return send_file(

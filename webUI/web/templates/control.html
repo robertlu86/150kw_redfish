@@ -1539,19 +1539,6 @@ styles %}
                     }
                 }
 
-                if (userType == "superuser" || userType == "root") {
-                    const evElements = $("#ev1_sw, #ev2_sw, #ev3_sw, #ev4_sw");
-                    evElements.attr("disabled", true);
-                    if (
-                        selectedValue === "engineer" &&
-                        data["value"]["resultP1"] == 0 &&
-                        data["value"]["resultP2"] == 0
-                    ) {
-                        evElements.removeAttr("disabled");
-                    } else {
-                        evElements.attr("disabled", true);
-                    }
-                }
             }
 
             for (var key in data["text"]) {
@@ -2098,31 +2085,6 @@ styles %}
                 data: formData,
                 processData: false,
                 contentType: false,
-                // success: function (response) {
-                //     clearInterval(interval);
-                //     progressBar.css("width", "100%");
-                //     progressText.text("100% upload successfully");
-                //     Swal.fire({
-                //         title: "Success",
-                //         text: "Upload Completed, system will reboot...",
-                //         icon: "success",
-                //         showConfirmButton: false,
-                //         timer: 5000, // 5 秒後自動關閉
-                //         didOpen: () => {
-                //             // SweetAlert 開啟後呼叫 reboot API
-                //             $.ajax({
-                //                 url: "/reboot-all",
-                //                 type: "GET",
-                //                 success: function (res) {
-                //                     console.log("Reboot triggered:", res);
-                //                 },
-                //                 error: function (xhr) {
-                //                     console.error("Failed to reboot:", xhr);
-                //                 }
-                //             });
-                //         }
-                //     });
-                // },
                 success: function (response) {
                     clearInterval(interval);
                     progressBar.css("width", "100%");
@@ -2187,9 +2149,7 @@ styles %}
             });
         });
 
-        if (userType === "superuser" || userType === "root") {
-            $("#ev1_sw, #ev2_sw, #ev3_sw, #ev4_sw").attr("disabled", true);
-        }
+
 
         function set_mode(force_change_mode, mode_input, selectedValue) {
             $.ajax({
