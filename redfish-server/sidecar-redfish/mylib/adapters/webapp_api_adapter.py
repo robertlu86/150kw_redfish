@@ -131,9 +131,27 @@ class WebAppAPIAdapter:
     
     def setting_snmp(self, data: dict) -> dict:
         '''
-        POST from webUI
+        POST SNMP setting
         '''
         url = f"{self.host}/store_snmp_setting"
+        response = self.session.post(url, json=data)
+        self._handle_response(response)
+
+        return response
+    
+    def sync_time(self, data: dict) -> dict:
+        '''
+        POST NTP
+        data:{
+            ntp_server: "ntp.ubuntu.com",
+            timezone: "(UTC+08:00) Taipei"
+        }
+        '''
+        data = {
+            "ntp_server": data["ntp_server"],
+            "timezone": "Asia/Taipei"
+        }
+        url = f"{self.host}/sync_time"
         response = self.session.post(url, json=data)
         self._handle_response(response)
 
