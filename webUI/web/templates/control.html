@@ -2347,6 +2347,16 @@ styles %}
                     return;
                 }
 
+                if(swap < 0 || swap > 24){
+                    Swal.fire({
+                        title: "Warning",
+                        text: "Pump swap time must be between 0 and 24 hours",
+                        icon: "warning",
+                        confirmButtonText: "OK",
+                    });
+                    return;
+                }
+
                 check_val = cvtInputValue(swap);
                 if (swap !== check_val || !check_val) {
                     Swal.fire({
@@ -2432,7 +2442,6 @@ styles %}
                 set_mode(force_change_mode, mode_input, mode);
             }
         });
-
 
 
         $("#submitButton").click(function () {

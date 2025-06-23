@@ -1380,6 +1380,12 @@ valve_factory = {"ambient": 20, "coolant": 20}
 
 auto_factory = {"fan": 100, "pump": 80}
 
+dpt_error_factory = {"fan": 20, "t1": 60}
+
+auto_mode_setting_factory = {
+    "fan": 20,
+}
+
 ver_switch = {
     "median_switch": False,
     "coolant_quality_meter_switch": False,
@@ -2033,6 +2039,15 @@ pid_order = {
     ],
 }
 auto_setting = {"auto_broken_temperature": 0, "auto_broken_pressure": 0}
+
+dpt_error_setting = {
+    "dpt_error_fan": 0,
+    "dpt_error_t1": 0,
+}
+
+auto_mode_setting = {
+    "auto_mode_fan": 0,
+}
 
 system_data = {
     "value": {
@@ -2874,6 +2889,16 @@ def change_to_metric():
     except Exception as e:
         print(f"measure data input error:{e}")
         return retry_modbus(901 + i * 2, registers, "register")
+    
+    t1 = round((float(auto_mode_setting["t1"]) - 32) * 5.0 / 9.0)
+    try:
+        with ModbusTcpClient(
+            host=modbus_host, port=modbus_port, unit=modbus_slave_id
+        ) as client:
+            client.write_registers(980, [t1])
+    except Exception as e:
+        print(f"write t1:{e}")
+        return retry_modbus(980, [t1], "register")
 
 
 def change_to_imperial():
@@ -2992,6 +3017,16 @@ def change_to_imperial():
     except Exception as e:
         print(f"measure data input error:{e}")
         return retry_modbus(901 + i * 2, registers, "register")
+    
+    t1 = round((auto_mode_setting["t1"]) * 9.0 / 5.0 + 32.0)
+    try:
+        with ModbusTcpClient(
+            host=modbus_host, port=modbus_port, unit=modbus_slave_id
+        ) as client:
+            client.write_registers(980, [t1])
+    except Exception as e:
+        print(f"write t1:{e}")
+        return retry_modbus(980, [t1], "register")
 
 def auto_import(data):
     try:
@@ -3007,6 +3042,39 @@ def auto_import(data):
 
     op_logger.info(
         "Auto Mode Redundant Sensor Broken Setting Inputs received successfully"
+    )
+    return "Inputs received successfully"
+
+def dpt_error_import(data):
+    try:
+        with ModbusTcpClient(
+            host=modbus_host, port=modbus_port, unit=modbus_slave_id
+        ) as client:
+            client.write_register(974, int(data["fan"]))
+            client.write_register(980, int(data["t1"]))
+    except Exception as e:
+        print(f"auto setting:{e}")
+        return retry_modbus_2reg(974, [int(data["fan"])], 980, int(data["t1"]))
+
+    op_logger.info(
+        "Dew Point Error Setting Inputs received successfully"
+    )
+    return "Inputs received successfully"
+
+def auto_mode_import(data):
+    try:
+        with ModbusTcpClient(
+            host=modbus_host, port=modbus_port, unit=modbus_slave_id
+        ) as client:
+            fan_rpm = data["fan"] * 160
+            client.write_register(533, int(fan_rpm))
+
+    except Exception as e:
+        print(f"auto setting:{e}")
+        return retry_modbus(533, [int(fan_rpm)], "register")
+
+    op_logger.info(
+        "Fan Speed in Auto Mode Setting successfully"
     )
     return "Inputs received successfully"
 
@@ -5302,6 +5370,29 @@ def read_modbus_data():
                 with ModbusTcpClient(
                     host=modbus_host, port=modbus_port, unit=modbus_slave_id
                 ) as client:
+                    r = client.read_holding_registers(974, 1, unit=modbus_slave_id)
+                    r2 = client.read_holding_registers(980, 1, unit=modbus_slave_id)
+                    dpt_error_setting["dpt_error_fan"] = r.registers[0]
+                    dpt_error_setting["dpt_error_t1"] = r2.registers[0]
+            except Exception as e:
+                print(f"read auto setting error:{e}")
+                flag = True
+                
+            try:
+                with ModbusTcpClient(
+                    host=modbus_host, port=modbus_port, unit=modbus_slave_id
+                ) as client:
+                    r = client.read_holding_registers(533, 1, unit=modbus_slave_id)
+                    fan_speed = r.registers[0] / 160
+                    auto_mode_setting["auto_mode_fan"] = fan_speed
+            except Exception as e:
+                print(f"read auto setting error:{e}")
+                flag = True
+                
+            try:
+                with ModbusTcpClient(
+                    host=modbus_host, port=modbus_port, unit=modbus_slave_id
+                ) as client:
                     r = client.read_holding_registers(370, 1, unit=modbus_slave_id)
 
                     rack_opening_setting["setting_value"] = r.registers[0]
@@ -5760,6 +5851,8 @@ def get_data_engineerMode():
             "inspection_time": inspection_time,
             "visibility": ctr_data["rack_visibility"],
             "auto_setting": auto_setting,
+            "dpt_error_setting": dpt_error_setting,
+            "auto_mode_setting": auto_mode_setting,
             "ver_switch": ver_switch,
             "rack_opening_setting": rack_opening_setting["setting_value"],
         }
@@ -8334,6 +8427,56 @@ def auto_setting_apply():
     op_logger.info(f"Update Auto Setting Successfully. {data}")
     return jsonify(message="Update Auto Setting Successfully")
 
+@app.route("/dpt_error_setting_apply", methods=["POST"])
+def dpt_error_setting_apply():
+    data = request.get_json("data")
+    fan = data["dpt_error_fan"]
+    t1 = data["dpt_error_t1"]
+    if system_data["value"]["unit"] == "metric":
+        if t1 > 100 or t1 < 0:
+            return jsonify(
+                status="over_range",
+                message="Valid Input Range is between 0°C to 100°C",
+            )
+    else:
+        if t1 > 212 or t1 < 32:
+            return jsonify(
+                status="over_range",
+                message="Valid Input Range is between 32°F to 212°F",
+            )
+    try:
+        with ModbusTcpClient(
+            host=modbus_host, port=modbus_port, unit=modbus_slave_id
+        ) as client:
+            client.write_register(974, int(fan))
+            client.write_register(980, int(t1))
+    except Exception as e:
+        print(f"dpt error setting:{e}")
+        
+    op_logger.info(f"Update Dew Point Error Setting Successfully. {data}")
+    return jsonify(
+        status="success", message="Update Dew Point Error Setting Successfully"
+    )
+
+
+@app.route("/auto_mode_setting_apply", methods=["POST"])
+def auto_mode_setting_apply():
+    data = request.get_json("data")
+    fan = data["auto_mode_fan"]
+    fan_rpm = fan * 160
+    try:
+        with ModbusTcpClient(
+            host=modbus_host, port=modbus_port, unit=modbus_slave_id
+        ) as client:
+            client.write_register(533, int(fan_rpm))
+    except Exception as e:
+        print(f"fan speed in auto mode setting:{e}")
+
+    op_logger.info(f"Update Fan Speed in Auto Mode Setting Successfully. {data}")
+    return jsonify(
+        status="success", message="Update Fan Speed in Auto Mode Setting Successfully"
+    )
+
 @app.route("/rack_opening_setting_apply", methods=["POST"])
 def rack_opening_setting_apply():
     data = request.get_json("data")
@@ -8400,6 +8543,22 @@ def resetAuto():
     auto_import(auto_factory)
     op_logger.info("Reset Auto to Factory Setting Successfully")
     return jsonify(message="Reset Auto to Factory Setting Successfully")
+
+@app.route("/resetAutoMode", methods=["POST"])
+def resetAutoMode():
+    auto_mode_import(auto_mode_setting_factory)
+    op_logger.info("Reset Fan Speed in Auto Mode to Factory Setting Successfully")
+    return jsonify(
+        message="Reset Fan Speed in Auto Mode to Factory Setting Successfully"
+    )
+
+@app.route("/resetDptError", methods=["POST"])
+def resetDptError():
+    dpt_error_import(dpt_error_factory)
+    op_logger.info("Reset Dew Point Error Setting to Factory Setting Successfully")
+    return jsonify(
+        message="Reset Dew Point Error Setting to Factory Setting Successfully"
+    )
 
 @app.route("/set_rack_control", methods=["POST"])
 def set_rack_control():

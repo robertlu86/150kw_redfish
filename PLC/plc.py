@@ -1456,6 +1456,10 @@ warning_data = {
     },
 }
 
+dpt_error_setting = {
+    "t1": 0,
+}
+
 ats_status = {
     "ATS1": False,
     "ATS2": False,
@@ -4493,6 +4497,25 @@ def control():
             except Exception as e:
                 print(f"write into temp data error: {e}")
             # 追加臨時log結束
+            try:
+                with ModbusTcpClient(host=modbus_host, port=modbus_port) as client:
+                    r = client.read_holding_registers(980, 1, unit=modbus_slave_id)
+
+                    dpt_error_setting["t1"] = r.registers[0]
+
+            except Exception as e:
+                print(f"read dew point error setting error: {e}")
+            try:
+                with ModbusTcpClient(host=modbus_host, port=modbus_port) as client:
+                    if (
+                        status_data["TempClntSply"] > dpt_error_setting["t1"]
+                    ):
+                        client.write_coils((8192 + 751), [True])
+                    else:
+                        client.write_coils((8192 + 751), [False])
+
+            except Exception as e:
+                print(f"control dpt error setting setting error: {e}")
             trigger_overload_from_oc_detection()
 
             if mode in ["auto", "stop"]:
