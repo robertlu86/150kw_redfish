@@ -3,10 +3,12 @@
 '''
 import subprocess, json
 import requests
+import datetime   
+from zoneinfo import ZoneInfo
 from flask import jsonify
 from mylib.services.base_service import BaseService
 from mylib.models.rf_networkprotocol_model import RfNetworkProtocolModel
-from mylib.models.rf_snmp_model import RfSnmpModel
+from mylib.models.rf_snmp_model import RfSnmpModel, rf_SNMP
 from mylib.adapters.webapp_api_adapter import WebAppAPIAdapter
 from mylib.models.rf_resource_model import RfResetType
 from mylib.common.proj_response_message import ProjResponseMessage
@@ -15,12 +17,16 @@ from mylib.utils.load_api import load_raw_from_api, CDU_BASE
 from mylib.utils.system_info import get_physical_nics
 from mylib.models.rf_ethernetinterfaces_model import RfEthernetInterfacesModel, RfEthernetInterfacesIdModel
 from mylib.models.rf_status_model import RfStatusModel
+from mylib.models.rf_manager_model import RfManagerModel
+
 
 class RfManagersService(BaseService):
-    # =================通用工具===================
-    def save_networkprotocol(self, servie: str, setting):
-        SettingModel().save_key_value(f"Managers.{servie}.ProtocolEnabled", setting["ProtocolEnabled"])
-        SettingModel().save_key_value(f"Managers.{servie}.Port", setting["Port"])
+    # =================通用工具===================    
+    def save_networkprotocol(self, service: str, setting):
+        if service is "NTP":
+            SettingModel().save_key_value(f"Managers.{service}.NTPServer", setting["ntp_server"])
+        SettingModel().save_key_value(f"Managers.{service}.ProtocolEnabled", setting["ProtocolEnabled"])
+        SettingModel().save_key_value(f"Managers.{service}.Port", setting["Port"])
     
     def get_networkprotocol(self, servie: str):
         # SettingModel().get_by_key(f"Managers.{servie}.ProtocolEnabled")
@@ -28,14 +34,26 @@ class RfManagersService(BaseService):
         return {"ProtocolEnabled": bool(int(SettingModel().get_by_key(f"Managers.{servie}.ProtocolEnabled").value)), "Port": int(SettingModel().get_by_key(f"Managers.{servie}.Port").value)}
             
         
-    def get_ethernet_data(self):
-        return get_physical_nics()      
+    # def get_ethernet_data(self):
+    #     return get_physical_nics()      
     
-    def get_ethernet_entry(self, target_name, data):
-        entry = next((item for item in data if item['Name'] == target_name), None)
-        return entry
+    # def get_ethernet_entry(self, target_name, data):
+    #     entry = next((item for item in data if item['Name'] == target_name), None)
+    #     return entry
     
-    def net_info(self, interfaces): # 暫放
+    # 取得目前時區 IANA 格式 
+    def get_current_timezone(self):
+        try:
+            p = subprocess.run(
+                ["/usr/bin/timedatectl", "show", "-p", "Timezone", "--value"],
+                    capture_output=True, text=True, check=True
+            )
+            tz = p.stdout.strip()
+            return tz 
+        except:
+            return None
+    
+    def net_info(self, interfaces): # 測試暫放
         print(f"共 {len(interfaces)} 張實體網卡：")
         for iface in interfaces:
             print(f"\n名稱: {iface['Name']}")
@@ -46,23 +64,55 @@ class RfManagersService(BaseService):
             print(f"  MTU            : {iface['MTU']}")
             print(f"  Full Duplex    : {iface['FullDuplex']}")
             print(f"  Is Up          : {iface['isUp']}")
+            
+    # ================Managers/cdu================  
+    def get_managers(self, cdu_id):
+        m = RfManagerModel(cdu_id)
+        # time
+        date_now = datetime.datetime.now().astimezone()
+        local_now = date_now.replace(microsecond=0)
+        locol_time = local_now.strftime('%Y-%m-%dT%H:%M:%S')
+        m.DateTimeLocalOffset = local_now.strftime('%z')[:3] + ':' + local_now.strftime('%z')[3:]
+        m.DateTime = locol_time + "Z" + str(m.DateTimeLocalOffset)
+        tz = self.get_current_timezone()
+        m.TimeZoneName = tz if tz is not None else "Asia/Taipei"
+        # m.LastResetTime = "2025-01-24T07:08:48Z",
+        # m.DateTimeSource = "NTP",
+        m.ManagerType = "ManagementController"
+        # m.PowerState = "On"
+        m.WriteableProperties = [ # 告知客戶可修改的項目
+            "DateTime",
+            "DateTimeLocalOffset",
+            "ServiceIdentification"
+        ]
+        
+        return m.to_dict()
     # ================NetworkProtocol================
     def NetworkProtocol_service(self) -> dict:
         m = RfNetworkProtocolModel()
         m.HostName = "TBD"
         m.FQDN = "null"
-        m.SNMP = self.get_networkprotocol("SNMP")
+        m.SNMP = rf_SNMP(**self.get_networkprotocol("SNMP"))
         
         return m.to_dict()
     
     def NetworkProtocol_service_patch(self, body):
-        ProtocolEnabled = 1 if body["SNMP"]["ProtocolEnabled"] else 0
+        snmp_ProtocolEnabled = 1 if body["SNMP"]["ProtocolEnabled"] else 0
+        ntp_ProtocolEnabled = 1 if body["NTP"]["ProtocolEnabled"] else 0
         snmp_setting ={
-            "ProtocolEnabled": ProtocolEnabled,
+            "ProtocolEnabled": snmp_ProtocolEnabled,
             "Port": 9000
         } 
-        
+        ntp_setting = {
+            "ProtocolEnabled": ntp_ProtocolEnabled,
+            "Port": 123,
+            "ntp_server": body["NTP"]["NTPServers"][0]
+        }
+        print(ntp_setting)
         self.save_networkprotocol("SNMP", snmp_setting)
+        self.save_networkprotocol("NTP", ntp_setting)
+        resp = WebAppAPIAdapter().sunc_time(ntp_setting)
+        print(resp.text)
         return self.NetworkProtocol_service(), 200
     
     def NetworkProtocol_Snmp_get(self) -> dict:

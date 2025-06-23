@@ -61,6 +61,14 @@ class rf_SNMP(BaseModel):
     CommunityAccessMode: Optional[str] = Field(default=None, description="Default access mode for all community strings.")
     Oem: Optional[Dict[str, Any]] = Field(default=None, description="OEM specific properties.")
 
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.ProtocolEnabled = kwargs.get("ProtocolEnabled", False)
+        self.Port = kwargs.get("Port", 9000)
+
+
+
+
 class RfSnmpModel(RfResourceBaseModel):
     class _SnmpServers(BaseModel):
         '''

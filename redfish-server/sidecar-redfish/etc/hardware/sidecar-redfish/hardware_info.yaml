@@ -129,7 +129,7 @@ Fans:
 CDU:
   Manufacturer: *mainManufacturer
   Model: 200KW SideCar L/A Colling CDU
-  SerialNumber: 02753000A-XXXX
+  SerialNumber: 02753000A- #後面抓webUI SN填入
   PartNumber: LCS-SCDU-200AR001
   FirmwareVersion: ""
   Version: ""
