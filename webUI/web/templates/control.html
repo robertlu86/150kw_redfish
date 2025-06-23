@@ -1539,19 +1539,6 @@ styles %}
                     }
                 }
 
-                if (userType == "superuser" || userType == "root") {
-                    const evElements = $("#ev1_sw, #ev2_sw, #ev3_sw, #ev4_sw");
-                    evElements.attr("disabled", true);
-                    if (
-                        selectedValue === "engineer" &&
-                        data["value"]["resultP1"] == 0 &&
-                        data["value"]["resultP2"] == 0
-                    ) {
-                        evElements.removeAttr("disabled");
-                    } else {
-                        evElements.attr("disabled", true);
-                    }
-                }
             }
 
             for (var key in data["text"]) {
@@ -2098,31 +2085,6 @@ styles %}
                 data: formData,
                 processData: false,
                 contentType: false,
-                // success: function (response) {
-                //     clearInterval(interval);
-                //     progressBar.css("width", "100%");
-                //     progressText.text("100% upload successfully");
-                //     Swal.fire({
-                //         title: "Success",
-                //         text: "Upload Completed, system will reboot...",
-                //         icon: "success",
-                //         showConfirmButton: false,
-                //         timer: 5000, // 5 秒後自動關閉
-                //         didOpen: () => {
-                //             // SweetAlert 開啟後呼叫 reboot API
-                //             $.ajax({
-                //                 url: "/reboot-all",
-                //                 type: "GET",
-                //                 success: function (res) {
-                //                     console.log("Reboot triggered:", res);
-                //                 },
-                //                 error: function (xhr) {
-                //                     console.error("Failed to reboot:", xhr);
-                //                 }
-                //             });
-                //         }
-                //     });
-                // },
                 success: function (response) {
                     clearInterval(interval);
                     progressBar.css("width", "100%");
@@ -2187,9 +2149,7 @@ styles %}
             });
         });
 
-        if (userType === "superuser" || userType === "root") {
-            $("#ev1_sw, #ev2_sw, #ev3_sw, #ev4_sw").attr("disabled", true);
-        }
+
 
         function set_mode(force_change_mode, mode_input, selectedValue) {
             $.ajax({
@@ -2473,69 +2433,7 @@ styles %}
             }
         });
 
-        // if (userType == "superuser" || userType == "root") {
-        //     $("#evSetBnt").click(function () {
-        //         let ev1_sw = document.getElementById("ev1_sw").checked;
-        //         let ev2_sw = document.getElementById("ev2_sw").checked;
-        //         let ev3_sw = document.getElementById("ev3_sw").checked;
-        //         let ev4_sw = document.getElementById("ev4_sw").checked;
 
-        //         var dataToSend = {
-        //             ev1_sw: ev1_sw,
-        //             ev2_sw: ev2_sw,
-        //             ev3_sw: ev3_sw,
-        //             ev4_sw: ev4_sw,
-        //         };
-
-        //         $.ajax({
-        //             type: "POST",
-        //             url: "/ev_set",
-        //             contentType: "application/json;charset=UTF-8",
-        //             data: JSON.stringify(dataToSend),
-        //             success: function (response) {
-        //                 if (response == "EV Set Updated Successfully") {
-        //                     Swal.fire({
-        //                         title: "Success",
-        //                         text: response,
-        //                         icon: "success",
-        //                         confirmButtonText: "OK",
-        //                     });
-        //                 } else {
-        //                     Swal.fire({
-        //                         title: "Error",
-        //                         text: response,
-        //                         icon: "error",
-        //                         confirmButtonText: "OK",
-        //                     });
-        //                 }
-        //             },
-        //         });
-        //     });
-        //     $("#evCnsBnt").click(function () {
-        //         $.ajax({
-        //             url: "/get_data_control",
-        //             method: "GET",
-        //             success: function (data) {
-        //                 for (var key in data["valve"]) {
-        //                     if (data["valve"].hasOwnProperty(key)) {
-        //                         var value = data["valve"][key];
-        //                         var element = document.getElementById(key);
-
-        //                         if (value === true) {
-        //                             $("#" + key).text("Open");
-        //                             $("." + key).text("Open");
-        //                             element.checked = value;
-        //                         } else {
-        //                             $("#" + key).text("Close");
-        //                             $("." + key).text("Close");
-        //                             element.checked = value;
-        //                         }
-        //                     }
-        //                 }
-        //             },
-        //         });
-        //     });
-        // }
 
         $("#submitButton").click(function () {
             $("#cars").css("border-color", "blue");

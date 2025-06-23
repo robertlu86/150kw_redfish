@@ -2826,6 +2826,22 @@ def set_warning_registers(mode):
         "Delay_DewPoint",
         "A",
     )
+    if warning_data["alert"]["DewPoint_Low"]:
+        try:
+            with ModbusTcpClient(
+                host=modbus_host, port=modbus_port, unit=modbus_slave_id
+            ) as client:
+                client.write_coils((8192 + 12), [True])
+        except Exception as e:
+            print(f"dewpt error document error: {e}")
+    else:
+        try:
+            with ModbusTcpClient(
+                host=modbus_host, port=modbus_port, unit=modbus_slave_id
+            ) as client:
+                client.write_coils((8192 + 12), [False])
+        except Exception as e:
+            print(f"dewpt error document error: {e}")
 
     try:
         with ModbusTcpClient(

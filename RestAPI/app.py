@@ -2091,14 +2091,16 @@ class UploadZipFile(Resource):
 
         # 驗證檔案是否存在
         if not file:
+            op_logger.info("No file part in the request")
             return {"message": "No File Part"}, 400
         if file.filename == "":
+            op_logger.info("No file selected for upload")
             return {"message": "No File Selected"}, 400
         # if file.filename != "upload.zip":
         #     return {"message": "Please upload correct file name"}, 400
         # if not file.filename.endswith(".zip"):
         if not file.filename.endswith(".gpg"):  
-            
+            op_logger.info("Wrong file type uploaded")
             return {"message": "Wrong File Type"}, 400
 
         # 定義暫存解壓縮目錄
@@ -2125,6 +2127,7 @@ class UploadZipFile(Resource):
                 # 檢查每個檔案是否加密
                 if not any(info.flag_bits & 0x1 for info in zip_ref.infolist()):
                     os.remove(local_zip_path)  # 清理未通過檢查的 zip
+                    op_logger.info("ZIP file is not password-protected")
                     return {"message": "ZIP file must be password-protected"}, 400
 
                 zip_ref.setpassword(zip_password.encode())
@@ -2133,22 +2136,26 @@ class UploadZipFile(Resource):
                     namelist = zip_ref.namelist()
                     if not namelist:
                         os.remove(local_zip_path)
+                        op_logger.info("ZIP file is empty")
                         return {"status": "error", "message": "ZIP file is empty"}, 400
 
                     # 嘗試讀取第一個檔案驗證密碼
                     zip_ref.read(namelist[0])
                 except RuntimeError:
                     os.remove(local_zip_path)
+                    op_logger.info("Invalid password for ZIP file")
                     return {"status": "error", "message": "Invalid password"}, 400
                     
                 zip_ref.extractall(temp_dir)
 
         except RuntimeError:
             os.remove(local_zip_path)
+            op_logger.info("Wrong password or corrupt zip")
             return {"message": "Wrong password or corrupt zip"}, 400
 
         except pyzipper.BadZipFile:
             os.remove(local_zip_path)
+            op_logger.info("Invalid ZIP file")
             return {"message": "Invalid ZIP file"}, 400
 
 
@@ -2203,7 +2210,10 @@ class UploadZipFile(Resource):
                 print(f"Failed to initiate reboot. Status code: {response.status_code}")
 
         except requests.RequestException as e:
-            print(f"An error occurred: {e}")         
+            op_logger.info(f"An error occurred: {e}")
+            print(f"An error occurred: {e}")  
+             
+        op_logger.info(f"Firmware upload completed.")      
         return {"message": "Upload Completed, Please Restart PC", "results": upload_results}, 200
 
 # 0507新增
