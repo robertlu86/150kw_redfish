@@ -2387,6 +2387,16 @@ styles %}
                     return;
                 }
 
+                if(swap < 0 || swap > 24){
+                    Swal.fire({
+                        title: "Warning",
+                        text: "Pump swap time must be between 0 and 24 hours",
+                        icon: "warning",
+                        confirmButtonText: "OK",
+                    });
+                    return;
+                }
+
                 check_val = cvtInputValue(swap);
                 if (swap !== check_val || !check_val) {
                     Swal.fire({
@@ -2473,69 +2483,6 @@ styles %}
             }
         });
 
-        // if (userType == "superuser" || userType == "root") {
-        //     $("#evSetBnt").click(function () {
-        //         let ev1_sw = document.getElementById("ev1_sw").checked;
-        //         let ev2_sw = document.getElementById("ev2_sw").checked;
-        //         let ev3_sw = document.getElementById("ev3_sw").checked;
-        //         let ev4_sw = document.getElementById("ev4_sw").checked;
-
-        //         var dataToSend = {
-        //             ev1_sw: ev1_sw,
-        //             ev2_sw: ev2_sw,
-        //             ev3_sw: ev3_sw,
-        //             ev4_sw: ev4_sw,
-        //         };
-
-        //         $.ajax({
-        //             type: "POST",
-        //             url: "/ev_set",
-        //             contentType: "application/json;charset=UTF-8",
-        //             data: JSON.stringify(dataToSend),
-        //             success: function (response) {
-        //                 if (response == "EV Set Updated Successfully") {
-        //                     Swal.fire({
-        //                         title: "Success",
-        //                         text: response,
-        //                         icon: "success",
-        //                         confirmButtonText: "OK",
-        //                     });
-        //                 } else {
-        //                     Swal.fire({
-        //                         title: "Error",
-        //                         text: response,
-        //                         icon: "error",
-        //                         confirmButtonText: "OK",
-        //                     });
-        //                 }
-        //             },
-        //         });
-        //     });
-        //     $("#evCnsBnt").click(function () {
-        //         $.ajax({
-        //             url: "/get_data_control",
-        //             method: "GET",
-        //             success: function (data) {
-        //                 for (var key in data["valve"]) {
-        //                     if (data["valve"].hasOwnProperty(key)) {
-        //                         var value = data["valve"][key];
-        //                         var element = document.getElementById(key);
-
-        //                         if (value === true) {
-        //                             $("#" + key).text("Open");
-        //                             $("." + key).text("Open");
-        //                             element.checked = value;
-        //                         } else {
-        //                             $("#" + key).text("Close");
-        //                             $("." + key).text("Close");
-        //                             element.checked = value;
-        //                         }
-        //                     }
-        //                 }
-        //             },
-        //         });
-        //     });
-        // }
 
         $("#submitButton").click(function () {
             $("#cars").css("border-color", "blue");
