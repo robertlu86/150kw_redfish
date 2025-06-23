@@ -15,6 +15,8 @@ block styles %}
     .inspection_time,
     .network_option,
     .auto_setting,
+    .dpt_error_setting,
+    .auto_mode_setting,
     .screen_setting,
     .defaultSetting,
     .modbus_ip_setting,
@@ -45,6 +47,8 @@ block styles %}
     .inspection_time::before,
     .network_option::before,
     .auto_setting::before,
+    .dpt_error_setting::before,
+    .auto_mode_setting::before,
     .screen_setting::before,
     .defaultSetting::before,
     .modbus_ip_setting::before,
@@ -3116,6 +3120,82 @@ block styles %}
             </div>
         </div>
     </div>
+
+    <div class="dpt_error_setting title" data-default="collapsed" data-label="When Dew Point Error in Auto Mode Setting">
+        <div class="data-before-trigger"></div>
+        <div class="content">
+
+            <div class="row">
+                <div class="col-4">
+                    <p>Fan Speed when Dew Point Error:</p>
+                </div>
+                <div class="col-2">
+                    <input id="dpt_error_fan" class="form-control keyboard_onlyNumber" type="text" placeholder="" />
+                </div>
+                <div class="col-2">%</div>
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <p>Coolant Supply Temperature (T1) Threshold:</p>
+                </div>
+                <div class="col-2">
+                    <input id="dpt_error_t1" class="form-control keyboard_onlyNumber" type="text" placeholder="" />
+                </div>
+            </div>
+            <div class="row button_box">
+                <div class="col-4"></div>
+                <div class="col-8 btn_box">
+                    <div>
+                        <button id="dpt_error_setting_apply" class="btn btn-outline-success" style="margin-right: 10px; margin-top: 20px">
+                            Apply
+                        </button>
+                        <button id="dpt_error_setting_cancel" class="btn btn-outline-success" style="margin-right: 10px; margin-top: 20px">
+                            Cancel
+                        </button>
+                    </div>
+                    <div>
+                        <button id="resetDptError" class="btn btn-outline-success" type="submit" style="margin-right: 10px; margin-top: 20px">
+                            Restore to Factory Default
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="auto_mode_setting title" data-default="collapsed" data-label="Fan Speed in Auto Mode Setting">
+        <div class="data-before-trigger"></div>
+        <div class="content">
+
+            <div class="row">
+                <div class="col-4">
+                    <p>Fan Speed in Auto Mode:</p>
+                </div>
+                <div class="col-2">
+                    <input id="auto_mode_fan" class="form-control keyboard_onlyNumber" type="text" placeholder="" />
+                </div>
+                <div class="col-2">%</div>
+            </div>
+            <div class="row button_box">
+                <div class="col-4"></div>
+                <div class="col-8 btn_box">
+                    <div>
+                        <button id="auto_mode_setting_apply" class="btn btn-outline-success" style="margin-right: 10px; margin-top: 20px">
+                            Apply
+                        </button>
+                        <button id="auto_mode_setting_cancel" class="btn btn-outline-success" style="margin-right: 10px; margin-top: 20px">
+                            Cancel
+                        </button>
+                    </div>
+                    <div>
+                        <button id="resetAutoMode" class="btn btn-outline-success" type="submit" style="margin-right: 10px; margin-top: 20px">
+                            Restore to Factory Default
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     {% endif %}
 
     {% if (user == 'superuser') or (user == 'root') %}
@@ -3596,9 +3676,13 @@ block styles %}
             "data-before",
             "Status Indicator Setting ▲"
         );
-        jQuery(".auto_setting").attr(
+        jQuery(".dpt_error_setting").attr(
             "data-before",
-            "Auto Mode Redundant Sensor Broken Setting ▲"
+            "When Dew Point Error in Auto Mode Setting ▲"
+        );
+        jQuery(".auto_mode_setting").attr(
+            "data-before",
+            "Fan Speed in Auto Mode Setting ▲"
         );
         jQuery(".auto_setting").attr(
             "data-before",
@@ -3633,6 +3717,8 @@ block styles %}
                     pid_pressure,
                     inspection_time,
                     auto_setting,
+                    dpt_error_setting,
+                    auto_mode_setting,
                     visibility,
                     valve,
                     ver_switch,
@@ -3720,6 +3806,18 @@ block styles %}
                     if (auto_setting.hasOwnProperty(key)) {
                         $("#auto_broken_temperature").val(auto_setting["auto_broken_temperature"]);
                         $("#auto_broken_pressure").val(auto_setting["auto_broken_pressure"]);
+                    }
+                }
+                
+                for (key in dpt_error_setting) {
+                    if (dpt_error_setting.hasOwnProperty(key)) {
+                        $(`#${key}`).val(dpt_error_setting[key]);
+                    }
+                }
+
+                for (key in auto_mode_setting) {
+                    if (auto_mode_setting.hasOwnProperty(key)) {
+                        $(`#${key}`).val(auto_mode_setting[key]);
                     }
                 }
 
@@ -4444,6 +4542,155 @@ block styles %}
                         if (auto_setting.hasOwnProperty(key)) {
                             $("#auto_broken_temperature").val(auto_setting["auto_broken_temperature"]);
                             $("#auto_broken_pressure").val(auto_setting["auto_broken_pressure"]);
+                        }
+                    }
+                },
+                error: function (error) {
+                    console.error("Error fetching data:", error);
+                },
+            });
+        });
+
+        $("#auto_mode_setting_apply").click(function () {
+            let auto_mode_fan = Number($("#auto_mode_fan").val());
+
+
+            if (!Number.isInteger(auto_mode_fan)) {
+                Swal.fire({
+                    title: "Error",
+                    text: "Please Enter Integers Only",
+                    icon: "error",
+                    confirmButtonText: "OK",
+                });
+
+                return;
+            }
+
+            if (
+                auto_mode_fan > 100 ||
+                (auto_mode_fan !== 0 && auto_mode_fan < 15)
+            ) {
+                Swal.fire({
+                    title: "Error",
+                    html: "Fan Speed invalid input.<br>The accepted setting range is 15-100 or 0",
+                    icon: "error",
+                    confirmButtonText: "OK",
+                });
+                return;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/auto_mode_setting_apply",
+                data: JSON.stringify({
+                    auto_mode_fan:auto_mode_fan
+                }),
+                success: function (response) {
+                    Swal.fire({
+                        title: "Success",
+                        text: response.message,
+                        icon: "success",
+                        confirmButtonText: "OK",
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error sending data:", error);
+                },
+            });
+        });
+
+        $("#auto_mode_setting_cancel").click(function () {
+            $.ajax({
+                url: "/get_data_engineerMode",
+                method: "GET",
+                success: function (data) {
+                    const { auto_mode_setting } = data;
+
+                    for (key in auto_mode_setting) {
+                        if (auto_mode_setting.hasOwnProperty(key)) {
+                            $(`#${key}`).val(auto_mode_setting[key]);
+                        }
+                    }
+                },
+                error: function (error) {
+                    console.error("Error fetching data:", error);
+                },
+            });
+        });
+        
+        $("#dpt_error_setting_apply").click(function () {
+            let dpt_error_fan = Number($("#dpt_error_fan").val());
+            let dpt_error_t1 = Number($("#dpt_error_t1").val());
+
+
+            if (!Number.isInteger(dpt_error_fan) ||!Number.isInteger(dpt_error_t1)) {
+                Swal.fire({
+                    title: "Error",
+                    text: "Please Enter Integers Only",
+                    icon: "error",
+                    confirmButtonText: "OK",
+                });
+
+                return;
+            }
+
+            if (
+                dpt_error_fan > 100 ||
+                (dpt_error_fan !== 0 && dpt_error_fan < 15)
+            ) {
+                Swal.fire({
+                    title: "Error",
+                    html: "Fan Speed invalid input.<br>The accepted setting range is 15-100 or 0",
+                    icon: "error",
+                    confirmButtonText: "OK",
+                });
+                return;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/dpt_error_setting_apply",
+                data: JSON.stringify({
+                    dpt_error_fan: dpt_error_fan,
+                    dpt_error_t1: dpt_error_t1,
+                }),
+                success: function (r) {
+                    if (r.status == "success") {
+                        Swal.fire({
+                            title: "Success",
+                            text: r.message,
+                            icon: "success",
+                            confirmButtonText: "OK",
+                        });
+                    } else if (r.status == "error") {
+                        Swal.fire({
+                            title: "Error",
+                            text: r.message,
+                            icon: "error",
+                            confirmButtonText: "OK",
+                        });
+                    } else if (r.status == "over_range") {
+                        Swal.fire({
+                            title: "Error",
+                            text: r.message,
+                            icon: "error",
+                            confirmButtonText: "OK",
+                        });
+                    }
+                },
+            });
+        });
+
+        $("#dpt_error_setting_cancel").click(function () {
+            $.ajax({
+                url: "/get_data_engineerMode",
+                method: "GET",
+                success: function (data) {
+                    const { dpt_error_setting } = data;
+
+                    for (key in dpt_error_setting) {
+                        if (dpt_error_setting.hasOwnProperty(key)) {
+                            $(`#${key}`).val(dpt_error_setting[key]);
                         }
                     }
                 },
@@ -5222,6 +5469,74 @@ block styles %}
                     $.ajax({
                         type: "POST",
                         url: "/resetAuto",
+                        contentType: "application/json;charset=UTF-8",
+                        success: function (response) {
+                            Swal.fire({
+                                title: `${response.message}`,
+                                icon: "success",
+                            }).then(() => {
+                                location.reload();
+                            });
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("Error:", error);
+                            Swal.fire({
+                                title: "Failed to connect to server",
+                                icon: "error",
+                            });
+                        },
+                    });
+                }
+            });
+        });
+        
+        $("#resetDptError").click(function () {
+            Swal.fire({
+                title: "Confirm to proceed",
+                text: "Revert to factory settings?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: "No",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "POST",
+                        url: "/resetDptError",
+                        contentType: "application/json;charset=UTF-8",
+                        success: function (response) {
+                            Swal.fire({
+                                title: `${response.message}`,
+                                icon: "success",
+                            }).then(() => {
+                                location.reload();
+                            });
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("Error:", error);
+                            Swal.fire({
+                                title: "Failed to connect to server",
+                                icon: "error",
+                            });
+                        },
+                    });
+                }
+            });
+        });
+
+        $("#resetAutoMode").click(function () {
+            Swal.fire({
+                title: "Confirm to proceed",
+                text: "Revert to factory settings?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: "No",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "POST",
+                        url: "/resetAutoMode",
                         contentType: "application/json;charset=UTF-8",
                         success: function (response) {
                             Swal.fire({
