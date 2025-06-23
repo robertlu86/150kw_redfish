@@ -1456,6 +1456,10 @@ warning_data = {
     },
 }
 
+dpt_error_setting = {
+    "t1": 0,
+}
+
 ats_status = {
     "ATS1": False,
     "ATS2": False,
@@ -2826,6 +2830,22 @@ def set_warning_registers(mode):
         "Delay_DewPoint",
         "A",
     )
+    if warning_data["alert"]["DewPoint_Low"]:
+        try:
+            with ModbusTcpClient(
+                host=modbus_host, port=modbus_port, unit=modbus_slave_id
+            ) as client:
+                client.write_coils((8192 + 12), [True])
+        except Exception as e:
+            print(f"dewpt error document error: {e}")
+    else:
+        try:
+            with ModbusTcpClient(
+                host=modbus_host, port=modbus_port, unit=modbus_slave_id
+            ) as client:
+                client.write_coils((8192 + 12), [False])
+        except Exception as e:
+            print(f"dewpt error document error: {e}")
 
     try:
         with ModbusTcpClient(
@@ -3790,7 +3810,6 @@ def control():
         if change_to_server2:
             ### 與PLC相同 開始 (要tab一次)
 
-
             try:
                 restart_server["start"] = time.time()
                 server_error["start"] = time.time()
@@ -4548,6 +4567,25 @@ def control():
                 except Exception as e:
                     print(f"write into temp data error: {e}")
                 # 追加臨時log結束
+                try:
+                    with ModbusTcpClient(host=modbus_host, port=modbus_port) as client:
+                        r = client.read_holding_registers(980, 1, unit=modbus_slave_id)
+
+                        dpt_error_setting["t1"] = r.registers[0]
+
+                except Exception as e:
+                    print(f"read dew point error setting error: {e}")
+                try:
+                    with ModbusTcpClient(host=modbus_host, port=modbus_port) as client:
+                        if (
+                            status_data["TempClntSply"] > dpt_error_setting["t1"]
+                        ):
+                            client.write_coils((8192 + 751), [True])
+                        else:
+                            client.write_coils((8192 + 751), [False])
+
+                except Exception as e:
+                    print(f"control dpt error setting setting error: {e}")
                 trigger_overload_from_oc_detection()
 
                 if mode in ["auto", "stop"]:
@@ -4951,27 +4989,53 @@ def control():
                                 except Exception as e:
                                     print(f"reset inspection error:{e}")
 
+                                # stop_p1()
+                                # stop_p2()
+                                # stop_p3()
+                                # stop_fan()
+                                # ###　增加延遲時間讓pump跟fan可關閉到更小數值
+                                # time.sleep(2)
+                                count += 1
+
+                                if count > 3:
+                                    inspection_data["step"] += 0.5
+                                    
+                            if inspection_data["step"] == 1.5:
+                                print(f"1.5 關閉pump & fan : {pump_open_time} 秒")
                                 stop_p1()
                                 stop_p2()
                                 stop_p3()
                                 stop_fan()
+                                
+                                change_progress("p1_speed", "standby")
+                                change_progress("p2_speed", "standby")
+                                change_progress("p3_speed", "standby")
+                                
+                                send_progress(0, "p1_speed")
+                                send_progress(1, "p2_speed")
+                                send_progress(2, "p3_speed")
                                 ###　增加延遲時間讓pump跟fan可關閉到更小數值
-                                time.sleep(2)
-                                count += 1
-
-                                if count > 3:
-                                    inspection_data["step"] += 1
-
+                                inspection_data["end_time"] = time.time()
+                                diff = (
+                                    inspection_data["end_time"]
+                                    - inspection_data["start_time"]
+                                )
+                                if diff >= pump_open_time:
+                                    inspection_data["step"] += 0.5
+                                    inspection_data["mid_time"] = inspection_data[
+                                        "end_time"
+                                    ]
+                                    
                             if inspection_data["step"] == 2:
                                 print(f"2. 開啟 inv/mc: {pump_open_time} 秒")
 
                                 bit_output_regs["mc1"] = True
                                 bit_output_regs["mc2"] = True
                                 bit_output_regs["mc3"] = True
-                                change_progress("p1_speed", "standby")
-                                change_progress("p2_speed", "standby")
-                                change_progress("p3_speed", "standby")
-                                speed = translate_pump_speed(50)
+                                # change_progress("p1_speed", "standby")
+                                # change_progress("p2_speed", "standby")
+                                # change_progress("p3_speed", "standby")
+                                speed = translate_pump_speed(40)
                                 set_pump1_speed(speed)
                                 set_pump2_speed(speed)
                                 set_pump3_speed(speed)
@@ -5033,7 +5097,7 @@ def control():
                                 inspection_data["end_time"] = time.time()
                                 diff = (
                                     inspection_data["end_time"]
-                                    - inspection_data["start_time"]
+                                    - inspection_data["mid_time"]
                                 )
                                 if diff >= pump_open_time:
                                     inspection_data["step"] += 1
@@ -5068,7 +5132,7 @@ def control():
 
                                     ###超過範圍就送NG給前端
                                     inspection_data["result"]["p1_speed"] = not (
-                                        55 > max_p1 > 45
+                                        45 > max_p1 > 35
                                     )
                                     write_measured_data(1, max_p1)
                                     change_progress("p1_speed", "finish")
@@ -5085,7 +5149,7 @@ def control():
                                 else:
                                     max_p2 = max(p2_data)
                                     inspection_data["result"]["p2_speed"] = not (
-                                        55 > max_p2 > 45
+                                        45 > max_p2 > 35
                                     )
                                     write_measured_data(3, max_p2)
                                     change_progress("p2_speed", "finish")
@@ -5102,7 +5166,7 @@ def control():
                                 else:
                                     max_p3 = max(p3_data)
                                     inspection_data["result"]["p3_speed"] = not (
-                                        55 > max_p3 > 45
+                                        45 > max_p3 > 35
                                     )
                                     write_measured_data(5, max_p3)
                                     change_progress("p3_speed", "finish")
