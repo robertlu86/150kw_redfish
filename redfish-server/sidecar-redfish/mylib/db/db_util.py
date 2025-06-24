@@ -126,6 +126,21 @@ def init_orm(app, db):
             key_ensure_setting(key='AccountService.AccountLockoutDuration', value='60')
             key_ensure_setting(key='AccountService.AccountLockoutCounterResetAfter', value='30')
             key_ensure_setting(key='SessionService.SessionTimeout', value='360')
+            # EventService 
+            key_ensure_setting(key='EventService.DeliveryRetryAttempts', value='3')
+            key_ensure_setting(key='EventService.DeliveryRetryIntervalSeconds', value='60')
+            key_ensure_setting(key='EventService.Destination', value='127.0.0.1')
+            key_ensure_setting(key='EventService.TrapCommunity', value='public')
+            key_ensure_setting(key='EventService.ServiceEnabled', value='1')
+            # Managers
+            key_ensure_setting(key='Managers.SNMP.ProtocolEnabled', value='0')
+            key_ensure_setting(key='Managers.SNMP.Port', value='9000')
+            key_ensure_setting(key='Managers.NTP.NTPServer', value='ntp.ubuntu.com')
+            key_ensure_setting(key='Managers.NTP.ProtocolEnabled', value='1')
+            key_ensure_setting(key='Managers.NTP.Port', value='123')
+            key_ensure_setting(key='Managers.ServiceIdentification', value='ServiceRoot')
+            
     except Exception as e:
             print(f" * Error occurred: {e}")
     return
+
