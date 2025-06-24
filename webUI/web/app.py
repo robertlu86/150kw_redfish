@@ -5515,22 +5515,93 @@ def download(filename):
     return send_from_directory(f"{log_path}/logs", filename, as_attachment=True)
 
 
-# @app.route("/sensor_logs")
-# @login_required
-# def sensor_logs():
-#     directory = f"{log_path}/logs/sensor"
-#     if not os.path.exists(directory):
-#         os.makedirs(directory)
-#     files = os.listdir(f"{log_path}/logs/sensor")
+class LogManager:
+    def __init__(self, log_type, base_dir, filename_current, template_name):
+        self.log_type = log_type
+        self.base_dir = base_dir
+        self.filename_current = filename_current
+        self.template_name = template_name
+        self.old_dir = os.path.join(base_dir, f"old_{log_type}")
+        self.current_dir = os.path.join(base_dir, log_type)
 
-#     files = [f for f in files if not (f.startswith(".__") or f == ".DS_Store")]
+    def ensure_dirs(self):
+        os.makedirs(self.current_dir, exist_ok=True)
+        if current_user.id == "superuser":
+            os.makedirs(self.old_dir, exist_ok=True)
 
-#     sorted_files = sorted(
-#         files, key=lambda x: x.split(".")[-2].split(".")[0], reverse=True
-#     )
+    def list_logs(self):
+        self.ensure_dirs()
+        current_files = self._filter_files(os.listdir(self.current_dir))
+        old_files = []
 
-#     return render_template("sensorLog.html", files=sorted_files, user=current_user.id)
+        current_sorted = sorted(
+            current_files,
+            key=lambda x: (x != self.filename_current, x.split(".")[2] if x != self.filename_current else ""),
+            reverse=True
+        )
+        if self.filename_current in current_sorted:
+            current_sorted.insert(0, current_sorted.pop(current_sorted.index(self.filename_current)))
 
+        if current_user.id == "superuser":
+            old_files = self._filter_files(os.listdir(self.old_dir))
+            old_files = sorted(
+                old_files,
+                key=lambda x: os.path.getmtime(os.path.join(self.old_dir, x)),
+                reverse=True
+            )
+
+        return render_template(self.template_name, files=current_sorted, old_files=old_files, user=current_user.id)
+
+    def download_file(self, filename):
+        archive = request.args.get("archive")
+        if archive and current_user.id != "superuser":
+            print(403)
+
+        base_dir = self.old_dir if archive else self.current_dir
+        return send_from_directory(base_dir, filename, as_attachment=True)
+
+    def download_by_range(self, date_range):
+        start_date_str, end_date_str = date_range.split("~")
+        start_date = datetime.strptime(start_date_str, "%Y-%m-%d").date()
+        end_date = datetime.strptime(end_date_str, "%Y-%m-%d").date()
+        today = datetime.now().date()
+
+        zip_buffer = BytesIO()
+
+        with zipfile.ZipFile(zip_buffer, "w") as zip_file:
+            for directory, is_old in [(self.current_dir, False), (self.old_dir, True)]:
+                if not os.path.exists(directory):
+                    continue
+                if is_old and current_user.id != "superuser":
+                    continue
+                for file in os.listdir(directory):
+                    try:
+                        file_path = os.path.join(directory, file)
+                        if file == self.filename_current:
+                            file_date = today
+                        else:
+                            file_date_str = file.rsplit(".", 1)[-1]
+                            file_date = datetime.strptime(file_date_str, "%Y-%m-%d").date()
+
+                        if start_date <= file_date <= end_date:
+                            arcname = f"old_{self.log_type}/{file}" if is_old else file
+                            zip_file.write(file_path, arcname=arcname)
+                    except (IndexError, ValueError):
+                        continue
+
+        zip_buffer.seek(0)
+
+        return send_file(
+            zip_buffer,
+            mimetype="application/zip",
+            as_attachment=True,
+            download_name=f"{self.log_type}logs_{start_date_str}_to_{end_date_str}.zip",
+        )
+
+    @staticmethod
+    def _filter_files(files):
+        return [f for f in files if not (f.startswith(".__") or f == ".DS_Store")]
+    
 @app.route("/sensor_logs")
 @login_required
 def sensor_logs():
@@ -5544,7 +5615,7 @@ def sensor_logs():
     sensor_files = [f for f in sensor_files if not (f.startswith(".__") or f == ".DS_Store")]
 
     sorted_sensor_files = sorted(
-        sensor_files, key=lambda x: x.split(".")[-2].split(".")[0], reverse=True
+        sensor_files, key=lambda x: x.split(".")[2].split(".")[0], reverse=True
     )
 
     # 如果是 superuser，才傳回 old_sensor 檔案
@@ -5567,10 +5638,6 @@ def sensor_logs():
     )
 
 
-# @app.route("/sensor_logs/<path:filename>")
-# @login_required
-# def download_sensor_logs(filename):
-#     return send_from_directory(f"{log_path}/logs/sensor", filename, as_attachment=True)
 @app.route("/download_sensor_logs/<filename>")
 @login_required
 def download_sensor_logs(filename):
@@ -5581,187 +5648,103 @@ def download_sensor_logs(filename):
     base_dir = os.path.join(log_path, "logs", "old_sensor") if archive else os.path.join(log_path, "logs", "sensor")
     return send_from_directory(base_dir, filename, as_attachment=True)
 
+@app.route("/download_logs/sensor/<date_range>")
+def download_sensorlogs_by_range(date_range):
+    """Get Sensor Logs"""
 
-# @app.route("/operation_logs")
-# @login_required
-# def operation_logs():
-#     directory = f"{log_path}/logs/operation"
-#     if not os.path.exists(directory):
-#         os.makedirs(directory)
-#     files = os.listdir(f"{log_path}/logs/operation")
+    start_date_str, end_date_str = date_range.split("~")
 
-#     files = [f for f in files if not (f.startswith(".__") or f == ".DS_Store")]
-#     sorted_files = sorted(
-#         files,
-#         key=lambda x: (x != "oplog.log", x.split(".")[-1] if x != "oplog.log" else ""),
-#         reverse=True,
-#     )
-#     if "oplog.log" in sorted_files:
-#         sorted_files.insert(0, sorted_files.pop(sorted_files.index("oplog.log")))
+    start_date = datetime.strptime(start_date_str, "%Y-%m-%d")
+    end_date = datetime.strptime(end_date_str, "%Y-%m-%d")
 
-#     return render_template(
-#         "operationLog.html", files=sorted_files, user=current_user.id
-#     )
+    zip_buffer = BytesIO()
+
+    with zipfile.ZipFile(zip_buffer, "w") as zip_file:
+        files = os.listdir(f"{log_path}/logs/sensor")
+
+        for file in files:
+            try:
+                file_date_str = file.rsplit(".")[2]
+                file_date = datetime.strptime(file_date_str, "%Y-%m-%d")
+
+                if start_date <= file_date <= end_date:
+                    zip_file.write(f"{log_path}/logs/sensor/{file}", arcname=file)
+            except (IndexError, ValueError):
+                continue
+        # ✅ Superuser 的額外處理：logs/old_sensor/
+        if current_user.id == "superuser":
+            old_sensor_dir = os.path.join(log_path, "logs", "old_sensor")
+            if os.path.exists(old_sensor_dir):
+                old_files = os.listdir(old_sensor_dir)
+                for file in old_files:
+                    try:
+                        file_date_str = file.rsplit(".")[2]
+                        file_date = datetime.strptime(file_date_str, "%Y-%m-%d")
+
+                        if start_date <= file_date <= end_date:
+                            # arcname 放在子資料夾中，讓 zip 結構清晰
+                            arcname = f"old_sensor/{file}"
+                            zip_file.write(os.path.join(old_sensor_dir, file), arcname=arcname)
+                    except (IndexError, ValueError):
+                        continue
+    zip_buffer.seek(0)
+
+    return send_file(
+        zip_buffer,
+        mimetype="application/zip",
+        as_attachment=True,
+        download_name=f"sensorlogs_{start_date_str}_to_{end_date_str}.zip",
+    )
+
+
 @app.route("/operation_logs")
 @login_required
 def operation_logs():
-    operation_dir = os.path.join(log_path, "logs", "operation")
-    old_operation_dir = os.path.join(log_path, "logs", "old_operation")
+    return LogManager("operation", os.path.join(log_path, "logs"), "oplog.log", "operationLog.html").list_logs()
 
-    if not os.path.exists(operation_dir):
-        os.makedirs(operation_dir)
 
-    operation_files = os.listdir(operation_dir)
-    operation_files = [f for f in operation_files if not (f.startswith(".__") or f == ".DS_Store")]
-
-    sorted_operation_files = sorted(
-        operation_files, key=lambda x: (x != "oplog.log", x.split(".")[-1] if x != "oplog.log" else ""),reverse=True
-    )
-    if "oplog.log" in sorted_operation_files:
-        sorted_operation_files.insert(0, sorted_operation_files.pop(sorted_operation_files.index("oplog.log")))
-
-    old_operation_files = []
-    if current_user.id == "superuser":
-        if not os.path.exists(old_operation_dir):
-            os.makedirs(old_operation_dir)
-
-        old_operation_files = os.listdir(old_operation_dir)
-        old_operation_files = [f for f in old_operation_files if not (f.startswith(".__") or f == ".DS_Store")]
-        old_operation_files = sorted(
-            old_operation_files, key=lambda x: os.path.getmtime(os.path.join(old_operation_dir, x)), reverse=True
-        )
-
-    return render_template(
-        "operationLog.html",
-        files=sorted_operation_files,
-        old_files=old_operation_files,
-        user=current_user.id
-    )
-
-@app.route("/operation_logs/<path:filename>")
+@app.route("/download_operation_logs/<filename>")
 @login_required
 def download_operation_logs(filename):
-    # return send_from_directory(
-    #     f"{log_path}/logs/operation", filename, as_attachment=True
-    # )
-    archive = request.args.get("archive")
-    if archive and current_user.id != "superuser":
-        print(f'403')
+    return LogManager("operation", os.path.join(log_path, "logs"), "oplog.log", "operationLog.html").download_file(filename)
 
-    base_dir = os.path.join(log_path, "logs", "old_operation") if archive else os.path.join(log_path, "logs", "operation")
-    return send_from_directory(base_dir, filename, as_attachment=True)
+
+@app.route("/download_logs/operation/<date_range>")
+@login_required
+def download_oplogs_by_range(date_range):
+    return LogManager("operation", os.path.join(log_path, "logs"), "oplog.log", "operationLog.html").download_by_range(date_range)
 
 
 
 @app.route("/operation_logs_restapi")
 @login_required
 def operation_logs_restapi():
-    # directory = f"{snmp_path}/RestAPI/logs/operation"
-    
-    operation_dir = os.path.join(snmp_path, "RestAPI", "logs", "operation")
-    old_operation_dir = os.path.join(snmp_path, "RestAPI", "logs", "old_operation")
-    
+    return LogManager("operation", os.path.join(snmp_path, "RestAPI", "logs"), "oplog_api.log", "operationLogRestAPI.html").list_logs()
 
-    if not os.path.exists(operation_dir):
-        os.makedirs(operation_dir)
-
-    operation_files = os.listdir(operation_dir)
-    operation_files = [f for f in operation_files if not (f.startswith(".__") or f == ".DS_Store")]
-
-    sorted_operation_files = sorted(
-        operation_files, key=lambda x: (x != "oplog_api.log", x.split(".")[-1] if x != "oplog_api.log" else ""),reverse=True
-    )
-    if "oplog_api.log" in sorted_operation_files:
-        sorted_operation_files.insert(0, sorted_operation_files.pop(sorted_operation_files.index("oplog_api.log")))
-
-    old_operation_files = []
-    if current_user.id == "superuser":
-        if not os.path.exists(old_operation_dir):
-            os.makedirs(old_operation_dir)
-
-        old_operation_files = os.listdir(old_operation_dir)
-        old_operation_files = [f for f in old_operation_files if not (f.startswith(".__") or f == ".DS_Store")]
-        old_operation_files = sorted(
-            old_operation_files, key=lambda x: os.path.getmtime(os.path.join(old_operation_dir, x)), reverse=True
-        )
-
-    return render_template(
-        "operationLogRestAPI.html",
-        files=sorted_operation_files,
-        old_files=old_operation_files,
-        user=current_user.id
-    )
-
-@app.route("/operation_logs_restapi/<path:filename>")
+@app.route("/download_operation_logs_restapi/<path:filename>")
 @login_required
 def download_operation_logs_restapi(filename):
-    # return send_from_directory(
-    #     f"{snmp_path}/RestAPI/logs/operation", filename, as_attachment=True
-    # )
-    archive = request.args.get("archive")
-    if archive and current_user.id != "superuser":
-        print(f'403')
+    return LogManager("operation", os.path.join(snmp_path, "RestAPI", "logs"), "oplog_api.log", "operationLogRestAPI.html").download_file(filename)
 
-    base_dir = os.path.join(snmp_path, "RestAPI","logs", "old_operation") if archive else os.path.join(snmp_path, "RestAPI", "logs", "operation")
-    return send_from_directory(base_dir, filename, as_attachment=True)
-
-
+@app.route("/download_logs/operation_restapi/<date_range>")
+@login_required
+def download_oplogs_restapi_by_range(date_range):
+    return LogManager("operation", os.path.join(snmp_path, "RestAPI", "logs"), "oplog_api.log", "operationLogRestAPI.html").download_by_range(date_range)
 
 @app.route("/error_logs")
 @login_required
 def error_logs():
-    error_dir = os.path.join(log_path, "logs", "error")
-    old_error_dir = os.path.join(log_path, "logs", "old_error")
-
-    if not os.path.exists(error_dir):
-        os.makedirs(error_dir)
-
-    error_files = os.listdir(error_dir)
-    error_files = [f for f in error_files if not (f.startswith(".__") or f == ".DS_Store")]
-
-    sorted_error_files = sorted(
-        error_files, key=lambda x: (
-            x != "errorlog.log",
-            x.split(".")[-1] if x != "errorlog.log" else "",
-        ),reverse=True
-    )
-    if "errorlog.log" in sorted_error_files:
-        sorted_error_files.insert(0, sorted_error_files.pop(sorted_error_files.index("errorlog.log")))
-
-    old_error_files = []
-    if current_user.id == "superuser":
-        if not os.path.exists(old_error_dir):
-            os.makedirs(old_error_dir)
-
-        old_error_files = os.listdir(old_error_dir)
-        old_error_files = [f for f in old_error_files if not (f.startswith(".__") or f == ".DS_Store")]
-        old_error_files = sorted(
-            old_error_files, key=lambda x: os.path.getmtime(os.path.join(old_error_dir, x)), reverse=True
-        )
-
-    return render_template(
-        "errorLog.html",
-        files=sorted_error_files,
-        old_files=old_error_files,
-        user=current_user.id
-    )
-
-
-
-# @app.route("/error_logs/<path:filename>")
-# @login_required
-# def download_error_logs(filename):
-#     return send_from_directory(f"{log_path}/logs/error", filename, as_attachment=True)
+    return LogManager("error", os.path.join(log_path, "logs"), "errorlog.log", "errorLog.html").list_logs()
 
 @app.route("/download_error_logs/<filename>")
 @login_required
 def download_error_logs(filename):
-    archive = request.args.get("archive")
-    if archive and current_user.id != "superuser":
-        print(f'403')
+    return LogManager("error", os.path.join(log_path, "logs"), "errorlog.log", "errorLog.html").download_file(filename)
 
-    base_dir = os.path.join(log_path, "logs", "old_error") if archive else os.path.join(log_path, "logs", "error")
-    return send_from_directory(base_dir, filename, as_attachment=True)
+@app.route("/download_logs/error/<date_range>")
+@login_required
+def download_errorlogs_by_range(date_range):
+    return LogManager("error", os.path.join(log_path, "logs"), "errorlog.log", "errorLog.html").download_by_range(date_range)
 
 
 @app.route("/logout")
@@ -6512,29 +6495,29 @@ def get_admin_password():
     return USER_DATA["admin"]
 
 
-@app.route("/get_modbus_ip", methods=["GET"])
-def get_modbus_ip():
-    modbus_host = os.environ.get("MODBUS_IP")
-    return jsonify({"modbus_ip": modbus_host})
+# @app.route("/get_modbus_ip", methods=["GET"])
+# def get_modbus_ip():
+#     modbus_host = os.environ.get("MODBUS_IP")
+#     return jsonify({"modbus_ip": modbus_host})
 
 
-@app.route("/update_modbus_ip", methods=["POST"])
-@login_required
-def update_modbus_ip():
-    new_ip = request.json.get("modbus_ip")
-    if not new_ip:
-        return jsonify({"error": "No IP address provided"}), 400
+# @app.route("/update_modbus_ip", methods=["POST"])
+# @login_required
+# def update_modbus_ip():
+#     new_ip = request.json.get("modbus_ip")
+#     if not new_ip:
+#         return jsonify({"error": "No IP address provided"}), 400
 
-    set_key(f"{web_path}/.env", "MODBUS_IP", new_ip)
+#     set_key(f"{web_path}/.env", "MODBUS_IP", new_ip)
 
-    global modbus_host
-    modbus_host = new_ip
-    os.environ["MODBUS_IP"] = new_ip
+#     global modbus_host
+#     modbus_host = new_ip
+#     os.environ["MODBUS_IP"] = new_ip
 
-    op_logger.info(f"MODBUS_IP updated successfully, new_modbus_ip: {modbus_host}")
-    return jsonify(
-        {"message": "MODBUS_IP updated successfully", "new_modbus_ip": modbus_host}
-    )
+#     op_logger.info(f"MODBUS_IP updated successfully, new_modbus_ip: {modbus_host}")
+#     return jsonify(
+#         {"message": "MODBUS_IP updated successfully", "new_modbus_ip": modbus_host}
+#     )
 
 
 @app.route("/write_version", methods=["POST"])
@@ -7750,6 +7733,40 @@ def fan_reset(fan_id):
         return reset_fan(fan_id, reg_info["reg1"], reg_info["reg2"])
     return "Invalid Fan ID", 400
 
+class LogMover:
+    def __init__(self, src_dir, dst_dir, name="log"):
+        self.src_dir = src_dir
+        self.dst_dir = dst_dir
+        self.name = name
+
+    def move_logs(self):
+        try:
+            if not os.path.exists(self.src_dir) or not os.path.isdir(self.src_dir):
+                print(f"[{self.name}] Source directory does not exist: {self.src_dir}")
+                return
+
+            if not os.path.exists(self.dst_dir):
+                os.makedirs(self.dst_dir)
+
+            for filename in os.listdir(self.src_dir):
+                src_file = os.path.join(self.src_dir, filename)
+                dst_file = os.path.join(self.dst_dir, filename)
+
+                if os.path.isfile(src_file):
+                    if os.path.exists(dst_file):
+                        name, ext = os.path.splitext(filename)
+                        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                        new_filename = f"{name}.{timestamp}{ext}"
+                        dst_file = os.path.join(self.dst_dir, new_filename)
+
+                    shutil.move(src_file, dst_file)
+                    print(f"[{self.name}] Moved: {filename} → {os.path.basename(dst_file)}")
+
+            print(f"[{self.name}] All files moved from {self.src_dir} to {self.dst_dir}")
+        except Exception as e:
+            print(f"[{self.name}] Move error: {e}")
+
+
 @app.route("/restore_factory_setting_all", methods=["POST"])
 def restoreFactorySettingAll():
     ###1. SystemSetting: Close Water Valve When Stop Mode 要勾選
@@ -7881,104 +7898,137 @@ def restoreFactorySettingAll():
     
     
     ###6. Logs:軟刪除所有Log檔: 將其轉至old_xxx 資料夾(superuser可見)
-  
-    try:
-        error_dir = os.path.join(log_path, "logs", "error")
-        old_error_dir = os.path.join(log_path, "logs", "old_error")
+    
 
-        if os.path.exists(error_dir) and os.path.isdir(error_dir):
-            if not os.path.exists(old_error_dir):
-                os.makedirs(old_error_dir)
+    LogMover(
+        src_dir=os.path.join(log_path, "logs", "error"),
+        dst_dir=os.path.join(log_path, "logs", "old_error"),
+        name="error"
+    ).move_logs()
 
-            for filename in os.listdir(error_dir):
-                src_file = os.path.join(error_dir, filename)
-                dst_file = os.path.join(old_error_dir, filename)
-                if os.path.isfile(src_file):
-                    shutil.move(src_file, dst_file)
-            print("All error log files moved to old_error successfully.")
-        else:
-            print("Error log directory does not exist.")
-    except Exception as e:
-        print(f"Move log error: {e}")
-        
+    LogMover(
+        src_dir=os.path.join(log_path, "logs", "operation"),
+        dst_dir=os.path.join(log_path, "logs", "old_operation"),
+        name="operation"
+    ).move_logs()
 
-    try:
-        operation_dir = os.path.join(log_path, "logs", "operation")
-        old_operation_dir = os.path.join(log_path, "logs", "old_operation")
+    LogMover(
+        src_dir=os.path.join(log_path, "logs", "sensor"),
+        dst_dir=os.path.join(log_path, "logs", "old_sensor"),
+        name="sensor"
+    ).move_logs()
 
-        if os.path.exists(operation_dir) and os.path.isdir(operation_dir):
-            if not os.path.exists(old_operation_dir):
-                os.makedirs(old_operation_dir)
+    LogMover(
+        src_dir=os.path.join(snmp_path, "RestAPI", "logs", "operation"),
+        dst_dir=os.path.join(snmp_path, "RestAPI", "logs", "old_operation"),
+        name="snmp_operation"
+    ).move_logs()
 
-            for filename in os.listdir(operation_dir):
-                src_file = os.path.join(operation_dir, filename)
-                dst_file = os.path.join(old_operation_dir, filename)
-                if os.path.isfile(src_file):
-                    shutil.move(src_file, dst_file)
-            print("All operation log files moved to old_operation successfully.")
-        else:
-            print("operation log directory does not exist.")
-    except Exception as e:
-        print(f"Move log operation: {e}")
-        
-        
-    try:
-        sensor_dir = os.path.join(log_path, "logs", "sensor")
-        old_sensor_dir = os.path.join(log_path, "logs", "old_sensor")
-
-        if os.path.exists(sensor_dir) and os.path.isdir(sensor_dir):
-            if not os.path.exists(old_sensor_dir):
-                os.makedirs(old_sensor_dir)
-
-            for filename in os.listdir(sensor_dir):
-                src_file = os.path.join(sensor_dir, filename)
-                dst_file = os.path.join(old_sensor_dir, filename)
-                if os.path.isfile(src_file):
-                    shutil.move(src_file, dst_file)
-            print("All sensor log files moved to old_sensor successfully.")
-        else:
-            print("Error log directory does not exist.")
-    except Exception as e:
-        print(f"Move log error: {e}")
-        
     # try:
-    #     file_path = os.path.join(snmp_path, "RestAPI", "logs", "operation")
+    #     error_dir = os.path.join(log_path, "logs", "error")
+    #     old_error_dir = os.path.join(log_path, "logs", "old_error")
 
-    #     if os.path.exists(file_path) and os.path.isdir(file_path):
-    #         for filename in os.listdir(file_path):
-    #             file_to_delete = os.path.join(file_path, filename)
-    #             if os.path.isfile(file_to_delete):
-    #                 os.remove(file_to_delete)
-    #         print("All files deleted successfully.")
+    #     if os.path.exists(error_dir) and os.path.isdir(error_dir):
+    #         if not os.path.exists(old_error_dir):
+    #             os.makedirs(old_error_dir)
+
+    #         for filename in os.listdir(error_dir):
+    #             src_file = os.path.join(error_dir, filename)
+    #             dst_file = os.path.join(old_error_dir, filename)
+    #             if os.path.isfile(src_file):
+    #                 # 如果目的地已存在同名檔案，則改名避免覆蓋
+    #                 if os.path.exists(dst_file):
+    #                     name, ext = os.path.splitext(filename)
+    #                     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    #                     new_filename = f"{name}.{timestamp}{ext}"
+    #                     dst_file = os.path.join(old_sensor_dir, new_filename)
+
+    #                 shutil.move(src_file, dst_file)
+    #         print("All error log files moved to old_error successfully.")
     #     else:
-    #         print("Directory does not exist.")
-    # except Exception as e:  
-    #     print(f"delete log error:{e}")
-        
-    # ###7. Engineer Mode: Sensor Adjustment恢復預設值
-    # try:
-    #     adjust_import(adjust_factory)
-    #     op_logger.info("Reset Adjust to Factory Setting Successfully")
+    #         print("Error log directory does not exist.")
     # except Exception as e:
-    #     print(f"adjust import error:{e}")
-    try:
-        operation_dir = os.path.join(snmp_path, "RestAPI", "logs", "operation")
-        old_operation_dir = os.path.join(snmp_path, "RestAPI", "logs", "old_operation")
+    #     print(f"Move log error: {e}")
+        
 
-        if os.path.exists(operation_dir) and os.path.isdir(operation_dir):
-            if not os.path.exists(old_operation_dir):
-                os.makedirs(old_operation_dir)
+    # try:
+    #     operation_dir = os.path.join(log_path, "logs", "operation")
+    #     old_operation_dir = os.path.join(log_path, "logs", "old_operation")
 
-            for filename in os.listdir(operation_dir):
-                src_file = os.path.join(operation_dir, filename)
-                dst_file = os.path.join(old_operation_dir, filename)
-                if os.path.isfile(src_file):
-                    shutil.move(src_file, dst_file)
-            print("All operation log files moved to old_operation successfully.")
-        else:
-            print("operation log directory does not exist.")
-    except Exception as e:
-        print(f"Move log operation: {e}")
+    #     if os.path.exists(operation_dir) and os.path.isdir(operation_dir):
+    #         if not os.path.exists(old_operation_dir):
+    #             os.makedirs(old_operation_dir)
+
+    #         for filename in os.listdir(operation_dir):
+    #             src_file = os.path.join(operation_dir, filename)
+    #             dst_file = os.path.join(old_operation_dir, filename)
+    #             if os.path.isfile(src_file):
+    #                 # 如果目的地已存在同名檔案，則改名避免覆蓋
+    #                 if os.path.exists(dst_file):
+    #                     name, ext = os.path.splitext(filename)
+    #                     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    #                     new_filename = f"{name}.{timestamp}{ext}"
+    #                     dst_file = os.path.join(old_sensor_dir, new_filename)
+    #                 shutil.move(src_file, dst_file)
+    #         print("All operation log files moved to old_operation successfully.")
+    #     else:
+    #         print("operation log directory does not exist.")
+    # except Exception as e:
+    #     print(f"Move log operation: {e}")
+        
+        
+    # try:
+    #     sensor_dir = os.path.join(log_path, "logs", "sensor")
+    #     old_sensor_dir = os.path.join(log_path, "logs", "old_sensor")
+
+    #     if os.path.exists(sensor_dir) and os.path.isdir(sensor_dir):
+    #         if not os.path.exists(old_sensor_dir):
+    #             os.makedirs(old_sensor_dir)
+
+    #         for filename in os.listdir(sensor_dir):
+    #             src_file = os.path.join(sensor_dir, filename)
+    #             dst_file = os.path.join(old_sensor_dir, filename)
+    #             if os.path.isfile(src_file):
+    #                 # 如果目的地已存在同名檔案，則改名避免覆蓋
+    #                 if os.path.exists(dst_file):
+    #                     name, ext = os.path.splitext(filename)
+    #                     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    #                     new_filename = f"{name}.{timestamp}{ext}"
+    #                     dst_file = os.path.join(old_sensor_dir, new_filename)
+
+    #                 shutil.move(src_file, dst_file)
+    #         print("All sensor log files moved to old_sensor successfully.")
+    #     else:
+    #         print("Sensor log directory does not exist.")
+    # except Exception as e:
+    #     print(f"Move log error: {e}")
+        
+
+    # try:
+    #     operation_dir = os.path.join(snmp_path, "RestAPI", "logs", "operation")
+    #     old_operation_dir = os.path.join(snmp_path, "RestAPI", "logs", "old_operation")
+
+    #     if os.path.exists(operation_dir) and os.path.isdir(operation_dir):
+    #         if not os.path.exists(old_operation_dir):
+    #             os.makedirs(old_operation_dir)
+
+    #         for filename in os.listdir(operation_dir):
+    #             src_file = os.path.join(operation_dir, filename)
+    #             dst_file = os.path.join(old_operation_dir, filename)
+    #             if os.path.isfile(src_file):
+    #                 # 如果目的地已存在同名檔案，則改名避免覆蓋
+    #                 if os.path.exists(dst_file):
+    #                     name, ext = os.path.splitext(filename)
+    #                     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    #                     new_filename = f"{name}.{timestamp}{ext}"
+    #                     dst_file = os.path.join(old_sensor_dir, new_filename)
+
+    #                 shutil.move(src_file, dst_file)
+    #         print("All operation log files moved to old_operation successfully.")
+    #     else:
+    #         print("operation log directory does not exist.")
+    # except Exception as e:
+    #     print(f"Move log operation: {e}")
          
     ###8. Engineer Mode: Alert Threshold Setting恢復預設值
     try:
@@ -8762,228 +8812,6 @@ def version_switch():
         )
 
 
-@app.route("/download_logs/error/<date_range>")
-def download_errorlogs_by_range(date_range):
-    """Get Error Logs within Date Range (Superuser includes old logs)"""
-
-    start_date_str, end_date_str = date_range.split("~")
-    start_date = datetime.strptime(start_date_str, "%Y-%m-%d").date()
-    end_date = datetime.strptime(end_date_str, "%Y-%m-%d").date()
-    today = datetime.now().date()
-
-    zip_buffer = BytesIO()
-
-    with zipfile.ZipFile(zip_buffer, "w") as zip_file:
-        # 處理 logs/error/
-        error_dir = os.path.join(log_path, "logs", "error")
-        if os.path.exists(error_dir):
-            for file in os.listdir(error_dir):
-                try:
-                    file_path = os.path.join(error_dir, file)
-
-                    if file == "errorlog.log":
-                        file_date = today
-                    else:
-                        file_date_str = file.rsplit(".", 1)[-1]
-                        file_date = datetime.strptime(file_date_str, "%Y-%m-%d").date()
-
-                    if start_date <= file_date <= end_date:
-                        zip_file.write(file_path, arcname=file)
-                except (IndexError, ValueError):
-                    continue
-
-        # ✅ Superuser 額外處理 logs/old_error/
-        if current_user.id == "superuser":
-            old_error_dir = os.path.join(log_path, "logs", "old_error")
-            if os.path.exists(old_error_dir):
-                for file in os.listdir(old_error_dir):
-                    try:
-                        file_path = os.path.join(old_error_dir, file)
-
-                        if file == "errorlog.log":
-                            file_date = today
-                        else:
-                            file_date_str = file.rsplit(".", 1)[-1]
-                            file_date = datetime.strptime(file_date_str, "%Y-%m-%d").date()
-
-                        if start_date <= file_date <= end_date:
-                            arcname = f"old_error/{file}"
-                            zip_file.write(file_path, arcname=arcname)
-                    except (IndexError, ValueError):
-                        continue
-
-    zip_buffer.seek(0)
-
-    return send_file(
-        zip_buffer,
-        mimetype="application/zip",
-        as_attachment=True,
-        download_name=f"errorlogs_{start_date_str}_to_{end_date_str}.zip",
-    )
-
-@app.route("/download_logs/operation_restapi/<date_range>")
-def download_oplogs_restapi_by_range(date_range):
-    """Get Operation Logs (superuser includes old_operation logs)"""
-
-    start_date_str, end_date_str = date_range.split("~")
-
-    start_date = datetime.strptime(start_date_str, "%Y-%m-%d").date()
-    end_date = datetime.strptime(end_date_str, "%Y-%m-%d").date()
-    today = datetime.now().date()
-
-    zip_buffer = BytesIO()
-
-    with zipfile.ZipFile(zip_buffer, "w") as zip_file:
-        #  logs/operation
-        op_dir = os.path.join(snmp_path, "RestAPI", "logs", "operation")
-        if os.path.exists(op_dir):
-            for file in os.listdir(op_dir):
-                try:
-                    if file == "oplog_api.log":
-                        file_date = today
-                    else:
-                        file_date_str = file.rsplit(".", 1)[-1]
-                        file_date = datetime.strptime(file_date_str, "%Y-%m-%d").date()
-
-                    if start_date <= file_date <= end_date:
-                        zip_file.write(os.path.join(op_dir, file), arcname=file)
-                except (IndexError, ValueError):
-                    continue
-
-        #  logs/old_operation (only for superuser)
-        if current_user.id == "superuser":
-            old_op_dir = os.path.join(snmp_path, "RestAPI", "logs", "old_operation")
-            if os.path.exists(old_op_dir):
-                for file in os.listdir(old_op_dir):
-                    try:
-                        if file == "oplog_api.log":
-                            file_date = today
-                        else:
-                            file_date_str = file.rsplit(".", 1)[-1]
-                            file_date = datetime.strptime(file_date_str, "%Y-%m-%d").date()
-
-                        if start_date <= file_date <= end_date:
-                            arcname = f"old_operation/{file}"
-                            zip_file.write(os.path.join(old_op_dir, file), arcname=arcname)
-                    except (IndexError, ValueError):
-                        continue
-
-    zip_buffer.seek(0)
-
-    return send_file(
-        zip_buffer,
-        mimetype="application/zip",
-        as_attachment=True,
-        download_name=f"oplogs_{start_date_str}_to_{end_date_str}.zip",
-    )
-    
-    
-    
-
-@app.route("/download_logs/operation/<date_range>")
-def download_oplogs_by_range(date_range):
-    """Get Operation Logs (superuser includes old_operation logs)"""
-
-    start_date_str, end_date_str = date_range.split("~")
-
-    start_date = datetime.strptime(start_date_str, "%Y-%m-%d").date()
-    end_date = datetime.strptime(end_date_str, "%Y-%m-%d").date()
-    today = datetime.now().date()
-
-    zip_buffer = BytesIO()
-
-    with zipfile.ZipFile(zip_buffer, "w") as zip_file:
-        #  logs/operation
-        op_dir = os.path.join(log_path, "logs", "operation")
-        if os.path.exists(op_dir):
-            for file in os.listdir(op_dir):
-                try:
-                    if file == "oplog.log":
-                        file_date = today
-                    else:
-                        file_date_str = file.rsplit(".", 1)[-1]
-                        file_date = datetime.strptime(file_date_str, "%Y-%m-%d").date()
-
-                    if start_date <= file_date <= end_date:
-                        zip_file.write(os.path.join(op_dir, file), arcname=file)
-                except (IndexError, ValueError):
-                    continue
-
-        #  logs/old_operation (only for superuser)
-        if current_user.id == "superuser":
-            old_op_dir = os.path.join(log_path, "logs", "old_operation")
-            if os.path.exists(old_op_dir):
-                for file in os.listdir(old_op_dir):
-                    try:
-                        if file == "oplog.log":
-                            file_date = today
-                        else:
-                            file_date_str = file.rsplit(".", 1)[-1]
-                            file_date = datetime.strptime(file_date_str, "%Y-%m-%d").date()
-
-                        if start_date <= file_date <= end_date:
-                            arcname = f"old_operation/{file}"
-                            zip_file.write(os.path.join(old_op_dir, file), arcname=arcname)
-                    except (IndexError, ValueError):
-                        continue
-
-    zip_buffer.seek(0)
-
-    return send_file(
-        zip_buffer,
-        mimetype="application/zip",
-        as_attachment=True,
-        download_name=f"oplogs_{start_date_str}_to_{end_date_str}.zip",
-    )
-
-
-@app.route("/download_logs/sensor/<date_range>")
-def download_sensorlogs_by_range(date_range):
-    """Get Sensor Logs"""
-
-    start_date_str, end_date_str = date_range.split("~")
-
-    start_date = datetime.strptime(start_date_str, "%Y-%m-%d")
-    end_date = datetime.strptime(end_date_str, "%Y-%m-%d")
-
-    zip_buffer = BytesIO()
-
-    with zipfile.ZipFile(zip_buffer, "w") as zip_file:
-        files = os.listdir(f"{log_path}/logs/sensor")
-
-        for file in files:
-            try:
-                file_date_str = file.rsplit(".")[-2]
-                file_date = datetime.strptime(file_date_str, "%Y-%m-%d")
-
-                if start_date <= file_date <= end_date:
-                    zip_file.write(f"{log_path}/logs/sensor/{file}", arcname=file)
-            except (IndexError, ValueError):
-                continue
-        # ✅ Superuser 的額外處理：logs/old_sensor/
-        if current_user.id == "superuser":
-            old_sensor_dir = os.path.join(log_path, "logs", "old_sensor")
-            if os.path.exists(old_sensor_dir):
-                old_files = os.listdir(old_sensor_dir)
-                for file in old_files:
-                    try:
-                        file_date_str = file.rsplit(".")[-2]
-                        file_date = datetime.strptime(file_date_str, "%Y-%m-%d")
-
-                        if start_date <= file_date <= end_date:
-                            # arcname 放在子資料夾中，讓 zip 結構清晰
-                            arcname = f"old_sensor/{file}"
-                            zip_file.write(os.path.join(old_sensor_dir, file), arcname=arcname)
-                    except (IndexError, ValueError):
-                        continue
-    zip_buffer.seek(0)
-
-    return send_file(
-        zip_buffer,
-        mimetype="application/zip",
-        as_attachment=True,
-        download_name=f"sensorlogs_{start_date_str}_to_{end_date_str}.zip",
-    )
 
 
 @app.before_request
