@@ -192,6 +192,7 @@ PrimaryCoolantConnectors_data_1 ={
     "Description": "Primary input from facility chiller (no valve control)",
     # 額定流量
     "RatedFlowLitersPerMinute": 1000,
+    # TBD
     "Status": {
         "Health": "OK",
         "State": "Enabled"

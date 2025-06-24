@@ -2,6 +2,7 @@ import uuid
 import psutil
 import subprocess
 import socket
+import time
 
 #====================================================
 # get system uuid
@@ -96,6 +97,20 @@ def get_physical_nics():
 
     return interfaces
 
-
+#====================================================
+# get system uptime
+# ===================================================
+def get_uptime():
+    # psutil.boot_time() 回傳開機到目前時間
+    boot_ts = psutil.boot_time()
+    now_ts  = time.time()
+    uptime_s = now_ts - boot_ts
+    # print(f"系統啟動時間: {time.ctime(boot_ts)}")
+    # print(f"目前時間: {time.ctime(now_ts)}")
+    # print(f"系統運行時間 (秒): {uptime_s}")
+    hours, rem = divmod(int(uptime_s), 3600)
+    minutes, seconds = divmod(rem, 60)
+    # print(f"Uptime: {hours}h {minutes}m {seconds}s")
+    return hours, minutes, seconds
 
 

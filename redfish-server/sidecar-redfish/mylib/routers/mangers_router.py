@@ -32,39 +32,39 @@ managers_data = {
     "Oem": {},
 }
 
-managers_cdu_data =    {
-    "@odata.id": "/redfish/v1/Managers/CDU",
-    "@odata.type": "#Manager.v1_21_0.Manager",
-    "@odata.context": "/redfish/v1/$metadata#Manager.v1_21_0.Manager",
+# managers_cdu_data =    {
+#     "@odata.id": "/redfish/v1/Managers/CDU",
+#     "@odata.type": "#Manager.v1_21_0.Manager",
+#     "@odata.context": "/redfish/v1/$metadata#Manager.v1_21_0.Manager",
     
-    "Id": "CDU",
-    "Name": "CDU Network Interface Module",
-    "Description": "Cooling Distribution Unit Management Module",
+#     "Id": "CDU",
+#     "Name": "CDU Network Interface Module",
+#     "Description": "Cooling Distribution Unit Management Module",
     
-    "ManagerType": "ManagementController",
+#     "ManagerType": "ManagementController",
     
-    # 製造商與韌體資訊
-    "Manufacturer": "Supermicro",
-    "PartNumber": "LCS-SCDU-200AR001",
-    "Model": "200KW-SideCar-L/A-Colling-CDU",
-    "FirmwareVersion": "1502",# webUI1版本
-    "SerialNumber":"LCS-SCDU-200AR001", # 讀WebUI的FW Status，不是固定值
-    "UUID": "00000000-0000-0000-0000-e45f013e98f8",
-    "ServiceEntryPointUUID": "92384634-2938-2342-8820-489239905423",
+#     # 製造商與韌體資訊
+#     "Manufacturer": "Supermicro",
+#     "PartNumber": "LCS-SCDU-200AR001",
+#     "Model": "200KW-SideCar-L/A-Colling-CDU",
+#     "FirmwareVersion": "1502",# webUI1版本
+#     "SerialNumber":"LCS-SCDU-200AR001", # 讀WebUI的FW Status，不是固定值
+#     "UUID": "00000000-0000-0000-0000-e45f013e98f8",
+#     "ServiceEntryPointUUID": "92384634-2938-2342-8820-489239905423",
     
-    # 時間與時區
-    "DateTime": "2025-02-21T06:02:08Z-06:00", # 有規範怎麼寫 ok
-    "DateTimeLocalOffset": "-06:00", # 有規範怎麼寫 ok
-    "LastResetTime": "2025-01-24T07:08:48Z",
-    "DateTimeSource": "NTP",
-    # 自動夏令時間（DST）設定
-    "AutoDSTEnabled": False,
-    "AutoDSTEnabled@Redfish.AllowableValues": [
-        "False"
-    ],
-    # 時區名稱，以及可選列表
-    "TimeZoneName": "America/New_York", # read-write
-    "TimeZoneName@Redfish.AllowableValues": [
+#     # 時間與時區
+#     "DateTime": "2025-02-21T06:02:08Z-06:00", # 有規範怎麼寫 ok
+#     "DateTimeLocalOffset": "-06:00", # 有規範怎麼寫 ok
+#     "LastResetTime": "2025-01-24T07:08:48Z",
+#     "DateTimeSource": "NTP",
+#     # 自動夏令時間（DST）設定
+#     "AutoDSTEnabled": False,
+#     "AutoDSTEnabled@Redfish.AllowableValues": [
+#         "False"
+#     ],
+#     # 時區名稱，以及可選列表
+#     "TimeZoneName": "America/New_York", # read-write
+#     "TimeZoneName@Redfish.AllowableValues": [
         # "(UTC+00:00) Coordinated Universal Time",
         # "(UTC+00:00) Dublin, Edinburgh, Lisbon, London",
         # "(UTC+00:00) Monrovia, Reykjavik",
@@ -204,69 +204,69 @@ managers_cdu_data =    {
         # "(UTC-10:00) Hawaii",
         # "(UTC-11:00) Coordinated Universal Time-11",
         # "(UTC-12:00) International Date Line West"
-    ],
-    # 服務與連線狀態
-    "Status": {
-        "State": "Enabled",
-        "Health": "Critical"
-    },
-    "PowerState": "On",
-    # 可支援的串流方式
-    "SerialConsole": {
-        "ServiceEnabled": False
-    },
-    "ServiceIdentification": "ServiceRoot", # read-write
+    # ],
+    # # 服務與連線狀態
+    # "Status": {
+    #     "State": "Enabled",
+    #     "Health": "Critical"
+    # },
+    # "PowerState": "On",
+    # # 可支援的串流方式
+    # "SerialConsole": {
+    #     "ServiceEnabled": False
+    # },
+    # "ServiceIdentification": "ServiceRoot", # read-write
     
-    "LogServices": {
-        # TBD
-        "@odata.id": "/redfish/v1/Managers/CDU/LogServices"
-    },
-    "HostInterfaces": {
-        # TBD
-        "@odata.id": "/redfish/v1/Managers/CDU/HostInterfaces"
-    },
-    "NetworkProtocol": {
-        "@odata.id": "/redfish/v1/Managers/CDU/NetworkProtocol"
-    },
-    "EthernetInterfaces": {
-        "@odata.id": "/redfish/v1/Managers/CDU/EthernetInterfaces"
-    },
+    # "LogServices": {
+    #     # TBD
+    #     "@odata.id": "/redfish/v1/Managers/CDU/LogServices"
+    # },
+    # "HostInterfaces": {
+    #     # TBD
+    #     "@odata.id": "/redfish/v1/Managers/CDU/HostInterfaces"
+    # },
+    # "NetworkProtocol": {
+    #     "@odata.id": "/redfish/v1/Managers/CDU/NetworkProtocol"
+    # },
+    # "EthernetInterfaces": {
+    #     "@odata.id": "/redfish/v1/Managers/CDU/EthernetInterfaces"
+    # },
 
     
-    "Links": {
-        "Oem": {
-            # "Supermicro": {
-            #     "Memory": {
-            #         "@odata.id": "/redfish/v1/Managers/CDU/Memory"
-            #     },
-            # }
-        }
-    },
+    # "Links": {
+    #     "Oem": {
+    #         # "Supermicro": {
+    #         #     "Memory": {
+    #         #         "@odata.id": "/redfish/v1/Managers/CDU/Memory"
+    #         #     },
+    #         # }
+    #     }
+    # },
     
-    # 允許 client 用 PATCH 修改的屬性
-    "@Redfish.WriteableProperties": [
-        "DateTime",
-        "DateTimeLocalOffset",
-        "AutoDSTEnabled",
-        "TimeZoneName"
-    ],
+    # # 允許 client 用 PATCH 修改的屬性
+    # "@Redfish.WriteableProperties": [
+    #     "DateTime",
+    #     "DateTimeLocalOffset",
+    #     "AutoDSTEnabled",
+    #     "TimeZoneName"
+    # ],
     
-    "Actions": {
-        "#Manager.ResetToDefaults": {
-            "target": "/redfish/v1/Managers/CDU/Actions/Manager.ResetToDefaults",
-            "ResetType@Redfish.AllowableValues": [ # note: only `ResetAll` impl. in RestAPI
-                # "PreserveNetwork",
-                "ResetAll",
-                # "PreserveNetworkAndUsers",
-            ]
-        },
-        "#Manager.Reset": {
-            "target": "/redfish/v1/Managers/CDU/Actions/Manager.Reset",
-            "ResetType@Redfish.AllowableValues": [
-                "ForceRestart",
-                "GracefulRestart"
-            ]
-        },
+    # "Actions": {
+    #     "#Manager.ResetToDefaults": {
+    #         "target": "/redfish/v1/Managers/CDU/Actions/Manager.ResetToDefaults",
+    #         "ResetType@Redfish.AllowableValues": [ # note: only `ResetAll` impl. in RestAPI
+    #             # "PreserveNetwork",
+    #             "ResetAll",
+    #             # "PreserveNetworkAndUsers",
+    #         ]
+    #     },
+    #     "#Manager.Reset": {
+    #         "target": "/redfish/v1/Managers/CDU/Actions/Manager.Reset",
+    #         "ResetType@Redfish.AllowableValues": [
+    #             "ForceRestart",
+    #             "GracefulRestart"
+    #         ]
+    #     },
         # "#Manager.Shutdown": {
         #     "target": "/redfish/v1/Managers/CDU/Actions/Manager.Shutdown",
         #     "ShutdownType@Redfish.AllowableValues": [
@@ -274,15 +274,15 @@ managers_cdu_data =    {
         #         "GracefulRestart"
         #     ]
         # },
-        "Oem": {}
-    },
-    "Oem": {
-        "Supermicro": {
-            # 暫時設定
-            # "@odata.id": "/redfish/v1/Managers/CDU/Supermicro"
-        }
-    }
-}
+#         "Oem": {}
+#     },
+#     "Oem": {
+#         "Supermicro": {
+#             # 暫時設定
+#             # "@odata.id": "/redfish/v1/Managers/CDU/Supermicro"
+#         }
+#     }
+# }
 
 ethernet_interfaces_data = {
     "@odata.id": "/redfish/v1/Managers/CDU/EthernetInterfaces",
@@ -345,12 +345,12 @@ ManagersCDUPatch = managers_ns.model('ManagersCDUPatch', {
     'DateTime': fields.String(
         required=False,
         description='The date and time of the system.',
-        example='2021-01-01T00:00:00.000Z'
+        example='2021-01-01T00:00:00.000Z+08:00'
     ),
     'DateTimeLocalOffset': fields.String(
         required=False,
         description='The date and time of the system.',
-        example='2021-01-01T00:00:00.000Z'
+        example='+08:00'
     ),
     'ServiceIdentification': fields.String(
         required=False, 
@@ -364,7 +364,7 @@ ManagersCDUPatch = managers_ns.model('ManagersCDUPatch', {
 #====================================================== 
 @managers_ns.route("/Managers") # Get
 class Managers(Resource):
-    # # @requires_auth
+    # @requires_auth
     @managers_ns.doc("managers")
     def get(self):
         
@@ -372,11 +372,12 @@ class Managers(Resource):
        
 @managers_ns.route("/Managers/CDU") # Get/Patch
 class ManagersCDU(Resource):
-    # # @requires_auth
+    # @requires_auth
     @managers_ns.doc("managers_cdu")
     def get(self):
         return RfManagersService().get_managers("CDU"), 200
 
+    # 未測試
     # @managers_ns.expect(ManagersCDUPatch, validate=True)
     # def patch(self):
     #     body = request.get_json(force=True)
