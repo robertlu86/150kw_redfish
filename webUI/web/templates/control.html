@@ -1398,20 +1398,8 @@ styles %}
             if (ver_switch === true) {
                 $("#Fan7_set, #Fan8_set, #Fan7_run_time_set, #Fan8_run_time_set").hide();
                 $("#fan7_check, #fan8_check").prop("checked", false);
-                // $("#Fan5_name").text("Fan4:");
-                // $("#Fan6_name").text("Fan5:");
-                // $("#Fan7_name").text("Fan6:");
-                // $("#Fan5_run_name_set").text("Fan4 Running Time:");
-                // $("#Fan6_run_name_set").text("Fan5 Running Time:");
-                // $("#Fan7_run_name_set").text("Fan6 Running Time:");
             } else {
                 $("#Fan7_set, #Fan8_set, #Fan7_run_time_set, #Fan8_run_time_set").show();
-                $("#Fan5_name").text("Fan5:");
-                $("#Fan6_name").text("Fan6:");
-                $("#Fan7_name").text("Fan7:");
-                $("#Fan5_run_name_set").text("Fan5 Running Time:");
-                $("#Fan6_run_name_set").text("Fan6 Running Time:");
-                $("#Fan7_run_name_set").text("Fan7 Running Time:");
             }
         }
 
@@ -1446,7 +1434,7 @@ styles %}
             inspect_action = data["inspect_action"];
             oc_issue = data["downtime_error"]["oc_issue"];
             f1_issue = data["downtime_error"]["f1_issue"];
-
+            
 
             for (let i = 1; i <= 3; i++) {  // pump  從 1 到 3
                 if (data["mc"][`mc${i}_sw`]) {
@@ -1923,9 +1911,20 @@ styles %}
             //     var pid = document.getElementById("exp_pid_set").checked;
             //     var alert = document.getElementById("exp_alt_chk").checked;
             // }
+            var mode_set = false;
+            var alert = false;
             if (userType === "superuser" || userType === "root") {
-                var mode_set = document.getElementById("exp_modset_chk").checked;
-                var alert = document.getElementById("exp_alt_chk").checked;
+                mode_set = document.getElementById("exp_modset_chk").checked;
+                alert = document.getElementById("exp_alt_chk").checked;
+            }
+            if (!network && !system && !mode_set && !alert) {
+                Swal.fire({
+                    title: "Warning",
+                    text: "Please select at least one setting to export",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+                });
+                return;
             }
             var dataToSend = {
                 exp_alt_chk: alert,
