@@ -33,14 +33,22 @@ class RfManagersService(BaseService):
         # SettingModel().get_by_key(f"Managers.{servie}.Port")  
         return {"ProtocolEnabled": bool(int(SettingModel().get_by_key(f"Managers.{servie}.ProtocolEnabled").value)), "Port": int(SettingModel().get_by_key(f"Managers.{servie}.Port").value)}
             
-        
-    # def get_ethernet_data(self):
-    #     return get_physical_nics()      
+    def save_manager_setting(self, key: str, value: str):
+        """
+        儲存管理員設定
+        :param key: str, 設定的鍵名
+        :param value: str, 設定的值
+        """
+        return SettingModel().save_key_value(f"Managers.{key}", value)
     
-    # def get_ethernet_entry(self, target_name, data):
-    #     entry = next((item for item in data if item['Name'] == target_name), None)
-    #     return entry
-    
+    def get_manager_setting(self, key: str) -> str:
+        """
+        取得管理員設定
+        :param key: str, 設定的鍵名
+        :return: str, 設定的值
+        """
+        return SettingModel().get_by_key(f"Managers.{key}").value
+    # =================系統時間===================
     # 取得目前時區 IANA 格式 
     def get_current_timezone(self):
         try:
@@ -52,6 +60,34 @@ class RfManagersService(BaseService):
             return tz 
         except:
             return None
+    
+    def apply_system_time(self, date_time_iso: str, target_tz: str) -> bool:
+        """
+        date_time_iso: "2025-06-24T10:00:00-02:00"
+        target_tz: "Asia/Taipei"
+        回傳 bool
+        """
+        try:
+            # 轉換 UTC"
+            utc = subprocess.check_output(
+                ["date", "-u", "-d", date_time_iso, "+%Y-%m-%d %H:%M:%S"],
+                text=True
+            ).strip()
+            # 設置 UTC
+            subprocess.check_call(["sudo", "date", "-u", "-s", utc])
+            # 切換時區
+            subprocess.check_call(["sudo", "timedatectl", "set-timezone", target_tz])
+
+            return True
+        except subprocess.CalledProcessError as e:
+            return False
+    
+    # def get_ethernet_data(self):
+    #     return get_physical_nics()      
+    
+    # def get_ethernet_entry(self, target_name, data):
+    #     entry = next((item for item in data if item['Name'] == target_name), None)
+    #     return entry
     
     def net_info(self, interfaces): # 測試暫放
         print(f"共 {len(interfaces)} 張實體網卡：")
@@ -79,6 +115,7 @@ class RfManagersService(BaseService):
         # m.LastResetTime = "2025-01-24T07:08:48Z",
         # m.DateTimeSource = "NTP",
         m.ManagerType = "ManagementController"
+        m.ServiceIdentification = self.get_manager_setting("ServiceIdentification")
         # m.PowerState = "On"
         m.WriteableProperties = [ # 告知客戶可修改的項目
             "DateTime",
@@ -87,6 +124,21 @@ class RfManagersService(BaseService):
         ]
         
         return m.to_dict()
+    # 未測試(時間設定現在需要兩個一起設定)
+    def patch_managers(self, cdu_id, body):
+        DateTime = body.get("DateTime", None)
+        DateTimeLocalOffset = body.get("DateTimeLocalOffset", None)
+        ServiceIdentification = body.get("ServiceIdentification", None)
+        
+        try:
+            if DateTime is not None or DateTimeLocalOffset is not None:
+                self.apply_system_time(DateTime, DateTimeLocalOffset)
+            self.save_manager_setting("ServiceIdentification", ServiceIdentification)
+            
+            return {"message": "Manager settings updated successfully"}, 200
+        except Exception as e:
+            return {"error": str(e)}, 400    
+        
     # ================NetworkProtocol================
     def NetworkProtocol_service(self) -> dict:
         m = RfNetworkProtocolModel()

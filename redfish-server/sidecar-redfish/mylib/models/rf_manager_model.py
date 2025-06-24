@@ -167,7 +167,6 @@ class RfManagerModel(RfResourceBaseModel):
         self.Status = RfStatusModel(State="Enabled", Health=heath)
 
         # other
-        self.ServiceIdentification = redfish_info.get("Managers/cdu", {}).get("ServiceIdentification")
         self.LogServices = {"@odata.id": f"/redfish/v1/Managers/{cdu_id}/LogServices"}
         self.NetworkProtocol = {"@odata.id": f"/redfish/v1/Managers/{cdu_id}/NetworkProtocol"}
         self.EthernetInterfaces = {"@odata.id": f"/redfish/v1/Managers/{cdu_id}/EthernetInterfaces"}
