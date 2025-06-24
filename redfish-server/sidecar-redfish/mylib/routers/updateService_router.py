@@ -35,12 +35,10 @@ FirmwareInventory_data = {
     "Name": "Firmware Inventory",
 
     "Members@odata.count": 2, # 未串
-    "Members": [{
-        "@odata.id": "/redfish/v1/UpdateService/FirmwareInventory/WebInterface",
-        "@odata.id": "/redfish/v1/UpdateService/FirmwareInventory/ControlUnit_1",
-        # "@odata.id": "/redfish/v1/UpdateService/FirmwareInventory/PLC",
-        # "@odata.id": "/redfish/v1/UpdateService/FirmwareInventory/PC"
-    }],
+    "Members": [
+        {"@odata.id": "/redfish/v1/UpdateService/FirmwareInventory/WebInterface"},
+        {"@odata.id": "/redfish/v1/UpdateService/FirmwareInventory/ControlUnit_1"}
+    ],
 }
 
 WebInterface_data = {
@@ -50,7 +48,7 @@ WebInterface_data = {
     "Name": "Web Interface firmware",
     "Manufacturer": "supermicro",
     # 更新日
-    "ReleaseDate": "2025-02-21T06:02:08Z", # 未串
+    "ReleaseDate": "2025-02-21T06:02:08Z",
     # 是否可更新
     "Updateable": True,    
     "Version": "ok",

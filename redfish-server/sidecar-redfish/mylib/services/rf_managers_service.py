@@ -18,24 +18,35 @@ from mylib.utils.system_info import get_physical_nics
 from mylib.models.rf_ethernetinterfaces_model import RfEthernetInterfacesModel, RfEthernetInterfacesIdModel
 from mylib.models.rf_status_model import RfStatusModel
 from mylib.models.rf_manager_model import RfManagerModel
+from load_env import hardware_info, redfish_info
 
 
 class RfManagersService(BaseService):
     # =================通用工具===================    
     def save_networkprotocol(self, service: str, setting):
+        """
+        儲存 network protocol 設定
+        :param service: str, 協定名稱 (e.g., "SNMP", "NTP")
+        :param setting: dict, 包含協定設定的字典(e.g., {"ProtocolEnabled": True, "Port": 123, "ntp_server": "pool.ntp.org"})
+        """
         if service is "NTP":
             SettingModel().save_key_value(f"Managers.{service}.NTPServer", setting["ntp_server"])
         SettingModel().save_key_value(f"Managers.{service}.ProtocolEnabled", setting["ProtocolEnabled"])
         SettingModel().save_key_value(f"Managers.{service}.Port", setting["Port"])
     
     def get_networkprotocol(self, servie: str):
+        """
+        取得 network protocol 設定
+        :param servie: str, 協定名稱 (e.g., "SNMP", "NTP")
+        :return: dict, 包含協定設定的字典(e.g., {"ProtocolEnabled": True, "Port": 123, "ntp_server": "pool.ntp.org"})
+        """
         # SettingModel().get_by_key(f"Managers.{servie}.ProtocolEnabled")
         # SettingModel().get_by_key(f"Managers.{servie}.Port")  
         return {"ProtocolEnabled": bool(int(SettingModel().get_by_key(f"Managers.{servie}.ProtocolEnabled").value)), "Port": int(SettingModel().get_by_key(f"Managers.{servie}.Port").value)}
             
     def save_manager_setting(self, key: str, value: str):
         """
-        儲存管理員設定
+        儲存 managers 設定
         :param key: str, 設定的鍵名
         :param value: str, 設定的值
         """
@@ -43,7 +54,7 @@ class RfManagersService(BaseService):
     
     def get_manager_setting(self, key: str) -> str:
         """
-        取得管理員設定
+        取得 managers 設定
         :param key: str, 設定的鍵名
         :return: str, 設定的值
         """
@@ -60,26 +71,42 @@ class RfManagersService(BaseService):
             return tz 
         except:
             return None
-    
-    def apply_system_time(self, date_time_iso: str, target_tz: str) -> bool:
+        
+    # 轉換 IANA 格式
+    def offset_to_iana(self,offset: str) -> str:
         """
-        date_time_iso: "2025-06-24T10:00:00-02:00"
-        target_tz: "Asia/Taipei"
-        回傳 bool
+        從 yaml 轉換IANA時區格式
+        :param offset: str, 時區偏移量 (e.g., "+08:00", "-02:00")
+        :return: str, IANA 時區名稱 (e.g., "Asia/Taipei", "America/New_York")
+        """
+        return redfish_info["TimeZoneName"].get(offset, "UTC")
+    
+    # 設定系統時間
+    def apply_system_time(self, date_time_iso: str = None,
+                        offset: str = None) -> bool:
+        """
+        date_time_iso:  "2025-06-24T10:00:00-02:00"
+        offset:         "+08:00"
         """
         try:
-            # 轉換 UTC"
-            utc = subprocess.check_output(
-                ["date", "-u", "-d", date_time_iso, "+%Y-%m-%d %H:%M:%S"],
-                text=True
-            ).strip()
-            # 設置 UTC
-            subprocess.check_call(["sudo", "date", "-u", "-s", utc])
-            # 切換時區
-            subprocess.check_call(["sudo", "timedatectl", "set-timezone", target_tz])
+            if date_time_iso:
+                # 轉換 ISO 8601 時間格式到 UTC
+                utc = subprocess.run(
+                    ["date", "-u", "-d", date_time_iso, "+%Y-%m-%d %H:%M:%S"],
+                    text=True, check=True
+                ).strip()
+                # 設定系統時間
+                subprocess.run(["sudo", "date", "-u", "-s", utc])
 
-            return True
-        except subprocess.CalledProcessError as e:
+            if offset:
+                tz_name = self.offset_to_iana(offset)
+                # 設定時區 沒有就設定 UTC +00:00
+                subprocess.run(
+                    ["sudo", "timedatectl", "set-timezone", tz_name]
+                )
+
+            return bool(date_time_iso or offset)
+        except subprocess.CalledProcessError:
             return False
     
     # def get_ethernet_data(self):
@@ -124,6 +151,7 @@ class RfManagersService(BaseService):
         ]
         
         return m.to_dict()
+    
     # 未測試(時間設定現在需要兩個一起設定)
     def patch_managers(self, cdu_id, body):
         DateTime = body.get("DateTime", None)

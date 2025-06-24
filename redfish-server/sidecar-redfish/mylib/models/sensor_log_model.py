@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from datetime import datetime
 from typing import Optional, Literal, Union, get_args
 from pydantic import BaseModel, Field, field_validator
@@ -78,35 +80,35 @@ class SensorLogModel(SensorLogBaseModel):
     time: Optional[datetime] = Field(default=None, json_schema_extra={"units": None})
     
     # Temperature sensors
-    coolant_supply_temperature: Optional[float] = Field(default=None, alias="Coolant Supply Temperature (T1)", json_schema_extra={"units": "degC"})
-    coolant_supply_temperature_spare: Optional[float] = Field(default=None, alias="Coolant Supply Temperature Spare (T1sp)", json_schema_extra={"units": "degC"})
-    coolant_return_temperature: Optional[float] = Field(default=None, alias="Coolant Return Temperature (T2)", json_schema_extra={"units": "degC"})
-    coolant_return_temperature_spare: Optional[float] = Field(default=None, alias="Coolant Return Temperature Spare (T2sp)", json_schema_extra={"units": "degC"})
+    coolant_supply_temperature: Optional[float] = Field(default=None, alias="Coolant Supply Temperature (T1)", json_schema_extra={"units": "°C"})
+    coolant_supply_temperature_spare: Optional[float] = Field(default=None, alias="Coolant Supply Temperature Spare (T1sp)", json_schema_extra={"units": "°C"})
+    coolant_return_temperature: Optional[float] = Field(default=None, alias="Coolant Return Temperature (T2)", json_schema_extra={"units": "°C"})
+    coolant_return_temperature_spare: Optional[float] = Field(default=None, alias="Coolant Return Temperature Spare (T2sp)", json_schema_extra={"units": "°C"})
     
     # Pressure sensors
-    coolant_supply_pressure: Optional[float] = Field(default=None, alias="Coolant Supply Pressure (P1)", json_schema_extra={"units": "Pa"})
-    coolant_supply_pressure_spare: Optional[float] = Field(default=None, alias="Coolant Supply Pressure Spare (P1sp)", json_schema_extra={"units": "Pa"})
-    coolant_return_pressure: Optional[float] = Field(default=None, alias="Coolant Return Pressure (P2)", json_schema_extra={"units": "Pa"})
-    coolant_return_pressure_spare: Optional[float] = Field(default=None, alias="Coolant Return Pressure Spare (P2sp)", json_schema_extra={"units": "Pa"})
-    differential_pressure: Optional[float] = Field(default=None, alias="Differential Pressure (Pd=P1-P2)", json_schema_extra={"units": "Pa"})
-    filter_inlet_pressure: Optional[float] = Field(default=None, alias="Filter Inlet Pressure (P3)", json_schema_extra={"units": "Pa"})
-    filter_outlet_pressure: Optional[float] = Field(default=None, alias="Filter Outlet Pressure (P4)", json_schema_extra={"units": "Pa"})
+    coolant_supply_pressure: Optional[float] = Field(default=None, alias="Coolant Supply Pressure (P1)", json_schema_extra={"units": "kPa"})
+    coolant_supply_pressure_spare: Optional[float] = Field(default=None, alias="Coolant Supply Pressure Spare (P1sp)", json_schema_extra={"units": "kPa"})
+    coolant_return_pressure: Optional[float] = Field(default=None, alias="Coolant Return Pressure (P2)", json_schema_extra={"units": "kPa"})
+    coolant_return_pressure_spare: Optional[float] = Field(default=None, alias="Coolant Return Pressure Spare (P2sp)", json_schema_extra={"units": "kPa"})
+    differential_pressure: Optional[float] = Field(default=None, alias="Differential Pressure (Pd=P1-P2)", json_schema_extra={"units": "kPa"})
+    filter_inlet_pressure: Optional[float] = Field(default=None, alias="Filter Inlet Pressure (P3)", json_schema_extra={"units": "kPa"})
+    filter_outlet_pressure: Optional[float] = Field(default=None, alias="Filter Outlet Pressure (P4)", json_schema_extra={"units": "kPa"})
     
     # Flow and environmental sensors
-    coolant_flow_rate: Optional[float] = Field(default=None, alias="Coolant Flow Rate (F1)", json_schema_extra={"units": "L/s"})
-    ambient_temperature: Optional[float] = Field(default=None, alias="Ambient Temperature (Ta)", json_schema_extra={"units": "degC"})
+    coolant_flow_rate: Optional[float] = Field(default=None, alias="Coolant Flow Rate (F1)", json_schema_extra={"units": "LPM"}) # LPM = Liters per minute (公制)，GPM(英制)
+    ambient_temperature: Optional[float] = Field(default=None, alias="Ambient Temperature (Ta)", json_schema_extra={"units": "°C"})
     relative_humidity: Optional[float] = Field(default=None, alias="Relative Humidity (RH)", json_schema_extra={"units": "%"})
-    dew_point: Optional[float] = Field(default=None, alias="Dew Point (TDp)", json_schema_extra={"units": "degC"})
+    dew_point: Optional[float] = Field(default=None, alias="Dew Point (TDp)", json_schema_extra={"units": "°C"})
     
     # Water quality sensors
-    ph: Optional[float] = Field(default=None, alias="pH (PH)", json_schema_extra={"units": None})
-    conductivity: Optional[float] = Field(default=None, alias="Conductivity (CON)", json_schema_extra={"units": "uS/cm"})
+    ph: Optional[float] = Field(default=None, alias="pH (PH)", json_schema_extra={"units": "pH"})
+    conductivity: Optional[float] = Field(default=None, alias="Conductivity (CON)", json_schema_extra={"units": "µS/cm"})
     turbidity: Optional[float] = Field(default=None, alias="Turbidity (Tur)", json_schema_extra={"units": "NTU"})
     
     # Power and current
-    instant_power_consumption: Optional[float] = Field(default=None, alias="Instant Power Consumption", json_schema_extra={"units": "W"})
+    instant_power_consumption: Optional[float] = Field(default=None, alias="Instant Power Consumption", json_schema_extra={"units": "kW"})
     average_current: Optional[float] = Field(default=None, alias="Average Current", json_schema_extra={"units": "A"})
-    heat_capacity: Optional[float] = Field(default=None, alias="Heat Capacity", json_schema_extra={"units": "J/K"})
+    heat_capacity: Optional[float] = Field(default=None, alias="Heat Capacity", json_schema_extra={"units": "kW"})
     
     # Pump and fan speeds (actual)
     coolant_pump1: Optional[float] = Field(default=None, alias="Coolant Pump1[%]", json_schema_extra={"units": "%"})
@@ -122,10 +124,10 @@ class SensorLogModel(SensorLogBaseModel):
     # fan_speed8: Optional[float] = Field(default=None, alias="Fan Speed8[%]", json_schema_extra={"units": "%"})
     
     # Settings
-    mode_selection: Optional[str] = Field(default=None, alias="Mode Selection", json_schema_extra={"units": None})
-    target_coolant_temperature_setting: Optional[float] = Field(default=None, alias="Target Coolant Temperature Setting", json_schema_extra={"units": "degC"})
-    target_coolant_pressure_setting: Optional[float] = Field(default=None, alias="Target Coolant Pressure Setting", json_schema_extra={"units": "Pa"})
-    pump_swap_time_setting: Optional[str] = Field(default=None, alias="Pump Swap Time Setting", json_schema_extra={"units": None})
+    mode_selection: Optional[str] = Field(default=None, alias="Mode Selection", json_schema_extra={"units": None}) # Auto|Manual|Stop
+    target_coolant_temperature_setting: Optional[float] = Field(default=None, alias="Target Coolant Temperature Setting", json_schema_extra={"units": "°C"})
+    target_coolant_pressure_setting: Optional[float] = Field(default=None, alias="Target Coolant Pressure Setting", json_schema_extra={"units": "kPa"})
+    pump_swap_time_setting: Optional[float] = Field(default=None, alias="Pump Swap Time Setting", json_schema_extra={"units": "hours"})
     
     # Pump and fan speed settings
     pump1_speed_setting: Optional[float] = Field(default=None, alias="Pump1 Speed Setting", json_schema_extra={"units": "%"})
