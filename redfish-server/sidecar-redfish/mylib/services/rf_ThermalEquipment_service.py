@@ -28,8 +28,8 @@ from mylib.models.rf_leak_detector_id import RfLeakDetectionIdModel
 from load_env import hardware_info
 from mylib.routers.Chassis_router import GetControlMode
 from mylib.utils.StatusUtil import StatusUtil
-from load_env import hardware_info
 from mylib.utils.controlUtil import ControlMode_change
+from mylib.utils.system_info import get_uptime
 
 class RfThermalEquipmentService(BaseService):
     def fetch_CDUs(self, cdu_id: Optional[str] = None) -> dict:
@@ -46,7 +46,6 @@ class RfThermalEquipmentService(BaseService):
                 cdu_id=cdu_id,
                 **hardware_info["CDU"]
             )
-            # m.Status = {"State": "Enabled", "Health": "OK"}
             status = {
                 "State": "Enabled",
                 "Health": "OK"
@@ -97,11 +96,14 @@ class RfThermalEquipmentService(BaseService):
         :return: dict
         """
         m = RfEnvironmentMetricsModel(cdu_id=cdu_id)
+        boot_time_h = get_uptime()[0]
+        # print(f"CDU boot time: {boot_time_h} hours")
         m.TemperatureCelsius["Reading"] = self._read_reading_value_by_sensor_id("TemperatureCelsius")
         m.DewPointCelsius["Reading"] = self._read_reading_value_by_sensor_id("DewPointCelsius")
         m.HumidityPercent["Reading"] = self._read_reading_value_by_sensor_id("HumidityPercent")
         m.PowerWatts["Reading"] = self._read_reading_value_by_sensor_id("PowerConsume")
-        m.EnergykWh["Reading"] = round(self._read_reading_value_by_sensor_id("PowerConsume")  / (60 * 1000), 2)
+        m.EnergykWh["Reading"] = round(self._read_reading_value_by_sensor_id("PowerConsume") * boot_time_h / 1000, 2)
+        
         # m.AbsoluteHumidity["Reading"] = self._read_reading_value_by_sensor_id("AbsoluteHumidity")
         return m.to_dict()
     
