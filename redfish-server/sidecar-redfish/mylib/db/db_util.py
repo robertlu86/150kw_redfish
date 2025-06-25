@@ -2,6 +2,8 @@ from werkzeug.security import generate_password_hash
 from mylib.models.account_model import RoleModel, AccountModel
 from mylib.models.setting_model import SettingModel
 import sqlalchemy as sa
+from load_env import redfish_info
+from mylib.db.extensions import ext_engine
 
 
 def init_orm(app, db):
@@ -126,21 +128,59 @@ def init_orm(app, db):
             key_ensure_setting(key='AccountService.AccountLockoutDuration', value='60')
             key_ensure_setting(key='AccountService.AccountLockoutCounterResetAfter', value='30')
             key_ensure_setting(key='SessionService.SessionTimeout', value='360')
-            # EventService 
-            key_ensure_setting(key='EventService.DeliveryRetryAttempts', value='3')
-            key_ensure_setting(key='EventService.DeliveryRetryIntervalSeconds', value='60')
-            key_ensure_setting(key='EventService.Destination', value='127.0.0.1')
-            key_ensure_setting(key='EventService.TrapCommunity', value='public')
-            key_ensure_setting(key='EventService.ServiceEnabled', value='1')
-            # Managers
-            key_ensure_setting(key='Managers.SNMP.ProtocolEnabled', value='0')
-            key_ensure_setting(key='Managers.SNMP.Port', value='9000')
-            key_ensure_setting(key='Managers.NTP.NTPServer', value='ntp.ubuntu.com')
-            key_ensure_setting(key='Managers.NTP.ProtocolEnabled', value='1')
-            key_ensure_setting(key='Managers.NTP.Port', value='123')
-            key_ensure_setting(key='Managers.ServiceIdentification', value='ServiceRoot')
+            
+            ##
+            # Ensure "key" of default settings exists in db.
+            ##
+            # # EventService 
+            # key_ensure_setting(key='EventService.DeliveryRetryAttempts', value='3')
+            # key_ensure_setting(key='EventService.DeliveryRetryIntervalSeconds', value='60')
+            # key_ensure_setting(key='EventService.Destination', value='127.0.0.1')
+            # key_ensure_setting(key='EventService.TrapCommunity', value='public')
+            # key_ensure_setting(key='EventService.ServiceEnabled', value='1')
+            # # Managers
+            # key_ensure_setting(key='Managers.SNMP.ProtocolEnabled', value='0')
+            # key_ensure_setting(key='Managers.SNMP.Port', value='9000')
+            # key_ensure_setting(key='Managers.NTP.NTPServer', value='ntp.ubuntu.com')
+            # key_ensure_setting(key='Managers.NTP.ProtocolEnabled', value='1')
+            # key_ensure_setting(key='Managers.NTP.Port', value='123')
+            # key_ensure_setting(key='Managers.ServiceIdentification', value='ServiceRoot')
+            if redfish_info.get('Settings'):
+                for setting in redfish_info.get('Settings', {}).get('DefaultValues', []):
+                    try:
+                        k = setting.get('key')
+                        v = str(setting.get('value'))
+                        print(f"  - Check Setting: key={k}, value={v}")
+                        if k and v:
+                            print(f"    Ensure Setting: key={k}, value={v}")
+                            key_ensure_setting(key=k, value=v)
+                    except Exception as e:
+                        print(f"  - Check Setting FAIL: setting={setting}")
+
+            
             
     except Exception as e:
             print(f" * Error occurred: {e}")
     return
 
+
+
+def reset_to_default():
+    try:    
+        print(f"Reset to default starting ...")
+        
+        db = ext_engine.get_db()
+        
+        print(f"  + Drop all tables ...")
+        db.drop_all()
+        print(f"    Drop all tables completed.")
+        
+        print(f"  + Init sqlite tables ...")
+        init_orm(ext_engine.get_app(), db)
+        print(f"    Init sqlite tables completed.")
+
+        print(f"Reset to default completed.")
+        return True
+    except Exception as e:
+        print(f"Reset to default failed: {e}")
+        return False
