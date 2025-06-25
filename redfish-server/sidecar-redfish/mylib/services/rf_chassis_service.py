@@ -302,7 +302,7 @@ class RfChassisService(BaseService):
         fan_cnt = int(os.getenv("REDFISH_FAN_COLLECTION_CNT", 6))
         for i in range(fan_cnt):
             id_readingInfo_map[f"Fan{i+1}"] = {
-                "ReadingUnits": "rpm", 
+                "ReadingUnits": "%", 
                 "fieldNameToFetchSensorValue": f"fan{i+1}"
             }
             

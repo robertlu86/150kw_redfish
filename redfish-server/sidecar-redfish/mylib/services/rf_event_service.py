@@ -3,6 +3,7 @@
 '''
 import subprocess, json
 import requests
+import ipaddress
 from flask import jsonify
 from mylib.services.base_service import BaseService
 from mylib.models.rf_networkprotocol_model import RfNetworkProtocolModel
@@ -55,7 +56,13 @@ class RfEventService(BaseService):
     def save_TrapCommunity(self, value):
         return SettingModel().save_key_value("EventService.TrapCommunity", value)
     
-    
+    # 檢查 IP
+    def is_valid_ip(self,addr: str) -> bool:
+        try:
+            ipaddress.ip_address(addr)
+            return True
+        except ValueError:
+            return False
     #==========================================
     # EventService
     #==========================================
@@ -154,10 +161,17 @@ class RfEventService(BaseService):
         return m.to_dict(), 200
     
     def patch_subscriptions_id(self, subscription_id: str, body):
-        
-        self.save_Destination(body.get("Destination"))
-        self.save_TrapCommunity(body.get("TrapCommunity"))
+        Destination = body.get("Destination")
+        TrapCommunity = body.get("TrapCommunity")
         event_subscriptions_Id[0]["Context"] = body.get("Context")
+        
+        # 檢查 IP 格式
+        if self.is_valid_ip(Destination) is False:
+            return "error: Invalid IP address format", 400
+        
+        self.save_Destination(Destination)
+        self.save_TrapCommunity(TrapCommunity)
+        
         
         snmp_post = {
             "TrapIP": self.get_Destination(),# event_subscriptions_Id[0]["Destination"],
@@ -166,6 +180,6 @@ class RfEventService(BaseService):
         if self.get_ServiceEnabled() == True:
             RfManagersService().NetworkProtocol_Snmp_Post(snmp_post)
         else:
-            return "message: Service not enabled", 400   
+            return "error: Service not enabled", 400   
         
         return self.get_subscriptions_id(subscription_id)

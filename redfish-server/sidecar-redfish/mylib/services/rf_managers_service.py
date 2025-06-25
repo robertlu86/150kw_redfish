@@ -19,6 +19,7 @@ from mylib.models.rf_ethernetinterfaces_model import RfEthernetInterfacesModel, 
 from mylib.models.rf_status_model import RfStatusModel
 from mylib.models.rf_manager_model import RfManagerModel
 from load_env import hardware_info, redfish_info
+from mylib.utils.system_setting import set_ntp
 
 
 class RfManagersService(BaseService):
@@ -29,7 +30,7 @@ class RfManagersService(BaseService):
         :param service: str, 協定名稱 (e.g., "SNMP", "NTP")
         :param setting: dict, 包含協定設定的字典(e.g., {"ProtocolEnabled": True, "Port": 123, "ntp_server": "pool.ntp.org"})
         """
-        if service is "NTP":
+        if service is "NTP" and setting["ntp_server"] is not None:
             SettingModel().save_key_value(f"Managers.{service}.NTPServer", setting["ntp_server"])
         SettingModel().save_key_value(f"Managers.{service}.ProtocolEnabled", setting["ProtocolEnabled"])
         SettingModel().save_key_value(f"Managers.{service}.Port", setting["Port"])
@@ -82,27 +83,32 @@ class RfManagersService(BaseService):
         return redfish_info["TimeZoneName"].get(offset, "UTC")
     
     # 設定系統時間
-    def apply_system_time(self, date_time_iso: str = None,
-                        offset: str = None) -> bool:
+    def apply_system_time(self, date_time_iso: str,
+                        offset: str ) -> bool:
         """
         date_time_iso:  "2025-06-24T10:00:00-02:00"
         offset:         "+08:00"
         """
+        # print("date_time_iso:", date_time_iso)
+        # print("offset:", offset)
         try:
+            subprocess.run(["/usr/bin/sudo", "timedatectl", "set-ntp", "False"], check=True)
             if date_time_iso:
                 # 轉換 ISO 8601 時間格式到 UTC
                 utc = subprocess.run(
-                    ["date", "-u", "-d", date_time_iso, "+%Y-%m-%d %H:%M:%S"],
-                    text=True, check=True
-                ).strip()
+                    ["/usr/bin/date", "-u", "-d", date_time_iso, "+%Y-%m-%d %H:%M:%S"],
+                    text=True, check=True, capture_output=True
+                )
+                utc = utc.stdout.strip()
                 # 設定系統時間
-                subprocess.run(["sudo", "date", "-u", "-s", utc])
+                subprocess.run(["/usr/bin/sudo", "/usr/bin/date", "-u", "-s", utc])
 
             if offset:
                 tz_name = self.offset_to_iana(offset)
+                # print("tz_name:", tz_name)
                 # 設定時區 沒有就設定 UTC +00:00
                 subprocess.run(
-                    ["sudo", "timedatectl", "set-timezone", tz_name]
+                    ["/usr/bin/sudo", "timedatectl", "set-timezone", tz_name]
                 )
 
             return bool(date_time_iso or offset)
@@ -132,12 +138,16 @@ class RfManagersService(BaseService):
     def get_managers(self, cdu_id):
         m = RfManagerModel(cdu_id)
         # time
-        date_now = datetime.datetime.now().astimezone()
-        local_now = date_now.replace(microsecond=0)
-        locol_time = local_now.strftime('%Y-%m-%dT%H:%M:%S')
-        m.DateTimeLocalOffset = local_now.strftime('%z')[:3] + ':' + local_now.strftime('%z')[3:]
-        m.DateTime = locol_time + "Z" + str(m.DateTimeLocalOffset)
+        # 取得 IANA 時區
         tz = self.get_current_timezone()
+        date_now = datetime.datetime.now(ZoneInfo(tz)).replace(microsecond=0)
+        # print(date_now)
+        offset = date_now.strftime('%z')[:3] + ':' + date_now.strftime('%z')[3:]
+        dt_str = date_now.strftime('%Y-%m-%dT%H:%M:%S') + "Z"
+
+        m.DateTimeLocalOffset = offset
+        m.DateTime            = dt_str
+        
         m.TimeZoneName = tz if tz is not None else "Asia/Taipei"
         # m.LastResetTime = "2025-01-24T07:08:48Z",
         # m.DateTimeSource = "NTP",
@@ -152,7 +162,7 @@ class RfManagersService(BaseService):
         
         return m.to_dict()
     
-    # 未測試(時間設定現在需要兩個一起設定)
+    # (時區問題 夏令、冬令 有些地區會差1小時)
     def patch_managers(self, cdu_id, body):
         DateTime = body.get("DateTime", None)
         DateTimeLocalOffset = body.get("DateTimeLocalOffset", None)
@@ -177,22 +187,30 @@ class RfManagersService(BaseService):
         return m.to_dict()
     
     def NetworkProtocol_service_patch(self, body):
-        snmp_ProtocolEnabled = 1 if body["SNMP"]["ProtocolEnabled"] else 0
-        ntp_ProtocolEnabled = 1 if body["NTP"]["ProtocolEnabled"] else 0
-        snmp_setting ={
-            "ProtocolEnabled": snmp_ProtocolEnabled,
-            "Port": 9000
-        } 
-        ntp_setting = {
-            "ProtocolEnabled": ntp_ProtocolEnabled,
-            "Port": 123,
-            "ntp_server": body["NTP"]["NTPServers"][0]
-        }
-        print(ntp_setting)
-        self.save_networkprotocol("SNMP", snmp_setting)
-        self.save_networkprotocol("NTP", ntp_setting)
-        resp = WebAppAPIAdapter().sunc_time(ntp_setting)
-        print(resp.text)
+        snmp_ProtocolEnabled = body.get("SNMP", {}).get("ProtocolEnabled", None)
+        ntp_ProtocolEnabled = body.get("NTP", {}).get("ProtocolEnabled", None)
+        
+        if snmp_ProtocolEnabled is not None:
+            snmp_ProtocolEnabled = 1 if snmp_ProtocolEnabled else 0 
+            snmp_setting ={
+                "ProtocolEnabled": snmp_ProtocolEnabled,
+                "Port": 9000
+            } 
+            self.save_networkprotocol("SNMP", snmp_setting)
+            
+        if ntp_ProtocolEnabled is not None:    
+            ntp_ProtocolEnabled = 1 if ntp_ProtocolEnabled else 0
+            ntp_servers = body.get("NTP", {}).get("NTPServers") or []
+            ntp_setting = {
+                "ProtocolEnabled": ntp_ProtocolEnabled,
+                "Port": 123,
+                "ntp_server": ntp_servers[0] if ntp_servers else None
+            }
+            # print("NTP setting:", ntp_setting)
+            self.save_networkprotocol("NTP", ntp_setting)
+            set_ntp(ntp_ProtocolEnabled, ntp_setting["ntp_server"])
+            
+            
         return self.NetworkProtocol_service(), 200
     
     def NetworkProtocol_Snmp_get(self) -> dict:
@@ -215,7 +233,6 @@ class RfManagersService(BaseService):
             "trap_ip_address": trap_ip_address,
             "read_community":  read_community
         }
-
         try:
             r = WebAppAPIAdapter().setting_snmp(data)
             return jsonify({ "message": r.text })      

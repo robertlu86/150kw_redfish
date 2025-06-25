@@ -100,7 +100,7 @@ class FirmwareInventoryWebInterface(Resource):
         # dt = datetime.strptime(release_date, "%Y-%m-%d %H:%M:%S")
         # release_date = dt.strftime(fmt)
         WebInterface_data["ReleaseDate"] = release_date + "T"
-        WebInterface_data["Version"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/display/version")["fw_info"]["WebUI"]
+        WebInterface_data["Version"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/display/version")["version"]["WebUI"]
         # WebInterface_data["Oem"]["supermicro"]["Redfish"] = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/display/version")["version"]["Redfish_Server"]
         return WebInterface_data  
 
@@ -146,14 +146,14 @@ class SimpleUpdateActionInfo(Resource):
           
           "Parameters": [
             {"Name":"ImageURI",        "Required":True,  "DataType":"String"}, # 必填欄位
-            # {"Name":"TransferProtocol","Required":False, "DataType":"String","AllowableValues":["HTTP","HTTPS","FTP"]},
+            {"Name":"TransferProtocol","Required":True, "DataType":"String","AllowableValues":["HTTP","HTTPS"]}, # FTP先拿掉
             # {"Name":"Targets",         "Required":False, "DataType":"StringArray"},
             # {"Name":"UserName",        "Required":False, "DataType":"String"},
             # {"Name":"Password",        "Required":False, "DataType":"String"}
           ]
         }, 200
 
-
+AllowableValues = {"HTTP","HTTPS"}
 @update_ns.route("/UpdateService/Actions/UpdateService.SimpleUpdate")
 class ActionsUpdateCduSimpleUpdate(Resource):
     @update_ns.expect(upload_parser) 
@@ -166,6 +166,16 @@ class ActionsUpdateCduSimpleUpdate(Resource):
             try:
                 data = request.get_json()
                 image_uri = data.get("ImageURI")
+                proto = data.get("TransferProtocol")
+                
+                # 若 client 指定了 TransferProtocol，要檢查是否合法
+                if proto and proto not in AllowableValues:
+                    return {"error": f"TransferProtocol must be one of {list(AllowableValues)}"}, 400
+
+                # 如果 URI 裡沒有 scheme，就套用 TransferProtocol（或預設 HTTP）
+                if "://" not in image_uri:
+                    scheme = proto.lower() if proto else "http"
+                    image_uri = f"{scheme}://{image_uri}"
 
                 if image_uri:
                     # 下載檔案
