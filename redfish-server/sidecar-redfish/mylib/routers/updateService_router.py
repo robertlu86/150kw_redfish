@@ -135,7 +135,7 @@ upload_parser.add_argument(
     required=True,
     help='Firmware zip file'
 )
-AllowableValues = {"HTTP","HTTPS"}
+AllowableValues = {"http","https"}
 @update_ns.route("/UpdateService/Actions/UpdateService.SimpleUpdate")
 class ActionsUpdateCduSimpleUpdate(Resource):
     @update_ns.expect(upload_parser) 
@@ -148,8 +148,8 @@ class ActionsUpdateCduSimpleUpdate(Resource):
             try:
                 data = request.get_json()
                 image_uri = data.get("ImageURI")
-                proto = data.get("TransferProtocol")
-                
+                proto = data.get("TransferProtocol") or ""
+                proto = proto.lower()
                 # 若 client 指定了 TransferProtocol，要檢查是否合法
                 if proto and proto not in AllowableValues:
                     # return {"error": f"TransferProtocol must be one of {list(AllowableValues)}"}, 400

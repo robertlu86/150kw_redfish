@@ -121,12 +121,12 @@ class RfManagersService(BaseService):
         except subprocess.CalledProcessError:
             return False
     
-    # def get_ethernet_data(self):
-    #     return get_physical_nics()      
+    def get_ethernet_data(self):
+        return get_physical_nics()      
     
-    # def get_ethernet_entry(self, target_name, data):
-    #     entry = next((item for item in data if item['Name'] == target_name), None)
-    #     return entry
+    def get_ethernet_entry(self, target_name, data):
+        entry = next((item for item in data if item['Name'] == target_name), None)
+        return entry
     
     def net_info(self, interfaces): # 測試暫放
         print(f"共 {len(interfaces)} 張實體網卡：")
@@ -261,56 +261,56 @@ class RfManagersService(BaseService):
             )
             
     # ================動態抓取本機網路(內網外網要分)================    
-    # def get_ethernetinterfaces(self):
-    #     net_data = self.get_ethernet_data()
+    def get_ethernetinterfaces(self):
+        net_data = self.get_ethernet_data()
         
-    #     m = RfEthernetInterfacesModel()
-    #     m.Members_odata_count = len(net_data)
-    #     for i in range(len(net_data)):
-    #         s = {
-    #             "@odata.id": f"redfish/v1/Managers/CDU/EthernetInterfaces/{net_data[i]['Name']}"
-    #         }
+        m = RfEthernetInterfacesModel()
+        m.Members_odata_count = len(net_data)
+        for i in range(len(net_data)):
+            s = {
+                "@odata.id": f"redfish/v1/Managers/CDU/EthernetInterfaces/{net_data[i]['Name']}"
+            }
             
-    #         m.Members.append(s)
+            m.Members.append(s)
         
-    #     return m.to_dict(), 200
+        return m.to_dict(), 200
     
-    # def get_ethernetinterfaces_id(self, id: str):
-    #     net_data_from_rest = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/network")
-    #     print(net_data_from_rest)
-    #     print(len(net_data_from_rest))
-    #     m = RfEthernetInterfacesIdModel(ethernet_interfaces_id=id)
-    #     net_data = self.get_ethernet_data() 
-    #     data = self.get_ethernet_entry(id, net_data)
-    #     self.net_info(net_data) # 測試使用
-    #     if data is None:
-    #         return {"message": f"Ethernet interface {id} not found"}, 404
-    #     m.LinkStatus = "LinkUp" if data["isUp"] else "LinkDown"
-    #     m.InterfaceEnabled = data["isUp"]
-    #     m.MACAddress = data["MAC"]
-    #     m.SpeedMbps = data["Speed_Mbps"]
-    #     m.FullDuplex = data["FullDuplex"]
-    #     m.MTUSize = data["MTU"]
+    def get_ethernetinterfaces_id(self, id: str):
+        # net_data_from_rest = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/network")
+        # print(net_data_from_rest)
+        # print(len(net_data_from_rest))
+        m = RfEthernetInterfacesIdModel(ethernet_interfaces_id=id)
+        net_data = self.get_ethernet_data() 
+        data = self.get_ethernet_entry(id, net_data)
+        self.net_info(net_data) # 測試使用
+        if data is None:
+            return {"message": f"Ethernet interface {id} not found"}, 404
+        m.LinkStatus = "LinkUp" if data["isUp"] else "LinkDown"
+        m.InterfaceEnabled = data["isUp"]
+        m.MACAddress = data["MAC"]
+        m.SpeedMbps = data["Speed_Mbps"]
+        m.FullDuplex = data["FullDuplex"]
+        m.MTUSize = data["MTU"]
         
-    #     m.Redfish_WriteableProperties = ["InterfaceEnabled"]
-    #     m.HostName = id
-    #     m.FQDN = None
-    #     # Ipv4
-    #     Ipv4 = RfEthernetInterfacesIdModel._ipv4_addresses()
-    #     Ipv4.Address = data["IPv4"]
-    #     Ipv4.SubnetMask = "255.255.255.0" #TBD
-    #     Ipv4.AddressOrigin = "DHCP" #TBD
-    #     Ipv4.Gateway = "192.168.3.1" #TBD
+        m.Redfish_WriteableProperties = ["InterfaceEnabled"]
+        m.HostName = id
+        m.FQDN = None
+        # Ipv4
+        Ipv4 = RfEthernetInterfacesIdModel._ipv4_addresses()
+        Ipv4.Address = data["IPv4"]
+        Ipv4.SubnetMask = data["SubnetMask"]#"255.255.255.0" #TBD
+        Ipv4.AddressOrigin = data["AddressOrigin"]#"DHCP" #TBD
+        Ipv4.Gateway = data["Gateway"]#"192.168.3.1" #TBD
         
-    #     m.IPv4Addresses = Ipv4 
-    #     m.NameServers = ["8.8.8.8" ]#TBD
+        m.IPv4Addresses = Ipv4 
+        m.NameServers = data["NameServers"]#["8.8.8.8" ]#TBD
         
-    #     status = {
-    #         "State": "Enabled",
-    #         "Health": "OK"
-    #     }
-    #     m.Status = RfStatusModel.from_dict(status)
-    #     return m.to_dict(), 200
+        status = {
+            "State": "Enabled",
+            "Health": "OK"
+        }
+        m.Status = RfStatusModel.from_dict(status)
+        return m.to_dict(), 200
     
 
     ##
