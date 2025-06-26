@@ -6,6 +6,8 @@ import requests
 import datetime   
 from zoneinfo import ZoneInfo
 from flask import jsonify
+from http import HTTPStatus
+from load_env import hardware_info, redfish_info
 from mylib.services.base_service import BaseService
 from mylib.models.rf_networkprotocol_model import RfNetworkProtocolModel
 from mylib.models.rf_snmp_model import RfSnmpModel, rf_SNMP
@@ -18,7 +20,9 @@ from mylib.utils.system_info import get_physical_nics
 from mylib.models.rf_ethernetinterfaces_model import RfEthernetInterfacesModel, RfEthernetInterfacesIdModel
 from mylib.models.rf_status_model import RfStatusModel
 from mylib.models.rf_manager_model import RfManagerModel
-from load_env import hardware_info, redfish_info
+from mylib.utils.system_setting import set_ntp
+from mylib.common.proj_error import ProjRedfishError, ProjRedfishErrorCode
+from mylib.db.db_util import reset_to_defaults
 
 
 class RfManagersService(BaseService):
@@ -29,7 +33,7 @@ class RfManagersService(BaseService):
         :param service: str, 協定名稱 (e.g., "SNMP", "NTP")
         :param setting: dict, 包含協定設定的字典(e.g., {"ProtocolEnabled": True, "Port": 123, "ntp_server": "pool.ntp.org"})
         """
-        if service is "NTP":
+        if service is "NTP" and setting["ntp_server"] is not None:
             SettingModel().save_key_value(f"Managers.{service}.NTPServer", setting["ntp_server"])
         SettingModel().save_key_value(f"Managers.{service}.ProtocolEnabled", setting["ProtocolEnabled"])
         SettingModel().save_key_value(f"Managers.{service}.Port", setting["Port"])
@@ -62,6 +66,9 @@ class RfManagersService(BaseService):
     # =================系統時間===================
     # 取得目前時區 IANA 格式 
     def get_current_timezone(self):
+        """
+        Returns: Asia/Taipei
+        """
         try:
             p = subprocess.run(
                 ["/usr/bin/timedatectl", "show", "-p", "Timezone", "--value"],
@@ -82,39 +89,44 @@ class RfManagersService(BaseService):
         return redfish_info["TimeZoneName"].get(offset, "UTC")
     
     # 設定系統時間
-    def apply_system_time(self, date_time_iso: str = None,
-                        offset: str = None) -> bool:
+    def apply_system_time(self, date_time_iso: str,
+                        offset: str ) -> bool:
         """
         date_time_iso:  "2025-06-24T10:00:00-02:00"
         offset:         "+08:00"
         """
+        # print("date_time_iso:", date_time_iso)
+        # print("offset:", offset)
         try:
+            subprocess.run(["/usr/bin/sudo", "timedatectl", "set-ntp", "False"], check=True)
             if date_time_iso:
                 # 轉換 ISO 8601 時間格式到 UTC
                 utc = subprocess.run(
-                    ["date", "-u", "-d", date_time_iso, "+%Y-%m-%d %H:%M:%S"],
-                    text=True, check=True
-                ).strip()
+                    ["/usr/bin/date", "-u", "-d", date_time_iso, "+%Y-%m-%d %H:%M:%S"],
+                    text=True, check=True, capture_output=True
+                )
+                utc = utc.stdout.strip()
                 # 設定系統時間
-                subprocess.run(["sudo", "date", "-u", "-s", utc])
+                subprocess.run(["/usr/bin/sudo", "/usr/bin/date", "-u", "-s", utc])
 
             if offset:
                 tz_name = self.offset_to_iana(offset)
+                # print("tz_name:", tz_name)
                 # 設定時區 沒有就設定 UTC +00:00
                 subprocess.run(
-                    ["sudo", "timedatectl", "set-timezone", tz_name]
+                    ["/usr/bin/sudo", "timedatectl", "set-timezone", tz_name]
                 )
 
             return bool(date_time_iso or offset)
         except subprocess.CalledProcessError:
             return False
     
-    # def get_ethernet_data(self):
-    #     return get_physical_nics()      
+    def get_ethernet_data(self):
+        return get_physical_nics()      
     
-    # def get_ethernet_entry(self, target_name, data):
-    #     entry = next((item for item in data if item['Name'] == target_name), None)
-    #     return entry
+    def get_ethernet_entry(self, target_name, data):
+        entry = next((item for item in data if item['Name'] == target_name), None)
+        return entry
     
     def net_info(self, interfaces): # 測試暫放
         print(f"共 {len(interfaces)} 張實體網卡：")
@@ -132,13 +144,17 @@ class RfManagersService(BaseService):
     def get_managers(self, cdu_id):
         m = RfManagerModel(cdu_id)
         # time
-        date_now = datetime.datetime.now().astimezone()
-        local_now = date_now.replace(microsecond=0)
-        locol_time = local_now.strftime('%Y-%m-%dT%H:%M:%S')
-        m.DateTimeLocalOffset = local_now.strftime('%z')[:3] + ':' + local_now.strftime('%z')[3:]
-        m.DateTime = locol_time + "Z" + str(m.DateTimeLocalOffset)
-        tz = self.get_current_timezone()
-        m.TimeZoneName = tz if tz is not None else "Asia/Taipei"
+        # 取得 IANA 時區
+        tz = self.get_current_timezone() or "Asia/Taipei"
+        date_now = datetime.datetime.now(ZoneInfo(tz)).replace(microsecond=0)
+        # print(date_now)
+        offset = date_now.strftime('%z')[:3] + ':' + date_now.strftime('%z')[3:]
+        dt_str = date_now.strftime('%Y-%m-%dT%H:%M:%S') + "Z"
+
+        m.DateTimeLocalOffset = offset
+        m.DateTime            = dt_str
+        
+        m.TimeZoneName = tz
         # m.LastResetTime = "2025-01-24T07:08:48Z",
         # m.DateTimeSource = "NTP",
         m.ManagerType = "ManagementController"
@@ -152,7 +168,7 @@ class RfManagersService(BaseService):
         
         return m.to_dict()
     
-    # 未測試(時間設定現在需要兩個一起設定)
+    # (時區問題 夏令、冬令 有些地區會差1小時)
     def patch_managers(self, cdu_id, body):
         DateTime = body.get("DateTime", None)
         DateTimeLocalOffset = body.get("DateTimeLocalOffset", None)
@@ -165,7 +181,10 @@ class RfManagersService(BaseService):
             
             return {"message": "Manager settings updated successfully"}, 200
         except Exception as e:
-            return {"error": str(e)}, 400    
+            raise ProjRedfishError(
+                code=ProjRedfishErrorCode.GENERAL_ERROR, 
+                message=f"{str(e)}"
+            )
         
     # ================NetworkProtocol================
     def NetworkProtocol_service(self) -> dict:
@@ -177,22 +196,30 @@ class RfManagersService(BaseService):
         return m.to_dict()
     
     def NetworkProtocol_service_patch(self, body):
-        snmp_ProtocolEnabled = 1 if body["SNMP"]["ProtocolEnabled"] else 0
-        ntp_ProtocolEnabled = 1 if body["NTP"]["ProtocolEnabled"] else 0
-        snmp_setting ={
-            "ProtocolEnabled": snmp_ProtocolEnabled,
-            "Port": 9000
-        } 
-        ntp_setting = {
-            "ProtocolEnabled": ntp_ProtocolEnabled,
-            "Port": 123,
-            "ntp_server": body["NTP"]["NTPServers"][0]
-        }
-        print(ntp_setting)
-        self.save_networkprotocol("SNMP", snmp_setting)
-        self.save_networkprotocol("NTP", ntp_setting)
-        resp = WebAppAPIAdapter().sunc_time(ntp_setting)
-        print(resp.text)
+        snmp_ProtocolEnabled = body.get("SNMP", {}).get("ProtocolEnabled", None)
+        ntp_ProtocolEnabled = body.get("NTP", {}).get("ProtocolEnabled", None)
+        
+        if snmp_ProtocolEnabled is not None:
+            snmp_ProtocolEnabled = 1 if snmp_ProtocolEnabled else 0 
+            snmp_setting ={
+                "ProtocolEnabled": snmp_ProtocolEnabled,
+                "Port": 9000
+            } 
+            self.save_networkprotocol("SNMP", snmp_setting)
+            
+        if ntp_ProtocolEnabled is not None:    
+            ntp_ProtocolEnabled = 1 if ntp_ProtocolEnabled else 0
+            ntp_servers = body.get("NTP", {}).get("NTPServers") or []
+            ntp_setting = {
+                "ProtocolEnabled": ntp_ProtocolEnabled,
+                "Port": 123,
+                "ntp_server": ntp_servers[0] if ntp_servers else None
+            }
+            # print("NTP setting:", ntp_setting)
+            self.save_networkprotocol("NTP", ntp_setting)
+            set_ntp(ntp_ProtocolEnabled, ntp_setting["ntp_server"])
+            
+            
         return self.NetworkProtocol_service(), 200
     
     def NetworkProtocol_Snmp_get(self) -> dict:
@@ -215,77 +242,75 @@ class RfManagersService(BaseService):
             "trap_ip_address": trap_ip_address,
             "read_community":  read_community
         }
-
         try:
             r = WebAppAPIAdapter().setting_snmp(data)
             return jsonify({ "message": r.text })      
             # return r.json(), r.status_code
-        except requests.HTTPError:
+        except requests.HTTPError as e:
             # 如果 CDU 回了 4xx/5xx，直接把它的 status code 和 body 回來
-            try:
-                err_body = r.json()
-            except ValueError:
-                err_body = {"error": r.text}
-            return err_body, r.status_code
+            raise ProjRedfishError(
+                code=ProjRedfishErrorCode.INTERNAL_ERROR, 
+                message=f"WebAppAPIAdapter#setting_snmp() FAIL: data={data}, details={str(e)}"
+            )
 
         except requests.RequestException as e:
             # 純粹網路／timeout／連線失敗
-            return {
-                "error": "Forwarding to the CDU control service failed",
-                "details": str(e)
-            }, 502  
+            raise ProjRedfishError(
+                code=ProjRedfishErrorCode.SERVICE_TEMPORARILY_UNAVAILABLE, 
+                message=f"WebAppAPIAdapter#setting_snmp() FAIL: data={data}, details={str(e)}"
+            )
             
     # ================動態抓取本機網路(內網外網要分)================    
-    # def get_ethernetinterfaces(self):
-    #     net_data = self.get_ethernet_data()
+    def get_ethernetinterfaces(self):
+        net_data = self.get_ethernet_data()
         
-    #     m = RfEthernetInterfacesModel()
-    #     m.Members_odata_count = len(net_data)
-    #     for i in range(len(net_data)):
-    #         s = {
-    #             "@odata.id": f"redfish/v1/Managers/CDU/EthernetInterfaces/{net_data[i]['Name']}"
-    #         }
+        m = RfEthernetInterfacesModel()
+        m.Members_odata_count = len(net_data)
+        for i in range(len(net_data)):
+            s = {
+                "@odata.id": f"redfish/v1/Managers/CDU/EthernetInterfaces/{net_data[i]['Name']}"
+            }
             
-    #         m.Members.append(s)
+            m.Members.append(s)
         
-    #     return m.to_dict(), 200
+        return m.to_dict(), 200
     
-    # def get_ethernetinterfaces_id(self, id: str):
-    #     net_data_from_rest = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/network")
-    #     print(net_data_from_rest)
-    #     print(len(net_data_from_rest))
-    #     m = RfEthernetInterfacesIdModel(ethernet_interfaces_id=id)
-    #     net_data = self.get_ethernet_data() 
-    #     data = self.get_ethernet_entry(id, net_data)
-    #     self.net_info(net_data) # 測試使用
-    #     if data is None:
-    #         return {"message": f"Ethernet interface {id} not found"}, 404
-    #     m.LinkStatus = "LinkUp" if data["isUp"] else "LinkDown"
-    #     m.InterfaceEnabled = data["isUp"]
-    #     m.MACAddress = data["MAC"]
-    #     m.SpeedMbps = data["Speed_Mbps"]
-    #     m.FullDuplex = data["FullDuplex"]
-    #     m.MTUSize = data["MTU"]
+    def get_ethernetinterfaces_id(self, id: str):
+        # net_data_from_rest = load_raw_from_api(f"{CDU_BASE}/api/v1/cdu/components/network")
+        # print(net_data_from_rest)
+        # print(len(net_data_from_rest))
+        m = RfEthernetInterfacesIdModel(ethernet_interfaces_id=id)
+        net_data = self.get_ethernet_data() 
+        data = self.get_ethernet_entry(id, net_data)
+        self.net_info(net_data) # 測試使用
+        if data is None:
+            return {"message": f"Ethernet interface {id} not found"}, 404
+        m.LinkStatus = "LinkUp" if data["isUp"] else "LinkDown"
+        m.InterfaceEnabled = data["isUp"]
+        m.MACAddress = data["MAC"]
+        m.SpeedMbps = data["Speed_Mbps"]
+        m.FullDuplex = data["FullDuplex"]
+        m.MTUSize = data["MTU"]
         
-    #     m.Redfish_WriteableProperties = ["InterfaceEnabled"]
-    #     m.HostName = id
-    #     m.FQDN = None
-    #     # Ipv4
-    #     Ipv4 = RfEthernetInterfacesIdModel._ipv4_addresses()
-    #     Ipv4.Address = data["IPv4"]
-    #     Ipv4.SubnetMask = "255.255.255.0" #TBD
-    #     Ipv4.AddressOrigin = "DHCP" #TBD
-    #     Ipv4.Gateway = "192.168.3.1" #TBD
+        m.Redfish_WriteableProperties = ["InterfaceEnabled"]
+        m.HostName = id
+        m.FQDN = None
+        # Ipv4
+        Ipv4 = RfEthernetInterfacesIdModel._ipv4_addresses()
+        Ipv4.Address = data["IPv4"]
+        Ipv4.SubnetMask = data["SubnetMask"]#"255.255.255.0" #TBD
+        Ipv4.AddressOrigin = data["AddressOrigin"]#"DHCP" #TBD
+        Ipv4.Gateway = data["Gateway"]#"192.168.3.1" #TBD
         
-    #     m.IPv4Addresses = Ipv4 
-    #     m.NameServers = ["8.8.8.8" ]#TBD
+        m.IPv4Addresses = Ipv4 
+        m.NameServers = data["NameServers"]#["8.8.8.8" ]#TBD
         
-    #     status = {
-    #         "State": "Enabled",
-    #         "Health": "OK"
-    #     }
-    #     m.Status = RfStatusModel.from_dict(status)
-    #     return m.to_dict(), 200
+        status = {
+            "State": "Enabled",
+            "Health": "OK"
+        }
+        m.Status = RfStatusModel.from_dict(status)
+        return m.to_dict(), 200
     
 
     ##
@@ -305,6 +330,8 @@ class RfManagersService(BaseService):
             API will return jsonify(message="Reset all to factory settings Successfully")
         """
         resp = WebAppAPIAdapter().reset_to_defaults(reset_type)
+        # if resp.status_code == HTTPStatus.OK.value:
+        #     reset_to_defaults()
         return jsonify(ProjResponseMessage(code=resp.status_code, message=resp.text).to_dict())
     
     def reset(self, reset_type: str):

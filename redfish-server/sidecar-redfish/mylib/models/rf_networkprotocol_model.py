@@ -11,7 +11,8 @@ from pydantic import (
 from mylib.models.rf_base_model import RfResourceBaseModel
 from mylib.utils.network_info import get_network_protocol_status
 from mylib.models.rf_snmp_model import rf_SNMP
-# st = get_network_protocol_status()
+from mylib.utils.system_info import get_ntp_status
+
 class _rf_HTTPS(BaseModel):
     ProtocolEnabled: Optional[bool] = Field(default=True, example=True)
     Port: Optional[int] = Field(default=True)
@@ -114,7 +115,7 @@ class RfNetworkProtocolModel(RfResourceBaseModel):
             ],
         )
         self.NTP = _rf_NTP(
-            ProtocolEnabled = st["NTPEnabled"],
+            ProtocolEnabled = False, #get_ntp_status(),
             Port = st["NTPPort"],
             NTPServers = st["NTPServers"] # 預設 NTP 伺服器
         )

@@ -27,7 +27,7 @@ def get_network_protocol_status():
     # 定義我們關心的協議及其預設埠號
     protocol_ports = {
         "HTTP": None,
-        "HTTPS": 443,
+        "HTTPS": 5501,
         "SSH": 22,
         "SNMP": 9000,
         "NTP": 123,
