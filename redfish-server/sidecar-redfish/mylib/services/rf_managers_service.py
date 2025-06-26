@@ -6,6 +6,8 @@ import requests
 import datetime   
 from zoneinfo import ZoneInfo
 from flask import jsonify
+from http import HTTPStatus
+from load_env import hardware_info, redfish_info
 from mylib.services.base_service import BaseService
 from mylib.models.rf_networkprotocol_model import RfNetworkProtocolModel
 from mylib.models.rf_snmp_model import RfSnmpModel, rf_SNMP
@@ -18,8 +20,9 @@ from mylib.utils.system_info import get_physical_nics
 from mylib.models.rf_ethernetinterfaces_model import RfEthernetInterfacesModel, RfEthernetInterfacesIdModel
 from mylib.models.rf_status_model import RfStatusModel
 from mylib.models.rf_manager_model import RfManagerModel
-from load_env import hardware_info, redfish_info
 from mylib.utils.system_setting import set_ntp
+from mylib.common.proj_error import ProjRedfishError, ProjRedfishErrorCode
+from mylib.db.db_util import reset_to_defaults
 
 
 class RfManagersService(BaseService):
@@ -63,6 +66,9 @@ class RfManagersService(BaseService):
     # =================系統時間===================
     # 取得目前時區 IANA 格式 
     def get_current_timezone(self):
+        """
+        Returns: Asia/Taipei
+        """
         try:
             p = subprocess.run(
                 ["/usr/bin/timedatectl", "show", "-p", "Timezone", "--value"],
@@ -139,7 +145,7 @@ class RfManagersService(BaseService):
         m = RfManagerModel(cdu_id)
         # time
         # 取得 IANA 時區
-        tz = self.get_current_timezone()
+        tz = self.get_current_timezone() or "Asia/Taipei"
         date_now = datetime.datetime.now(ZoneInfo(tz)).replace(microsecond=0)
         # print(date_now)
         offset = date_now.strftime('%z')[:3] + ':' + date_now.strftime('%z')[3:]
@@ -148,7 +154,7 @@ class RfManagersService(BaseService):
         m.DateTimeLocalOffset = offset
         m.DateTime            = dt_str
         
-        m.TimeZoneName = tz if tz is not None else "Asia/Taipei"
+        m.TimeZoneName = tz
         # m.LastResetTime = "2025-01-24T07:08:48Z",
         # m.DateTimeSource = "NTP",
         m.ManagerType = "ManagementController"
@@ -175,7 +181,10 @@ class RfManagersService(BaseService):
             
             return {"message": "Manager settings updated successfully"}, 200
         except Exception as e:
-            return {"error": str(e)}, 400    
+            raise ProjRedfishError(
+                code=ProjRedfishErrorCode.GENERAL_ERROR, 
+                message=f"{str(e)}"
+            )
         
     # ================NetworkProtocol================
     def NetworkProtocol_service(self) -> dict:
@@ -237,20 +246,19 @@ class RfManagersService(BaseService):
             r = WebAppAPIAdapter().setting_snmp(data)
             return jsonify({ "message": r.text })      
             # return r.json(), r.status_code
-        except requests.HTTPError:
+        except requests.HTTPError as e:
             # 如果 CDU 回了 4xx/5xx，直接把它的 status code 和 body 回來
-            try:
-                err_body = r.json()
-            except ValueError:
-                err_body = {"error": r.text}
-            return err_body, r.status_code
+            raise ProjRedfishError(
+                code=ProjRedfishErrorCode.INTERNAL_ERROR, 
+                message=f"WebAppAPIAdapter#setting_snmp() FAIL: data={data}, details={str(e)}"
+            )
 
         except requests.RequestException as e:
             # 純粹網路／timeout／連線失敗
-            return {
-                "error": "Forwarding to the CDU control service failed",
-                "details": str(e)
-            }, 502  
+            raise ProjRedfishError(
+                code=ProjRedfishErrorCode.SERVICE_TEMPORARILY_UNAVAILABLE, 
+                message=f"WebAppAPIAdapter#setting_snmp() FAIL: data={data}, details={str(e)}"
+            )
             
     # ================動態抓取本機網路(內網外網要分)================    
     # def get_ethernetinterfaces(self):
@@ -322,6 +330,8 @@ class RfManagersService(BaseService):
             API will return jsonify(message="Reset all to factory settings Successfully")
         """
         resp = WebAppAPIAdapter().reset_to_defaults(reset_type)
+        # if resp.status_code == HTTPStatus.OK.value:
+        #     reset_to_defaults()
         return jsonify(ProjResponseMessage(code=resp.status_code, message=resp.text).to_dict())
     
     def reset(self, reset_type: str):
