@@ -113,4 +113,11 @@ def get_uptime():
     # print(f"Uptime: {hours}h {minutes}m {seconds}s")
     return hours, minutes, seconds
 
-
+#====================================================
+# get NTP status
+# ===================================================
+def get_ntp_status():
+    ntp_status = subprocess.run(["/usr/bin/timedatectl", "show", "-p", "NTP"], text=True, capture_output=True, check=True).stdout.strip()
+    ntp_status = ntp_status.split("=",1)[1]
+    ntp_status = True if ntp_status == "yes" else False
+    return ntp_status
