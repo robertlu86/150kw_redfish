@@ -590,8 +590,8 @@ class ManagersCDUEthernetInterfaces(Resource):
     # # @requires_auth
     @managers_ns.doc("managers_cdu_ethernet_interfaces")
     def get(self):
-        # return RfManagersService().get_ethernetinterfaces()
-        return ethernet_interfaces_data
+        return RfManagersService().get_ethernetinterfaces()
+        # return ethernet_interfaces_data
     
 @managers_ns.route("/Managers/CDU/EthernetInterfaces/<string:ethernet_interfaces_id>") # get patch
 class ManagersCDUEthernetInterfacesMain(Resource):
