@@ -1,22 +1,24 @@
 # 標準函式庫
 import csv
+from collections import OrderedDict
 import datetime as dt
 from datetime import datetime
 import glob
+from io import BytesIO
 import ipaddress
 import json
 import logging
 import math
 import os
 import platform
+import psutil
 import shutil
 import struct
+import socket
 import subprocess
 import threading
 import time
 import zipfile
-from collections import OrderedDict
-from io import BytesIO
 
 # 第三方套件
 import requests
@@ -8252,8 +8254,7 @@ def get_error_data():
     data = list(error_data)
     return jsonify(data)
 
-import psutil
-import socket
+
 @app.route("/get_mac_address")
 def get_mac_address():
     try:
