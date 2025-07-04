@@ -1904,13 +1904,16 @@ def check_both_warning_p3(
 ):
     short_key = thr_key_low.split("_")[2]
     status = status_data[short_key]
-    # inv["inv1"] = True
     prefix = "W_" if type == "W" else "A_"
     try:
         if time_data["check"][prefix + short_key]:
             if (
                 thrshd_data[rst_key_low] < status and status < thrshd_data[rst_key_high]
-            ) or (not inv["inv1"] and not inv["inv2"] and not inv["inv3"]):
+            ) or (
+                not ((raw_485_data["Inv1_Freq"] / 200) > 25)
+                and not ((raw_485_data["Inv2_Freq"] / 200) > 25)
+                and not ((raw_485_data["Inv3_Freq"] / 200) > 25)
+            ):
                 time_data["check"][prefix + short_key] = False
                 time_data["condition"]["high"][prefix + short_key] = False
                 time_data["condition"]["low"][prefix + short_key] = False
@@ -1938,7 +1941,11 @@ def check_both_warning_p3(
         else:
             if (
                 status > thrshd_data[thr_key_high] or status < thrshd_data[thr_key_low]
-            ) and (inv["inv1"] or inv["inv2"] or inv["inv3"]):
+            ) and (
+                (raw_485_data["Inv1_Freq"] / 200) > 25
+                or (raw_485_data["Inv2_Freq"] / 200) > 25
+                or (raw_485_data["Inv3_Freq"] / 200) > 25
+            ):
                 time_data["start"][prefix + short_key] = time.perf_counter()
                 time_data["check"][prefix + short_key] = True
             else:
@@ -1980,7 +1987,9 @@ def check_low_warning_f1(thr_key, rst_key, delay_key, type):
     try:
         if time_data["check"][prefix + short_key]:
             if (status_data[short_key] > thrshd_data[rst_key]) or (
-                not inv["inv1"] and not inv["inv2"] and not inv["inv3"]
+                not ((raw_485_data["Inv1_Freq"] / 200) > 25)
+                and not ((raw_485_data["Inv2_Freq"] / 200) > 25)
+                and not ((raw_485_data["Inv3_Freq"] / 200) > 25)
             ):
                 time_data["check"][prefix + short_key] = False
                 if prefix.startswith("W_"):
@@ -2005,7 +2014,9 @@ def check_low_warning_f1(thr_key, rst_key, delay_key, type):
                     return True
         else:
             if (status_data[short_key] < thrshd_data[thr_key]) and (
-                inv["inv1"] or inv["inv2"] or inv["inv3"]
+                ((raw_485_data["Inv1_Freq"] / 200) > 25)
+                or ((raw_485_data["Inv2_Freq"] / 200) > 25)
+                or ((raw_485_data["Inv3_Freq"] / 200) > 25)
             ):
                 time_data["start"][prefix + short_key] = time.perf_counter()
                 time_data["check"][prefix + short_key] = True
@@ -2812,10 +2823,6 @@ def set_warning_registers(mode):
         "Delay_ClntFlow",
         "A",
     )
-    # print(f'warning_data["alert"]["ClntFlow"]{warning_data["alert"]}')
-    # print(f'inv["inv1"]{inv["inv1"]}')
-    # print(f'inv["inv2"]{inv["inv2"]}')
-    # print(f'inv["inv3"]{inv["inv3"]}')
 
     check_dewPt_warning(
         "Thr_W_DewPoint",
