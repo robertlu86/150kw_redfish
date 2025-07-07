@@ -5058,16 +5058,19 @@ def read_modbus_data():
                             if sensorData["err_log"]["error"][key] not in error_data:
                                 if key.startswith("fan") and key.endswith("_error"):
                                     index = key[3]
-                                    for err_key in fan_error_status[f"Fan{index}"]:
-                                        if fan_error_status[f"Fan{index}"][err_key]:
-                                            error_data.append(
-                                                f"{sensorData['err_log']['error'][key]} ; {fan_status_message['error'][err_key]}"
-                                            )
-                                    for warning_key in fan_warning_status[f"Fan{index}"]:
-                                        if fan_warning_status[f"Fan{index}"][warning_key]:
-                                            error_data.append(
-                                                f"{sensorData['err_log']['error'][key]} ; {fan_status_message['warning'][warning_key]}"
-                                            )
+                                    if any(fan_error_status[f"Fan{index}"].values()) or any(fan_warning_status[f"Fan{index}"].values()):
+                                        for err_key in fan_error_status[f"Fan{index}"]:
+                                            if fan_error_status[f"Fan{index}"][err_key]:
+                                                error_data.append(
+                                                    f"{sensorData['err_log']['error'][key]} ; {fan_status_message['error'][err_key]}"
+                                                )
+                                        for warning_key in fan_warning_status[f"Fan{index}"]:
+                                            if fan_warning_status[f"Fan{index}"][warning_key]:
+                                                error_data.append(
+                                                    f"{sensorData['err_log']['error'][key]} ; {fan_status_message['warning'][warning_key]}"
+                                                )
+                                    else:
+                                        error_data.append(sensorData["err_log"]["error"][key])
                                 else:
                                     error_data.append(sensorData["err_log"]["error"][key])
                     error_count += 1
@@ -5085,32 +5088,44 @@ def read_modbus_data():
                                 if current_state and not previous_error_states[key]:
                                     if key.startswith("fan") and key.endswith("_error"):
                                         index = key[3]
-                                        for err_key in fan_error_status[f"Fan{index}"]:
-                                            if fan_error_status[f"Fan{index}"][err_key]:
-                                                fan_status_list.append(err_key)
-                                                app.logger.warning(
-                                                    f'{sensorData["err_log"]["error"][key]} ; {fan_status_message["error"][err_key]}'
-                                                )
+                                        
+                                        if any(fan_error_status[f"Fan{index}"].values()) or any(fan_warning_status[f"Fan{index}"].values()):
+                                            for err_key in fan_error_status[f"Fan{index}"]:
+                                                if fan_error_status[f"Fan{index}"][err_key]:
+                                                    fan_status_list.append(err_key)
+                                                    app.logger.warning(
+                                                        f'{sensorData["err_log"]["error"][key]} ; {fan_status_message["error"][err_key]}'
+                                                    )
 
-                                                record_signal_on(
-                                                    sensorData["err_log"]["error"][
-                                                        key
-                                                    ].split()[0],
-                                                    f"{sensorData['err_log']['error'][key]};\n{fan_status_message['error'][err_key]}",
-                                                )
-                                        for warning_key in fan_warning_status[f"Fan{index}"]:
-                                            if fan_warning_status[f"Fan{index}"][warning_key]:
-                                                fan_warning_list.append(warning_key)
-                                                app.logger.warning(
-                                                    f"{sensorData['err_log']['error'][key]} ; {fan_status_message['warning'][warning_key]}"
-                                                )
+                                                    record_signal_on(
+                                                        sensorData["err_log"]["error"][
+                                                            key
+                                                        ].split()[0],
+                                                        f"{sensorData['err_log']['error'][key]};\n{fan_status_message['error'][err_key]}",
+                                                    )
+                                            for warning_key in fan_warning_status[f"Fan{index}"]:
+                                                if fan_warning_status[f"Fan{index}"][warning_key]:
+                                                    fan_warning_list.append(warning_key)
+                                                    app.logger.warning(
+                                                        f"{sensorData['err_log']['error'][key]} ; {fan_status_message['warning'][warning_key]}"
+                                                    )
 
-                                                record_signal_on(
-                                                    sensorData["err_log"]["error"][
-                                                        key
-                                                    ].split()[0],
-                                                    f"{sensorData['err_log']['error'][key]};\n{fan_status_message['warning'][warning_key]}",
-                                                )        
+                                                    record_signal_on(
+                                                        sensorData["err_log"]["error"][
+                                                            key
+                                                        ].split()[0],
+                                                        f"{sensorData['err_log']['error'][key]};\n{fan_status_message['warning'][warning_key]}",
+                                                    )    
+                                        else:
+                                            app.logger.warning(
+                                                sensorData["err_log"]["error"][key]
+                                            )
+                                            record_signal_on(
+                                                sensorData["err_log"]["error"][
+                                                    key
+                                                ].split()[0],
+                                                sensorData["err_log"]["error"][key],
+                                            )
                                     else:
                                         app.logger.warning(
                                             sensorData["err_log"]["error"][key]
@@ -5164,6 +5179,12 @@ def read_modbus_data():
                                                     ].split()[0],
                                                     f"{sensorData['err_log']['error'][key]};\n{fan_status_message['warning'][warning_key]}",
                                                 )
+                                        record_signal_off(
+                                            sensorData["err_log"]["error"][key].split()[
+                                                0
+                                            ],
+                                            sensorData["err_log"]["error"][key],
+                                        )
                                     else:
                                         app.logger.info(
                                             f"{sensorData['err_log']['error'][key]} Restore"
