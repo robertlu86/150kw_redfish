@@ -8690,7 +8690,7 @@ def set_rack_control():
         if failed_racks:
             failed_racks_list = "".join([f"<li>{rack}</li>" for rack in failed_racks])
             failed_message = f"Failed to update the following racks due to comm error:<br><ul style='margin-left: 67px;margin-top: 10px; text-align: left;'>{failed_racks_list}</ul>"
-            return jsonify(status="error", message=failed_message)
+            return jsonify(status="error", message=failed_message, failed_racks=failed_racks)
 
         return jsonify(status="success", message="Update rack setting successfully")
 
