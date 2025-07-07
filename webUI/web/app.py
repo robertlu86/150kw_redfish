@@ -8136,6 +8136,73 @@ def restoreFactorySettingAll():
     except Exception as e:
         print(f"reset manual mode pump and fan speed error:{e}")
     
+    ### 16 Engineer Mode: Reset Switch Version
+    try:
+        with ModbusTcpClient(
+            host=modbus_host, port=modbus_port, unit=modbus_slave_id
+        ) as client:
+            client.write_coils(
+                (8192 + 803),
+                [False] * 11,
+            )
+            op_logger.info("Reset Switch Version Successfully")
+    except Exception as e:
+        print(f"reset Switch Version error:{e}")
+    
+    ### 17 Engineer Mode: Reset Rack Enable
+    try:
+        with ModbusTcpClient(
+            host=modbus_host, port=modbus_port, unit=modbus_slave_id
+        ) as client:
+            client.write_coils(
+                (8192 + 710),
+                [False] * 11,
+            )
+            op_logger.info("Reset Rack Enable Successfully")
+    except Exception as e:
+        print(f"reset Rack Enable error:{e}")
+        
+    ### 18 restore to stop mode
+    try:
+        set_mode("stop")
+        op_logger.info("Set mode to stop Successfully")
+    except Exception as e:
+        print(f"set mode to stop error:{e}")
+        
+    ### 19. System Setting: Restore SNMP Setting
+    try:
+        trap_ip = "127.0.0.1"
+        read_community = "public"
+        with open(f"{snmp_path}/snmp/snmp.json", "r") as json_file:
+            data = json.load(json_file)
+            data["trap_ip_address"] = trap_ip
+            data["read_community"] = read_community
+        with open(f"{snmp_path}/snmp/snmp.json", "w") as file:
+            json.dump(data, file)
+        op_logger.info("SNMP Setting Reset Successfully")
+    except Exception as e:
+        print(f"SNMP Setting import error:{e}")
+        
+    ### 20. Restore MC Settig
+    try:
+        with ModbusTcpClient(
+            host=modbus_host, port=modbus_port, unit=modbus_slave_id
+        ) as client:
+            client.write_coils((8192 + 840), [False] * 5)
+            op_logger.info("MC Setting Reset Successfully")
+    except Exception as e:
+        print(f"mc setting error:{e}")
+        return retry_modbus((8192 + 840), [False] * 5, "coil")
+    
+    ### 21. Restore admin password
+    try:
+        pwd = "password"
+        USER_DATA["admin"] = pwd
+        set_key(f"{web_path}/.env", "ADMIN", USER_DATA["admin"])
+        os.chmod(f"{web_path}/.env", 0o666)
+        op_logger.info("Restore admin password successfully")
+    except Exception as e:
+        print(f"Restore admin password error:{e}")
     ##### 最後一步, 重啟電腦
     # subprocess.run(
     #     ["sudo", "reboot"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
