@@ -1850,6 +1850,57 @@ measure_data = {
     "fan8_speed": 1,
 }
 
+measure_data_2 = {
+    "test_t1_1": 1,
+    "test_ac_1": 1,
+    "test_av_1": 1,
+    "test_flow_rate_1": 1,
+    "test_prsr_rtn_1": 1,
+    "test_prsr_sup_1": 1,
+    "test_t1_2": 1,
+    "test_ac_2": 1,
+    "test_av_2": 1,
+    "test_flow_rate_2": 1,
+    "test_prsr_rtn_2": 1,
+    "test_prsr_sup_2": 1,
+    "test_t1_3": 1,
+    "test_ac_3": 1,
+    "test_av_3": 1,
+    "test_flow_rate_3": 1,
+    "test_prsr_rtn_3": 1,
+    "test_prsr_sup_3": 1,
+    "test_t1_4": 1,
+    "test_ac_4": 1,
+    "test_av_4": 1,
+    "test_flow_rate_4": 1,
+    "test_prsr_rtn_4": 1,
+    "test_prsr_sup_4": 1,
+    "test_t1_5": 1,
+    "test_ac_5": 1,
+    "test_av_5": 1,
+    "test_flow_rate_5": 1,
+    "test_prsr_rtn_5": 1,
+    "test_prsr_sup_5": 1,
+    "test_t1_6": 1,
+    "test_ac_6": 1,
+    "test_av_6": 1,
+    "test_flow_rate_6": 1,
+    "test_prsr_rtn_6": 1,
+    "test_prsr_sup_6": 1,
+    "test_t1_7": 1,
+    "test_ac_7": 1,
+    "test_av_7": 1,
+    "test_flow_rate_7": 1,
+    "test_prsr_rtn_7": 1,
+    "test_prsr_sup_7": 1,
+    "test_ac_8": 1,
+    "test_ap_1": 1,
+    "test_ac_9": 1,
+    "test_ap_2": 1,
+    "test_ac_10": 1,
+    "test_ap_3": 1,
+}
+
 result_data = {
     "p1_speed": False,
     "p2_speed": False,
@@ -1993,6 +2044,16 @@ progress_data = {
     "fan6_error": 1,
     "fan7_error": 1,
     "fan8_error": 1,
+    "pump_test1": 1,
+    "pump_test2": 1,
+    "pump_test3": 1,
+    "pump_test4": 1,
+    "pump_test5": 1,
+    "pump_test6": 1,
+    "pump_test7": 1,
+    "fan_test1": 1,
+    "fan_test2": 1,
+    "fan_test3": 1,
 }
 
 inspection_time = {
@@ -8294,9 +8355,7 @@ def get_inspection_result():
             host=modbus_host, port=modbus_port, unit=modbus_slave_id
         ) as client:
             inspect_result_len = len(result_data) - 3
-            # r = client.read_holding_registers(
-            #     750, inspect_result_len, unit=modbus_slave_id
-            # )
+        ###減去3個: "force_change_mode", "inspect_finish", "inspect_time"
             r = client.read_holding_registers(
                 2000, inspect_result_len, unit=modbus_slave_id
             )
@@ -8305,13 +8364,15 @@ def get_inspection_result():
             for i in range(inspect_result_len):
                 key = key_list[i]
                 if r.registers[i] == 1:
+                    ### NG
                     result_data[key] = True
                 elif r.registers[i] == 0:
+                    ### OK
                     result_data[key] = False
 
             prog_len = len(progress_data.keys())
 
-            # r2 = client.read_holding_registers(800, prog_len, unit=modbus_slave_id)
+
             r2 = client.read_holding_registers(
                 2100, prog_len, unit=modbus_slave_id
             )
@@ -8366,6 +8427,28 @@ def get_inspection_result():
     except Exception as e:
         print(f"get measured result error:{e}")
 
+    try:
+        with ModbusTcpClient(
+            host=modbus_host, port=modbus_port, unit=modbus_slave_id
+        ) as client:
+            measure_len = len(measure_data_2.keys()) * 2
+            r = client.read_holding_registers(2900, measure_len)
+            key_list = list(measure_data_2.keys())
+
+            j = 0
+            for i in range(0, measure_len, 2):
+                temp1 = [r.registers[i], r.registers[i + 1]]
+                decoder_big_endian = BinaryPayloadDecoder.fromRegisters(
+                    temp1, byteorder=Endian.Big, wordorder=Endian.Little
+                )
+                decoded_value_big_endian = decoder_big_endian.decode_32bit_float()
+                format_value = decoded_value_big_endian
+                measure_data_2[key_list[j]] = format_value
+                j += 1
+    except Exception as e:
+        print(f"get measured result error:{e}")
+
+
     for inspection_key, sensor_key in key_mapping.items():
         if sensor_key in sensorData["value"]:
             inspection_value[inspection_key] = sensorData["value"][sensor_key]
@@ -8386,6 +8469,7 @@ def get_inspection_result():
         "progress_data": progress_data,
         "sensor_data": sensorData,
         "measure_data": measure_data,
+        "measure_data_2": measure_data_2,
         "inspection_time_last_check": inspection_time_last_check,
         "fw_info_data": fw_info_data,
         "fw_info_version": fw_info_version,
