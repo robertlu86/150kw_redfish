@@ -5119,16 +5119,19 @@ def read_modbus_data():
                             if sensorData["err_log"]["error"][key] not in error_data:
                                 if key.startswith("fan") and key.endswith("_error"):
                                     index = key[3]
-                                    for err_key in fan_error_status[f"Fan{index}"]:
-                                        if fan_error_status[f"Fan{index}"][err_key]:
-                                            error_data.append(
-                                                f"{sensorData['err_log']['error'][key]} ; {fan_status_message['error'][err_key]}"
-                                            )
-                                    for warning_key in fan_warning_status[f"Fan{index}"]:
-                                        if fan_warning_status[f"Fan{index}"][warning_key]:
-                                            error_data.append(
-                                                f"{sensorData['err_log']['error'][key]} ; {fan_status_message['warning'][warning_key]}"
-                                            )
+                                    if any(fan_error_status[f"Fan{index}"].values()) or any(fan_warning_status[f"Fan{index}"].values()):
+                                        for err_key in fan_error_status[f"Fan{index}"]:
+                                            if fan_error_status[f"Fan{index}"][err_key]:
+                                                error_data.append(
+                                                    f"{sensorData['err_log']['error'][key]} ; {fan_status_message['error'][err_key]}"
+                                                )
+                                        for warning_key in fan_warning_status[f"Fan{index}"]:
+                                            if fan_warning_status[f"Fan{index}"][warning_key]:
+                                                error_data.append(
+                                                    f"{sensorData['err_log']['error'][key]} ; {fan_status_message['warning'][warning_key]}"
+                                                )
+                                    else:
+                                        error_data.append(sensorData["err_log"]["error"][key])
                                 else:
                                     error_data.append(sensorData["err_log"]["error"][key])
                     error_count += 1
@@ -5146,32 +5149,44 @@ def read_modbus_data():
                                 if current_state and not previous_error_states[key]:
                                     if key.startswith("fan") and key.endswith("_error"):
                                         index = key[3]
-                                        for err_key in fan_error_status[f"Fan{index}"]:
-                                            if fan_error_status[f"Fan{index}"][err_key]:
-                                                fan_status_list.append(err_key)
-                                                app.logger.warning(
-                                                    f'{sensorData["err_log"]["error"][key]} ; {fan_status_message["error"][err_key]}'
-                                                )
+                                        
+                                        if any(fan_error_status[f"Fan{index}"].values()) or any(fan_warning_status[f"Fan{index}"].values()):
+                                            for err_key in fan_error_status[f"Fan{index}"]:
+                                                if fan_error_status[f"Fan{index}"][err_key]:
+                                                    fan_status_list.append(err_key)
+                                                    app.logger.warning(
+                                                        f'{sensorData["err_log"]["error"][key]} ; {fan_status_message["error"][err_key]}'
+                                                    )
 
-                                                record_signal_on(
-                                                    sensorData["err_log"]["error"][
-                                                        key
-                                                    ].split()[0],
-                                                    f"{sensorData['err_log']['error'][key]};\n{fan_status_message['error'][err_key]}",
-                                                )
-                                        for warning_key in fan_warning_status[f"Fan{index}"]:
-                                            if fan_warning_status[f"Fan{index}"][warning_key]:
-                                                fan_warning_list.append(warning_key)
-                                                app.logger.warning(
-                                                    f"{sensorData['err_log']['error'][key]} ; {fan_status_message['warning'][warning_key]}"
-                                                )
+                                                    record_signal_on(
+                                                        sensorData["err_log"]["error"][
+                                                            key
+                                                        ].split()[0],
+                                                        f"{sensorData['err_log']['error'][key]};\n{fan_status_message['error'][err_key]}",
+                                                    )
+                                            for warning_key in fan_warning_status[f"Fan{index}"]:
+                                                if fan_warning_status[f"Fan{index}"][warning_key]:
+                                                    fan_warning_list.append(warning_key)
+                                                    app.logger.warning(
+                                                        f"{sensorData['err_log']['error'][key]} ; {fan_status_message['warning'][warning_key]}"
+                                                    )
 
-                                                record_signal_on(
-                                                    sensorData["err_log"]["error"][
-                                                        key
-                                                    ].split()[0],
-                                                    f"{sensorData['err_log']['error'][key]};\n{fan_status_message['warning'][warning_key]}",
-                                                )        
+                                                    record_signal_on(
+                                                        sensorData["err_log"]["error"][
+                                                            key
+                                                        ].split()[0],
+                                                        f"{sensorData['err_log']['error'][key]};\n{fan_status_message['warning'][warning_key]}",
+                                                    )    
+                                        else:
+                                            app.logger.warning(
+                                                sensorData["err_log"]["error"][key]
+                                            )
+                                            record_signal_on(
+                                                sensorData["err_log"]["error"][
+                                                    key
+                                                ].split()[0],
+                                                sensorData["err_log"]["error"][key],
+                                            )
                                     else:
                                         app.logger.warning(
                                             sensorData["err_log"]["error"][key]
@@ -5225,6 +5240,12 @@ def read_modbus_data():
                                                     ].split()[0],
                                                     f"{sensorData['err_log']['error'][key]};\n{fan_status_message['warning'][warning_key]}",
                                                 )
+                                        record_signal_off(
+                                            sensorData["err_log"]["error"][key].split()[
+                                                0
+                                            ],
+                                            sensorData["err_log"]["error"][key],
+                                        )
                                     else:
                                         app.logger.info(
                                             f"{sensorData['err_log']['error'][key]} Restore"
@@ -8197,6 +8218,73 @@ def restoreFactorySettingAll():
     except Exception as e:
         print(f"reset manual mode pump and fan speed error:{e}")
     
+    ### 16 Engineer Mode: Reset Switch Version
+    try:
+        with ModbusTcpClient(
+            host=modbus_host, port=modbus_port, unit=modbus_slave_id
+        ) as client:
+            client.write_coils(
+                (8192 + 803),
+                [False] * 11,
+            )
+            op_logger.info("Reset Switch Version Successfully")
+    except Exception as e:
+        print(f"reset Switch Version error:{e}")
+    
+    ### 17 Engineer Mode: Reset Rack Enable
+    try:
+        with ModbusTcpClient(
+            host=modbus_host, port=modbus_port, unit=modbus_slave_id
+        ) as client:
+            client.write_coils(
+                (8192 + 710),
+                [False] * 11,
+            )
+            op_logger.info("Reset Rack Enable Successfully")
+    except Exception as e:
+        print(f"reset Rack Enable error:{e}")
+        
+    ### 18 restore to stop mode
+    try:
+        set_mode("stop")
+        op_logger.info("Set mode to stop Successfully")
+    except Exception as e:
+        print(f"set mode to stop error:{e}")
+        
+    ### 19. System Setting: Restore SNMP Setting
+    try:
+        trap_ip = "127.0.0.1"
+        read_community = "public"
+        with open(f"{snmp_path}/snmp/snmp.json", "r") as json_file:
+            data = json.load(json_file)
+            data["trap_ip_address"] = trap_ip
+            data["read_community"] = read_community
+        with open(f"{snmp_path}/snmp/snmp.json", "w") as file:
+            json.dump(data, file)
+        op_logger.info("SNMP Setting Reset Successfully")
+    except Exception as e:
+        print(f"SNMP Setting import error:{e}")
+        
+    ### 20. Restore MC Settig
+    try:
+        with ModbusTcpClient(
+            host=modbus_host, port=modbus_port, unit=modbus_slave_id
+        ) as client:
+            client.write_coils((8192 + 840), [False] * 5)
+            op_logger.info("MC Setting Reset Successfully")
+    except Exception as e:
+        print(f"mc setting error:{e}")
+        return retry_modbus((8192 + 840), [False] * 5, "coil")
+    
+    ### 21. Restore admin password
+    try:
+        pwd = "password"
+        USER_DATA["admin"] = pwd
+        set_key(f"{web_path}/.env", "ADMIN", USER_DATA["admin"])
+        os.chmod(f"{web_path}/.env", 0o666)
+        op_logger.info("Restore admin password successfully")
+    except Exception as e:
+        print(f"Restore admin password error:{e}")
     ##### 最後一步, 重啟電腦
     # subprocess.run(
     #     ["sudo", "reboot"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
@@ -8774,7 +8862,7 @@ def set_rack_control():
         if failed_racks:
             failed_racks_list = "".join([f"<li>{rack}</li>" for rack in failed_racks])
             failed_message = f"Failed to update the following racks due to comm error:<br><ul style='margin-left: 67px;margin-top: 10px; text-align: left;'>{failed_racks_list}</ul>"
-            return jsonify(status="error", message=failed_message)
+            return jsonify(status="error", message=failed_message, failed_racks=failed_racks)
 
         return jsonify(status="success", message="Update rack setting successfully")
 
