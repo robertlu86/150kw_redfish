@@ -7994,111 +7994,7 @@ def restoreFactorySettingAll():
         name="snmp_operation"
     ).move_logs()
 
-    # try:
-    #     error_dir = os.path.join(log_path, "logs", "error")
-    #     old_error_dir = os.path.join(log_path, "logs", "old_error")
 
-    #     if os.path.exists(error_dir) and os.path.isdir(error_dir):
-    #         if not os.path.exists(old_error_dir):
-    #             os.makedirs(old_error_dir)
-
-    #         for filename in os.listdir(error_dir):
-    #             src_file = os.path.join(error_dir, filename)
-    #             dst_file = os.path.join(old_error_dir, filename)
-    #             if os.path.isfile(src_file):
-    #                 # 如果目的地已存在同名檔案，則改名避免覆蓋
-    #                 if os.path.exists(dst_file):
-    #                     name, ext = os.path.splitext(filename)
-    #                     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    #                     new_filename = f"{name}.{timestamp}{ext}"
-    #                     dst_file = os.path.join(old_sensor_dir, new_filename)
-
-    #                 shutil.move(src_file, dst_file)
-    #         print("All error log files moved to old_error successfully.")
-    #     else:
-    #         print("Error log directory does not exist.")
-    # except Exception as e:
-    #     print(f"Move log error: {e}")
-        
-
-    # try:
-    #     operation_dir = os.path.join(log_path, "logs", "operation")
-    #     old_operation_dir = os.path.join(log_path, "logs", "old_operation")
-
-    #     if os.path.exists(operation_dir) and os.path.isdir(operation_dir):
-    #         if not os.path.exists(old_operation_dir):
-    #             os.makedirs(old_operation_dir)
-
-    #         for filename in os.listdir(operation_dir):
-    #             src_file = os.path.join(operation_dir, filename)
-    #             dst_file = os.path.join(old_operation_dir, filename)
-    #             if os.path.isfile(src_file):
-    #                 # 如果目的地已存在同名檔案，則改名避免覆蓋
-    #                 if os.path.exists(dst_file):
-    #                     name, ext = os.path.splitext(filename)
-    #                     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    #                     new_filename = f"{name}.{timestamp}{ext}"
-    #                     dst_file = os.path.join(old_sensor_dir, new_filename)
-    #                 shutil.move(src_file, dst_file)
-    #         print("All operation log files moved to old_operation successfully.")
-    #     else:
-    #         print("operation log directory does not exist.")
-    # except Exception as e:
-    #     print(f"Move log operation: {e}")
-        
-        
-    # try:
-    #     sensor_dir = os.path.join(log_path, "logs", "sensor")
-    #     old_sensor_dir = os.path.join(log_path, "logs", "old_sensor")
-
-    #     if os.path.exists(sensor_dir) and os.path.isdir(sensor_dir):
-    #         if not os.path.exists(old_sensor_dir):
-    #             os.makedirs(old_sensor_dir)
-
-    #         for filename in os.listdir(sensor_dir):
-    #             src_file = os.path.join(sensor_dir, filename)
-    #             dst_file = os.path.join(old_sensor_dir, filename)
-    #             if os.path.isfile(src_file):
-    #                 # 如果目的地已存在同名檔案，則改名避免覆蓋
-    #                 if os.path.exists(dst_file):
-    #                     name, ext = os.path.splitext(filename)
-    #                     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    #                     new_filename = f"{name}.{timestamp}{ext}"
-    #                     dst_file = os.path.join(old_sensor_dir, new_filename)
-
-    #                 shutil.move(src_file, dst_file)
-    #         print("All sensor log files moved to old_sensor successfully.")
-    #     else:
-    #         print("Sensor log directory does not exist.")
-    # except Exception as e:
-    #     print(f"Move log error: {e}")
-        
-
-    # try:
-    #     operation_dir = os.path.join(snmp_path, "RestAPI", "logs", "operation")
-    #     old_operation_dir = os.path.join(snmp_path, "RestAPI", "logs", "old_operation")
-
-    #     if os.path.exists(operation_dir) and os.path.isdir(operation_dir):
-    #         if not os.path.exists(old_operation_dir):
-    #             os.makedirs(old_operation_dir)
-
-    #         for filename in os.listdir(operation_dir):
-    #             src_file = os.path.join(operation_dir, filename)
-    #             dst_file = os.path.join(old_operation_dir, filename)
-    #             if os.path.isfile(src_file):
-    #                 # 如果目的地已存在同名檔案，則改名避免覆蓋
-    #                 if os.path.exists(dst_file):
-    #                     name, ext = os.path.splitext(filename)
-    #                     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    #                     new_filename = f"{name}.{timestamp}{ext}"
-    #                     dst_file = os.path.join(old_sensor_dir, new_filename)
-
-    #                 shutil.move(src_file, dst_file)
-    #         print("All operation log files moved to old_operation successfully.")
-    #     else:
-    #         print("operation log directory does not exist.")
-    # except Exception as e:
-    #     print(f"Move log operation: {e}")
     
     ###5. Engineer Mode: Sensor Adjustment Setting恢復預設值
     try:
@@ -8270,11 +8166,11 @@ def restoreFactorySettingAll():
         with ModbusTcpClient(
             host=modbus_host, port=modbus_port, unit=modbus_slave_id
         ) as client:
-            client.write_coils((8192 + 840), [False] * 5)
+            client.write_coils((8192 + 840), [True] * 5)
             op_logger.info("MC Setting Reset Successfully")
     except Exception as e:
         print(f"mc setting error:{e}")
-        return retry_modbus((8192 + 840), [False] * 5, "coil")
+        return retry_modbus((8192 + 840), [True] * 5, "coil")
     
     ### 21. Restore admin password
     try:
