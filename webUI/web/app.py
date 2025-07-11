@@ -8119,10 +8119,21 @@ def restoreFactorySettingAll():
         with ModbusTcpClient(
             host=modbus_host, port=modbus_port, unit=modbus_slave_id
         ) as client:
-            client.write_coils(
-                (8192 + 803),
-                [False] * 11,
-            )
+            # flow value filter : enabled
+            client.write_coils((8192 + 803),[False])
+            
+            # coolant quality meter : disabled
+            client.write_coils((8192 + 804),[True])
+            
+            # fan count : 6
+            client.write_coils((8192 + 805),[True] )
+            
+            # liquid level 1 & 2 : enabled
+            client.write_coils((8192 + 806),[False] * 2)
+            
+            # liquid level 3 : disabled , leakage sensor 1 ~ 5 : disabled
+            client.write_coils((8192 + 808),[True] * 6)
+                        
             op_logger.info("Reset Switch Version Successfully")
     except Exception as e:
         print(f"reset Switch Version error:{e}")

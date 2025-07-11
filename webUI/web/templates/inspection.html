@@ -1797,8 +1797,8 @@ styles %}
                             "PartNumber"
                         ]
                         let nameMap = {
-                            "SMC": "SMC SN",
-                            "SN": "SN",
+                            "SMC": "Serial Number", // SMC SN
+                            "SN": "Kaori SN", // Kaori SN
                             "Model": "Model",
                             "PartNumber": "Part Number"
                         };
@@ -1842,13 +1842,16 @@ styles %}
                             // "Modbus_Server",
                             // "Redfish_Server",
                             "PLC",
-                            "Release_Time"
+                            "Release_Time",
+                            "inspection",
                         ]
                         // 對應顯示名稱
                         let nameMap = {
                             "WebUI": "System Software",
                             "PLC": "Control Firmware",
-                            "Release_Time": "Release_Date"
+                            "Release_Time": "Release_Date",
+                            "inspection" : "Inspection Version"
+
                         };
 
                         order.forEach(key => {
@@ -1924,7 +1927,7 @@ styles %}
                         }
                     });
 
-                    let final_r = r1 + "\n" + r2 + "\n" + "Check Sum : " + checkSum;
+                    let final_r = r1 + "\n" + r2 + "\n" + "Check Sum : " + checkSum.toFixed(2);
 
                     const now = new Date();
                     const timestamp = now
